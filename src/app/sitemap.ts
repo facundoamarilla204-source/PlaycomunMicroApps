@@ -34,7 +34,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const liveTools = tools.filter((tool) => tool.status === "live")
 
   const toolRoutes = liveTools.map((tool) => ({
-    url: `${siteConfig.url}/${tool.slug}`,
+    url: `${siteConfig.url}/herramientas/${tool.slug}`,
     lastModified: new Date(tool.updatedAt),
     changeFrequency: "weekly",
     priority: 0.8,

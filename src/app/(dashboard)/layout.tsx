@@ -2,6 +2,7 @@ import SiteHeader from "@/components/layout/SiteHeader"
 import SiteFooter from "@/components/layout/SiteFooter"
 import { createClient } from "@/utils/supabase/server"
 import { redirect } from "next/navigation"
+import { isProUser } from "@/lib/pro"
 
 export default async function DashboardLayout({
   children,
@@ -15,9 +16,11 @@ export default async function DashboardLayout({
     redirect("/ingresar")
   }
 
+  const isPro = await isProUser(user.id)
+
   return (
     <>
-      <SiteHeader user={user} />
+      <SiteHeader user={user} isPro={isPro} />
       <main className="flex-1 bg-gray-50/50 pt-28 pb-16">{children}</main>
       <SiteFooter />
     </>

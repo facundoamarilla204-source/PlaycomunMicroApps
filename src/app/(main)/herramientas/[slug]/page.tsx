@@ -5,6 +5,39 @@ import { ToolPageLayout } from "@/components/layout/ToolPageLayout"
 import { buildMetadata } from "@/lib/metadata"
 import { JsonLd } from "@/components/seo/JsonLd"
 import { siteConfig } from "@/config/site"
+import { CalculadoraAguinaldo } from "@/components/tools/CalculadoraAguinaldo"
+import { AguinaldoContent } from "@/components/tools/content/AguinaldoContent"
+import { CalculadoraPrecios } from "@/components/tools/CalculadoraPrecios"
+import { PrecioVentaContent } from "@/components/tools/content/PrecioVentaContent"
+import { GeneradorPresupuestos } from "@/components/tools/GeneradorPresupuestos"
+import { GeneradorPresupuestosContent } from "@/components/tools/content/GeneradorPresupuestosContent"
+
+const TOOL_COMPONENTS: Record<string, React.ReactNode> = {
+  "calculadora-aguinaldo": (
+    <>
+      <CalculadoraAguinaldo />
+      <div className="mt-16">
+        <AguinaldoContent />
+      </div>
+    </>
+  ),
+  "calculadora-precios": (
+    <>
+      <CalculadoraPrecios />
+      <div className="mt-16">
+        <PrecioVentaContent />
+      </div>
+    </>
+  ),
+  "generador-presupuestos": (
+    <>
+      <GeneradorPresupuestos />
+      <div className="mt-16 flex justify-center">
+        <GeneradorPresupuestosContent />
+      </div>
+    </>
+  ),
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = await params
@@ -19,7 +52,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return buildMetadata({
     title: tool.seo?.title || tool.name,
     description: tool.seo?.description || tool.description,
-    path: `/${tool.slug}`,
+    path: `/herramientas/${tool.slug}`,
     noindex: isSoon,
   })
 }
@@ -39,8 +72,8 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     "@type": "WebApplication",
     name: tool.name,
     description: tool.seo?.description || tool.description,
-    url: `${siteConfig.url}/${tool.slug}`,
-    applicationCategory: "UtilityApplication",
+    url: `${siteConfig.url}/herramientas/${tool.slug}`,
+    applicationCategory: "FinanceApplication",
     operatingSystem: "Web",
     inLanguage: "es-AR",
     offers: {
@@ -70,7 +103,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
         "@type": "ListItem",
         position: 3,
         name: tool.name,
-        item: `${siteConfig.url}/${tool.slug}`,
+        item: `${siteConfig.url}/herramientas/${tool.slug}`,
       },
     ],
   }
@@ -95,7 +128,11 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
           </div>
         ) : (
           <div>
-            {/* Aquí va el componente específico de la microapp cuando sea "live" */}
+            {TOOL_COMPONENTS[tool.slug] || (
+              <div className="text-center py-8 text-neutral-500">
+                El componente para esta herramienta aún no fue asignado.
+              </div>
+            )}
           </div>
         )}
       </ToolPageLayout>

@@ -10,7 +10,7 @@ import { getCategories } from "@/data/categories"
 import { logout } from "@/app/(auth)/actions"
 import { tools } from "@/data/tools"
 
-export default function SiteHeader({ user }: { user?: any }) {
+export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?: boolean }) {
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
@@ -85,9 +85,19 @@ export default function SiteHeader({ user }: { user?: any }) {
             </button>
             
             <div className="hidden md:flex items-center gap-4">
-              <Link href="/planes" className="rounded-full px-4 py-2 text-base font-semibold text-foreground/80 transition-colors hover:bg-gray-100 hover:text-foreground">
-                Planes
-              </Link>
+              {!isPro && (
+                <Link href="/planes" className={isAuthenticated 
+                  ? "flex items-center gap-2 bg-gradient-to-r from-amber-400 to-amber-500 text-amber-950 px-5 py-2 rounded-full font-bold shadow-sm shadow-amber-400/20 hover:shadow-md hover:scale-105 active:scale-95 transition-all"
+                  : "rounded-full px-4 py-2 text-base font-semibold text-foreground/80 transition-colors hover:bg-gray-100 hover:text-foreground"
+                }>
+                  {isAuthenticated ? (
+                    <>
+                      <Sparkles className="w-4 h-4" />
+                      Hacerse Pro
+                    </>
+                  ) : 'Planes'}
+                </Link>
+              )}
               {isAuthenticated && (
                 <Link href="/favoritas" className="rounded-full px-4 py-2 text-base font-semibold text-brand transition-colors hover:bg-brand-light">
                   Favoritas
@@ -195,9 +205,23 @@ export default function SiteHeader({ user }: { user?: any }) {
                   </Link>
                 ))}
               </div>
-              <Link href="/planes" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-foreground font-medium border-b border-border pb-4">
-                Planes
-              </Link>
+              {!isPro && (
+                <Link 
+                  href="/planes" 
+                  onClick={() => setMobileMenuOpen(false)} 
+                  className={isAuthenticated
+                    ? "flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-amber-400 to-amber-500 text-amber-950 rounded-xl font-bold mt-2 shadow-sm mb-4"
+                    : "block py-2 font-medium border-b border-border pb-4 text-foreground hover:text-brand"
+                  }
+                >
+                  {isAuthenticated ? (
+                    <>
+                      <Sparkles className="w-5 h-5" />
+                      Hacerse Pro
+                    </>
+                  ) : 'Planes'}
+                </Link>
+              )}
               {isAuthenticated && (
                 <Link href="/favoritas" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-foreground font-medium border-b border-border pb-4">
                   Favoritas

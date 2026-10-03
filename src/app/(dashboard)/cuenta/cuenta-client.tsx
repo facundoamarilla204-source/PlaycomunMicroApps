@@ -6,7 +6,7 @@ import { CheckCircle2, Calculator, QrCode, Banknote, LogOut, ChevronRight, User,
 import { useActionState, useState } from "react"
 import { useSearchParams } from "next/navigation"
 
-export default function CuentaClient({ email, name, initial, logoutAction, updateAction, favorites = [] }: { email: string, name: string, initial: string, logoutAction: any, updateAction: any, favorites?: any[] }) {
+export default function CuentaClient({ email, name, initial, logoutAction, updateAction, favorites = [], isPro = false }: { email: string, name: string, initial: string, logoutAction: any, updateAction: any, favorites?: any[], isPro?: boolean }) {
   const [isHoveringPlan, setIsHoveringPlan] = useState(false)
   const searchParams = useSearchParams()
   const errorMsg = searchParams.get("error")
@@ -216,23 +216,25 @@ export default function CuentaClient({ email, name, initial, logoutAction, updat
                     <CreditCard className="w-5 h-5 text-white/80" />
                     <span className="text-white/80 font-medium text-sm tracking-wide uppercase">Suscripción actual</span>
                   </div>
-                  <span className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-white text-xs font-black uppercase tracking-widest shadow-inner border border-white/10">
-                    Gratis
+                  <span className={`px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-white text-xs font-black uppercase tracking-widest shadow-inner border border-white/10 ${isPro ? 'text-amber-300 border-amber-300/30' : ''}`}>
+                    {isPro ? 'Pro' : 'Gratis'}
                   </span>
                 </div>
                 
                 <div className="mt-6 mb-8">
-                  <h3 className="text-3xl font-black mb-2 tracking-tight">Plan Básico</h3>
+                  <h3 className="text-3xl font-black mb-2 tracking-tight">{isPro ? 'Plan Pro' : 'Plan Básico'}</h3>
                   <p className="text-white/80 font-medium leading-relaxed text-sm">
-                    Acceso a herramientas esenciales para arrancar. Mejorá a Premium para desbloquear todo el potencial.
+                    {isPro 
+                      ? 'Acceso total a todas las herramientas, sin publicidad y con funcionalidades premium desbloqueadas.' 
+                      : 'Acceso a herramientas esenciales para arrancar. Mejorá a Premium para desbloquear todo el potencial.'}
                   </p>
                 </div>
                 
                 <Link 
-                  href="/planes"
+                  href={isPro ? "/cuenta/suscripcion" : "/planes"}
                   className="mt-auto flex items-center justify-center gap-2 w-full bg-white text-[#7b2cbf] hover:bg-slate-50 px-6 py-4 rounded-xl text-sm font-bold transition-all duration-300 group-hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] active:scale-95"
                 >
-                  Mejorar plan
+                  {isPro ? "Gestionar suscripción" : "Mejorar plan"}
                   <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </div>
@@ -248,6 +250,16 @@ export default function CuentaClient({ email, name, initial, logoutAction, updat
               </div>
               
               <div className="space-y-2">
+                <Link href="/cuenta/suscripcion" className="flex items-center gap-4 w-full p-4 rounded-2xl hover:bg-slate-50 transition-colors group/btn">
+                  <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 group-hover/btn:bg-white group-hover/btn:shadow-sm transition-all">
+                    <Banknote className="w-5 h-5" />
+                  </div>
+                  <div className="flex-1 text-left">
+                    <div className="font-bold text-slate-800">Pagos y suscripción</div>
+                    <div className="text-xs font-medium text-slate-500">Gestionar mis métodos de pago</div>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-slate-300 group-hover/btn:text-slate-800 transition-colors" />
+                </Link>
                 <Link href="/recuperar" className="flex items-center gap-4 w-full p-4 rounded-2xl hover:bg-slate-50 transition-colors group/btn">
                   <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 group-hover/btn:bg-white group-hover/btn:shadow-sm transition-all">
                     <ShieldCheck className="w-5 h-5" />

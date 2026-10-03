@@ -3,6 +3,7 @@ import { logout } from "@/app/(auth)/actions"
 import CuentaClient from "./cuenta-client"
 import { redirect } from "next/navigation"
 import { updateProfile } from "@/app/(auth)/actions"
+import { isProUser } from "@/lib/pro"
 
 export default async function AccountPage() {
   const supabase = await createClient()
@@ -13,8 +14,15 @@ export default async function AccountPage() {
   }
 
   const userInitial = user.email?.charAt(0).toUpperCase() || "U"
+  
+  // Get full_name from profiles table instead of user_metadata
+  let fullName = user.user_metadata?.full_name || ""
+  const { data: profile } = await supabase.from('profiles').select('full_name').eq('id', user.id).single()
+  if (profile?.full_name) {
+    fullName = profile.full_name
+  }
 
-  const fullName = user.user_metadata?.full_name || ""
+  const isPro = await isProUser(user.id)
 
   let userFavorites: any[] = []
   const { data: dbFavorites } = await supabase.from('favorites').select('tool_slug').eq('user_id', user.id)
@@ -33,6 +41,7 @@ export default async function AccountPage() {
       logoutAction={logout} 
       updateAction={updateProfile}
       favorites={userFavorites}
+      isPro={isPro}
     />
   )
 }
