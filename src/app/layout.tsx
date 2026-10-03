@@ -1,13 +1,19 @@
 import type { Metadata } from "next"
 import { siteConfig } from "@/config/site"
 import "./globals.css"
+import { Analytics } from "@vercel/analytics/react"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.url),
   title: {
     default: siteConfig.name,
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: siteConfig.name,
     description: siteConfig.description,
@@ -16,10 +22,20 @@ export const metadata: Metadata = {
     locale: "es_AR",
     type: "website",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: siteConfig.name,
+    description: siteConfig.description,
+  },
   icons: {
     icon: "/favicon.png",
     apple: "/favicon.png",
-  }
+  },
+  ...(process.env.NEXT_PUBLIC_GSC_VERIFICATION && {
+    verification: {
+      google: process.env.NEXT_PUBLIC_GSC_VERIFICATION,
+    },
+  }),
 }
 
 export default function RootLayout({
@@ -31,6 +47,8 @@ export default function RootLayout({
     <html lang="es-AR" className="h-full">
       <body className="flex flex-col min-h-full bg-background text-foreground antialiased selection:bg-brand/20 selection:text-brand">
         {children}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )

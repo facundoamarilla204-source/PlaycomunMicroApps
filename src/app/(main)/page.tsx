@@ -3,6 +3,14 @@ import ToolGrid from "@/components/home/ToolGrid"
 import TrustStrip from "@/components/home/TrustStrip"
 import ServicesBanner from "@/components/home/ServicesBanner"
 import { createClient } from "@/utils/supabase/server"
+import { buildMetadata } from "@/lib/metadata"
+import { JsonLd } from "@/components/seo/JsonLd"
+import { siteConfig } from "@/config/site"
+
+export const metadata = buildMetadata({
+  title: "Inicio",
+  path: "/",
+})
 
 export default async function Home() {
   const supabase = await createClient()
@@ -16,8 +24,27 @@ export default async function Home() {
     }
   }
 
+  const jsonLdData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        name: siteConfig.name,
+        url: siteConfig.url,
+      },
+      {
+        "@type": "Organization",
+        name: siteConfig.organization.name,
+        url: siteConfig.organization.url,
+        logo: `${siteConfig.url}${siteConfig.organization.logo}`,
+        sameAs: Object.values(siteConfig.links).filter(Boolean),
+      },
+    ],
+  }
+
   return (
     <>
+      <JsonLd data={jsonLdData} />
       <Hero />
       <ToolGrid userFavorites={userFavorites} />
       <TrustStrip />

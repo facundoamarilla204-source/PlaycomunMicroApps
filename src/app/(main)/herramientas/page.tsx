@@ -1,6 +1,25 @@
 import { createClient } from "@/utils/supabase/server"
 import { Suspense } from "react"
 import HerramientasContent from "./herramientas-content"
+import { buildMetadata } from "@/lib/metadata"
+import { JsonLd } from "@/components/seo/JsonLd"
+import { siteConfig } from "@/config/site"
+
+type Props = {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+
+export async function generateMetadata({ searchParams }: Props) {
+  const params = await searchParams
+  const hasParams = Object.keys(params).length > 0
+
+  return buildMetadata({
+    title: "Explorar Herramientas",
+    description: "Encontrá todas las calculadoras, generadores y utilidades que PlayComun tiene para ofrecerte.",
+    path: "/herramientas",
+    noindex: hasParams,
+  })
+}
 
 export default async function HerramientasPage() {
   const supabase = await createClient()
@@ -14,9 +33,32 @@ export default async function HerramientasPage() {
     }
   }
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Inicio",
+        item: siteConfig.url,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Herramientas",
+        item: `${siteConfig.url}/herramientas`,
+      },
+    ],
+  }
+
   return (
-    <Suspense fallback={<div className="py-16 text-center text-foreground-muted">Cargando herramientas...</div>}>
-      <HerramientasContent userFavorites={userFavorites} />
-    </Suspense>
+    <>
+      <JsonLd data={breadcrumbJsonLd} />
+      <Suspense fallback={<div className="py-16 text-center text-foreground-muted">Cargando herramientas...</div>}>
+        <HerramientasContent userFavorites={userFavorites} />
+      </Suspense>
+    </>
   )
 }
+

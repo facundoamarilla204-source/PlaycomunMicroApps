@@ -1,10 +1,12 @@
 import { Check, ArrowRight } from "lucide-react"
 import Link from "next/link"
+import { buildMetadata } from "@/lib/metadata"
 
-export const metadata = {
-  title: "Planes | PlayComun",
-  description: "Conocé nuestros planes y precios",
-}
+export const metadata = buildMetadata({
+  title: "Planes y Precios",
+  description: "Conocé nuestros planes y precios. Herramientas gratuitas para siempre y funciones avanzadas para quienes necesitan más.",
+  path: "/planes",
+})
 
 export default function PlanesPage() {
   return (

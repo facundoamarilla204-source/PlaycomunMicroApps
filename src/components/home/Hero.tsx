@@ -2,8 +2,8 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import Image from "next/image"
 import { Search } from "lucide-react"
+import Image from "next/image"
 
 export default function Hero() {
   const [query, setQuery] = useState("")
@@ -53,13 +53,14 @@ export default function Hero() {
           
           <div className="relative flex justify-center lg:justify-end">
             <div className="relative w-full max-w-[500px] aspect-square">
-              <Image 
-                src="/otter-hero.png" 
-                alt="Nutria usando herramientas" 
+              <Image
+                src="/otter-hero.png"
+                alt="Nutria de PlayComun Herramientas"
                 fill
+                sizes="(max-width: 768px) 100vw, 500px"
+                className="object-contain object-center"
                 priority
-                className="object-contain drop-shadow-xl"
-                unoptimized
+                onContextMenu={(e) => e.preventDefault()}
               />
             </div>
           </div>

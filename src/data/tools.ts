@@ -8,7 +8,19 @@ export type Tool = {
   status: "live" | "soon"
   featured: boolean
   keywords: string[]
+  updatedAt: string
+  seo?: {
+    title: string
+    description: string
+    h1: string
+    intro: string
+    keywords?: string[]
+  }
+  faqs?: { question: string; answer: string }[]
+  related?: string[]
 }
+
+const NOW = new Date().toISOString()
 
 export const tools: Tool[] = [
   {
@@ -21,6 +33,7 @@ export const tools: Tool[] = [
     status: "soon",
     featured: true,
     keywords: ["precio", "venta", "producto", "servicio", "ganancia", "margen", "costos"],
+    updatedAt: NOW,
   },
   {
     slug: "generador-presupuestos",
@@ -32,6 +45,7 @@ export const tools: Tool[] = [
     status: "soon",
     featured: true,
     keywords: ["presupuesto", "cotizacion", "pdf", "cliente"],
+    updatedAt: NOW,
   },
   {
     slug: "calculadora-iva",
@@ -43,6 +57,7 @@ export const tools: Tool[] = [
     status: "soon",
     featured: true,
     keywords: ["iva", "impuesto", "precio", "afip", "factura"],
+    updatedAt: NOW,
   },
   {
     slug: "calculadora-rentabilidad",
@@ -54,6 +69,7 @@ export const tools: Tool[] = [
     status: "soon",
     featured: true,
     keywords: ["rentabilidad", "roi", "ganancia", "margen", "negocio"],
+    updatedAt: NOW,
   },
   {
     slug: "generador-qr",
@@ -65,6 +81,7 @@ export const tools: Tool[] = [
     status: "soon",
     featured: true,
     keywords: ["qr", "codigo", "scan", "enlace", "pago"],
+    updatedAt: NOW,
   },
   {
     slug: "control-gastos",
@@ -76,6 +93,7 @@ export const tools: Tool[] = [
     status: "soon",
     featured: true,
     keywords: ["gastos", "finanzas", "dinero", "control", "presupuesto"],
+    updatedAt: NOW,
   },
   {
     slug: "calculadora-1rm",
@@ -87,6 +105,7 @@ export const tools: Tool[] = [
     status: "soon",
     featured: true,
     keywords: ["fuerza", "1rm", "gym", "gimnasio", "ejercicio", "pesas"],
+    updatedAt: NOW,
   },
   {
     slug: "conversor-unidades",
@@ -98,6 +117,7 @@ export const tools: Tool[] = [
     status: "soon",
     featured: true,
     keywords: ["conversor", "unidades", "medidas", "kilos", "libras", "metros", "centimetros"],
+    updatedAt: NOW,
   },
   {
     slug: "calculadora-aguinaldo",
@@ -109,6 +129,7 @@ export const tools: Tool[] = [
     status: "soon",
     featured: true,
     keywords: ["aguinaldo", "sac", "sueldo", "salario", "diciembre", "junio"],
+    updatedAt: NOW,
   },
   {
     slug: "calculadora-cuotas",
@@ -120,6 +141,7 @@ export const tools: Tool[] = [
     status: "soon",
     featured: true,
     keywords: ["cuotas", "interes", "prestamo", "financiamiento", "tarjeta", "credito"],
+    updatedAt: NOW,
   },
   {
     slug: "control-stock",
@@ -131,6 +153,7 @@ export const tools: Tool[] = [
     status: "soon",
     featured: true,
     keywords: ["stock", "inventario", "productos", "gestion", "deposito"],
+    updatedAt: NOW,
   },
   {
     slug: "calculadora-calorias",
@@ -142,5 +165,6 @@ export const tools: Tool[] = [
     status: "soon",
     featured: true,
     keywords: ["calorias", "dieta", "nutricion", "macros", "tdee"],
+    updatedAt: NOW,
   },
 ]

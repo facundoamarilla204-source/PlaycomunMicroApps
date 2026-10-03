@@ -1,6 +1,28 @@
 import { notFound } from "next/navigation"
 import { tools } from "@/data/tools"
 import { Construction } from "lucide-react"
+import { ToolPageLayout } from "@/components/layout/ToolPageLayout"
+import { buildMetadata } from "@/lib/metadata"
+import { JsonLd } from "@/components/seo/JsonLd"
+import { siteConfig } from "@/config/site"
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const resolvedParams = await params
+  const tool = tools.find((t) => t.slug === resolvedParams.slug)
+
+  if (!tool) {
+    return buildMetadata({ title: "No encontrado", noindex: true })
+  }
+
+  const isSoon = tool.status === "soon"
+
+  return buildMetadata({
+    title: tool.seo?.title || tool.name,
+    description: tool.seo?.description || tool.description,
+    path: `/${tool.slug}`,
+    noindex: isSoon,
+  })
+}
 
 export default async function ToolPage({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = await params
@@ -10,40 +32,73 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     notFound()
   }
 
+  const isSoon = tool.status === "soon"
+
+  const jsonLdData = isSoon ? null : {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: tool.name,
+    description: tool.seo?.description || tool.description,
+    url: `${siteConfig.url}/${tool.slug}`,
+    applicationCategory: "UtilityApplication",
+    operatingSystem: "Web",
+    inLanguage: "es-AR",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "ARS",
+    },
+  }
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Inicio",
+        item: siteConfig.url,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Herramientas",
+        item: `${siteConfig.url}/herramientas`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: tool.name,
+        item: `${siteConfig.url}/${tool.slug}`,
+      },
+    ],
+  }
+
   return (
-    <div className="mx-auto max-w-3xl px-4 py-24 sm:px-6 lg:px-8 text-center">
-      <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-light text-brand mb-6">
-        <Construction className="h-8 w-8" />
-      </div>
-      
-      <div className="mb-4 flex justify-center">
-        {tool.tier === "free" ? (
-          <span className="rounded bg-free-bg px-3 py-1 text-sm font-medium text-free-text">
-            Gratis
-          </span>
+    <>
+      {jsonLdData && <JsonLd data={jsonLdData} />}
+      <JsonLd data={breadcrumbJsonLd} />
+
+      <ToolPageLayout tool={tool}>
+        {isSoon ? (
+          <div className="text-center rounded-xl border border-dashed border-border bg-gray-50/50 p-12">
+            <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-light text-brand mb-6">
+              <Construction className="h-8 w-8" />
+            </div>
+            <h2 className="text-xl font-semibold text-foreground mb-2">
+              Esta herramienta está en construcción
+            </h2>
+            <p className="text-foreground-muted">
+              Estamos trabajando para tenerla lista pronto. ¡Volvé a visitarnos!
+            </p>
+          </div>
         ) : (
-          <span className="rounded bg-pro-bg px-3 py-1 text-sm font-medium text-pro-text">
-            Pro
-          </span>
+          <div>
+            {/* Aquí va el componente específico de la microapp cuando sea "live" */}
+          </div>
         )}
-      </div>
-
-      <h1 className="text-3xl font-bold text-foreground sm:text-4xl mb-4">
-        {tool.name}
-      </h1>
-      
-      <p className="text-lg text-foreground-muted mb-12">
-        {tool.description}
-      </p>
-
-      <div className="rounded-xl border border-dashed border-border bg-gray-50/50 p-12">
-        <h2 className="text-xl font-semibold text-foreground mb-2">
-          Esta herramienta está en construcción
-        </h2>
-        <p className="text-foreground-muted">
-          Estamos trabajando para tenerla lista pronto. ¡Volvé a visitarnos!
-        </p>
-      </div>
-    </div>
+      </ToolPageLayout>
+    </>
   )
 }
