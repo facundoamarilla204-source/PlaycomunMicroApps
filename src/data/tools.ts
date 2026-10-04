@@ -12,13 +12,19 @@ export type Tool = {
   seo?: {
     title: string
     description: string
-    h1: string
     intro: string
+    h1?: string
     keywords?: string[]
   }
+  customUrl?: string
   faqs?: { question: string; answer: string }[]
   related?: string[]
 }
+
+export function getToolUrl(tool: Tool): string {
+  return tool.customUrl || `/herramientas/${tool.slug}`
+}
+
 
 const NOW = new Date().toISOString()
 
@@ -130,24 +136,91 @@ export const tools: Tool[] = [
     name: "Calculadora de IVA",
     category: "calculadoras",
     tier: "free",
-    description: "Calculá el IVA y el precio final con o sin impuestos.",
+    description: "Calculá el IVA, agregalo a un precio o desglosalo de un importe final.",
     icon: "Receipt",
-    status: "soon",
+    status: "live",
     featured: true,
-    keywords: ["iva", "impuesto", "precio", "afip", "factura"],
+    keywords: ["calculadora de IVA", "calcular IVA", "calculadora IVA Argentina", "calcular IVA online", "calcular precio con IVA", "calcular precio sin IVA", "quitar IVA", "agregar IVA", "IVA 21%", "calcular IVA incluido", "impuestos", "precios"],
     updatedAt: NOW,
+    customUrl: "/calculadora-iva",
+    seo: {
+      title: "Calculadora de IVA Argentina: Agregar o quitar IVA",
+      description: "Calculadora de IVA gratuita para Argentina. Agregá IVA a un precio neto o desglosá el IVA de un precio final. Tasas del 21%, 10,5% y 27%.",
+      h1: "Calculadora de IVA",
+      intro: "Calculá fácilmente el IVA de cualquier producto o servicio. Agregá IVA a un precio sin impuestos o desglosá el IVA de un precio final."
+    },
+    faqs: [
+      {
+        question: "¿Cómo se calcula el IVA?",
+        answer: "Para calcular el IVA a partir de un precio neto, multiplicás el precio por la alícuota dividida por 100. Por ejemplo, para un IVA del 21% sobre $1000, hacés $1000 × 0,21 = $210."
+      },
+      {
+        question: "¿Cómo agregar IVA a un precio?",
+        answer: "Para agregar IVA a un precio neto (sin IVA), multiplicás el precio por (1 + alícuota/100). Para el 21%, sería multiplicar tu precio neto por 1,21."
+      },
+      {
+        question: "¿Cómo sacar el IVA de un precio final?",
+        answer: "Para desglosar o quitar el IVA de un precio que ya lo tiene incluido, debés dividir ese precio final por (1 + alícuota/100). Para el 21%, dividís el precio final por 1,21 y obtendrás el precio neto."
+      },
+      {
+        question: "¿Cuál es el IVA del 21%?",
+        answer: "El 21% es la alícuota general del Impuesto al Valor Agregado en Argentina. Aplica a la mayoría de los bienes y servicios, salvo que la ley establezca una tasa diferencial (como el 10,5% o el 27%)."
+      },
+      {
+        question: "¿Cómo calcular un precio sin IVA?",
+        answer: "Usá la opción 'Quitar IVA' de nuestra calculadora. Ingresá el precio final que incluye impuestos, seleccioná la alícuota correspondiente y la herramienta te mostrará el precio neto (sin IVA)."
+      },
+      {
+        question: "¿La calculadora sirve para Argentina?",
+        answer: "Sí, esta calculadora está especialmente diseñada con las tasas vigentes en Argentina, incluyendo el 21% (general), 10,5% (reducida) y 27% (incrementada para ciertos servicios)."
+      }
+    ],
+    related: ["calculadora-precios", "generador-presupuestos"]
   },
   {
     slug: "calculadora-rentabilidad",
     name: "Calculadora de rentabilidad",
     category: "calculadoras",
-    tier: "pro",
-    description: "Conocé la rentabilidad de tu negocio o producto.",
+    tier: "free",
+    description: "Calculá ganancias, margen y rentabilidad de tus productos o servicios.",
     icon: "TrendingUp",
-    status: "soon",
+    status: "live",
     featured: true,
-    keywords: ["rentabilidad", "roi", "ganancia", "margen", "negocio"],
-    updatedAt: NOW,
+    keywords: ["rentabilidad", "ganancia", "margen", "markup", "ventas", "calculadora de rentabilidad", "calcular rentabilidad", "calculadora de rentabilidad de un producto", "calcular margen de ganancia", "margen de rentabilidad", "calcular markup", "ganancia sobre ventas", "rentabilidad de un producto"],
+    updatedAt: "2026-10-03T00:00:00.000Z",
+    customUrl: "/calculadora-rentabilidad",
+    seo: {
+      title: "Calculadora de rentabilidad: margen, markup y ganancia",
+      description: "Calculá cuánto ganás con tus ventas. Conocé la diferencia entre margen y markup, y calculá el precio ideal de venta para asegurar tu rentabilidad.",
+      intro: "Ingresá tus costos y el precio de venta para conocer tu rentabilidad real. También podés calcular el precio a cobrar según el margen de ganancia que desees."
+    },
+    faqs: [
+      {
+        question: "¿Cómo se calcula la rentabilidad de un producto?",
+        answer: "La rentabilidad se calcula restando el costo total del producto al precio de venta para obtener la ganancia, y luego dividiendo esa ganancia por el precio de venta (multiplicado por 100) para obtener el porcentaje de margen."
+      },
+      {
+        question: "¿Cuál es la diferencia entre margen y markup?",
+        answer: "El margen es el porcentaje de tu precio de venta que representa tu ganancia. El markup es el porcentaje que le agregás a tu costo original para llegar a ese precio de venta."
+      },
+      {
+        question: "¿Cómo calcular la ganancia de una venta?",
+        answer: "Simplemente restá el costo del producto al precio al que lo vendiste. La diferencia en pesos es tu ganancia neta por esa venta."
+      },
+      {
+        question: "¿Cómo calcular el precio de venta con un margen deseado?",
+        answer: "Dividí tu costo por (1 - el margen deseado en decimal). Por ejemplo, si tu costo es $600 y querés un margen del 40% (0.4), el cálculo es: 600 / (1 - 0.4) = $1.000."
+      },
+      {
+        question: "¿Un margen del 40% significa agregar 40% al costo?",
+        answer: "No. Agregar un porcentaje al costo se llama markup. Si a un costo de $600 le agregás un 40%, vendés a $840 y ganás $240, lo que representa un margen real del 28,5% sobre la venta, no del 40%."
+      },
+      {
+        question: "¿Cómo calcular la rentabilidad de varios productos?",
+        answer: "En nuestra calculadora podés ingresar la cantidad de unidades vendidas. La herramienta multiplicará automáticamente los costos e ingresos para mostrarte la ganancia total de la venta."
+      }
+    ],
+    related: ["calculadora-precios", "generador-presupuestos", "calculadora-iva"]
   },
   {
     slug: "generador-qr",
@@ -178,12 +251,46 @@ export const tools: Tool[] = [
     name: "Calculadora de 1RM",
     category: "calculadoras",
     tier: "free",
-    description: "Conocé tu fuerza máxima en un ejercicio.",
+    description: "Calculá tu 1RM estimado y consultá cargas orientativas según distintos porcentajes.",
     icon: "Dumbbell",
-    status: "soon",
+    status: "live",
     featured: true,
-    keywords: ["fuerza", "1rm", "gym", "gimnasio", "ejercicio", "pesas"],
-    updatedAt: NOW,
+    keywords: ["calculadora 1rm", "calcular 1rm", "calcular repetición máxima", "1rm calculadora", "one rep max", "calculadora de rm", "calcular rm", "1rm fórmula", "fuerza", "gym", "gimnasio", "pesas"],
+    updatedAt: "2026-10-03T00:00:00.000Z",
+    customUrl: "/calculadora-1rm",
+    seo: {
+      title: "Calculadora de 1RM: Calculá tu repetición máxima",
+      description: "Calculá gratis tu 1RM (One Rep Max) estimado. Obtené tu repetición máxima y una tabla de porcentajes de carga para tu entrenamiento de fuerza.",
+      h1: "Calculadora de 1RM",
+      intro: "Ingresá el peso que levantaste y las repeticiones que hiciste para estimar tu repetición máxima (1RM) y ver tu tabla de porcentajes."
+    },
+    faqs: [
+      {
+        question: "¿Qué es el 1RM?",
+        answer: "El 1RM (One Rep Max) es el peso máximo que una persona puede levantar en una única repetición de un ejercicio determinado, con técnica correcta."
+      },
+      {
+        question: "¿Cómo se calcula el 1RM?",
+        answer: "Existen diferentes fórmulas matemáticas (como Epley, Brzycki o Lander) que estiman el peso máximo a partir de las repeticiones realizadas con un peso submáximo."
+      },
+      {
+        question: "¿Qué fórmula utiliza la calculadora de 1RM?",
+        answer: "Por defecto utilizamos la fórmula de Epley, que es una de las más precisas y utilizadas a nivel mundial. También podés elegir otras fórmulas como Brzycki o Lander desde las opciones."
+      },
+      {
+        question: "¿El 1RM calculado es exacto?",
+        answer: "No, es una estimación matemática. El rendimiento real puede variar según tu nivel de experiencia, fatiga, técnica y la naturaleza del ejercicio."
+      },
+      {
+        question: "¿Para qué sirven los porcentajes del 1RM?",
+        answer: "Conocer tus porcentajes te permite planificar entrenamientos. Por ejemplo, para ganar hipertrofia muscular a menudo se entrena entre el 65% y el 85% del 1RM, mientras que para fuerza máxima se usan cargas del 85% al 100%."
+      },
+      {
+        question: "¿Tengo que probar mi 1RM real para utilizar la calculadora?",
+        answer: "Justamente no. La ventaja de la calculadora es que podés estimar tu fuerza máxima usando un peso que podés levantar varias veces, evitando el riesgo de lesión de levantar una carga límite real."
+      }
+    ],
+    related: ["calculadora-calorias"]
   },
   {
     slug: "conversor-unidades",
@@ -258,13 +365,47 @@ export const tools: Tool[] = [
     slug: "calculadora-cuotas",
     name: "Calculadora de cuotas",
     category: "calculadoras",
-    tier: "pro",
-    description: "Simulá cuotas y compará opciones de financiamiento.",
+    tier: "free",
+    description: "Calculá cuotas con o sin interés y conocé cuánto vas a pagar en total.",
     icon: "CreditCard",
-    status: "soon",
+    status: "live",
     featured: true,
-    keywords: ["cuotas", "interes", "prestamo", "financiamiento", "tarjeta", "credito"],
-    updatedAt: NOW,
+    keywords: ["calculadora de cuotas", "calcular cuotas", "calculadora de cuotas con interés", "calculadora de cuotas sin interés", "calcular cuota mensual", "calcular cuotas de una compra", "calculadora de financiación", "calcular financiación", "cuotas", "interés", "préstamo"],
+    updatedAt: "2026-10-03T00:00:00.000Z",
+    customUrl: "/calculadora-cuotas",
+    seo: {
+      title: "Calculadora de cuotas con o sin interés: Simulá tu financiación",
+      description: "Calculadora de cuotas online gratis. Calculá el valor mensual, los intereses y el total a pagar de una compra financiada en cuotas fijas.",
+      h1: "Calculadora de cuotas",
+      intro: "Simulá tu financiación de forma rápida. Conocé cuánto vas a pagar por mes y el total de intereses de tu compra."
+    },
+    faqs: [
+      {
+        question: "¿Cómo se calcula una cuota?",
+        answer: "Para cuotas sin interés, simplemente se divide el monto total por la cantidad de cuotas. Si hay interés, se aplica la fórmula del sistema de amortización francés sobre el capital, considerando la tasa periódica."
+      },
+      {
+        question: "¿Cómo calcular cuotas con interés?",
+        answer: "Debes ingresar el monto a financiar, la cantidad de cuotas, el tipo de tasa (mensual o anual) y su porcentaje. La calculadora aplicará el interés sobre saldos usando el sistema francés para darte una cuota fija mensual."
+      },
+      {
+        question: "¿Cómo calcular cuotas sin interés?",
+        answer: "Seleccioná la opción 'Sin interés' en la calculadora. Solo necesitás ingresar el monto total y en cuántos meses querés pagar; la herramienta dividirá el monto exacto."
+      },
+      {
+        question: "¿Cómo saber cuánto voy a pagar en total?",
+        answer: "El resultado te mostrará el 'Total pagado', que es la suma de todas tus cuotas. Si es con interés, este total será mayor al monto original."
+      },
+      {
+        question: "¿Cómo calcular cuánto pago de intereses?",
+        answer: "Nuestra herramienta desglosa automáticamente el 'Total de intereses', que surge de restarle el monto financiado inicial al total final que terminás pagando."
+      },
+      {
+        question: "¿La calculadora sirve para una financiación mensual?",
+        answer: "Sí, asume por defecto pagos mensuales. Si tenés una tasa anual, la convierte automáticamente a tasa mensual para realizar el cálculo de la cuota correcta."
+      }
+    ],
+    related: ["calculadora-iva", "calculadora-rentabilidad", "calculadora-precios"]
   },
   {
     slug: "control-stock",
@@ -283,11 +424,53 @@ export const tools: Tool[] = [
     name: "Calculadora de calorías",
     category: "calculadoras",
     tier: "free",
-    description: "Conocé cuántas calorías necesitás según tu objetivo.",
+    description: "Calculá tu metabolismo basal y estimá las calorías que necesitás por día.",
     icon: "Flame",
-    status: "soon",
+    status: "live",
     featured: true,
-    keywords: ["calorias", "dieta", "nutricion", "macros", "tdee"],
-    updatedAt: NOW,
+    keywords: ["calculadora de calorias", "calcular calorias", "calculadora de calorias diarias", "calcular calorias diarias", "cuantas calorias necesito", "calorias de mantenimiento", "calculadora de calorias para bajar de peso", "calculadora TDEE", "calcular metabolismo basal", "calculadora BMR", "nutricion", "BMR", "TDEE", "metabolismo"],
+    updatedAt: "2026-10-04T00:00:00.000Z",
+    customUrl: "/calculadora-calorias",
+    seo: {
+      title: "Calculadora de Calorías: Calculá tu TDEE y BMR",
+      description: "Calculá cuántas calorías necesitás por día. Obtené tu metabolismo basal (BMR) y gasto energético (TDEE) para mantener, perder o ganar peso.",
+      h1: "Calculadora de Calorías",
+      intro: "Ingresá tus datos para conocer tu gasto energético diario (TDEE) y tu metabolismo basal (BMR)."
+    },
+    faqs: [
+      {
+        question: "¿Cómo calcular cuántas calorías necesito al día?",
+        answer: "Para calcular tus necesidades calóricas diarias, primero se estima tu metabolismo basal (las calorías que tu cuerpo usa en reposo) y luego se multiplica por un factor correspondiente a tu nivel de actividad física diaria."
+      },
+      {
+        question: "¿Qué es el metabolismo basal (BMR)?",
+        answer: "El metabolismo basal o Tasa Metabólica Basal (BMR) es la cantidad mínima de energía (calorías) que tu cuerpo necesita para mantener las funciones vitales en reposo (respiración, circulación, temperatura, etc)."
+      },
+      {
+        question: "¿Qué diferencia hay entre BMR y TDEE?",
+        answer: "El BMR son las calorías que quemarías si estuvieras todo el día en cama sin moverte. El TDEE (Gasto Energético Diario Total) suma al BMR las calorías que quemás por tu estilo de vida, trabajo y ejercicio."
+      },
+      {
+        question: "¿Cómo calcular las calorías de mantenimiento?",
+        answer: "Las calorías de mantenimiento son exactamente tu TDEE. Si consumís esa cantidad de calorías diariamente, tu peso debería mantenerse estable en el tiempo."
+      },
+      {
+        question: "¿Las calorías calculadas son exactas?",
+        answer: "No, son estimaciones matemáticas (basadas en la fórmula de Mifflin-St Jeor). Tu consumo real puede variar según tu composición corporal (porcentaje de grasa vs músculo), genética y variaciones metabólicas."
+      },
+      {
+        question: "¿La actividad física cambia el resultado?",
+        answer: "Sí, significativamente. Mientras mayor sea tu actividad diaria y ejercicio, mayor será el factor multiplicador aplicado a tu metabolismo basal, requiriendo más calorías para mantener tu peso."
+      },
+      {
+        question: "¿La calculadora sirve para bajar de peso?",
+        answer: "Sí. Una vez que conocés tus calorías de mantenimiento, la calculadora te ofrece una estimación orientativa de cuántas calorías deberías consumir para lograr un déficit calórico (necesario para perder peso)."
+      },
+      {
+        question: "¿Qué fórmula utiliza la calculadora?",
+        answer: "Utilizamos la fórmula de Mifflin-St Jeor, que actualmente se considera una de las ecuaciones más precisas para estimar el metabolismo basal en la población general."
+      }
+    ],
+    related: ["calculadora-1rm", "calculadora-rentabilidad"]
   },
 ]

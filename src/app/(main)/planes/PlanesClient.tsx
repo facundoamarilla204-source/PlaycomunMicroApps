@@ -39,7 +39,7 @@ export default function PlanesClient({ isAuthenticated, isPro }: PlanesClientPro
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
-  }
+  } as any
 
   return (
     <div className="min-h-screen bg-[#fcfcfd] relative overflow-hidden py-12 sm:py-24">

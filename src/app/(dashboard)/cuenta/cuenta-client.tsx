@@ -29,7 +29,7 @@ export default function CuentaClient({ email, name, initial, logoutAction, updat
   const itemVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 350, damping: 25 } }
-  }
+  } as any
 
   return (
     <div className="min-h-screen w-full bg-[#fcfcfd] relative overflow-hidden pb-20 pt-8">
@@ -115,7 +115,7 @@ export default function CuentaClient({ email, name, initial, logoutAction, updat
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {favorites.slice(0, 4).map((tool, i) => {
                     return (
-                      <Link key={i} href={`/herramientas/${tool.slug}`} className="flex flex-col gap-3 p-5 rounded-2xl bg-slate-50/50 hover:bg-brand/5 border border-transparent hover:border-brand/10 transition-all duration-300 group/card">
+                      <Link key={i} href={`${tool.customUrl || `/herramientas/${tool.slug}`}`} className="flex flex-col gap-3 p-5 rounded-2xl bg-slate-50/50 hover:bg-brand/5 border border-transparent hover:border-brand/10 transition-all duration-300 group/card">
                         <div className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-slate-500 group-hover/card:text-brand group-hover/card:scale-110 transition-all duration-300">
                           {/* If you have dynamic icons mapped, use them here. Using generic for now */}
                           <Calculator className="w-5 h-5" />

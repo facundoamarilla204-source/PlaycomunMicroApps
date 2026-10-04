@@ -2,7 +2,7 @@ import React from "react"
 import { Tool, tools } from "@/data/tools"
 import { Breadcrumbs, BreadcrumbItem } from "@/components/seo/Breadcrumbs"
 import ToolCard from "@/components/tools/ToolCard"
-import { Container } from "@/components/ui/Container" // Assuming this exists, I'll check/fix if it fails
+
 
 type ToolPageLayoutProps = {
   tool: Tool
@@ -19,7 +19,7 @@ export function ToolPageLayout({ tool, children, content }: ToolPageLayoutProps)
 
   const breadcrumbItems: BreadcrumbItem[] = [
     { label: "Herramientas", href: "/herramientas" },
-    { label: categoryName },
+    { label: categoryName, href: `/herramientas?categoria=${tool.category}` },
     { label: tool.name },
   ]
 

@@ -2,10 +2,27 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, Calculator, FileText, Receipt, TrendingUp, QrCode, Wallet, Dumbbell, ArrowRightLeft, Banknote, CreditCard, Boxes, Flame, Sparkles, Wrench, LucideIcon } from "lucide-react"
 import { tools } from "@/data/tools"
 import { getCategories } from "@/data/categories"
 import ToolCard from "@/components/tools/ToolCard"
+
+const iconMap: Record<string, LucideIcon> = {
+  Calculator,
+  FileText,
+  Receipt,
+  TrendingUp,
+  QrCode,
+  Wallet,
+  Dumbbell,
+  ArrowRightLeft,
+  Banknote,
+  CreditCard,
+  Boxes,
+  Flame,
+  Sparkles,
+  Wrench
+}
 
 interface ToolGridProps {
   initialCategory?: string
@@ -84,12 +101,22 @@ export default function ToolGrid({ initialCategory = "todas", initialQuery = "",
 
       {/* Favorites Row (only if no query) */}
       {!query && favoriteTools.length > 0 && (
-        <div className="mb-16">
-          <h2 className="mb-6 text-2xl font-bold text-foreground">Mis favoritas</h2>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {favoriteTools.map((tool) => (
-              <ToolCard key={tool.slug} tool={tool} isFavorite={true} />
-            ))}
+        <div className="mb-12">
+          <h2 className="mb-4 text-xl font-bold text-foreground">Tus atajos</h2>
+          <div className="flex flex-wrap gap-3">
+            {favoriteTools.map((tool) => {
+              const Icon = iconMap[tool.icon] || Calculator;
+              return (
+                <Link 
+                  key={tool.slug}
+                  href={`${tool.customUrl || `/herramientas/${tool.slug}`}`}
+                  className="group flex items-center gap-2 rounded-xl border border-border bg-white px-4 py-2.5 text-sm font-semibold transition-all hover:border-brand/40 hover:bg-[#F9F9FB] hover:shadow-sm"
+                >
+                  <Icon className="h-4 w-4 text-brand" />
+                  <span className="text-foreground group-hover:text-brand transition-colors">{tool.name}</span>
+                </Link>
+              );
+            })}
           </div>
         </div>
       )}

@@ -60,7 +60,7 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
                           {catTools.map((tool) => (
                             <Link
                               key={tool.slug}
-                              href={`/herramientas/${tool.slug}`}
+                              href={`${tool.customUrl || `/herramientas/${tool.slug}`}`}
                               className="block rounded-xl px-4 py-2.5 text-sm font-medium text-foreground/80 transition-all hover:bg-brand-light/50 hover:text-brand"
                             >
                               {tool.name}
@@ -85,32 +85,18 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
             </button>
             
             <div className="hidden md:flex items-center gap-4">
-              {!isPro && (
-                <Link href="/planes" className={isAuthenticated 
-                  ? "flex items-center gap-2 bg-gradient-to-r from-amber-400 to-amber-500 text-amber-950 px-5 py-2 rounded-full font-bold shadow-sm shadow-amber-400/20 hover:shadow-md hover:scale-105 active:scale-95 transition-all"
-                  : "rounded-full px-4 py-2 text-base font-semibold text-foreground/80 transition-colors hover:bg-gray-100 hover:text-foreground"
-                }>
-                  {isAuthenticated ? (
-                    <>
-                      <Sparkles className="w-4 h-4" />
-                      Hacerse Pro
-                    </>
-                  ) : 'Planes'}
-                </Link>
-              )}
+
               {isAuthenticated && (
                 <Link href="/favoritas" className="rounded-full px-4 py-2 text-base font-semibold text-brand transition-colors hover:bg-brand-light">
                   Favoritas
                 </Link>
               )}
-              <a 
-                href={siteConfig.mainSiteUrl}
-                target="_blank"
-                rel="noreferrer"
+              <Link 
+                href="/#servicios"
                 className="rounded-full px-4 py-2 text-base font-semibold text-foreground/80 transition-colors hover:bg-gray-100 hover:text-foreground"
               >
                 Servicios
-              </a>
+              </Link>
               {isAuthenticated ? (
                 <div className="relative">
                   <button
@@ -205,23 +191,7 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
                   </Link>
                 ))}
               </div>
-              {!isPro && (
-                <Link 
-                  href="/planes" 
-                  onClick={() => setMobileMenuOpen(false)} 
-                  className={isAuthenticated
-                    ? "flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-amber-400 to-amber-500 text-amber-950 rounded-xl font-bold mt-2 shadow-sm mb-4"
-                    : "block py-2 font-medium border-b border-border pb-4 text-foreground hover:text-brand"
-                  }
-                >
-                  {isAuthenticated ? (
-                    <>
-                      <Sparkles className="w-5 h-5" />
-                      Hacerse Pro
-                    </>
-                  ) : 'Planes'}
-                </Link>
-              )}
+
               {isAuthenticated && (
                 <Link href="/favoritas" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-foreground font-medium border-b border-border pb-4">
                   Favoritas
@@ -255,14 +225,13 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
                     </Link>
                   </>
                 )}
-                <a 
-                  href={siteConfig.mainSiteUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-center text-sm text-foreground-subtle mt-4"
+                <Link 
+                  href="/#servicios"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-center text-sm font-medium text-foreground-subtle hover:text-brand mt-4"
                 >
                   Ver Servicios PlayComun
-                </a>
+                </Link>
               </div>
             </div>
           </div>

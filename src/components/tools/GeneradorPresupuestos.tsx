@@ -479,7 +479,7 @@ export function GeneradorPresupuestos() {
               className="w-full min-w-[600px] max-w-[794px] relative bg-white shadow-xl print:shadow-none"
               style={{ 
                 minHeight: "1050px",
-                fontFamily: "'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+                fontFamily: "var(--font-sans), sans-serif",
                 color: "#1f2937",
               }}
             >
@@ -492,7 +492,7 @@ export function GeneradorPresupuestos() {
                   ) : (
                     <div className="h-4"></div> /* Espaciador si no hay logo */
                   )}
-                  <h1 className="text-4xl font-black mb-2 tracking-tight" style={{ color: "#111827" }}>Presupuesto</h1>
+                  <h1 className="text-4xl font-black mb-2" style={{ color: "#111827" }}>Presupuesto</h1>
                   <p className="font-semibold text-sm" style={{ color: "#6b7280" }}>{presupuesto.info.numero}</p>
                 </div>
                 

@@ -31,7 +31,7 @@ export default function ToolCard({ tool, isFavorite = false }: ToolCardProps) {
 
   return (
     <Link 
-      href={`/herramientas/${tool.slug}`}
+      href={`${tool.customUrl || `/herramientas/${tool.slug}`}`}
       className="group relative flex flex-col rounded-2xl border border-border/80 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-brand/40 hover:shadow-xl hover:shadow-brand/5 active:scale-[0.98]"
     >
       <FavoriteButton toolSlug={tool.slug} initialIsFavorite={isFavorite} />
@@ -52,7 +52,7 @@ export default function ToolCard({ tool, isFavorite = false }: ToolCardProps) {
         <Icon className="h-6 w-6" />
       </div>
 
-      <h3 className="mb-2 text-xl font-bold tracking-tight text-foreground group-hover:text-brand transition-colors">
+      <h3 className="mb-2 text-xl font-bold text-foreground group-hover:text-brand transition-colors">
         {tool.name}
       </h3>
       

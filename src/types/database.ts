@@ -1,1 +1,508 @@
-{"types":"export type Json =\n  | string\n  | number\n  | boolean\n  | null\n  | { [key: string]: Json | undefined }\n  | Json[]\n\nexport type Database = {\n  // Allows to automatically instantiate createClient with right options\n  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)\n  __InternalSupabase: {\n    PostgrestVersion: \"14.18\"\n  }\n  public: {\n    Tables: {\n      favorites: {\n        Row: {\n          created_at: string\n          id: string\n          tool_slug: string\n          user_id: string\n        }\n        Insert: {\n          created_at?: string\n          id?: string\n          tool_slug: string\n          user_id: string\n        }\n        Update: {\n          created_at?: string\n          id?: string\n          tool_slug?: string\n          user_id?: string\n        }\n        Relationships: []\n      }\n      features: {\n        Row: {\n          code: string\n          created_at: string\n          description: string | null\n          id: string\n          name: string\n        }\n        Insert: {\n          code: string\n          created_at?: string\n          description?: string | null\n          id?: string\n          name: string\n        }\n        Update: {\n          code?: string\n          created_at?: string\n          description?: string | null\n          id?: string\n          name?: string\n        }\n        Relationships: []\n      }\n      payments: {\n        Row: {\n          amount: number\n          created_at: string\n          currency: string\n          id: string\n          paid_at: string | null\n          payment_method: string | null\n          provider: string | null\n          provider_payment_id: string | null\n          status: Database[\"public\"][\"Enums\"][\"payment_status\"]\n          subscription_id: string | null\n          updated_at: string\n          user_id: string\n        }\n        Insert: {\n          amount: number\n          created_at?: string\n          currency?: string\n          id?: string\n          paid_at?: string | null\n          payment_method?: string | null\n          provider?: string | null\n          provider_payment_id?: string | null\n          status?: Database[\"public\"][\"Enums\"][\"payment_status\"]\n          subscription_id?: string | null\n          updated_at?: string\n          user_id: string\n        }\n        Update: {\n          amount?: number\n          created_at?: string\n          currency?: string\n          id?: string\n          paid_at?: string | null\n          payment_method?: string | null\n          provider?: string | null\n          provider_payment_id?: string | null\n          status?: Database[\"public\"][\"Enums\"][\"payment_status\"]\n          subscription_id?: string | null\n          updated_at?: string\n          user_id?: string\n        }\n        Relationships: [\n          {\n            foreignKeyName: \"payments_subscription_id_fkey\"\n            columns: [\"subscription_id\"]\n            isOneToOne: false\n            referencedRelation: \"subscriptions\"\n            referencedColumns: [\"id\"]\n          },\n        ]\n      }\n      plans: {\n        Row: {\n          billing_interval: string | null\n          code: string\n          created_at: string\n          currency: string\n          description: string | null\n          id: string\n          is_active: boolean\n          name: string\n          price: number\n          provider: string | null\n          provider_plan_id: string | null\n          trial_days: number\n          updated_at: string\n        }\n        Insert: {\n          billing_interval?: string | null\n          code: string\n          created_at?: string\n          currency?: string\n          description?: string | null\n          id?: string\n          is_active?: boolean\n          name: string\n          price?: number\n          provider?: string | null\n          provider_plan_id?: string | null\n          trial_days?: number\n          updated_at?: string\n        }\n        Update: {\n          billing_interval?: string | null\n          code?: string\n          created_at?: string\n          currency?: string\n          description?: string | null\n          id?: string\n          is_active?: boolean\n          name?: string\n          price?: number\n          provider?: string | null\n          provider_plan_id?: string | null\n          trial_days?: number\n          updated_at?: string\n        }\n        Relationships: []\n      }\n      profiles: {\n        Row: {\n          avatar_url: string | null\n          created_at: string\n          full_name: string | null\n          id: string\n          role: string\n          updated_at: string\n        }\n        Insert: {\n          avatar_url?: string | null\n          created_at?: string\n          full_name?: string | null\n          id: string\n          role?: string\n          updated_at?: string\n        }\n        Update: {\n          avatar_url?: string | null\n          created_at?: string\n          full_name?: string | null\n          id?: string\n          role?: string\n          updated_at?: string\n        }\n        Relationships: []\n      }\n      subscriptions: {\n        Row: {\n          cancelled_at: string | null\n          created_at: string\n          current_period_end: string | null\n          current_period_start: string | null\n          id: string\n          plan_id: string\n          provider: string | null\n          provider_plan_id: string | null\n          provider_status: string | null\n          provider_subscription_id: string | null\n          status: Database[\"public\"][\"Enums\"][\"subscription_status\"]\n          trial_end_at: string | null\n          trial_start_at: string | null\n          updated_at: string\n          user_id: string\n        }\n        Insert: {\n          cancelled_at?: string | null\n          created_at?: string\n          current_period_end?: string | null\n          current_period_start?: string | null\n          id?: string\n          plan_id: string\n          provider?: string | null\n          provider_plan_id?: string | null\n          provider_status?: string | null\n          provider_subscription_id?: string | null\n          status?: Database[\"public\"][\"Enums\"][\"subscription_status\"]\n          trial_end_at?: string | null\n          trial_start_at?: string | null\n          updated_at?: string\n          user_id: string\n        }\n        Update: {\n          cancelled_at?: string | null\n          created_at?: string\n          current_period_end?: string | null\n          current_period_start?: string | null\n          id?: string\n          plan_id?: string\n          provider?: string | null\n          provider_plan_id?: string | null\n          provider_status?: string | null\n          provider_subscription_id?: string | null\n          status?: Database[\"public\"][\"Enums\"][\"subscription_status\"]\n          trial_end_at?: string | null\n          trial_start_at?: string | null\n          updated_at?: string\n          user_id?: string\n        }\n        Relationships: [\n          {\n            foreignKeyName: \"subscriptions_plan_id_fkey\"\n            columns: [\"plan_id\"]\n            isOneToOne: false\n            referencedRelation: \"plans\"\n            referencedColumns: [\"id\"]\n          },\n        ]\n      }\n      tool_features: {\n        Row: {\n          created_at: string\n          feature_id: string\n          id: string\n          is_premium: boolean\n          tool_slug: string\n        }\n        Insert: {\n          created_at?: string\n          feature_id: string\n          id?: string\n          is_premium?: boolean\n          tool_slug: string\n        }\n        Update: {\n          created_at?: string\n          feature_id?: string\n          id?: string\n          is_premium?: boolean\n          tool_slug?: string\n        }\n        Relationships: [\n          {\n            foreignKeyName: \"tool_features_feature_id_fkey\"\n            columns: [\"feature_id\"]\n            isOneToOne: false\n            referencedRelation: \"features\"\n            referencedColumns: [\"id\"]\n          },\n        ]\n      }\n      webhook_events: {\n        Row: {\n          created_at: string\n          error: string | null\n          event_id: string\n          event_type: string\n          id: string\n          payload: Json\n          processed: boolean\n          processed_at: string | null\n          provider: string\n        }\n        Insert: {\n          created_at?: string\n          error?: string | null\n          event_id: string\n          event_type: string\n          id?: string\n          payload?: Json\n          processed?: boolean\n          processed_at?: string | null\n          provider: string\n        }\n        Update: {\n          created_at?: string\n          error?: string | null\n          event_id?: string\n          event_type?: string\n          id?: string\n          payload?: Json\n          processed?: boolean\n          processed_at?: string | null\n          provider?: string\n        }\n        Relationships: []\n      }\n    }\n    Views: {\n      [_ in never]: never\n    }\n    Functions: {\n      can_access_feature: {\n        Args: {\n          check_user_id: string\n          p_feature_code: string\n          p_tool_slug: string\n        }\n        Returns: boolean\n      }\n      get_tool_features_with_access: {\n        Args: { check_user_id: string; p_tool_slug: string }\n        Returns: {\n          feature_code: string\n          feature_name: string\n          has_access: boolean\n          is_premium: boolean\n        }[]\n      }\n      is_feature_premium: {\n        Args: { p_feature_code: string; p_tool_slug: string }\n        Returns: boolean\n      }\n      is_pro_user: { Args: { check_user_id: string }; Returns: boolean }\n    }\n    Enums: {\n      payment_status:\n        | \"pending\"\n        | \"approved\"\n        | \"rejected\"\n        | \"refunded\"\n        | \"cancelled\"\n        | \"in_process\"\n      subscription_status:\n        | \"trialing\"\n        | \"active\"\n        | \"past_due\"\n        | \"paused\"\n        | \"cancelled\"\n        | \"expired\"\n    }\n    CompositeTypes: {\n      [_ in never]: never\n    }\n  }\n}\n\ntype DatabaseWithoutInternals = Omit<Database, \"__InternalSupabase\">\n\ntype DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, \"public\">]\n\nexport type Tables<\n  DefaultSchemaTableNameOrOptions extends\n    | keyof (DefaultSchema[\"Tables\"] & DefaultSchema[\"Views\"])\n    | { schema: keyof DatabaseWithoutInternals },\n  TableName extends (DefaultSchemaTableNameOrOptions extends {\n    schema: keyof DatabaseWithoutInternals\n  }\n    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions[\"schema\"]][\"Tables\"] &\n        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions[\"schema\"]][\"Views\"])\n    : never) = never,\n> = DefaultSchemaTableNameOrOptions extends {\n  schema: keyof DatabaseWithoutInternals\n}\n  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions[\"schema\"]][\"Tables\"] &\n      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions[\"schema\"]][\"Views\"])[TableName] extends {\n      Row: infer R\n    }\n    ? R\n    : never\n  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema[\"Tables\"] &\n        DefaultSchema[\"Views\"])\n    ? (DefaultSchema[\"Tables\"] &\n        DefaultSchema[\"Views\"])[DefaultSchemaTableNameOrOptions] extends {\n        Row: infer R\n      }\n      ? R\n      : never\n    : never\n\nexport type TablesInsert<\n  DefaultSchemaTableNameOrOptions extends\n    | keyof DefaultSchema[\"Tables\"]\n    | { schema: keyof DatabaseWithoutInternals },\n  TableName extends (DefaultSchemaTableNameOrOptions extends {\n    schema: keyof DatabaseWithoutInternals\n  }\n    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions[\"schema\"]][\"Tables\"]\n    : never) = never,\n> = DefaultSchemaTableNameOrOptions extends {\n  schema: keyof DatabaseWithoutInternals\n}\n  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions[\"schema\"]][\"Tables\"][TableName] extends {\n      Insert: infer I\n    }\n    ? I\n    : never\n  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema[\"Tables\"]\n    ? DefaultSchema[\"Tables\"][DefaultSchemaTableNameOrOptions] extends {\n        Insert: infer I\n      }\n      ? I\n      : never\n    : never\n\nexport type TablesUpdate<\n  DefaultSchemaTableNameOrOptions extends\n    | keyof DefaultSchema[\"Tables\"]\n    | { schema: keyof DatabaseWithoutInternals },\n  TableName extends (DefaultSchemaTableNameOrOptions extends {\n    schema: keyof DatabaseWithoutInternals\n  }\n    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions[\"schema\"]][\"Tables\"]\n    : never) = never,\n> = DefaultSchemaTableNameOrOptions extends {\n  schema: keyof DatabaseWithoutInternals\n}\n  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions[\"schema\"]][\"Tables\"][TableName] extends {\n      Update: infer U\n    }\n    ? U\n    : never\n  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema[\"Tables\"]\n    ? DefaultSchema[\"Tables\"][DefaultSchemaTableNameOrOptions] extends {\n        Update: infer U\n      }\n      ? U\n      : never\n    : never\n\nexport type Enums<\n  DefaultSchemaEnumNameOrOptions extends\n    | keyof DefaultSchema[\"Enums\"]\n    | { schema: keyof DatabaseWithoutInternals },\n  EnumName extends (DefaultSchemaEnumNameOrOptions extends {\n    schema: keyof DatabaseWithoutInternals\n  }\n    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions[\"schema\"]][\"Enums\"]\n    : never) = never,\n> = DefaultSchemaEnumNameOrOptions extends {\n  schema: keyof DatabaseWithoutInternals\n}\n  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions[\"schema\"]][\"Enums\"][EnumName]\n  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema[\"Enums\"]\n    ? DefaultSchema[\"Enums\"][DefaultSchemaEnumNameOrOptions]\n    : never\n\nexport type CompositeTypes<\n  PublicCompositeTypeNameOrOptions extends\n    | keyof DefaultSchema[\"CompositeTypes\"]\n    | { schema: keyof DatabaseWithoutInternals },\n  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {\n    schema: keyof DatabaseWithoutInternals\n  }\n    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions[\"schema\"]][\"CompositeTypes\"]\n    : never) = never,\n> = PublicCompositeTypeNameOrOptions extends {\n  schema: keyof DatabaseWithoutInternals\n}\n  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions[\"schema\"]][\"CompositeTypes\"][CompositeTypeName]\n  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema[\"CompositeTypes\"]\n    ? DefaultSchema[\"CompositeTypes\"][PublicCompositeTypeNameOrOptions]\n    : never\n\nexport const Constants = {\n  public: {\n    Enums: {\n      payment_status: [\n        \"pending\",\n        \"approved\",\n        \"rejected\",\n        \"refunded\",\n        \"cancelled\",\n        \"in_process\",\n      ],\n      subscription_status: [\n        \"trialing\",\n        \"active\",\n        \"past_due\",\n        \"paused\",\n        \"cancelled\",\n        \"expired\",\n      ],\n    },\n  },\n} as const\n"}
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
+
+export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.18"
+  }
+  public: {
+    Tables: {
+      favorites: {
+        Row: {
+          created_at: string
+          id: string
+          tool_slug: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          tool_slug: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          tool_slug?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      features: {
+        Row: {
+          code: string
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      payments: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string
+          id: string
+          paid_at: string | null
+          payment_method: string | null
+          provider: string | null
+          provider_payment_id: string | null
+          status: Database["public"]["Enums"]["payment_status"]
+          subscription_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string
+          id?: string
+          paid_at?: string | null
+          payment_method?: string | null
+          provider?: string | null
+          provider_payment_id?: string | null
+          status?: Database["public"]["Enums"]["payment_status"]
+          subscription_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          paid_at?: string | null
+          payment_method?: string | null
+          provider?: string | null
+          provider_payment_id?: string | null
+          status?: Database["public"]["Enums"]["payment_status"]
+          subscription_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      plans: {
+        Row: {
+          billing_interval: string | null
+          code: string
+          created_at: string
+          currency: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          price: number
+          provider: string | null
+          provider_plan_id: string | null
+          trial_days: number
+          updated_at: string
+        }
+        Insert: {
+          billing_interval?: string | null
+          code: string
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          price?: number
+          provider?: string | null
+          provider_plan_id?: string | null
+          trial_days?: number
+          updated_at?: string
+        }
+        Update: {
+          billing_interval?: string | null
+          code?: string
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          price?: number
+          provider?: string | null
+          provider_plan_id?: string | null
+          trial_days?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          role: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id: string
+          role?: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          role?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          cancelled_at: string | null
+          created_at: string
+          current_period_end: string | null
+          current_period_start: string | null
+          id: string
+          plan_id: string
+          provider: string | null
+          provider_plan_id: string | null
+          provider_status: string | null
+          provider_subscription_id: string | null
+          status: Database["public"]["Enums"]["subscription_status"]
+          trial_end_at: string | null
+          trial_start_at: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cancelled_at?: string | null
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          plan_id: string
+          provider?: string | null
+          provider_plan_id?: string | null
+          provider_status?: string | null
+          provider_subscription_id?: string | null
+          status?: Database["public"]["Enums"]["subscription_status"]
+          trial_end_at?: string | null
+          trial_start_at?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cancelled_at?: string | null
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          plan_id?: string
+          provider?: string | null
+          provider_plan_id?: string | null
+          provider_status?: string | null
+          provider_subscription_id?: string | null
+          status?: Database["public"]["Enums"]["subscription_status"]
+          trial_end_at?: string | null
+          trial_start_at?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tool_features: {
+        Row: {
+          created_at: string
+          feature_id: string
+          id: string
+          is_premium: boolean
+          tool_slug: string
+        }
+        Insert: {
+          created_at?: string
+          feature_id: string
+          id?: string
+          is_premium?: boolean
+          tool_slug: string
+        }
+        Update: {
+          created_at?: string
+          feature_id?: string
+          id?: string
+          is_premium?: boolean
+          tool_slug?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tool_features_feature_id_fkey"
+            columns: ["feature_id"]
+            isOneToOne: false
+            referencedRelation: "features"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      webhook_events: {
+        Row: {
+          created_at: string
+          error: string | null
+          event_id: string
+          event_type: string
+          id: string
+          payload: Json
+          processed: boolean
+          processed_at: string | null
+          provider: string
+        }
+        Insert: {
+          created_at?: string
+          error?: string | null
+          event_id: string
+          event_type: string
+          id?: string
+          payload?: Json
+          processed?: boolean
+          processed_at?: string | null
+          provider: string
+        }
+        Update: {
+          created_at?: string
+          error?: string | null
+          event_id?: string
+          event_type?: string
+          id?: string
+          payload?: Json
+          processed?: boolean
+          processed_at?: string | null
+          provider?: string
+        }
+        Relationships: []
+      }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      can_access_feature: {
+        Args: {
+          check_user_id: string
+          p_feature_code: string
+          p_tool_slug: string
+        }
+        Returns: boolean
+      }
+      get_tool_features_with_access: {
+        Args: { check_user_id: string; p_tool_slug: string }
+        Returns: {
+          feature_code: string
+          feature_name: string
+          has_access: boolean
+          is_premium: boolean
+        }[]
+      }
+      is_feature_premium: {
+        Args: { p_feature_code: string; p_tool_slug: string }
+        Returns: boolean
+      }
+      is_pro_user: { Args: { check_user_id: string }; Returns: boolean }
+    }
+    Enums: {
+      payment_status:
+        | "pending"
+        | "approved"
+        | "rejected"
+        | "refunded"
+        | "cancelled"
+        | "in_process"
+      subscription_status:
+        | "trialing"
+        | "active"
+        | "past_due"
+        | "paused"
+        | "cancelled"
+        | "expired"
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
+}
+
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never) = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
+
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never) = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
+
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never) = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never) = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never) = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
+
+export const Constants = {
+  public: {
+    Enums: {
+      payment_status: [
+        "pending",
+        "approved",
+        "rejected",
+        "refunded",
+        "cancelled",
+        "in_process",
+      ],
+      subscription_status: [
+        "trialing",
+        "active",
+        "past_due",
+        "paused",
+        "cancelled",
+        "expired",
+      ],
+    },
+  },
+} as const

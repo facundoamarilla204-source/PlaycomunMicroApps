@@ -45,7 +45,7 @@ export default function SiteFooter() {
             <ul className="flex flex-col gap-3">
               <li>
                 <a 
-                  href={siteConfig.mainSiteUrl} 
+                  href={siteConfig.organization.url} 
                   target="_blank" 
                   rel="noreferrer"
                   className="text-sm text-foreground-muted hover:text-brand inline-flex items-center gap-1"

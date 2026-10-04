@@ -52,7 +52,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return buildMetadata({
     title: tool.seo?.title || tool.name,
     description: tool.seo?.description || tool.description,
-    path: `/herramientas/${tool.slug}`,
+    path: `${tool.customUrl || `/herramientas/${tool.slug}`}`,
     noindex: isSoon,
   })
 }
@@ -72,7 +72,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     "@type": "WebApplication",
     name: tool.name,
     description: tool.seo?.description || tool.description,
-    url: `${siteConfig.url}/herramientas/${tool.slug}`,
+    url: `${siteConfig.url}${tool.customUrl || `/herramientas/${tool.slug}`}`,
     applicationCategory: "FinanceApplication",
     operatingSystem: "Web",
     inLanguage: "es-AR",
@@ -103,7 +103,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
         "@type": "ListItem",
         position: 3,
         name: tool.name,
-        item: `${siteConfig.url}/herramientas/${tool.slug}`,
+        item: `${siteConfig.url}${tool.customUrl || `/herramientas/${tool.slug}`}`,
       },
     ],
   }

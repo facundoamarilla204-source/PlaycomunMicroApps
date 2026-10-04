@@ -17,14 +17,11 @@ export default function Hero() {
   }
 
   return (
-    <section className="bg-brand-light py-16 md:py-24">
+    <section className="bg-brand-light pt-16 pb-8 md:pt-24 md:pb-12">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-8 items-center">
           <div className="max-w-2xl">
-            <span className="inline-block rounded-full bg-brand/10 px-4 py-1.5 text-xs font-semibold text-brand tracking-widest uppercase mb-6 shadow-sm border border-brand/10">
-              Herramientas Online
-            </span>
-            <h1 className="text-4xl font-extrabold tracking-tighter text-foreground sm:text-5xl lg:text-6xl mb-6 text-balance leading-[1.1]">
+            <h1 className="text-4xl font-extrabold text-foreground sm:text-5xl lg:text-6xl mb-6 text-balance leading-[1.1]">
               Herramientas online para tu <span className="text-brand">negocio</span>
             </h1>
             <p className="text-lg text-foreground-muted mb-8 max-w-xl text-balance leading-relaxed">
@@ -44,7 +41,7 @@ export default function Hero() {
               </div>
               <button 
                 type="submit"
-                className="rounded-xl bg-brand px-8 py-3.5 font-medium text-white shadow-sm shadow-brand/20 transition-all hover:bg-brand-hover hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-95"
+                className="rounded-xl bg-brand px-8 py-3.5 font-semibold text-white shadow-sm shadow-brand/20 transition-all hover:bg-brand-hover hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-95 text-lg"
               >
                 Buscar
               </button>
@@ -60,6 +57,7 @@ export default function Hero() {
                 sizes="(max-width: 768px) 100vw, 500px"
                 className="object-contain object-center"
                 priority
+                unoptimized
                 onContextMenu={(e) => e.preventDefault()}
               />
             </div>

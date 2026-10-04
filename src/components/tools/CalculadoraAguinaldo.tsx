@@ -76,7 +76,7 @@ export function CalculadoraAguinaldo() {
     : AGUINALDO_CONFIG.PAYMENT_DATES.DECEMBER;
 
   return (
-    <div className={`grid gap-8 items-start ${result ? 'lg:grid-cols-2' : 'max-w-xl'}`}>
+    <div className={`grid gap-8 items-start ${result ? 'lg:grid-cols-2' : 'max-w-xl mx-auto'}`}>
       <div className="bg-white rounded-2xl shadow-sm border border-neutral-200 p-6 sm:p-8 space-y-6">
         {/* Semester Selection */}
         <div>
@@ -204,29 +204,29 @@ export function CalculadoraAguinaldo() {
 
       {/* Results */}
       {result && (
-        <div className="p-6 sm:p-8 bg-neutral-50 rounded-2xl border border-neutral-200 shadow-sm" aria-live="polite">
+        <div className="mt-8 lg:mt-0 lg:sticky lg:top-8 bg-[#7C3AED] text-white rounded-2xl p-6 sm:p-8 shadow-xl" aria-live="polite">
             <div className="text-center mb-6">
-              <p className="text-sm text-neutral-500 font-medium mb-1">Aguinaldo Bruto</p>
-              <p className="text-4xl font-bold text-neutral-900">
+              <p className="text-sm text-white/80 font-medium mb-1">Aguinaldo Bruto</p>
+              <p className="text-4xl lg:text-5xl font-bold text-white">
                 ${result.gross.toLocaleString('es-AR', { maximumFractionDigits: 2 })}
               </p>
             </div>
 
             {showNet && result.netEstimate && (
               <div className="mb-6 space-y-3">
-                <div className="flex justify-between text-sm text-neutral-600">
+                <div className="flex justify-between text-sm text-white/80">
                   <span>Jubilación (11%)</span>
                   <span>-${result.netEstimate.deductions.retirement.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
                 </div>
-                <div className="flex justify-between text-sm text-neutral-600">
+                <div className="flex justify-between text-sm text-white/80">
                   <span>Obra Social (3%)</span>
                   <span>-${result.netEstimate.deductions.healthInsurance.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
                 </div>
-                <div className="flex justify-between text-sm text-neutral-600">
+                <div className="flex justify-between text-sm text-white/80">
                   <span>PAMI (3%)</span>
                   <span>-${result.netEstimate.deductions.pami.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
                 </div>
-                <div className="pt-3 border-t border-neutral-200 flex justify-between font-semibold text-neutral-900">
+                <div className="pt-3 border-t border-white/20 flex justify-between font-semibold text-white">
                   <span>Aguinaldo Neto Estimado</span>
                   <span>${result.netEstimate.net.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
                 </div>
@@ -235,8 +235,8 @@ export function CalculadoraAguinaldo() {
 
             <div className="space-y-4 mb-6">
               <div>
-                <p className="text-sm font-semibold text-neutral-900 mb-2">La cuenta paso a paso:</p>
-                <ul className="text-sm text-neutral-600 space-y-1 list-disc pl-5">
+                <p className="text-sm font-semibold text-white mb-2">La cuenta paso a paso:</p>
+                <ul className="text-sm text-white/80 space-y-1 list-disc pl-5">
                   {result.steps.map((step, idx) => (
                     <li key={idx}>{step}</li>
                   ))}
@@ -244,21 +244,21 @@ export function CalculadoraAguinaldo() {
               </div>
               
               <div>
-                <p className="text-sm font-semibold text-neutral-900 mb-1">Fecha límite de pago:</p>
-                <p className="text-sm text-neutral-600">
+                <p className="text-sm font-semibold text-white mb-1">Fecha límite de pago:</p>
+                <p className="text-sm text-white/80">
                   Hasta el <strong>{deadline.LEGAL_DEADLINE}</strong> {deadline.MARGIN_TEXT}.
                 </p>
               </div>
             </div>
 
-            <div className="text-xs text-neutral-500 bg-white p-3 rounded-lg border border-neutral-100 mb-6">
-              <strong>Importante:</strong> Resultado orientativo. Tu liquidación real puede variar según tu convenio colectivo, los conceptos de tu recibo y tus descuentos. Consultalo con tu empleador o un contador.
+            <div className="text-xs text-white/70 bg-white/10 p-3 rounded-lg border border-white/10 mb-6">
+              <strong className="text-white">Importante:</strong> Resultado orientativo. Tu liquidación real puede variar según tu convenio colectivo, los conceptos de tu recibo y tus descuentos. Consultalo con tu empleador o un contador.
             </div>
 
             <div className="flex gap-3">
               <button
                 onClick={handleCopy}
-                className="flex-1 bg-primary-600 text-white font-medium py-2 px-4 rounded-xl hover:bg-primary-700 transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                className="flex-1 bg-white text-[#7C3AED] hover:bg-white/90 active:bg-white transition-colors py-3 px-4 rounded-xl font-medium flex items-center justify-center gap-2"
               >
                 {copied ? '¡Copiado!' : 'Copiar resultado'}
               </button>
@@ -269,7 +269,7 @@ export function CalculadoraAguinaldo() {
                   setWorkedAllSemester(true);
                   setShowNet(false);
                 }}
-                className="flex-1 bg-white text-neutral-700 font-medium py-2 px-4 rounded-xl border border-neutral-300 hover:bg-neutral-50 transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                className="px-4 py-3 border border-white/30 hover:bg-white/10 rounded-xl font-medium transition-colors"
               >
                 Limpiar
               </button>

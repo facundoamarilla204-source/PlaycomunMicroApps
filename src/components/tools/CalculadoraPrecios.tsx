@@ -100,7 +100,7 @@ export function CalculadoraPrecios() {
   };
 
   return (
-    <div className={`grid gap-8 items-start ${result?.ok ? 'lg:grid-cols-2' : 'max-w-xl'}`}>
+    <div className={`grid gap-8 items-start ${result?.ok ? 'lg:grid-cols-2' : 'max-w-xl mx-auto'}`}>
       <div className="bg-white rounded-2xl shadow-sm border border-neutral-200 p-6 sm:p-8 space-y-8">
         
         {/* Mode Selection */}
@@ -344,21 +344,17 @@ export function CalculadoraPrecios() {
         </section>
       </div>
 
-      {/* Result Card (Sticky on desktop, Bottom Bar on mobile) */}
+      {/* Result Card */}
       <div className={`
-        ${result?.ok ? 'block' : 'hidden'} 
+        ${result?.ok ? 'block mt-8 lg:mt-0' : 'hidden'} 
         lg:block lg:sticky lg:top-8
-        fixed bottom-0 left-0 right-0 z-50 lg:relative lg:z-auto
-        bg-white lg:bg-transparent shadow-[0_-10px_20px_rgba(0,0,0,0.05)] lg:shadow-none
-        border-t lg:border-0 border-neutral-200
-        p-4 lg:p-0
       `}>
         {result?.ok && (
-          <div aria-live="polite" className="bg-[#7C3AED] text-white rounded-xl lg:rounded-2xl p-6 lg:p-8 shadow-xl">
+          <div aria-live="polite" className="bg-[#7C3AED] text-white rounded-2xl p-6 sm:p-8 shadow-xl">
             <h3 className="text-[#7C3AED] text-sm font-medium mb-1 opacity-90">
               {mode === 'target' ? 'PRECIO FINAL (CON IVA)' : 'GANANCIA NETA POR UNIDAD'}
             </h3>
-            <div className="text-4xl lg:text-5xl font-bold mb-6 tracking-tight">
+            <div className="text-4xl lg:text-5xl font-bold mb-6">
               ${mode === 'target' 
                 ? result.finalPrice.toLocaleString('es-AR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }) 
                 : result.profitPerUnit.toLocaleString('es-AR', { maximumFractionDigits: 2, minimumFractionDigits: 2 })}

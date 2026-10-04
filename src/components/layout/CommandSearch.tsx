@@ -58,7 +58,7 @@ export default function CommandSearch({ open, onOpenChange }: CommandSearchProps
         setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev))
       } else if (e.key === "Enter" && results.length > 0) {
         e.preventDefault()
-        router.push(`/herramientas/${results[selectedIndex].slug}`)
+        router.push(`${results[selectedIndex].customUrl || `/herramientas/${results[selectedIndex].slug}`}`)
         onOpenChange(false)
       } else if (e.key === "Escape") {
         e.preventDefault()
@@ -112,7 +112,7 @@ export default function CommandSearch({ open, onOpenChange }: CommandSearchProps
                 index === selectedIndex ? "bg-brand-light" : "hover:bg-gray-50"
               }`}
               onClick={() => {
-                router.push(`/herramientas/${tool.slug}`)
+                router.push(`${tool.customUrl || `/herramientas/${tool.slug}`}`)
                 onOpenChange(false)
               }}
               onMouseEnter={() => setSelectedIndex(index)}
