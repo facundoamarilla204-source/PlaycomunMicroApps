@@ -12,6 +12,9 @@ import { PrecioVentaContent } from "@/components/tools/content/PrecioVentaConten
 import { GeneradorPresupuestos } from "@/components/tools/GeneradorPresupuestos"
 import { GeneradorPresupuestosContent } from "@/components/tools/content/GeneradorPresupuestosContent"
 
+import { GeneradorQR } from "@/components/tools/GeneradorQR"
+import { GeneradorQRContent } from "@/components/tools/content/GeneradorQRContent"
+
 const TOOL_COMPONENTS: Record<string, React.ReactNode> = {
   "calculadora-aguinaldo": (
     <>
@@ -34,6 +37,14 @@ const TOOL_COMPONENTS: Record<string, React.ReactNode> = {
       <GeneradorPresupuestos />
       <div className="mt-16 flex justify-center">
         <GeneradorPresupuestosContent />
+      </div>
+    </>
+  ),
+  "generador-qr": (
+    <>
+      <GeneradorQR />
+      <div className="mt-16 flex justify-center">
+        <GeneradorQRContent />
       </div>
     </>
   ),

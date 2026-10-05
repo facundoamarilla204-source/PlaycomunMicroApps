@@ -229,7 +229,7 @@ export const tools: Tool[] = [
     tier: "free",
     description: "Creá códigos QR para pagos, enlaces o texto.",
     icon: "QrCode",
-    status: "soon",
+    status: "live",
     featured: true,
     keywords: ["qr", "codigo", "scan", "enlace", "pago"],
     updatedAt: NOW,
@@ -473,4 +473,50 @@ export const tools: Tool[] = [
     ],
     related: ["calculadora-1rm", "calculadora-rentabilidad"]
   },
+  {
+    slug: "link-resenas-google",
+    name: "Link de reseñas de Google",
+    category: "generadores",
+    tier: "free",
+    description: "Obtené el enlace directo para que tus clientes puedan dejar una reseña en Google.",
+    icon: "Link",
+    status: "live",
+    featured: true,
+    keywords: ["link de reseñas de Google", "link reseñas Google", "enlace reseñas Google", "link para reseñas de Google", "enlace para dejar reseña en Google", "link directo reseña Google", "crear link reseñas Google", "enlace para pedir reseñas Google"],
+    updatedAt: NOW,
+    customUrl: "/link-resenas-google",
+    seo: {
+      title: "Generador de link de reseñas de Google: Directo a tu ficha",
+      description: "Obtené el enlace directo para que tus clientes dejen una reseña en Google Maps. Fácil, rápido y listo para usar en QR, NFC o WhatsApp.",
+      h1: "Link de reseñas de Google",
+      intro: "Generá el enlace directo para que tus clientes califiquen tu negocio en Google en un solo paso."
+    },
+    faqs: [
+      {
+        question: "¿Cómo obtener el link de reseñas de Google?",
+        answer: "Podés buscar tu negocio por nombre y localidad en nuestra herramienta, o pegar directamente el enlace de tu ficha de Google Maps. Te generaremos un link directo que abre la ventana para dejar la reseña."
+      },
+      {
+        question: "¿Cómo crear un enlace para que mis clientes dejen una reseña?",
+        answer: "Simplemente usá nuestro generador. Buscá tu negocio, seleccionalo en los resultados y copiá el enlace final. Es el link directo y oficial de Google."
+      },
+      {
+        question: "¿Cómo obtener el enlace directo para una reseña de Google?",
+        answer: "El enlace directo (reviewUrl) lo obtenemos consultando la API oficial de Google Places. Te ahorra tener que buscarlo manualmente en tu panel de Google Mi Negocio."
+      },
+      {
+        question: "¿Puedo usar el link en un código QR?",
+        answer: "Sí, es el uso más recomendado. Podés generar un código QR con este enlace y colocarlo en tu local, mesas, mostradores o folletos para que los clientes lo escaneen."
+      },
+      {
+        question: "¿Puedo usar el link en una tarjeta NFC?",
+        answer: "Totalmente. Si programás una etiqueta o tarjeta NFC con este enlace, tus clientes solo tendrán que acercar su celular para que se abra automáticamente la pantalla de reseñas de Google."
+      },
+      {
+        question: "¿Cómo sé si elegí el negocio correcto?",
+        answer: "Antes de copiar el enlace, te mostramos el nombre, la dirección exacta y un botón para abrir la ficha en Google Maps. Asegurate de que esos datos coincidan con tu negocio."
+      }
+    ],
+    related: ["generador-qr"]
+  }
 ]

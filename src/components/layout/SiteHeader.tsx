@@ -86,6 +86,16 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
             
             <div className="hidden md:flex items-center gap-4">
 
+              {isAuthenticated && !isPro && (
+                <Link href="/planes" className="rounded-full px-4 py-2 text-base font-semibold text-amber-600 transition-colors hover:bg-amber-50">
+                  Pro
+                </Link>
+              )}
+              {!isAuthenticated && (
+                <Link href="/planes" className="rounded-full px-4 py-2 text-base font-semibold text-foreground/80 transition-colors hover:bg-gray-100 hover:text-foreground">
+                  Planes
+                </Link>
+              )}
               {isAuthenticated && (
                 <Link href="/favoritas" className="rounded-full px-4 py-2 text-base font-semibold text-brand transition-colors hover:bg-brand-light">
                   Favoritas
@@ -192,6 +202,16 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
                 ))}
               </div>
 
+              {isAuthenticated && !isPro && (
+                <Link href="/planes" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-amber-600 font-medium border-b border-border pb-4">
+                  Pro
+                </Link>
+              )}
+              {!isAuthenticated && (
+                <Link href="/planes" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-foreground font-medium border-b border-border pb-4">
+                  Planes
+                </Link>
+              )}
               {isAuthenticated && (
                 <Link href="/favoritas" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-foreground font-medium border-b border-border pb-4">
                   Favoritas
