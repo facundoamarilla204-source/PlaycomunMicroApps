@@ -1,6 +1,6 @@
 export function LinkResenasGoogleContent() {
   return (
-    <article className="prose prose-neutral prose-a:text-[#7C3AED] prose-a:no-underline hover:prose-a:underline max-w-[650px] w-full">
+    <article className="prose prose-neutral prose-a:text-neutral-900 prose-a:no-underline hover:prose-a:underline max-w-[650px] w-full">
       <h2>¿Qué es el link directo de reseñas de Google?</h2>
       <p>
         El enlace directo de reseñas de Google (oficialmente conocido como <code>writeAReviewUri</code>) es una URL especial que, 
@@ -52,7 +52,7 @@ export function LinkResenasGoogleContent() {
       </ol>
 
       <div className="bg-neutral-50 p-6 rounded-xl border border-neutral-200 my-8">
-        <h3 className="mt-0 text-[#7C3AED]">Importante: Verificá tu negocio</h3>
+        <h3 className="mt-0 text-neutral-900">Importante: Verificá tu negocio</h3>
         <p className="mb-0">
           Antes de imprimir códigos QR o programar tarjetas NFC, siempre <strong>abrí el enlace generado</strong> y 
           comprobá que te lleve a la ficha correcta. Si tenés varias sucursales o tu nombre es muy común, asegúrate de 
@@ -73,3 +73,5 @@ export function LinkResenasGoogleContent() {
     </article>
   )
 }
+
+

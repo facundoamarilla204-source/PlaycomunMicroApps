@@ -42,3 +42,5 @@ export default function FavoriteButton({ toolSlug, initialIsFavorite = false }: 
     </button>
   )
 }
+
+

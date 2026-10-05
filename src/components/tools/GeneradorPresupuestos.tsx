@@ -2,8 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react"
 import { Plus, Trash2, Download, Printer, Share2, AlertCircle, Upload, Lock, Crown, ImageIcon } from "lucide-react"
-import jsPDF from "jspdf"
-import html2canvas from "html2canvas"
+// jsPDF and html2canvas will be dynamically imported for performance
 import { Concepto, Presupuesto, calcularSubtotal, calcularTotalDescuentos, calcularTotal, formatoMoneda, generarNumeroPresupuesto } from "@/lib/presupuesto"
 
 export function GeneradorPresupuestos() {
@@ -39,8 +38,6 @@ export function GeneradorPresupuestos() {
       info: { ...p.info, numero: generarNumeroPresupuesto() }
     }))
   }, [])
-
-  if (!mounted) return null
 
   const handleEmisorChange = (field: string, value: string) => {
     setPresupuesto(p => ({ ...p, emisor: { ...p.emisor, [field]: value } }))
@@ -161,6 +158,7 @@ export function GeneradorPresupuestos() {
         const element = previewRef.current
         
         // Ensure images are loaded and fonts are ready (html2canvas uses DOM)
+        const html2canvas = (await import("html2canvas")).default
         const canvas = await html2canvas(element, { 
           scale: 2, // High quality 
           useCORS: true,
@@ -170,6 +168,7 @@ export function GeneradorPresupuestos() {
         
         const imgData = canvas.toDataURL("image/jpeg", 1.0)
         
+        const { jsPDF } = await import("jspdf")
         const pdf = new jsPDF({
           orientation: "portrait",
           unit: "mm",
@@ -216,6 +215,27 @@ export function GeneradorPresupuestos() {
   const subtotal = calcularSubtotal(presupuesto.conceptos)
   const totalDescuentos = calcularTotalDescuentos(presupuesto.conceptos)
   const total = calcularTotal(presupuesto.conceptos)
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+        e.preventDefault();
+        if (!generando) generarPDF();
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key === 'p') {
+        e.preventDefault();
+        imprimir();
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+        e.preventDefault();
+        agregarConcepto();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [presupuesto, generando]);
+
+  if (!mounted) return null
 
   return (
     <div className="w-full max-w-7xl mx-auto p-4 md:p-6 pb-20">
@@ -376,7 +396,7 @@ export function GeneradorPresupuestos() {
             
             {presupuesto.conceptos.length === 0 ? (
               <div className="text-center py-8 text-neutral-500 text-sm bg-neutral-50 rounded-xl border border-dashed border-neutral-300 mb-4">
-                Todavía no agregaste ningún producto o servicio.
+                Todavía no agregaste ningún producto o servicio. Hacé clic en "Agregar ítem al presupuesto" para empezar.
               </div>
             ) : (
               <div className="space-y-4 mb-4">
@@ -427,7 +447,7 @@ export function GeneradorPresupuestos() {
           </div>
           
           <div className="text-center mb-8">
-             <button onClick={limpiarFormulario} className="px-4 py-2 text-sm text-neutral-500 font-medium hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+             <button onClick={limpiarFormulario} className="px-4 py-2 text-sm text-neutral-600 font-medium hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors">
               Borrar todos los datos y empezar de cero
             </button>
           </div>
@@ -619,3 +639,5 @@ export function GeneradorPresupuestos() {
     </div>
   )
 }
+
+

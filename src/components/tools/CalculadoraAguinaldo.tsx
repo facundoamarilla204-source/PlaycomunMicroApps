@@ -82,25 +82,25 @@ export function CalculadoraAguinaldo() {
         <div>
           <label className="block text-sm font-medium text-neutral-700 mb-2">Semestre</label>
           <div className="grid sm:grid-cols-2 gap-3">
-            <label className={`cursor-pointer rounded-xl border p-3 flex items-center gap-3 transition-colors ${semester === '1' ? 'border-[#7C3AED] bg-[#7C3AED]/5 text-[#7C3AED]' : 'border-neutral-200 hover:bg-neutral-50'}`}>
+            <label className={`cursor-pointer rounded-xl border p-3 flex items-center gap-3 transition-colors ${semester === '1' ? 'border-neutral-900 bg-neutral-900/5 text-neutral-900' : 'border-neutral-200 hover:bg-neutral-50'}`}>
               <input 
                 type="radio" 
                 name="semester" 
                 value="1" 
                 checked={semester === '1'} 
                 onChange={() => setSemester('1')}
-                className="w-4 h-4 accent-[#7C3AED] focus:ring-[#7C3AED]"
+                className="w-4 h-4 accent-neutral-900 focus:ring-neutral-900"
               />
               <span className="font-medium text-sm">1.er semestre (enero a junio)</span>
             </label>
-            <label className={`cursor-pointer rounded-xl border p-3 flex items-center gap-3 transition-colors ${semester === '2' ? 'border-[#7C3AED] bg-[#7C3AED]/5 text-[#7C3AED]' : 'border-neutral-200 hover:bg-neutral-50'}`}>
+            <label className={`cursor-pointer rounded-xl border p-3 flex items-center gap-3 transition-colors ${semester === '2' ? 'border-neutral-900 bg-neutral-900/5 text-neutral-900' : 'border-neutral-200 hover:bg-neutral-50'}`}>
               <input 
                 type="radio" 
                 name="semester" 
                 value="2" 
                 checked={semester === '2'} 
                 onChange={() => setSemester('2')}
-                className="w-4 h-4 accent-[#7C3AED] focus:ring-[#7C3AED]"
+                className="w-4 h-4 accent-neutral-900 focus:ring-neutral-900"
               />
               <span className="font-medium text-sm">2.º semestre (julio a diciembre)</span>
             </label>
@@ -121,7 +121,7 @@ export function CalculadoraAguinaldo() {
               type="text"
               id="bestSalary"
               inputMode="decimal"
-              className={`block w-full pl-7 pr-3 py-3 rounded-xl border ${errorMsg && bestSalaryStr ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-neutral-300 focus:border-primary-500 focus:ring-primary-500'} sm:text-sm transition-colors`}
+              className={`block w-full pl-7 pr-3 py-3 rounded-xl border ${errorMsg && bestSalaryStr ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900'} sm:text-sm transition-colors`}
               placeholder="1000000"
               value={bestSalaryStr}
               onChange={handleSalaryChange}
@@ -133,23 +133,23 @@ export function CalculadoraAguinaldo() {
         <div>
           <label className="block text-sm font-medium text-neutral-700 mb-2">¿Trabajaste todo el semestre?</label>
           <div className="grid sm:grid-cols-2 gap-3">
-            <label className={`cursor-pointer rounded-xl border p-3 flex items-center gap-3 transition-colors ${workedAllSemester ? 'border-[#7C3AED] bg-[#7C3AED]/5 text-[#7C3AED]' : 'border-neutral-200 hover:bg-neutral-50'}`}>
+            <label className={`cursor-pointer rounded-xl border p-3 flex items-center gap-3 transition-colors ${workedAllSemester ? 'border-neutral-900 bg-neutral-900/5 text-neutral-900' : 'border-neutral-200 hover:bg-neutral-50'}`}>
               <input 
                 type="radio" 
                 name="workedAllSemester" 
                 checked={workedAllSemester} 
                 onChange={() => setWorkedAllSemester(true)}
-                className="w-4 h-4 accent-[#7C3AED] focus:ring-[#7C3AED]"
+                className="w-4 h-4 accent-neutral-900 focus:ring-neutral-900"
               />
               <span className="font-medium text-sm">Sí</span>
             </label>
-            <label className={`cursor-pointer rounded-xl border p-3 flex items-center gap-3 transition-colors ${!workedAllSemester ? 'border-[#7C3AED] bg-[#7C3AED]/5 text-[#7C3AED]' : 'border-neutral-200 hover:bg-neutral-50'}`}>
+            <label className={`cursor-pointer rounded-xl border p-3 flex items-center gap-3 transition-colors ${!workedAllSemester ? 'border-neutral-900 bg-neutral-900/5 text-neutral-900' : 'border-neutral-200 hover:bg-neutral-50'}`}>
               <input 
                 type="radio" 
                 name="workedAllSemester" 
                 checked={!workedAllSemester} 
                 onChange={() => setWorkedAllSemester(false)}
-                className="w-4 h-4 accent-[#7C3AED] focus:ring-[#7C3AED]"
+                className="w-4 h-4 accent-neutral-900 focus:ring-neutral-900"
               />
               <span className="font-medium text-sm">No, ingresé o dejé de trabajar durante el semestre</span>
             </label>
@@ -168,7 +168,7 @@ export function CalculadoraAguinaldo() {
               id="daysWorked"
               min="1"
               max={AGUINALDO_CONFIG.SEMESTER_DAYS}
-              className={`block w-full px-3 py-3 rounded-xl border ${errorMsg && daysWorkedStr && (!daysWorked || daysWorked <= 0 || daysWorked > AGUINALDO_CONFIG.SEMESTER_DAYS) ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-neutral-300 focus:border-primary-500 focus:ring-primary-500'} sm:text-sm transition-colors`}
+              className={`block w-full px-3 py-3 rounded-xl border ${errorMsg && daysWorkedStr && (!daysWorked || daysWorked <= 0 || daysWorked > AGUINALDO_CONFIG.SEMESTER_DAYS) ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900'} sm:text-sm transition-colors`}
               placeholder="90"
               value={daysWorkedStr}
               onChange={(e) => setDaysWorkedStr(e.target.value)}
@@ -184,7 +184,7 @@ export function CalculadoraAguinaldo() {
               type="checkbox"
               checked={showNet}
               onChange={(e) => setShowNet(e.target.checked)}
-              className="focus:ring-[#7C3AED] h-4 w-4 accent-[#7C3AED] border-neutral-300 rounded text-[#7C3AED]"
+              className="focus:ring-neutral-900 h-4 w-4 accent-neutral-900 border-neutral-300 rounded text-neutral-900"
             />
           </div>
           <div className="ml-3 text-sm">
@@ -204,7 +204,7 @@ export function CalculadoraAguinaldo() {
 
       {/* Results */}
       {result && (
-        <div className="mt-8 lg:mt-0 lg:sticky lg:top-8 bg-[#7C3AED] text-white rounded-2xl p-6 sm:p-8 shadow-xl" aria-live="polite">
+        <div className="mt-8 lg:mt-0 lg:sticky lg:top-8 bg-neutral-900 text-white rounded-2xl p-6 sm:p-8 shadow-xl" aria-live="polite">
             <div className="text-center mb-6">
               <p className="text-sm text-white/80 font-medium mb-1">Aguinaldo Bruto</p>
               <p className="text-4xl lg:text-5xl font-bold text-white">
@@ -258,7 +258,7 @@ export function CalculadoraAguinaldo() {
             <div className="flex gap-3">
               <button
                 onClick={handleCopy}
-                className="flex-1 bg-white text-[#7C3AED] hover:bg-white/90 active:bg-white transition-colors py-3 px-4 rounded-xl font-medium flex items-center justify-center gap-2"
+                className="flex-1 bg-white text-neutral-900 hover:bg-white/90 active:bg-white transition-colors py-3 px-4 rounded-xl font-medium flex items-center justify-center gap-2"
               >
                 {copied ? '¡Copiado!' : 'Copiar resultado'}
               </button>
@@ -279,3 +279,5 @@ export function CalculadoraAguinaldo() {
     </div>
   );
 }
+
+

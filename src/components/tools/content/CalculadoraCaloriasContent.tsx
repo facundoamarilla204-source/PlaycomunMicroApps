@@ -43,8 +43,8 @@ export function CalculadoraCaloriasContent() {
         Para construir músculo nuevo, tu cuerpo necesita un excedente de energía. Un superávit de <strong>200 a 500 calorías por encima de tu TDEE</strong>, combinado con entrenamiento de fuerza progresivo y suficiente proteína, es ideal para promover la hipertrofia muscular minimizando la ganancia de grasa.
       </p>
 
-      <div className="bg-purple-50 border-l-4 border-[#7C3AED] p-6 rounded-r-xl my-8">
-        <h4 className="text-[#7C3AED] mt-0">Importante sobre las estimaciones</h4>
+      <div className="bg-neutral-50 border-l-4 border-neutral-900 p-6 rounded-r-xl my-8">
+        <h4 className="text-neutral-900 mt-0">Importante sobre las estimaciones</h4>
         <p className="mb-0 text-neutral-700">
           Recordá que cualquier calculadora online proporciona <strong>estimaciones matemáticas</strong> basadas en promedios poblacionales. Tu metabolismo real puede ser ligeramente más rápido o más lento dependiendo de factores genéticos, tu historial de dietas, y principalmente, tu porcentaje de masa muscular (el músculo quema más calorías en reposo que la grasa). Utilizá este número como un punto de partida y ajustá tu ingesta basándote en cómo responde tu cuerpo en la vida real después de 2 o 3 semanas.
         </p>
@@ -52,3 +52,5 @@ export function CalculadoraCaloriasContent() {
     </article>
   );
 }
+
+

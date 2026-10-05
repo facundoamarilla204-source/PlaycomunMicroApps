@@ -100,7 +100,7 @@ export function CalculadoraPrecios() {
   };
 
   return (
-    <div className={`grid gap-8 items-start ${result?.ok ? 'lg:grid-cols-2' : 'max-w-xl mx-auto'}`}>
+    <div className="grid gap-8 items-start w-full lg:grid-cols-2 max-w-6xl mx-auto">
       <div className="bg-white rounded-2xl shadow-sm border border-neutral-200 p-6 sm:p-8 space-y-8">
         
         {/* Mode Selection */}
@@ -135,7 +135,7 @@ export function CalculadoraPrecios() {
                 inputMode="decimal"
                 value={productCostStr}
                 onChange={handleCurrencyChange(setProductCostStr)}
-                className="block w-full pl-7 pr-3 py-3 rounded-xl border border-neutral-300 focus:border-[#7C3AED] focus:ring-[#7C3AED] sm:text-sm transition-colors"
+                className="block w-full pl-7 pr-3 py-3 rounded-xl border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm transition-colors"
                 placeholder="1000"
               />
             </div>
@@ -153,7 +153,7 @@ export function CalculadoraPrecios() {
                 inputMode="decimal"
                 value={otherVariableCostsStr}
                 onChange={handleCurrencyChange(setOtherVariableCostsStr)}
-                className="block w-full pl-7 pr-3 py-3 rounded-xl border border-neutral-300 focus:border-[#7C3AED] focus:ring-[#7C3AED] sm:text-sm transition-colors"
+                className="block w-full pl-7 pr-3 py-3 rounded-xl border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm transition-colors"
                 placeholder="0"
               />
             </div>
@@ -165,7 +165,7 @@ export function CalculadoraPrecios() {
                 type="checkbox"
                 checked={showFixedCosts}
                 onChange={(e) => setShowFixedCosts(e.target.checked)}
-                className="w-4 h-4 accent-[#7C3AED] focus:ring-[#7C3AED] border-neutral-300 rounded text-[#7C3AED]"
+                className="w-4 h-4 accent-neutral-900 focus:ring-neutral-900 border-neutral-300 rounded text-neutral-900"
               />
               <span className="text-sm font-medium text-neutral-700">Sumar mis costos fijos</span>
             </label>
@@ -185,7 +185,7 @@ export function CalculadoraPrecios() {
                     inputMode="decimal"
                     value={fixedMonthlyCostsStr}
                     onChange={handleCurrencyChange(setFixedMonthlyCostsStr)}
-                    className="block w-full pl-7 pr-3 py-2 rounded-xl border border-neutral-300 focus:border-[#7C3AED] focus:ring-[#7C3AED] sm:text-sm"
+                    className="block w-full pl-7 pr-3 py-2 rounded-xl border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm"
                     placeholder="200000"
                   />
                 </div>
@@ -197,7 +197,7 @@ export function CalculadoraPrecios() {
                   inputMode="decimal"
                   value={unitsPerMonthStr}
                   onChange={handleCurrencyChange(setUnitsPerMonthStr)}
-                  className="block w-full px-3 py-2 rounded-xl border border-neutral-300 focus:border-[#7C3AED] focus:ring-[#7C3AED] sm:text-sm"
+                  className="block w-full px-3 py-2 rounded-xl border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm"
                   placeholder="500"
                 />
               </div>
@@ -216,7 +216,7 @@ export function CalculadoraPrecios() {
             <select
               value={vatRateStr}
               onChange={(e) => setVatRateStr(e.target.value)}
-              className="block w-full px-3 py-3 rounded-xl border border-neutral-300 focus:border-[#7C3AED] focus:ring-[#7C3AED] sm:text-sm bg-white"
+              className="block w-full px-3 py-3 rounded-xl border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm bg-white"
             >
               {PRECIO_VENTA_CONFIG.IVA_RATES.map((rate) => (
                 <option key={rate.label} value={rate.value}>
@@ -236,7 +236,7 @@ export function CalculadoraPrecios() {
                   inputMode="decimal"
                   value={paymentFeeStr}
                   onChange={handleCurrencyChange(setPaymentFeeStr)}
-                  className="block w-full pl-3 pr-8 py-3 rounded-xl border border-neutral-300 focus:border-[#7C3AED] focus:ring-[#7C3AED] sm:text-sm"
+                  className="block w-full pl-3 pr-8 py-3 rounded-xl border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm"
                   placeholder="5,99"
                 />
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -253,7 +253,7 @@ export function CalculadoraPrecios() {
                   inputMode="decimal"
                   value={grossIncomeTaxStr}
                   onChange={handleCurrencyChange(setGrossIncomeTaxStr)}
-                  className="block w-full pl-3 pr-8 py-3 rounded-xl border border-neutral-300 focus:border-[#7C3AED] focus:ring-[#7C3AED] sm:text-sm"
+                  className="block w-full pl-3 pr-8 py-3 rounded-xl border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm"
                   placeholder="3"
                 />
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -274,24 +274,24 @@ export function CalculadoraPrecios() {
             <div>
               <label className="block text-sm font-medium text-neutral-700 mb-2">¿Cómo querés calcular tu ganancia?</label>
               <div className="grid sm:grid-cols-2 gap-3 mb-3">
-                <label className={`cursor-pointer rounded-xl border p-3 flex items-center gap-3 transition-colors ${targetType === 'margin' ? 'border-[#7C3AED] bg-[#7C3AED]/5 text-[#7C3AED]' : 'border-neutral-200 hover:bg-neutral-50'}`}>
+                <label className={`cursor-pointer rounded-xl border p-3 flex items-center gap-3 transition-colors ${targetType === 'margin' ? 'border-neutral-900 bg-neutral-900/5 text-neutral-900' : 'border-neutral-200 hover:bg-neutral-50'}`}>
                   <input 
                     type="radio" 
                     checked={targetType === 'margin'} 
                     onChange={() => setTargetType('margin')}
-                    className="w-4 h-4 accent-[#7C3AED] focus:ring-[#7C3AED]"
+                    className="w-4 h-4 accent-neutral-900 focus:ring-neutral-900"
                   />
                   <div className="flex flex-col">
                     <span className="font-medium text-sm">Margen de ganancia</span>
                     <span className="text-xs text-neutral-500">Sobre precio sin IVA</span>
                   </div>
                 </label>
-                <label className={`cursor-pointer rounded-xl border p-3 flex items-center gap-3 transition-colors ${targetType === 'markup' ? 'border-[#7C3AED] bg-[#7C3AED]/5 text-[#7C3AED]' : 'border-neutral-200 hover:bg-neutral-50'}`}>
+                <label className={`cursor-pointer rounded-xl border p-3 flex items-center gap-3 transition-colors ${targetType === 'markup' ? 'border-neutral-900 bg-neutral-900/5 text-neutral-900' : 'border-neutral-200 hover:bg-neutral-50'}`}>
                   <input 
                     type="radio" 
                     checked={targetType === 'markup'} 
                     onChange={() => setTargetType('markup')}
-                    className="w-4 h-4 accent-[#7C3AED] focus:ring-[#7C3AED]"
+                    className="w-4 h-4 accent-neutral-900 focus:ring-neutral-900"
                   />
                   <div className="flex flex-col">
                     <span className="font-medium text-sm">Recargo (Markup)</span>
@@ -300,7 +300,7 @@ export function CalculadoraPrecios() {
                 </label>
               </div>
               <p className="text-xs text-neutral-500 mb-3">
-                Un 30% de recargo equivale a un margen menor. <a href="#margen-vs-recargo" className="text-[#7C3AED] hover:underline">¿Cuál es la diferencia?</a>
+                Un 30% de recargo equivale a un margen menor. <a href="#margen-vs-recargo" className="text-neutral-900 hover:underline">¿Cuál es la diferencia?</a>
               </p>
               <div className="relative w-1/2">
                 <input
@@ -308,7 +308,7 @@ export function CalculadoraPrecios() {
                   inputMode="decimal"
                   value={targetValueStr}
                   onChange={handleCurrencyChange(setTargetValueStr)}
-                  className={`block w-full pl-3 pr-8 py-3 rounded-xl border ${result && !result.ok ? 'border-red-300' : 'border-neutral-300'} focus:border-[#7C3AED] focus:ring-[#7C3AED] sm:text-sm`}
+                  className={`block w-full pl-3 pr-8 py-3 rounded-xl border ${result && !result.ok ? 'border-red-300' : 'border-neutral-300'} focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm`}
                   placeholder="30"
                 />
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -329,7 +329,7 @@ export function CalculadoraPrecios() {
                   inputMode="decimal"
                   value={finalPriceStr}
                   onChange={handleCurrencyChange(setFinalPriceStr)}
-                  className="block w-full pl-7 pr-3 py-3 rounded-xl border border-neutral-300 focus:border-[#7C3AED] focus:ring-[#7C3AED] sm:text-sm transition-colors"
+                  className="block w-full pl-7 pr-3 py-3 rounded-xl border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm transition-colors"
                   placeholder="1500"
                 />
               </div>
@@ -350,8 +350,8 @@ export function CalculadoraPrecios() {
         lg:block lg:sticky lg:top-8
       `}>
         {result?.ok && (
-          <div aria-live="polite" className="bg-[#7C3AED] text-white rounded-2xl p-6 sm:p-8 shadow-xl">
-            <h3 className="text-[#7C3AED] text-sm font-medium mb-1 opacity-90">
+          <div aria-live="polite" className="bg-neutral-900 text-white rounded-2xl p-6 sm:p-8 shadow-xl">
+            <h3 className="text-neutral-900 text-sm font-medium mb-1 opacity-90">
               {mode === 'target' ? 'PRECIO FINAL (CON IVA)' : 'GANANCIA NETA POR UNIDAD'}
             </h3>
             <div className="text-4xl lg:text-5xl font-bold mb-6">
@@ -426,7 +426,7 @@ export function CalculadoraPrecios() {
             <div className="flex items-center gap-3">
               <button
                 onClick={handleCopy}
-                className="flex-1 bg-white text-[#7C3AED] hover:bg-white/90 active:bg-white transition-colors py-3 px-4 rounded-xl font-medium flex items-center justify-center gap-2"
+                className="flex-1 bg-white text-neutral-900 hover:bg-white/90 active:bg-white transition-colors py-3 px-4 rounded-xl font-medium flex items-center justify-center gap-2"
               >
                 {copied ? <CheckCircle2 className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
                 {copied ? 'Copiado' : 'Copiar resultado'}
@@ -448,3 +448,5 @@ export function CalculadoraPrecios() {
     </div>
   );
 }
+
+

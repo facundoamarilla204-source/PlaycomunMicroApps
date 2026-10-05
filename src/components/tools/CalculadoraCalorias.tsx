@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { CheckCircle2, Copy } from 'lucide-react';
 
 export function CalculadoraCalorias() {
@@ -80,8 +80,25 @@ export function CalculadoraCalorias() {
     setActividad('');
   };
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        reset();
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key === 'c') {
+        // Solo copiar si hay resultados y no estamos seleccionando texto
+        if (result && !('error' in result) && window.getSelection()?.toString() === '') {
+          e.preventDefault();
+          handleCopy();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [result]);
+
   return (
-    <div className={`grid gap-8 items-start w-full ${result && !('error' in result) ? 'lg:grid-cols-2 max-w-6xl mx-auto' : 'max-w-xl mx-auto'}`}>
+    <div className="grid gap-8 items-start w-full lg:grid-cols-2 max-w-6xl mx-auto">
       <div className="bg-white rounded-2xl shadow-sm border border-neutral-200 p-6 sm:p-8 space-y-8">
         
         <section className="space-y-5">
@@ -96,7 +113,7 @@ export function CalculadoraCalorias() {
                 onClick={() => setSexo('femenino')}
                 className={`py-3 px-4 rounded-xl border font-medium text-sm transition-colors flex items-center justify-center gap-2 ${
                   sexo === 'femenino' 
-                    ? 'border-[#7C3AED] bg-purple-50 text-[#7C3AED]' 
+                    ? 'border-slate-900 bg-slate-50 text-slate-900' 
                     : 'border-neutral-200 text-neutral-700 hover:border-neutral-300'
                 }`}
               >
@@ -106,7 +123,7 @@ export function CalculadoraCalorias() {
                 onClick={() => setSexo('masculino')}
                 className={`py-3 px-4 rounded-xl border font-medium text-sm transition-colors flex items-center justify-center gap-2 ${
                   sexo === 'masculino' 
-                    ? 'border-[#7C3AED] bg-purple-50 text-[#7C3AED]' 
+                    ? 'border-slate-900 bg-slate-50 text-slate-900' 
                     : 'border-neutral-200 text-neutral-700 hover:border-neutral-300'
                 }`}
               >
@@ -124,7 +141,7 @@ export function CalculadoraCalorias() {
               inputMode="numeric"
               value={edadStr}
               onChange={handleIntegerChange(setEdadStr)}
-              className="block w-full px-3 py-3 rounded-xl border border-neutral-300 focus:border-[#7C3AED] focus:ring-[#7C3AED] sm:text-sm transition-colors"
+              className="block w-full px-3 py-3 rounded-xl border border-neutral-300 focus:border-slate-900 focus:ring-slate-900 sm:text-sm transition-colors"
               placeholder="Ej: 30"
             />
           </div>
@@ -143,7 +160,7 @@ export function CalculadoraCalorias() {
                   inputMode="decimal"
                   value={pesoStr}
                   onChange={handleDecimalChange(setPesoStr)}
-                  className="block w-full pl-3 pr-10 py-3 rounded-xl border border-neutral-300 focus:border-[#7C3AED] focus:ring-[#7C3AED] sm:text-sm transition-colors"
+                  className="block w-full pl-3 pr-10 py-3 rounded-xl border border-neutral-300 focus:border-slate-900 focus:ring-slate-900 sm:text-sm transition-colors"
                   placeholder="Ej: 70"
                 />
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -161,7 +178,7 @@ export function CalculadoraCalorias() {
                   inputMode="numeric"
                   value={alturaStr}
                   onChange={handleIntegerChange(setAlturaStr)}
-                  className="block w-full pl-3 pr-10 py-3 rounded-xl border border-neutral-300 focus:border-[#7C3AED] focus:ring-[#7C3AED] sm:text-sm transition-colors"
+                  className="block w-full pl-3 pr-10 py-3 rounded-xl border border-neutral-300 focus:border-slate-900 focus:ring-slate-900 sm:text-sm transition-colors"
                   placeholder="Ej: 175"
                 />
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -190,14 +207,14 @@ export function CalculadoraCalorias() {
                 onClick={() => setActividad(opt.val)}
                 className={`w-full text-left p-4 rounded-xl border transition-colors ${
                   actividad === opt.val
-                    ? 'border-[#7C3AED] bg-purple-50'
+                    ? 'border-slate-900 bg-slate-50'
                     : 'border-neutral-200 hover:border-neutral-300'
                 }`}
               >
-                <div className={`font-semibold ${actividad === opt.val ? 'text-[#7C3AED]' : 'text-neutral-900'}`}>
+                <div className={`font-semibold ${actividad === opt.val ? 'text-slate-900' : 'text-neutral-900'}`}>
                   {opt.label}
                 </div>
-                <div className={`text-sm mt-1 ${actividad === opt.val ? 'text-purple-700' : 'text-neutral-500'}`}>
+                <div className={`text-sm mt-1 ${actividad === opt.val ? 'text-slate-700' : 'text-neutral-500'}`}>
                   {opt.desc}
                 </div>
               </button>
@@ -215,31 +232,31 @@ export function CalculadoraCalorias() {
 
       {result && !('error' in result) && (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <div className="bg-[#7C3AED] rounded-3xl p-6 sm:p-8 text-white shadow-lg overflow-hidden relative">
+          <div className="bg-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-lg overflow-hidden relative">
             <div className="absolute top-0 right-0 p-8 opacity-10">
               <FlameIcon className="w-48 h-48 -mr-12 -mt-12" />
             </div>
             
             <div className="relative z-10 space-y-6">
               <div>
-                <h3 className="text-purple-200 font-medium uppercase tracking-wider text-sm mb-2">Calorías de Mantenimiento</h3>
+                <h3 className="text-slate-400 font-medium uppercase tracking-wider text-sm mb-2">Calorías de Mantenimiento</h3>
                 <div className="flex items-baseline gap-2">
                   <span className="text-4xl sm:text-5xl font-bold tracking-tight">{result.tdee.toLocaleString('es-AR')}</span>
-                  <span className="text-purple-200 font-medium text-lg">kcal/día</span>
+                  <span className="text-slate-400 font-medium text-lg">kcal/día</span>
                 </div>
-                <p className="text-purple-100 text-sm mt-2 max-w-sm">
+                <p className="text-slate-300 text-sm mt-2 max-w-sm">
                   Esta es una estimación de tu gasto energético diario (TDEE). Consumí esta cantidad para mantener tu peso actual.
                 </p>
               </div>
 
-              <div className="pt-6 border-t border-purple-500/30 space-y-4">
+              <div className="pt-6 border-t border-slate-700 space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-purple-100">Metabolismo basal (BMR)</span>
+                  <span className="text-slate-300">Metabolismo basal (BMR)</span>
                   <span className="font-semibold">{result.bmr.toLocaleString('es-AR')} kcal</span>
                 </div>
               </div>
 
-              <div className="pt-6 border-t border-purple-500/30 flex gap-3">
+              <div className="pt-6 border-t border-slate-700 flex gap-3">
                 <button
                   onClick={handleCopy}
                   className="flex-1 bg-white/10 hover:bg-white/20 transition-colors py-3 px-4 rounded-xl font-medium flex items-center justify-center gap-2 text-white border border-white/20"
@@ -249,7 +266,7 @@ export function CalculadoraCalorias() {
                 </button>
                 <button
                   onClick={reset}
-                  className="flex-1 bg-transparent hover:bg-white/10 transition-colors py-3 px-4 rounded-xl font-medium text-purple-100 border border-purple-400/30"
+                  className="flex-1 bg-transparent hover:bg-white/10 transition-colors py-3 px-4 rounded-xl font-medium text-slate-300 border border-slate-700"
                 >
                   Limpiar
                 </button>
@@ -266,7 +283,7 @@ export function CalculadoraCalorias() {
                   <div className="text-sm text-neutral-500 mt-1">Déficit suave (~500 kcal)</div>
                 </div>
                 <div className="text-right">
-                  <div className="font-bold text-[#7C3AED] text-lg">{(result.tdee - 500).toLocaleString('es-AR')}</div>
+                  <div className="font-bold text-slate-900 text-lg">{(result.tdee - 500).toLocaleString('es-AR')}</div>
                   <div className="text-xs text-neutral-500 font-medium">kcal/día</div>
                 </div>
               </div>
@@ -276,7 +293,7 @@ export function CalculadoraCalorias() {
                   <div className="text-sm text-neutral-500 mt-1">Superávit suave (~500 kcal)</div>
                 </div>
                 <div className="text-right">
-                  <div className="font-bold text-[#7C3AED] text-lg">{(result.tdee + 500).toLocaleString('es-AR')}</div>
+                  <div className="font-bold text-slate-900 text-lg">{(result.tdee + 500).toLocaleString('es-AR')}</div>
                   <div className="text-xs text-neutral-500 font-medium">kcal/día</div>
                 </div>
               </div>
@@ -309,3 +326,5 @@ function FlameIcon(props: React.SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
+

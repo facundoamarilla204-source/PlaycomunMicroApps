@@ -30,6 +30,24 @@ const NOW = new Date().toISOString()
 
 export const tools: Tool[] = [
   {
+    slug: "control-gastos",
+    name: "Control de gastos",
+    category: "utilidades",
+    tier: "free",
+    description: "Registrá y organizá tus gastos diarios de forma rápida. Conocé en qué se va tu dinero.",
+    icon: "Wallet",
+    status: "live",
+    featured: true,
+    keywords: ["control de gastos", "app gastos", "registro de gastos", "organizar finanzas", "control gastos personales"],
+    updatedAt: NOW,
+    seo: {
+      title: "Control de Gastos Personales | PlayComun",
+      description: "Llevá un registro de tus gastos, conocé en qué se va tu dinero y organizá tus finanzas. App gratis, rápida y fácil de usar desde el celular.",
+      h1: "Control de Gastos Personales",
+      intro: "La forma más simple de registrar lo que gastás y cuidar tu bolsillo mes a mes."
+    }
+  },
+  {
     slug: "calculadora-precios",
     name: "Calculadora de precios",
     category: "calculadoras",
@@ -142,7 +160,6 @@ export const tools: Tool[] = [
     featured: true,
     keywords: ["calculadora de IVA", "calcular IVA", "calculadora IVA Argentina", "calcular IVA online", "calcular precio con IVA", "calcular precio sin IVA", "quitar IVA", "agregar IVA", "IVA 21%", "calcular IVA incluido", "impuestos", "precios"],
     updatedAt: NOW,
-    customUrl: "/calculadora-iva",
     seo: {
       title: "Calculadora de IVA Argentina: Agregar o quitar IVA",
       description: "Calculadora de IVA gratuita para Argentina. Agregá IVA a un precio neto o desglosá el IVA de un precio final. Tasas del 21%, 10,5% y 27%.",
@@ -188,7 +205,6 @@ export const tools: Tool[] = [
     featured: true,
     keywords: ["rentabilidad", "ganancia", "margen", "markup", "ventas", "calculadora de rentabilidad", "calcular rentabilidad", "calculadora de rentabilidad de un producto", "calcular margen de ganancia", "margen de rentabilidad", "calcular markup", "ganancia sobre ventas", "rentabilidad de un producto"],
     updatedAt: "2026-10-03T00:00:00.000Z",
-    customUrl: "/calculadora-rentabilidad",
     seo: {
       title: "Calculadora de rentabilidad: margen, markup y ganancia",
       description: "Calculá cuánto ganás con tus ventas. Conocé la diferencia entre margen y markup, y calculá el precio ideal de venta para asegurar tu rentabilidad.",
@@ -235,18 +251,6 @@ export const tools: Tool[] = [
     updatedAt: NOW,
   },
   {
-    slug: "control-gastos",
-    name: "Control de gastos",
-    category: "utilidades",
-    tier: "free",
-    description: "Llevá un control simple y efectivo de tus gastos.",
-    icon: "Wallet",
-    status: "soon",
-    featured: true,
-    keywords: ["gastos", "finanzas", "dinero", "control", "presupuesto"],
-    updatedAt: NOW,
-  },
-  {
     slug: "calculadora-1rm",
     name: "Calculadora de 1RM",
     category: "calculadoras",
@@ -257,7 +261,6 @@ export const tools: Tool[] = [
     featured: true,
     keywords: ["calculadora 1rm", "calcular 1rm", "calcular repetición máxima", "1rm calculadora", "one rep max", "calculadora de rm", "calcular rm", "1rm fórmula", "fuerza", "gym", "gimnasio", "pesas"],
     updatedAt: "2026-10-03T00:00:00.000Z",
-    customUrl: "/calculadora-1rm",
     seo: {
       title: "Calculadora de 1RM: Calculá tu repetición máxima",
       description: "Calculá gratis tu 1RM (One Rep Max) estimado. Obtené tu repetición máxima y una tabla de porcentajes de carga para tu entrenamiento de fuerza.",
@@ -372,7 +375,6 @@ export const tools: Tool[] = [
     featured: true,
     keywords: ["calculadora de cuotas", "calcular cuotas", "calculadora de cuotas con interés", "calculadora de cuotas sin interés", "calcular cuota mensual", "calcular cuotas de una compra", "calculadora de financiación", "calcular financiación", "cuotas", "interés", "préstamo"],
     updatedAt: "2026-10-03T00:00:00.000Z",
-    customUrl: "/calculadora-cuotas",
     seo: {
       title: "Calculadora de cuotas con o sin interés: Simulá tu financiación",
       description: "Calculadora de cuotas online gratis. Calculá el valor mensual, los intereses y el total a pagar de una compra financiada en cuotas fijas.",
@@ -430,7 +432,6 @@ export const tools: Tool[] = [
     featured: true,
     keywords: ["calculadora de calorias", "calcular calorias", "calculadora de calorias diarias", "calcular calorias diarias", "cuantas calorias necesito", "calorias de mantenimiento", "calculadora de calorias para bajar de peso", "calculadora TDEE", "calcular metabolismo basal", "calculadora BMR", "nutricion", "BMR", "TDEE", "metabolismo"],
     updatedAt: "2026-10-04T00:00:00.000Z",
-    customUrl: "/calculadora-calorias",
     seo: {
       title: "Calculadora de Calorías: Calculá tu TDEE y BMR",
       description: "Calculá cuántas calorías necesitás por día. Obtené tu metabolismo basal (BMR) y gasto energético (TDEE) para mantener, perder o ganar peso.",
@@ -484,7 +485,6 @@ export const tools: Tool[] = [
     featured: true,
     keywords: ["link de reseñas de Google", "link reseñas Google", "enlace reseñas Google", "link para reseñas de Google", "enlace para dejar reseña en Google", "link directo reseña Google", "crear link reseñas Google", "enlace para pedir reseñas Google"],
     updatedAt: NOW,
-    customUrl: "/link-resenas-google",
     seo: {
       title: "Generador de link de reseñas de Google: Directo a tu ficha",
       description: "Obtené el enlace directo para que tus clientes dejen una reseña en Google Maps. Fácil, rápido y listo para usar en QR, NFC o WhatsApp.",

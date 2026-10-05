@@ -125,7 +125,7 @@ export function LinkResenasGoogle() {
   };
 
   return (
-    <div className={`grid gap-8 items-start w-full ${finalResult ? 'lg:grid-cols-2 max-w-5xl mx-auto' : 'max-w-xl mx-auto'}`}>
+    <div className="grid gap-8 items-start w-full lg:grid-cols-2 max-w-6xl mx-auto">
       <div className="bg-white rounded-2xl shadow-sm border border-neutral-200 p-6 sm:p-8 space-y-8">
         
         {/* Mode Selection */}
@@ -159,7 +159,7 @@ export function LinkResenasGoogle() {
                     type="text"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-3 rounded-xl border border-neutral-300 focus:border-[#7C3AED] focus:ring-[#7C3AED] sm:text-sm transition-colors"
+                    className="block w-full pl-10 pr-3 py-3 rounded-xl border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm transition-colors"
                     placeholder="Ej. Pizzería Los Hermanos"
                     required
                   />
@@ -179,7 +179,7 @@ export function LinkResenasGoogle() {
                     type="text"
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-3 rounded-xl border border-neutral-300 focus:border-[#7C3AED] focus:ring-[#7C3AED] sm:text-sm transition-colors"
+                    className="block w-full pl-10 pr-3 py-3 rounded-xl border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm transition-colors"
                     placeholder="Ej. Córdoba"
                   />
                 </div>
@@ -189,7 +189,7 @@ export function LinkResenasGoogle() {
             <button
               type="submit"
               disabled={isLoading || !query.trim()}
-              className="w-full bg-[#7C3AED] text-white hover:bg-[#6D28D9] disabled:opacity-50 disabled:cursor-not-allowed py-3 px-4 rounded-xl font-medium flex justify-center items-center gap-2 transition-colors"
+              className="w-full bg-neutral-900 text-white hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed py-3 px-4 rounded-xl font-medium flex justify-center items-center gap-2 transition-colors"
             >
               {isLoading && method === 'search' ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Buscar'}
             </button>
@@ -212,7 +212,7 @@ export function LinkResenasGoogle() {
                     type="url"
                     value={mapsUrl}
                     onChange={(e) => setMapsUrl(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-3 rounded-xl border border-neutral-300 focus:border-[#7C3AED] focus:ring-[#7C3AED] sm:text-sm transition-colors"
+                    className="block w-full pl-10 pr-3 py-3 rounded-xl border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm transition-colors"
                     placeholder="https://maps.app.goo.gl/..."
                     required
                   />
@@ -223,7 +223,7 @@ export function LinkResenasGoogle() {
             <button
               type="submit"
               disabled={isLoading || !mapsUrl.trim()}
-              className="w-full bg-[#7C3AED] text-white hover:bg-[#6D28D9] disabled:opacity-50 disabled:cursor-not-allowed py-3 px-4 rounded-xl font-medium flex justify-center items-center gap-2 transition-colors"
+              className="w-full bg-neutral-900 text-white hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed py-3 px-4 rounded-xl font-medium flex justify-center items-center gap-2 transition-colors"
             >
               {isLoading && method === 'maps' ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Generar Link'}
             </button>
@@ -243,13 +243,13 @@ export function LinkResenasGoogle() {
             <p className="text-sm text-neutral-500">Seleccioná el negocio correcto para generar el enlace.</p>
             <div className="space-y-3">
               {searchResults.map((result, idx) => (
-                <div key={idx} className="border border-neutral-200 rounded-xl p-4 hover:border-[#7C3AED] transition-colors bg-neutral-50">
+                <div key={idx} className="border border-neutral-200 rounded-xl p-4 hover:border-neutral-900 transition-colors bg-neutral-50">
                   <h4 className="font-semibold text-neutral-900 mb-1">{result.name}</h4>
                   <p className="text-sm text-neutral-600 mb-4">{result.address}</p>
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleSelectResult(result)}
-                      className="flex-1 bg-white border border-[#7C3AED] text-[#7C3AED] hover:bg-[#7C3AED] hover:text-white py-2 px-3 rounded-lg text-sm font-medium transition-colors"
+                      className="flex-1 bg-white border border-neutral-900 text-neutral-900 hover:bg-neutral-900 hover:text-white py-2 px-3 rounded-lg text-sm font-medium transition-colors"
                     >
                       Seleccionar
                     </button>
@@ -279,7 +279,7 @@ export function LinkResenasGoogle() {
         mt-8 lg:mt-0 w-full
       `}>
         {finalResult && (
-          <div aria-live="polite" className="bg-[#7C3AED] text-white rounded-2xl p-6 lg:p-8 shadow-xl w-full">
+          <div aria-live="polite" className="bg-neutral-900 text-white rounded-2xl p-6 lg:p-8 shadow-xl w-full">
             <h3 className="text-white text-sm font-semibold mb-4 opacity-90 uppercase tracking-wide">
               Link de Reseñas Generado
             </h3>
@@ -307,7 +307,7 @@ export function LinkResenasGoogle() {
             <div className="flex flex-col sm:flex-row items-center gap-3">
               <button
                 onClick={handleCopy}
-                className="w-full sm:flex-1 bg-white text-[#7C3AED] hover:bg-white/90 active:bg-white transition-colors py-3 px-4 rounded-xl font-medium flex items-center justify-center gap-2"
+                className="w-full sm:flex-1 bg-white text-neutral-900 hover:bg-white/90 active:bg-white transition-colors py-3 px-4 rounded-xl font-medium flex items-center justify-center gap-2"
               >
                 {copied ? <CheckCircle2 className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
                 {copied ? 'Copiado' : 'Copiar link'}
@@ -335,3 +335,5 @@ export function LinkResenasGoogle() {
     </div>
   );
 }
+
+

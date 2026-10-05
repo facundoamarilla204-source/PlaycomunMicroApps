@@ -6,7 +6,7 @@ import { Download, Plus, QrCode, Link as LinkIcon, Settings, List, Lock } from "
 import { createClient } from "@/utils/supabase/client"
 import { generateQrCodes, getUserQrCodes, QrCode as QrCodeType, updateQrDestination, updateQrStatus } from "@/app/actions/qr"
 import Link from "next/link"
-import QRCodeLib from "qrcode"
+// QRCodeLib will be dynamically imported for PDF generation
 
 export function GeneradorQR() {
   const [activeTab, setActiveTab] = useState("estatico")
@@ -145,6 +145,7 @@ export function GeneradorQR() {
         
         // Generate QR code as Data URI
         const qrUrl = `${window.location.origin}/q/${qrs[i].public_token}`
+        const QRCodeLib = (await import("qrcode")).default
         const qrDataUrl = await QRCodeLib.toDataURL(qrUrl, { 
           width: 500, // high resolution 
           margin: 1,
@@ -183,6 +184,27 @@ export function GeneradorQR() {
     }
   }
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+        e.preventDefault();
+        if (activeTab === 'estatico') {
+          handleDownloadStatic();
+        } else if (activeTab === 'mis-qr' && isPro) {
+          handleGeneratePDF();
+        }
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+        if (activeTab === 'dinamico' && isPro && !generating) {
+          e.preventDefault();
+          handleGenerateDynamic();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeTab, isPro, generating, staticText, qrs]);
+
   return (
     <div className="w-full max-w-4xl mx-auto p-4 md:p-6 bg-white rounded-2xl shadow-sm border border-border mt-8">
       <div className="w-full">
@@ -220,7 +242,7 @@ export function GeneradorQR() {
                     value={staticText} 
                     onChange={(e: any) => setStaticText(e.target.value)} 
                     placeholder="https://..."
-                    className="border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    className="border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-slate-900"
                   />
                 </div>
               </div>
@@ -240,13 +262,13 @@ export function GeneradorQR() {
         {activeTab === "dinamico" && (
           <div className="space-y-8">
             {!isPro && !loading ? (
-              <div className="text-center p-12 bg-purple-50 rounded-xl border border-purple-100">
-                <Lock className="w-12 h-12 text-purple-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-purple-900 mb-2">Exclusivo para PlayComun Pro</h3>
-                <p className="text-purple-700 mb-6">
+              <div className="text-center p-12 bg-slate-50 rounded-xl border border-slate-100">
+                <Lock className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-slate-900 mb-2">Exclusivo para PlayComun Pro</h3>
+                <p className="text-slate-700 mb-6">
                   Los códigos QR dinámicos te permiten cambiar el destino en cualquier momento sin tener que volver a imprimirlos.
                 </p>
-                <Link href="/planes" className="inline-block px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium">
+                <Link href="/planes" className="inline-block px-6 py-3 bg-slate-900 text-white rounded-lg hover:bg-slate-800 font-medium">
                   Conocer PlayComun Pro
                 </Link>
               </div>
@@ -269,7 +291,7 @@ export function GeneradorQR() {
                         max="1000" 
                         value={generateCount} 
                         onChange={(e: any) => setGenerateCount(parseInt(e.target.value) || 1)}
-                        className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 w-full"
+                        className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-slate-900 w-full"
                       />
                     </div>
                   </div>
@@ -277,7 +299,7 @@ export function GeneradorQR() {
                   <button 
                     onClick={handleGenerateDynamic} 
                     disabled={generating} 
-                    className="w-full bg-[#7C3AED] hover:bg-purple-700 text-white font-medium py-2 rounded-lg disabled:opacity-50"
+                    className="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium py-2 rounded-lg disabled:opacity-50"
                   >
                     {generating ? "Generando..." : "Generar QR"}
                   </button>
@@ -335,9 +357,9 @@ export function GeneradorQR() {
                           placeholder="https://..." 
                           value={destUrl} 
                           onChange={(e: any) => setDestUrl(e.target.value)} 
-                          className="border border-gray-300 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 w-48"
+                          className="border border-gray-300 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 w-48"
                         />
-                        <button onClick={() => handleActivateQr(qr.id)} className="bg-purple-600 text-white px-3 py-1 rounded-lg text-sm hover:bg-purple-700">Guardar</button>
+                        <button onClick={() => handleActivateQr(qr.id)} className="bg-slate-900 text-white px-3 py-1 rounded-lg text-sm hover:bg-slate-800">Guardar</button>
                         <button onClick={() => setConfigQrId(null)} className="px-3 py-1 text-gray-600 hover:bg-gray-100 rounded-lg text-sm">Cancelar</button>
                       </div>
                     ) : (
@@ -372,4 +394,6 @@ export function GeneradorQR() {
     </div>
   )
 }
+
+
 

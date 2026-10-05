@@ -5,7 +5,7 @@ export function CalculadoraRentabilidadContent() {
   const dateFormatted = "3 de octubre de 2026";
 
   return (
-    <article className="prose prose-neutral prose-a:text-[#7C3AED] prose-a:no-underline hover:prose-a:underline max-w-[650px] w-full">
+    <article className="prose prose-neutral prose-a:text-neutral-900 prose-a:no-underline hover:prose-a:underline max-w-[650px] w-full">
       <h2>¿Cómo calcular la rentabilidad de un producto?</h2>
       <p>
         Calcular la rentabilidad de un producto de forma precisa es fundamental para asegurar la salud de tu negocio. 
@@ -48,21 +48,21 @@ export function CalculadoraRentabilidadContent() {
       <div className="grid sm:grid-cols-2 gap-4 not-prose">
         <Link 
           href="/herramientas/calculadora-precios"
-          className="block p-4 rounded-xl border border-neutral-200 hover:border-[#7C3AED] hover:shadow-sm transition-all"
+          className="block p-4 rounded-xl border border-neutral-200 hover:border-neutral-900 hover:shadow-sm transition-all"
         >
           <div className="font-semibold text-neutral-900 mb-1">Calculadora de precio de venta</div>
           <div className="text-sm text-neutral-500">Calculá el precio ideal sumando costos, impuestos, IVA y comisiones de pasarelas.</div>
         </Link>
         <Link 
-          href="/calculadora-iva"
-          className="block p-4 rounded-xl border border-neutral-200 hover:border-[#7C3AED] hover:shadow-sm transition-all"
+          href="/herramientas/calculadora-iva"
+          className="block p-4 rounded-xl border border-neutral-200 hover:border-neutral-900 hover:shadow-sm transition-all"
         >
           <div className="font-semibold text-neutral-900 mb-1">Calculadora de IVA</div>
           <div className="text-sm text-neutral-500">Agregá o quitá el IVA de tus productos con las tasas argentinas vigentes.</div>
         </Link>
         <Link 
           href="/herramientas/generador-presupuestos"
-          className="block p-4 rounded-xl border border-neutral-200 hover:border-[#7C3AED] hover:shadow-sm transition-all sm:col-span-2"
+          className="block p-4 rounded-xl border border-neutral-200 hover:border-neutral-900 hover:shadow-sm transition-all sm:col-span-2"
         >
           <div className="font-semibold text-neutral-900 mb-1">Generador de presupuestos</div>
           <div className="text-sm text-neutral-500">Creá presupuestos profesionales en PDF de forma rápida y gratuita.</div>
@@ -75,3 +75,5 @@ export function CalculadoraRentabilidadContent() {
     </article>
   )
 }
+
+

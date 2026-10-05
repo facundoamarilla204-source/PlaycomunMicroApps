@@ -16,10 +16,23 @@ export default async function PlanesPage() {
   const isAuthenticated = !!user
   const isPro = user ? await isProUser(user.id) : false
 
+  // Fetch prices from plans table
+  const { data: plans } = await supabase.from('plans').select('code, price')
+  let priceMensual = 5900
+  let priceAnual = 59000
+  if (plans) {
+    const monthlyPlan = plans.find(p => p.code === 'pro_monthly')
+    const yearlyPlan = plans.find(p => p.code === 'pro_yearly')
+    if (monthlyPlan) priceMensual = monthlyPlan.price
+    if (yearlyPlan) priceAnual = yearlyPlan.price
+  }
+
   return (
     <PlanesClient 
       isAuthenticated={isAuthenticated} 
       isPro={isPro} 
+      priceMensual={priceMensual}
+      priceAnual={priceAnual}
     />
   )
 }

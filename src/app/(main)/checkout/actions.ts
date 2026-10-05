@@ -15,6 +15,13 @@ export async function createCheckoutSession(planType: 'mensual' | 'anual') {
     return { error: 'Tipo de plan no válido' }
   }
 
+  const planCode = planType === 'anual' ? 'pro_yearly' : 'pro_monthly'
+  const { data: plan } = await supabase.from('plans').select('*').eq('code', planCode).single()
+
+  if (!plan || !plan.provider_plan_id) {
+    return { error: 'Plan no encontrado en el sistema' }
+  }
+
   const userEmail = user.email
   if (!userEmail) {
     return { error: 'Email no encontrado' }
@@ -27,10 +34,13 @@ export async function createCheckoutSession(planType: 'mensual' | 'anual') {
       : `${baseUrl}/cuenta/suscripcion?success=true`
 
     const checkout = await createSubscriptionCheckout({
-      planType,
       payerEmail: userEmail,
       userId: user.id,
-      returnUrl
+      returnUrl,
+      planTitle: plan.name || 'Suscripción PlayComun Pro',
+      price: plan.price,
+      frequency: planType === 'anual' ? 12 : 1,
+      frequencyType: 'months'
     })
 
     if (checkout.initPoint) {
@@ -66,12 +76,19 @@ export async function createCardSubscription({
     return { error: 'No autenticado' }
   }
 
+  const planCode = planType === 'anual' ? 'pro_yearly' : 'pro_monthly'
+  const { data: plan } = await supabase.from('plans').select('*').eq('code', planCode).single()
+
+  if (!plan || !plan.provider_plan_id) {
+    return { error: 'Plan no configurado' }
+  }
+
   try {
     const response = await createSubscriptionWithCard({
-      planType,
       token,
       payerEmail,
       userId: user.id,
+      preapprovalPlanId: plan.provider_plan_id
     })
 
     if (response.id) {

@@ -17,12 +17,19 @@ export default async function SuscripcionPage() {
     .select(`
       id,
       status,
+      current_period_start,
       current_period_end,
+      trial_start_at,
+      trial_end_at,
+      cancelled_at,
+      created_at,
       provider_subscription_id,
       plans(
         id,
         name,
-        code
+        code,
+        price,
+        currency
       )
     `)
     .eq('user_id', user.id)
@@ -37,6 +44,13 @@ export default async function SuscripcionPage() {
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
 
+  // Obtener historial de pagos
+  const { data: payments } = await supabase
+    .from('payments')
+    .select('*')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false })
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center border-b border-slate-100 pb-5">
@@ -46,6 +60,7 @@ export default async function SuscripcionPage() {
       <SuscripcionClient 
         subscription={subscription} 
         paymentMethods={paymentMethods || []} 
+        payments={payments || []}
         userEmail={user.email || ''}
       />
     </div>

@@ -1,8 +1,11 @@
 export interface SubscriptionData {
-  planType: 'mensual' | 'anual'
   payerEmail: string
   returnUrl: string
   userId: string
+  planTitle: string
+  price: number
+  frequency: number // 1 or 12
+  frequencyType: 'months'
 }
 
 /**
@@ -10,7 +13,6 @@ export interface SubscriptionData {
  */
 export async function createSubscriptionCheckout(data: SubscriptionData) {
   try {
-    const isAnual = data.planType === 'anual'
     const token = process.env.MERCADOPAGO_ACCESS_TOKEN || 'APP_USR-7697561520946621-100315-cf3b2d893218149eb689843517e82dce-600217210'
     
     if (!token) {
@@ -26,13 +28,13 @@ export async function createSubscriptionCheckout(data: SubscriptionData) {
       body: JSON.stringify({
         payer_email: data.payerEmail,
         back_url: data.returnUrl,
-        reason: `Suscripcion PlayComun Pro - ${isAnual ? 'Anual' : 'Mensual'}`,
         external_reference: data.userId,
+        reason: data.planTitle,
         auto_recurring: {
-          frequency: isAnual ? 12 : 1,
-          frequency_type: "months",
-          transaction_amount: isAnual ? 59000 : 5900,
-          currency_id: "ARS",
+          frequency: data.frequency,
+          frequency_type: data.frequencyType,
+          transaction_amount: data.price,
+          currency_id: "ARS"
         }
       })
     })
@@ -56,13 +58,12 @@ export async function createSubscriptionCheckout(data: SubscriptionData) {
 }
 
 export async function createSubscriptionWithCard(data: {
-  planType: 'mensual' | 'anual',
   token: string,
   payerEmail: string,
   userId: string,
+  preapprovalPlanId: string
 }) {
   try {
-    const isAnual = data.planType === 'anual'
     const mpToken = process.env.MERCADOPAGO_ACCESS_TOKEN || 'APP_USR-7697561520946621-100315-cf3b2d893218149eb689843517e82dce-600217210'
     
     if (!mpToken) {
@@ -78,16 +79,10 @@ export async function createSubscriptionWithCard(data: {
       body: JSON.stringify({
         payer_email: data.payerEmail,
         back_url: "https://www.playcomun.com/cuenta/suscripcion?success=true",
-        reason: `Suscripcion PlayComun Pro - ${isAnual ? 'Anual' : 'Mensual'}`,
         external_reference: data.userId,
         card_token_id: data.token, // This is the magic key for direct card payment
         status: "authorized",
-        auto_recurring: {
-          frequency: isAnual ? 12 : 1,
-          frequency_type: "months",
-          transaction_amount: isAnual ? 59000 : 5900,
-          currency_id: "ARS",
-        }
+        preapproval_plan_id: data.preapprovalPlanId
       })
     })
 

@@ -117,7 +117,7 @@ export function CalculadoraRentabilidad() {
   };
 
   return (
-    <div className={`grid gap-8 items-start w-full ${result ? 'lg:grid-cols-2 max-w-5xl mx-auto' : 'max-w-xl mx-auto'}`}>
+    <div className="grid gap-8 items-start w-full lg:grid-cols-2 max-w-6xl mx-auto">
       <div className="bg-white rounded-2xl shadow-sm border border-neutral-200 p-6 sm:p-8 space-y-8">
         
         {/* Mode Selection */}
@@ -154,7 +154,7 @@ export function CalculadoraRentabilidad() {
                 inputMode="decimal"
                 value={costStr}
                 onChange={handleCurrencyChange(setCostStr)}
-                className="block w-full pl-7 pr-3 py-3 rounded-xl border border-neutral-300 focus:border-[#7C3AED] focus:ring-[#7C3AED] sm:text-sm transition-colors"
+                className="block w-full pl-7 pr-3 py-3 rounded-xl border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm transition-colors"
                 placeholder="600"
               />
             </div>
@@ -177,7 +177,7 @@ export function CalculadoraRentabilidad() {
                   inputMode="decimal"
                   value={priceStr}
                   onChange={handleCurrencyChange(setPriceStr)}
-                  className="block w-full pl-7 pr-3 py-3 rounded-xl border border-neutral-300 focus:border-[#7C3AED] focus:ring-[#7C3AED] sm:text-sm transition-colors"
+                  className="block w-full pl-7 pr-3 py-3 rounded-xl border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm transition-colors"
                   placeholder="1000"
                 />
               </div>
@@ -196,7 +196,7 @@ export function CalculadoraRentabilidad() {
                   inputMode="decimal"
                   value={marginStr}
                   onChange={handlePercentageChange(setMarginStr)}
-                  className={`block w-full pl-3 pr-8 py-3 rounded-xl border ${errorMargin ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-neutral-300 focus:border-[#7C3AED] focus:ring-[#7C3AED]'} sm:text-sm transition-colors`}
+                  className={`block w-full pl-3 pr-8 py-3 rounded-xl border ${errorMargin ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900'} sm:text-sm transition-colors`}
                   placeholder="40"
                 />
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -225,7 +225,7 @@ export function CalculadoraRentabilidad() {
               inputMode="numeric"
               value={quantityStr}
               onChange={handleQuantityChange}
-              className="block w-full px-3 py-3 rounded-xl border border-neutral-300 focus:border-[#7C3AED] focus:ring-[#7C3AED] sm:text-sm transition-colors"
+              className="block w-full px-3 py-3 rounded-xl border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm transition-colors"
               placeholder="1"
             />
           </div>
@@ -239,7 +239,7 @@ export function CalculadoraRentabilidad() {
         mt-8 lg:mt-0 w-full
       `}>
         {result && (
-          <div aria-live="polite" className="bg-[#7C3AED] text-white rounded-2xl p-6 lg:p-8 shadow-xl w-full">
+          <div aria-live="polite" className="bg-neutral-900 text-white rounded-2xl p-6 lg:p-8 shadow-xl w-full">
             {result.type === 'rentabilidad' ? (
               <>
                 <h3 className="text-white text-sm font-semibold mb-1 opacity-90">
@@ -301,7 +301,7 @@ export function CalculadoraRentabilidad() {
             <div className="flex items-center gap-3">
               <button
                 onClick={handleCopy}
-                className="flex-1 bg-white text-[#7C3AED] hover:bg-white/90 active:bg-white transition-colors py-3 px-4 rounded-xl font-medium flex items-center justify-center gap-2"
+                className="flex-1 bg-white text-neutral-900 hover:bg-white/90 active:bg-white transition-colors py-3 px-4 rounded-xl font-medium flex items-center justify-center gap-2"
               >
                 {copied ? <CheckCircle2 className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
                 {copied ? 'Copiado' : 'Copiar'}
@@ -323,3 +323,5 @@ export function CalculadoraRentabilidad() {
     </div>
   );
 }
+
+

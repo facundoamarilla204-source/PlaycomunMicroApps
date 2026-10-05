@@ -15,19 +15,21 @@ if (MP_PUBLIC_KEY) {
 export function CheckoutClient({ 
   userEmail, 
   userId, 
-  initialPlan 
+  initialPlan,
+  priceMensual,
+  priceAnual
 }: { 
   userEmail: string, 
   userId: string, 
-  initialPlan: 'mensual' | 'anual' 
+  initialPlan: 'mensual' | 'anual',
+  priceMensual: number,
+  priceAnual: number
 }) {
   const router = useRouter()
   const [planType, setPlanType] = useState<'mensual' | 'anual'>(initialPlan)
   const [isLoadingMP, setIsLoadingMP] = useState(false)
   const [error, setError] = useState<string | null>(null)
   
-  const priceMensual = 5900
-  const priceAnual = 59000
   const currentPrice = planType === 'mensual' ? priceMensual : priceAnual
 
   const handleMercadoPagoRedirect = async () => {

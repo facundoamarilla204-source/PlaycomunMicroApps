@@ -5,21 +5,19 @@ import { Check, Sparkles, Zap, ArrowRight, Shield, CreditCard } from "lucide-rea
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { useRouter } from "next/navigation"
-import { createCheckoutSession } from "./actions"
+import { createCheckoutSession } from "../checkout/actions"
 
 interface PlanesClientProps {
   isAuthenticated: boolean
   isPro: boolean
+  priceMensual: number
+  priceAnual: number
 }
 
-export default function PlanesClient({ isAuthenticated, isPro }: PlanesClientProps) {
+export default function PlanesClient({ isAuthenticated, isPro, priceMensual, priceAnual }: PlanesClientProps) {
   const [billingCycle, setBillingCycle] = useState<'mensual' | 'anual'>('mensual')
   const [isLoading, setIsLoading] = useState(false)
   const isAnual = billingCycle === 'anual'
-
-  // Precios hardcodeados para mostrar UI (luego pueden venir de la DB si es necesario)
-  const monthlyPrice = 5900
-  const yearlyPrice = 59000 // 2 meses gratis
 
   const router = useRouter()
 
@@ -60,7 +58,7 @@ export default function PlanesClient({ isAuthenticated, isPro }: PlanesClientPro
           </div>
           <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-slate-900 max-w-3xl leading-tight">
             Diseñá sin límites, <br className="hidden sm:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-purple-600">
+            <span className="text-brand">
               trabajá sin interrupciones.
             </span>
           </h1>
@@ -161,7 +159,7 @@ export default function PlanesClient({ isAuthenticated, isPro }: PlanesClientPro
               <div className="mb-8 flex flex-col">
                 <div className="flex items-end gap-1">
                   <span className="text-5xl font-extrabold text-white">
-                    ${(isAnual ? yearlyPrice : monthlyPrice).toLocaleString('es-AR')}
+                    ${(isAnual ? priceAnual : priceMensual).toLocaleString('es-AR')}
                   </span>
                   <span className="text-slate-400 font-medium mb-1">
                     / {isAnual ? 'año' : 'mes'}
@@ -169,7 +167,7 @@ export default function PlanesClient({ isAuthenticated, isPro }: PlanesClientPro
                 </div>
                 {isAnual && (
                   <span className="text-amber-400 text-sm font-bold mt-1">
-                    Equivale a ${(yearlyPrice / 12).toLocaleString('es-AR')}/mes (Ahorrás 2 meses)
+                    Equivale a ${(priceAnual / 12).toLocaleString('es-AR')}/mes (Ahorrás 2 meses)
                   </span>
                 )}
               </div>

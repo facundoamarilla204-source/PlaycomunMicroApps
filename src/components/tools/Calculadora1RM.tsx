@@ -152,7 +152,7 @@ export function Calculadora1RM() {
               </label>
               <button 
                 onClick={toggleUnidad}
-                className="text-xs font-medium text-[#7C3AED] hover:text-[#6D28D9] transition-colors bg-purple-50 px-2 py-1 rounded-md"
+                className="text-xs font-medium text-neutral-600 hover:text-neutral-900 transition-colors bg-neutral-100 px-2 py-1 rounded-md"
               >
                 Cambiar a {unidad === 'kg' ? 'Libras (lb)' : 'Kilos (kg)'}
               </button>
@@ -163,7 +163,7 @@ export function Calculadora1RM() {
                 inputMode="decimal"
                 value={pesoStr}
                 onChange={handleDecimalChange(setPesoStr)}
-                className="block w-full pl-3 pr-12 py-3 rounded-xl border border-neutral-300 focus:border-[#7C3AED] focus:ring-[#7C3AED] sm:text-sm transition-colors"
+                className="block w-full pl-3 pr-12 py-3 rounded-xl border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm transition-colors"
                 placeholder="Ej: 100"
               />
               <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -181,7 +181,7 @@ export function Calculadora1RM() {
               inputMode="numeric"
               value={repsStr}
               onChange={handleIntegerChange(setRepsStr)}
-              className="block w-full px-3 py-3 rounded-xl border border-neutral-300 focus:border-[#7C3AED] focus:ring-[#7C3AED] sm:text-sm transition-colors"
+              className="block w-full px-3 py-3 rounded-xl border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm transition-colors"
               placeholder="Ej: 5"
             />
             {repsStr !== '' && reps > 12 && (
@@ -198,7 +198,7 @@ export function Calculadora1RM() {
             <select
               value={formula}
               onChange={(e) => setFormula(e.target.value as 'epley' | 'brzycki' | 'lander')}
-              className="block w-full px-3 py-3 rounded-xl border border-neutral-300 focus:border-[#7C3AED] focus:ring-[#7C3AED] sm:text-sm transition-colors bg-white"
+              className="block w-full px-3 py-3 rounded-xl border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm transition-colors bg-white"
             >
               <option value="epley">Epley (Recomendada)</option>
               <option value="brzycki">Brzycki</option>
@@ -222,7 +222,7 @@ export function Calculadora1RM() {
       `}>
         {result && !('error' in result) && (
           <>
-            <div aria-live="polite" className="bg-[#7C3AED] text-white rounded-2xl p-6 lg:p-8 shadow-xl w-full">
+            <div aria-live="polite" className="bg-neutral-900 text-white rounded-2xl p-6 lg:p-8 shadow-xl w-full">
               <h3 className="text-white text-sm font-semibold mb-1 opacity-90">
                 1RM ESTIMADO
               </h3>
@@ -245,7 +245,7 @@ export function Calculadora1RM() {
               <div className="flex items-center gap-3">
                 <button
                   onClick={handleCopy}
-                  className="flex-1 bg-white text-[#7C3AED] hover:bg-white/90 active:bg-white transition-colors py-3 px-4 rounded-xl font-medium flex items-center justify-center gap-2"
+                  className="flex-1 bg-white text-neutral-900 hover:bg-neutral-100 active:bg-neutral-200 transition-colors py-3 px-4 rounded-xl font-medium flex items-center justify-center gap-2"
                 >
                   {copied ? <CheckCircle2 className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
                   {copied ? 'Copiado' : 'Copiar'}
@@ -281,7 +281,7 @@ export function Calculadora1RM() {
                       {porcentajes.map((p, i) => (
                         <tr key={p.porcentaje} className={`border-b border-neutral-100 last:border-0 hover:bg-neutral-50/50 ${i === 0 ? 'bg-neutral-50/80 font-medium' : ''}`}>
                           <td className="px-4 py-3 font-semibold text-neutral-900">{p.porcentaje}%</td>
-                          <td className="px-4 py-3 font-medium text-[#7C3AED]">
+                          <td className="px-4 py-3 font-medium text-neutral-900">
                             {p.peso.toLocaleString('es-AR', { maximumFractionDigits: 1 })} {result.unidad}
                           </td>
                           <td className="px-4 py-3 text-neutral-500 hidden sm:table-cell">{p.label}</td>
@@ -301,3 +301,5 @@ export function Calculadora1RM() {
     </div>
   );
 }
+
+

@@ -30,6 +30,17 @@ export default async function CheckoutPage({
   const params = await searchParams
   const initialPlan = params?.plan === 'anual' ? 'anual' : 'mensual'
 
+  // Fetch prices from plans table
+  const { data: plans } = await supabase.from('plans').select('code, price')
+  let priceMensual = 5900
+  let priceAnual = 59000
+  if (plans) {
+    const monthlyPlan = plans.find(p => p.code === 'pro_monthly')
+    const yearlyPlan = plans.find(p => p.code === 'pro_yearly')
+    if (monthlyPlan) priceMensual = monthlyPlan.price
+    if (yearlyPlan) priceAnual = yearlyPlan.price
+  }
+
   return (
     <div className="container mx-auto px-4 pt-28 pb-12 max-w-5xl">
       <div className="text-center mb-10">
@@ -45,6 +56,8 @@ export default async function CheckoutPage({
         userEmail={user.email || ''} 
         userId={user.id} 
         initialPlan={initialPlan} 
+        priceMensual={priceMensual}
+        priceAnual={priceAnual}
       />
     </div>
   )

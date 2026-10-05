@@ -68,3 +68,5 @@ export default function ToolCard({ tool, isFavorite = false }: ToolCardProps) {
     </Link>
   )
 }
+
+
