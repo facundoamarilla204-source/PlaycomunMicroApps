@@ -41,6 +41,12 @@ export default async function CheckoutPage({
     if (yearlyPlan) priceAnual = yearlyPlan.price
   }
 
+  const mpPublicKey =
+    process.env.NEXT_PUBLIC_MP_PUBLIC_KEY ||
+    process.env.MERCADOPAGO_PUBLIC_KEY ||
+    process.env.MP_PUBLIC_KEY ||
+    ''
+
   return (
     <div className="container mx-auto px-4 pt-28 pb-12 max-w-5xl">
       <div className="text-center mb-10">
@@ -58,6 +64,7 @@ export default async function CheckoutPage({
         initialPlan={initialPlan} 
         priceMensual={priceMensual}
         priceAnual={priceAnual}
+        publicKey={mpPublicKey}
       />
     </div>
   )
