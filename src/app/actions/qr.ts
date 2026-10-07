@@ -7,9 +7,18 @@ import crypto from "crypto"
 
 export type QrCodeStatus = "unconfigured" | "active" | "paused" | "archived"
 
+export interface QrGroup {
+  id: string
+  user_id: string
+  group_code: string
+  name: string | null
+  created_at: string
+}
+
 export interface QrCode {
   id: string
   user_id: string
+  group_id: string | null
   code: string
   public_token: string
   status: QrCodeStatus
@@ -18,6 +27,49 @@ export interface QrCode {
   created_at: string
   updated_at: string
   activated_at: string | null
+}
+
+export async function getUserQrGroups() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    throw new Error("No autenticado")
+  }
+
+  const { data, error } = await supabase
+    .from("qr_groups")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false })
+
+  if (error) {
+    throw new Error(error.message)
+  }
+
+  return data as QrGroup[]
+}
+
+export async function getGroupQrs(groupId: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    throw new Error("No autenticado")
+  }
+
+  const { data, error } = await supabase
+    .from("qr_codes")
+    .select("*")
+    .eq("group_id", groupId)
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: true })
+
+  if (error) {
+    throw new Error(error.message)
+  }
+
+  return data as QrCode[]
 }
 
 export async function getUserQrCodes() {
@@ -41,6 +93,11 @@ export async function getUserQrCodes() {
   return data as QrCode[]
 }
 
+function generateGroupCode(): string {
+  // Genera un código numérico de 7 dígitos
+  return Math.floor(1000000 + Math.random() * 9000000).toString()
+}
+
 export async function generateQrCodes(count: number) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -49,17 +106,55 @@ export async function generateQrCodes(count: number) {
     throw new Error("No autenticado")
   }
 
-  // Get current count for sequential naming
-  const { count: currentCount, error: countError } = await supabase
-    .from("qr_codes")
-    .select("*", { count: "exact", head: true })
-    .eq("user_id", user.id)
-
-  if (countError) {
-    throw new Error(countError.message)
+  // 1. Generate unique group code
+  let groupCode = generateGroupCode()
+  let groupUnique = false
+  while (!groupUnique) {
+    const { data: existingGroup } = await supabase
+      .from("qr_groups")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("group_code", groupCode)
+      .single()
+    
+    if (!existingGroup) {
+      groupUnique = true
+    } else {
+      groupCode = generateGroupCode()
+    }
   }
 
-  const startingIndex = (currentCount || 0) + 1
+  // 2. Create the group
+  const { data: group, error: groupError } = await supabase
+    .from("qr_groups")
+    .insert({
+      user_id: user.id,
+      group_code: groupCode
+    })
+    .select()
+    .single()
+
+  if (groupError) {
+    throw new Error(groupError.message)
+  }
+
+  // 3. Get current max QR code index for the user to continue numbering correctly
+  // Assuming code format is QR-XXXX. We find the max and parse it.
+  const { data: allUserQrs } = await supabase
+    .from("qr_codes")
+    .select("code")
+    .eq("user_id", user.id)
+  
+  let startingIndex = 1
+  if (allUserQrs && allUserQrs.length > 0) {
+    const indices = allUserQrs
+      .map(qr => parseInt(qr.code.replace("QR-", ""), 10))
+      .filter(n => !isNaN(n))
+    if (indices.length > 0) {
+      startingIndex = Math.max(...indices) + 1
+    }
+  }
+
   const newQrs = []
 
   for (let i = 0; i < count; i++) {
@@ -68,6 +163,7 @@ export async function generateQrCodes(count: number) {
     
     newQrs.push({
       user_id: user.id,
+      group_id: group.id,
       code,
       public_token: token,
       status: "unconfigured",
@@ -85,7 +181,7 @@ export async function generateQrCodes(count: number) {
   }
 
   revalidatePath("/herramientas/generador-qr")
-  return data as QrCode[]
+  return { group, qrs: data as QrCode[] }
 }
 
 export async function updateQrDestination(id: string, destinationUrl: string) {
@@ -178,4 +274,3 @@ export async function getQrByTokenPublic(token: string) {
 
   return data as Pick<QrCode, "id" | "public_token" | "status" | "destination_url">
 }
-
