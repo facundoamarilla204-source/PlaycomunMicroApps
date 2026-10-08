@@ -15,9 +15,9 @@ function SuccessBanner({ onClose }: { onClose: () => void }) {
       initial={{ opacity: 0, y: -20, scale: 0.97 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: -20, scale: 0.97 }}
-      className="relative bg-gradient-to-br from-emerald-500 to-teal-600 rounded-3xl p-8 text-white shadow-2xl shadow-emerald-200 overflow-hidden"
+      className="relative bg-emerald-600 rounded-xl p-8 text-white shadow-md overflow-hidden"
     >
-      <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none" />
+      {/* Eliminado: blur blob */}
       <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-6">
         <div className="w-16 h-16 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center flex-shrink-0">
           <CheckCircle2 className="w-8 h-8 text-white" />
@@ -166,9 +166,9 @@ export function SuscripcionClient({
       {/* Plan Details Card */}
       <motion.div
         initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-        className="bg-white rounded-[2rem] p-6 md:p-8 shadow-sm border border-slate-100 overflow-hidden relative"
+        className="bg-white rounded-xl p-6 md:p-8 shadow-sm border border-slate-100 overflow-hidden relative"
       >
-        <div className="absolute top-0 right-0 w-64 h-64 bg-amber-50 rounded-full blur-3xl -mr-20 -mt-20 opacity-50 pointer-events-none" />
+        {/* Eliminado: background blob amber */}
         <div className="relative z-10">
           <h2 className="text-2xl font-bold mb-8 text-slate-800 tracking-tight">Mi Plan Actual</h2>
 
@@ -177,7 +177,7 @@ export function SuscripcionClient({
               {/* Header */}
               <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
                 <div className="flex items-start gap-4">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-100 to-amber-200 text-amber-600 flex items-center justify-center font-bold text-2xl shadow-inner">
+                  <div className="w-14 h-14 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-2xl shadow-inner">
                     P
                   </div>
                   <div>
@@ -316,7 +316,7 @@ export function SuscripcionClient({
           ) : (
             /* No subscription */
             <div className="text-center py-12">
-              <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+              <div className="w-20 h-20 bg-slate-50 rounded-xl flex items-center justify-center mx-auto mb-6 shadow-inner">
                 <span className="text-3xl text-slate-300">P</span>
               </div>
               <h3 className="text-xl font-bold text-slate-800 mb-3 tracking-tight">Plan Gratuito</h3>
@@ -325,7 +325,7 @@ export function SuscripcionClient({
               </p>
               <button
                 onClick={() => router.push('/planes')}
-                className="px-8 py-3.5 rounded-2xl text-white bg-slate-900 hover:bg-slate-800 font-bold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+                className="px-8 py-3.5 rounded-xl text-white bg-slate-900 hover:bg-slate-800 font-bold transition-all shadow-sm hover:shadow-md"
               >
                 Ver planes Pro
               </button>
@@ -337,7 +337,7 @@ export function SuscripcionClient({
       {/* Historial de Pagos */}
       <motion.div
         initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-        className="bg-white rounded-[2rem] p-6 md:p-8 shadow-sm border border-slate-100"
+        className="bg-white rounded-xl p-6 md:p-8 shadow-sm border border-slate-100"
       >
         <h2 className="text-xl font-bold text-slate-800 tracking-tight mb-6">Historial de pagos</h2>
 

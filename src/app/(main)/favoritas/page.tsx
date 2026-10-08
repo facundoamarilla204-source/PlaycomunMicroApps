@@ -43,9 +43,7 @@ export default async function FavoritasPage() {
 
         {userFavorites.length === 0 ? (
           <div className="flex flex-col items-center justify-center bg-white border border-border/60 rounded-2xl p-12 text-center max-w-2xl mx-auto shadow-sm">
-            <div className="w-16 h-16 bg-brand/10 rounded-2xl flex items-center justify-center text-brand mb-6">
-              <Bookmark className="w-8 h-8" />
-            </div>
+            <img src="/otter-hero.png" alt="PlayComun Nutria" className="mb-6 h-32 w-auto object-contain opacity-90 drop-shadow-sm" />
             <h2 className="text-2xl font-bold text-slate-900 mb-3">
               No tenés favoritas aún
             </h2>

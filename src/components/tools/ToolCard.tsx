@@ -32,7 +32,7 @@ export default function ToolCard({ tool, isFavorite = false }: ToolCardProps) {
   return (
     <Link 
       href={`${tool.customUrl || `/herramientas/${tool.slug}`}`}
-      className="group relative flex flex-col rounded-2xl border border-border/80 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-brand/40 hover:shadow-xl hover:shadow-brand/5 active:scale-[0.98]"
+      className="group relative flex flex-col h-full justify-between rounded-2xl border border-border/80 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-brand/40 hover:shadow-xl hover:shadow-brand/5 active:scale-[0.98]"
     >
       <FavoriteButton toolSlug={tool.slug} initialIsFavorite={isFavorite} />
       

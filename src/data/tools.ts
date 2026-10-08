@@ -2,7 +2,9 @@ export type Tool = {
   slug: string
   name: string
   description: string
-  category: "calculadoras" | "generadores" | "utilidades"
+  type: "calculadora" | "generador" | "utilidad"
+  category: "precios-costos" | "plata-finanzas" | "gestion-negocio" | "clientes-utilidades" | "salud-fitness"
+  exampleResult?: string
   icon: string
   tier: "free" | "pro"
   status: "live" | "soon"
@@ -30,9 +32,50 @@ const NOW = new Date().toISOString()
 
 export const tools: Tool[] = [
   {
+    slug: "costo-receta",
+    name: "Calculadora de costo de receta",
+    type: "calculadora",
+    category: "precios-costos",
+    exampleResult: "$800 costo / $2.400 venta",
+    tier: "free",
+    description: "Calculá el costo real de elaboración de tus recetas, obtené precios de venta y guardá tus creaciones.",
+    icon: "ChefHat",
+    status: "live",
+    featured: true,
+    keywords: ["calculadora de costo de receta", "costo de receta", "calcular costo de receta", "precio de venta de una receta", "costos gastronomicos", "recetas", "rentabilidad receta"],
+    updatedAt: NOW,
+    seo: {
+      title: "Calculadora de costo de receta | PlayComun",
+      description: "Calculadora online para obtener el costo real de elaboración de una receta y el precio de venta sugerido. Guardá tus recetas y calculá tus ganancias.",
+      h1: "Calculadora de costo de receta",
+      intro: "Ingresá tus ingredientes, calculá el costo real de elaboración y obtené un precio de venta sugerido según tu margen de ganancia."
+    },
+    faqs: [
+      {
+        question: '¿Por qué calcular el costo de una receta?',
+        answer: 'Calcular el costo te permite saber exactamente cuánto gastás en ingredientes y otros costos. Sin esto, podrías estar vendiendo a pérdida o cobrando menos de lo necesario para que tu negocio sea rentable.'
+      },
+      {
+        question: '¿Cómo funciona la conversión de unidades?',
+        answer: 'Solo tenés que indicar cuánto compraste de un ingrediente (ej. 1 kg) y cuánto pagaste, y luego cuánto usás en la receta (ej. 250 g). La calculadora hace la regla de 3 automáticamente.'
+      },
+      {
+        question: '¿Qué son los otros costos?',
+        answer: 'Son gastos indirectos que también hacen a la elaboración: luz, gas, empaques, horas de trabajo. Recomendamos incluirlos para tener un costo de elaboración real.'
+      },
+      {
+        question: '¿Puedo guardar mis recetas?',
+        answer: 'Sí. Si iniciás sesión con tu cuenta gratuita de PlayComun, podés guardar todas tus recetas, editarlas, duplicarlas o eliminarlas cuando quieras.'
+      }
+    ],
+    related: ["calculadora-precios", "calculadora-rentabilidad", "calculadora-iva"]
+  },
+  {
     slug: "control-gastos",
     name: "Control de gastos",
-    category: "utilidades",
+    type: "utilidad",
+    category: "plata-finanzas",
+    exampleResult: "Gastos del mes: Control de gastos50.000",
     tier: "free",
     description: "Registrá y organizá tus gastos diarios de forma rápida. Conocé en qué se va tu dinero.",
     icon: "Wallet",
@@ -50,7 +93,9 @@ export const tools: Tool[] = [
   {
     slug: "calculadora-precios",
     name: "Calculadora de precios",
-    category: "calculadoras",
+    type: "calculadora",
+    category: "precios-costos",
+    exampleResult: "Costo Calculadora de precios0k → Venta Calculadora de precios5k",
     tier: "free",
     description: "Calculá el precio de venta ideal con tus costos, IVA y comisiones.",
     icon: "Calculator",
@@ -107,7 +152,9 @@ export const tools: Tool[] = [
   {
     slug: "generador-presupuestos",
     name: "Generador de presupuestos",
-    category: "generadores",
+    type: "generador",
+    category: "gestion-negocio",
+    exampleResult: "PDF generado en 5 seg",
     tier: "free",
     description: "Creá presupuestos profesionales y descargalos en PDF",
     icon: "FileText",
@@ -152,7 +199,9 @@ export const tools: Tool[] = [
   {
     slug: "calculadora-iva",
     name: "Calculadora de IVA",
-    category: "calculadoras",
+    type: "calculadora",
+    category: "precios-costos",
+    exampleResult: "Calculadora de IVA0.000 + IVA 21% = Calculadora de IVA2.100",
     tier: "free",
     description: "Calculá el IVA, agregalo a un precio o desglosalo de un importe final.",
     icon: "Receipt",
@@ -197,7 +246,9 @@ export const tools: Tool[] = [
   {
     slug: "calculadora-rentabilidad",
     name: "Calculadora de rentabilidad",
-    category: "calculadoras",
+    type: "calculadora",
+    category: "precios-costos",
+    exampleResult: "Margen: 35% | Ganancia: $5k",
     tier: "free",
     description: "Calculá ganancias, margen y rentabilidad de tus productos o servicios.",
     icon: "TrendingUp",
@@ -241,7 +292,9 @@ export const tools: Tool[] = [
   {
     slug: "generador-qr",
     name: "Generador de QR",
-    category: "generadores",
+    type: "generador",
+    category: "clientes-utilidades",
+    exampleResult: "1 QR creado",
     tier: "free",
     description: "Creá códigos QR para pagos, enlaces o texto.",
     icon: "QrCode",
@@ -253,7 +306,9 @@ export const tools: Tool[] = [
   {
     slug: "calculadora-1rm",
     name: "Calculadora de 1RM",
-    category: "calculadoras",
+    type: "calculadora",
+    category: "salud-fitness",
+    exampleResult: "1RM Estimado: 105kg",
     tier: "free",
     description: "Calculá tu 1RM estimado y consultá cargas orientativas según distintos porcentajes.",
     icon: "Dumbbell",
@@ -298,19 +353,30 @@ export const tools: Tool[] = [
   {
     slug: "conversor-unidades",
     name: "Conversor de unidades",
-    category: "utilidades",
-    tier: "pro",
-    description: "Convertí entre distintas unidades de forma rápida.",
+    type: "utilidad",
+    category: "clientes-utilidades",
+    exampleResult: "1 kg = 2.2 lb",
+    tier: "free",
+    description: "Convertí entre distintas unidades físicas y digitales al instante.",
     icon: "ArrowRightLeft",
-    status: "soon",
+    status: "live",
     featured: true,
-    keywords: ["conversor", "unidades", "medidas", "kilos", "libras", "metros", "centimetros"],
+    keywords: ["conversor", "unidades", "medidas", "kilos", "libras", "metros", "centimetros", "conversor de unidades", "convertir unidades", "convertir medidas"],
     updatedAt: NOW,
+    seo: {
+      title: "Conversor de unidades online: Convertí medidas al instante",
+      description: "Convertí longitud, peso, volumen, temperatura, almacenamiento y más con este conversor gratuito y rápido. Sin descargar nada, funciona en tu celular.",
+      h1: "Conversor de Unidades",
+      intro: "Convertí rápidamente entre múltiples sistemas de medida. Seleccioná la categoría, ingresá el valor y obtené el resultado al instante."
+    },
+    related: ["calculadora-1rm", "calculadora-precios", "calculadora-iva"]
   },
   {
     slug: "calculadora-aguinaldo",
     name: "Calculadora de aguinaldo",
-    category: "calculadoras",
+    type: "calculadora",
+    category: "plata-finanzas",
+    exampleResult: "Medio SAC: $250.000",
     tier: "free",
     description: "Calculá tu aguinaldo (SAC) de forma rápida y sencilla.",
     icon: "Banknote",
@@ -367,7 +433,9 @@ export const tools: Tool[] = [
   {
     slug: "calculadora-cuotas",
     name: "Calculadora de cuotas",
-    category: "calculadoras",
+    type: "calculadora",
+    category: "plata-finanzas",
+    exampleResult: "3 cuotas de $4.500",
     tier: "free",
     description: "Calculá cuotas con o sin interés y conocé cuánto vas a pagar en total.",
     icon: "CreditCard",
@@ -412,7 +480,9 @@ export const tools: Tool[] = [
   {
     slug: "control-stock",
     name: "Control de stock",
-    category: "utilidades",
+    type: "utilidad",
+    category: "gestion-negocio",
+    exampleResult: "50 items gestionados",
     tier: "pro",
     description: "Gestioná tu inventario de forma simple y rápida.",
     icon: "Boxes",
@@ -424,7 +494,9 @@ export const tools: Tool[] = [
   {
     slug: "calculadora-calorias",
     name: "Calculadora de calorías",
-    category: "calculadoras",
+    type: "calculadora",
+    category: "salud-fitness",
+    exampleResult: "2.100 kcal / día",
     tier: "free",
     description: "Calculá tu metabolismo basal y estimá las calorías que necesitás por día.",
     icon: "Flame",
@@ -477,7 +549,9 @@ export const tools: Tool[] = [
   {
     slug: "link-resenas-google",
     name: "Link de reseñas de Google",
-    category: "generadores",
+    type: "generador",
+    category: "clientes-utilidades",
+    exampleResult: "Link directo generado",
     tier: "free",
     description: "Obtené el enlace directo para que tus clientes puedan dejar una reseña en Google.",
     icon: "Link",

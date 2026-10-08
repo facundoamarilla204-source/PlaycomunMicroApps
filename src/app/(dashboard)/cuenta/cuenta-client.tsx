@@ -33,9 +33,7 @@ export default function CuentaClient({ email, name, initial, logoutAction, updat
 
   return (
     <div className="min-h-screen w-full bg-[#fcfcfd] relative overflow-hidden pb-20 pt-8">
-      {/* Decorative background blobs to give glassmorphism something to blur */}
-      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-brand/5 rounded-full blur-[100px] -z-10 pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-purple-500/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
+      {/* Eliminado: Decorative background blobs */}
 
       <motion.div 
         className="max-w-5xl mx-auto px-4 sm:px-6 relative z-10"
@@ -46,7 +44,7 @@ export default function CuentaClient({ email, name, initial, logoutAction, updat
         {/* Header Profile */}
         <motion.div variants={itemVariants} className="flex flex-col md:flex-row md:items-end gap-6 mb-12">
           <div className="relative group">
-            <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-brand/20 to-brand/5 border border-brand/10 flex items-center justify-center text-brand text-4xl font-black shadow-sm overflow-hidden">
+            <div className="w-24 h-24 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-brand text-4xl font-black shadow-sm overflow-hidden">
               <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
@@ -54,13 +52,6 @@ export default function CuentaClient({ email, name, initial, logoutAction, updat
               >
                 {initial}
               </motion.div>
-              {/* Shine effect on hover */}
-              <motion.div 
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent"
-                initial={{ x: "-100%" }}
-                whileHover={{ x: "100%" }}
-                transition={{ duration: 1, ease: "easeInOut", repeat: Infinity }}
-              />
             </div>
             <motion.div 
               initial={{ scale: 0 }}
@@ -88,8 +79,7 @@ export default function CuentaClient({ email, name, initial, logoutAction, updat
           <div className="lg:col-span-7 space-y-8">
             
             {/* Herramientas Favoritas */}
-            <motion.div variants={itemVariants} className="bg-white/80 backdrop-blur-xl rounded-2xl border border-border p-8 shadow-sm relative overflow-hidden group">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-brand/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <motion.div variants={itemVariants} className="bg-white rounded-xl border border-border p-8 shadow-sm relative overflow-hidden group">
               
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-3">
@@ -160,7 +150,7 @@ export default function CuentaClient({ email, name, initial, logoutAction, updat
                   <button 
                     disabled={isPending}
                     type="submit" 
-                    className="bg-slate-900 hover:bg-brand disabled:bg-slate-400 text-white px-8 py-3.5 rounded-xl text-sm font-bold transition-all duration-300 shadow-md hover:shadow-xl hover:shadow-brand/20 hover:-translate-y-0.5 active:translate-y-0 active:scale-95"
+                    className="bg-slate-900 hover:bg-brand disabled:bg-slate-400 text-white px-8 py-3.5 rounded-xl text-sm font-bold transition-colors shadow-sm hover:shadow-md"
                   >
                     {isPending ? "Guardando..." : "Actualizar perfil"}
                   </button>
@@ -178,37 +168,8 @@ export default function CuentaClient({ email, name, initial, logoutAction, updat
               variants={itemVariants} 
               onMouseEnter={() => setIsHoveringPlan(true)}
               onMouseLeave={() => setIsHoveringPlan(false)}
-              className="relative rounded-2xl p-8 text-white overflow-hidden group cursor-pointer shadow-md"
+              className="relative rounded-xl p-8 text-white overflow-hidden group cursor-pointer shadow-sm bg-brand"
             >
-              {/* Dynamic Glow Breathing Background */}
-              <motion.div 
-                className="absolute inset-0 bg-gradient-to-br from-[#7b2cbf] via-[#9d4edd] to-[#5a189a]"
-                animate={{
-                  background: isHoveringPlan 
-                    ? "linear-gradient(to bottom right, #5a189a, #9d4edd, #7b2cbf)" 
-                    : "linear-gradient(to bottom right, #7b2cbf, #9d4edd, #5a189a)",
-                }}
-                transition={{ duration: 1 }}
-              />
-              
-              {/* Animated particles/blobs */}
-              <motion.div 
-                animate={{ 
-                  scale: [1, 1.2, 1],
-                  opacity: [0.3, 0.5, 0.3],
-                  rotate: [0, 90, 0]
-                }}
-                transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                className="absolute -top-20 -right-20 w-64 h-64 bg-white/20 rounded-full blur-3xl mix-blend-overlay pointer-events-none" 
-              />
-              <motion.div 
-                animate={{ 
-                  scale: [1, 1.5, 1],
-                  opacity: [0.2, 0.4, 0.2]
-                }}
-                transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -bottom-10 -left-10 w-40 h-40 bg-pink-500/30 rounded-full blur-2xl mix-blend-overlay pointer-events-none" 
-              />
               
               <div className="relative z-10 flex flex-col h-full min-h-[220px]">
                 <div className="flex items-center justify-between mb-2">

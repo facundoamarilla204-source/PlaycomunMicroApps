@@ -41,9 +41,7 @@ export default function PlanesClient({ isAuthenticated, isPro, priceMensual, pri
 
   return (
     <div className="min-h-screen bg-[#fcfcfd] relative overflow-hidden py-12 sm:py-24">
-      {/* Decorative Blobs */}
-      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-brand/5 rounded-full blur-[100px] -z-10 pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-amber-500/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
+      {/* Eliminado: Decorative Blobs */}
 
       <motion.div 
         className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10"
@@ -52,8 +50,7 @@ export default function PlanesClient({ isAuthenticated, isPro, priceMensual, pri
         variants={containerVariants}
       >
         <motion.div variants={itemVariants} className="flex flex-col items-center text-center gap-4 mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand/10 text-brand text-sm font-bold tracking-wide">
-            <Sparkles className="w-4 h-4" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-brand/10 text-brand text-sm font-bold tracking-wide">
             LLEVA TUS HERRAMIENTAS AL SIGUIENTE NIVEL
           </div>
           <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-slate-900 max-w-3xl leading-tight">
@@ -91,7 +88,7 @@ export default function PlanesClient({ isAuthenticated, isPro, priceMensual, pri
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
           {/* Plan Gratuito */}
-          <motion.div variants={itemVariants} className="bg-white/80 backdrop-blur-xl border border-border/60 rounded-[2rem] p-8 sm:p-10 shadow-sm hover:shadow-lg hover:border-slate-300 transition-all duration-300 flex flex-col">
+          <motion.div variants={itemVariants} className="bg-white border border-slate-200 rounded-xl p-8 sm:p-10 shadow-sm flex flex-col">
             <h2 className="text-3xl font-black text-slate-900 mb-2">Básico</h2>
             <p className="text-slate-500 mb-6 font-medium">Ideal para uso casual y tareas rápidas.</p>
             
@@ -108,7 +105,7 @@ export default function PlanesClient({ isAuthenticated, isPro, priceMensual, pri
                 'Soporte comunitario'
               ].map((feature, i) => (
                 <li key={i} className="flex items-start gap-3 text-slate-700 font-medium">
-                  <div className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 flex-shrink-0 mt-0.5">
+                  <div className="w-6 h-6 rounded bg-slate-100 flex items-center justify-center text-slate-600 flex-shrink-0 mt-0.5">
                     <Check className="w-4 h-4" />
                   </div>
                   <span>{feature}</span>
@@ -141,10 +138,8 @@ export default function PlanesClient({ isAuthenticated, isPro, priceMensual, pri
           </motion.div>
 
           {/* Plan Pro */}
-          <motion.div variants={itemVariants} className="bg-slate-900 rounded-[2rem] p-8 sm:p-10 shadow-2xl relative overflow-hidden flex flex-col group">
-            {/* Pro background effects */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-brand/20 rounded-full blur-3xl group-hover:bg-brand/30 transition-colors duration-500 pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-500/20 rounded-full blur-3xl pointer-events-none" />
+          <motion.div variants={itemVariants} className="bg-slate-900 rounded-xl p-8 sm:p-10 shadow-md relative overflow-hidden flex flex-col group">
+            {/* Eliminado: Pro background effects (orbes) */}
             
             <div className="absolute top-0 right-8 bg-amber-400 text-amber-950 text-xs font-black px-4 py-1.5 rounded-b-xl uppercase tracking-wider shadow-sm">
               Recomendado
@@ -152,7 +147,7 @@ export default function PlanesClient({ isAuthenticated, isPro, priceMensual, pri
 
             <div className="relative z-10 flex flex-col h-full">
               <h2 className="text-3xl font-black text-white mb-2 flex items-center gap-2">
-                Pro <Zap className="w-6 h-6 text-amber-400 fill-amber-400" />
+                Pro
               </h2>
               <p className="text-slate-400 mb-6 font-medium">Potencia total para profesionales.</p>
               
@@ -182,7 +177,7 @@ export default function PlanesClient({ isAuthenticated, isPro, priceMensual, pri
                   'Historial guardado de documentos'
                 ].map((feature, i) => (
                   <li key={i} className="flex items-start gap-3 text-slate-200 font-medium">
-                    <div className="w-6 h-6 rounded-full bg-brand/20 flex items-center justify-center text-amber-400 flex-shrink-0 mt-0.5 border border-amber-400/20">
+                    <div className="w-6 h-6 rounded bg-brand/20 flex items-center justify-center text-amber-400 flex-shrink-0 mt-0.5 border border-amber-400/20">
                       <Check className="w-4 h-4" />
                     </div>
                     <span>{feature}</span>

@@ -15,9 +15,9 @@ export default async function Image({ params }: { params: Promise<{ slug: string
     )
   }
 
-  const categoryName = tool.category === "calculadoras" 
+  const categoryName = tool.type === "calculadora" 
     ? "Calculadora" 
-    : tool.category === "generadores" 
+    : tool.type === "generador" 
     ? "Generador" 
     : "Utilidad"
 

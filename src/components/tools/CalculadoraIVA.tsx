@@ -91,7 +91,7 @@ export function CalculadoraIVA() {
 
   return (
     <div className="grid gap-8 items-start w-full lg:grid-cols-2 max-w-6xl mx-auto">
-      <div className="bg-white rounded-2xl shadow-sm border border-neutral-200 p-6 sm:p-8 space-y-8">
+      <div className="bg-white rounded-xl shadow-sm border border-neutral-200 p-6 sm:p-8 space-y-8">
         
         {/* Mode Selection */}
         <div className="flex bg-neutral-100 p-1 rounded-xl">
@@ -156,7 +156,7 @@ export function CalculadoraIVA() {
         mt-8 lg:mt-0 w-full
       `}>
         {result && (
-          <div aria-live="polite" className="bg-neutral-900 text-white rounded-2xl p-6 lg:p-8 shadow-xl w-full">
+          <div aria-live="polite" className="bg-neutral-900 text-white rounded-xl p-6 lg:p-8 shadow-md w-full">
             <h3 className="text-white text-sm font-semibold mb-1 opacity-90">
               {mode === 'add' ? 'PRECIO FINAL (CON IVA)' : 'PRECIO NETO (SIN IVA)'}
             </h3>

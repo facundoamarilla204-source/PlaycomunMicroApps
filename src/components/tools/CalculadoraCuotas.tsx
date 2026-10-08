@@ -163,7 +163,7 @@ export function CalculadoraCuotas() {
 
   return (
     <div className="grid gap-8 items-start w-full lg:grid-cols-2 max-w-6xl mx-auto">
-      <div className="bg-white rounded-2xl shadow-sm border border-neutral-200 p-6 sm:p-8 space-y-8">
+      <div className="bg-white rounded-xl shadow-sm border border-neutral-200 p-6 sm:p-8 space-y-8">
         
         {/* Mode Selection */}
         <div className="flex bg-neutral-100 p-1 rounded-xl">
@@ -273,7 +273,7 @@ export function CalculadoraCuotas() {
       `}>
         {result && (
           <>
-            <div aria-live="polite" className="bg-neutral-900 text-white rounded-2xl p-6 lg:p-8 shadow-xl w-full">
+            <div aria-live="polite" className="bg-neutral-900 text-white rounded-xl p-6 lg:p-8 shadow-md w-full">
               <h3 className="text-white text-sm font-semibold mb-1 opacity-90">
                 VALOR DE LA CUOTA
               </h3>
@@ -319,7 +319,7 @@ export function CalculadoraCuotas() {
 
             {/* Desglose */}
             {desglose.length > 0 && desglose.length <= 60 && (
-              <div className="bg-white rounded-2xl shadow-sm border border-neutral-200 p-6 w-full">
+              <div className="bg-white rounded-xl shadow-sm border border-neutral-200 p-6 w-full">
                 <h4 className="font-semibold text-neutral-900 mb-4">Desglose del financiamiento</h4>
                 
                 {/* Mobile View (Cards) */}

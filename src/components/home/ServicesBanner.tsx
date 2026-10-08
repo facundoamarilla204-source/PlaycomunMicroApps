@@ -9,6 +9,7 @@ export default function ServicesBanner() {
           <div className="grid grid-cols-1 items-start gap-16 lg:grid-cols-2">
             
             <div className="max-w-xl">
+              <img src="/otter-hero.png" alt="PlayComun Nutria" className="mb-8 h-32 w-auto object-contain drop-shadow-sm" />
               <h2 className="mb-5 text-4xl sm:text-5xl font-extrabold text-[#0F172A] leading-[1.1] text-balance">
                 También desarrollamos software a medida
               </h2>

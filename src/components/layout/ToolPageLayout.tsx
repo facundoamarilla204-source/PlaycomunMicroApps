@@ -11,11 +11,15 @@ type ToolPageLayoutProps = {
 }
 
 export function ToolPageLayout({ tool, children, content }: ToolPageLayoutProps) {
-  const categoryName = tool.category === "calculadoras" 
-    ? "Calculadoras" 
-    : tool.category === "generadores" 
-    ? "Generadores" 
-    : "Utilidades"
+  const CATEGORY_NAMES: Record<string, string> = {
+    "precios-costos": "Precios y costos",
+    "plata-finanzas": "Plata y finanzas",
+    "gestion-negocio": "Gestión de negocio",
+    "clientes-utilidades": "Clientes y utilidades",
+    "salud-fitness": "Salud y fitness"
+  };
+
+  const categoryName = CATEGORY_NAMES[tool.category] || "Herramientas";
 
   const breadcrumbItems: BreadcrumbItem[] = [
     { label: "Herramientas", href: "/herramientas" },

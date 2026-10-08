@@ -30,6 +30,10 @@ import { LinkResenasGoogle } from "@/components/tools/LinkResenasGoogle"
 import { LinkResenasGoogleContent } from "@/components/tools/content/LinkResenasGoogleContent"
 import { ControlGastos } from "@/components/tools/ControlGastos"
 import { ControlGastosContent } from "@/components/tools/content/ControlGastosContent"
+import { CostoReceta } from "@/components/tools/CostoReceta"
+import { CostoRecetaContent } from "@/components/tools/content/CostoRecetaContent"
+import { ConversorUnidades } from "@/components/tools/ConversorUnidades"
+import { ConversorUnidadesContent } from "@/components/tools/content/ConversorUnidadesContent"
 
 function getToolComponent(slug: string, user: User | null): React.ReactNode {
   switch (slug) {
@@ -132,6 +136,24 @@ function getToolComponent(slug: string, user: User | null): React.ReactNode {
           </div>
         </>
       )
+    case "costo-receta":
+      return (
+        <>
+          <CostoReceta user={user} />
+          <div className="mt-16 flex justify-center">
+            <CostoRecetaContent />
+          </div>
+        </>
+      )
+    case "conversor-unidades":
+      return (
+        <>
+          <ConversorUnidades />
+          <div className="mt-16 flex justify-center">
+            <ConversorUnidadesContent />
+          </div>
+        </>
+      )
     default:
       return null
   }
@@ -170,9 +192,9 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
   const toolContent = getToolComponent(tool.slug, user)
 
   const applicationCategory =
-    tool.category === "salud"
+    tool.category === "salud-fitness"
       ? "HealthAndFitnessApplication"
-      : tool.category === "marketing"
+      : tool.category === "gestion-negocio" || tool.category === "clientes-utilidades"
       ? "BusinessApplication"
       : "FinanceApplication"
 

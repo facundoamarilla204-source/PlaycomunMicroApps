@@ -44,20 +44,24 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
 
             {/* Desktop Nav */}
             <nav className="hidden md:flex items-center gap-8">
-              {categories.map((cat) => {
-                const catTools = tools.filter(t => t.category === cat.id)
+              {[
+                { id: 'calculadora', name: 'Calculadoras' },
+                { id: 'generador', name: 'Generadores' },
+                { id: 'utilidad', name: 'Utilidades' }
+              ].map((type) => {
+                const typeTools = tools.filter(t => t.type === type.id)
                 return (
-                  <div key={cat.id} className="relative group">
+                  <div key={type.id} className="relative group">
                     <Link
-                      href={`/herramientas?categoria=${cat.id}`}
-                      className="flex items-center gap-1.5 text-base font-semibold text-foreground/80 transition-colors hover:text-brand capitalize py-2"
+                      href={`/herramientas?tipo=${type.id}`}
+                      className="flex items-center gap-1.5 text-base font-semibold text-foreground/80 transition-colors hover:text-brand"
                     >
-                      {cat.name} <ChevronDown className="h-4 w-4 transition-transform group-hover:rotate-180" />
+                      {type.name} <ChevronDown className="h-4 w-4 transition-transform group-hover:rotate-180" />
                     </Link>
-                    {catTools.length > 0 && (
+                    {typeTools.length > 0 && (
                       <div className="absolute left-0 top-[100%] hidden w-64 flex-col rounded-2xl border border-border/50 bg-white shadow-xl shadow-brand/5 group-hover:flex transform opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-2 transition-all">
                         <div className="p-2 max-h-80 overflow-y-auto">
-                          {catTools.map((tool) => (
+                          {typeTools.map((tool) => (
                             <Link
                               key={tool.slug}
                               href={`${tool.customUrl || `/herramientas/${tool.slug}`}`}
@@ -186,18 +190,18 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
             </div>
             <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
               <div className="flex flex-col gap-2 border-b border-border pb-4">
-                <span className="text-sm font-medium text-foreground-subtle uppercase tracking-wider">Categorías</span>
-                <Link href="/herramientas" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-foreground font-medium hover:text-brand">
-                  Todas
-                </Link>
-                {categories.map((cat) => (
+                {[
+                  { id: 'calculadora', name: 'Calculadoras' },
+                  { id: 'generador', name: 'Generadores' },
+                  { id: 'utilidad', name: 'Utilidades' }
+                ].map((type) => (
                   <Link
-                    key={cat.id}
-                    href={`/herramientas?categoria=${cat.id}`}
+                    key={type.id}
+                    href={`/herramientas?tipo=${type.id}`}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block py-2 text-foreground font-medium hover:text-brand capitalize"
+                    className="block py-2 text-foreground font-medium hover:text-brand"
                   >
-                    {cat.name}
+                    {type.name}
                   </Link>
                 ))}
               </div>

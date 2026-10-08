@@ -1,13 +1,8 @@
 "use client"
 
-import { useSearchParams } from "next/navigation"
 import ToolGrid from "@/components/home/ToolGrid"
 
 export default function HerramientasContent({ userFavorites = [] }: { userFavorites?: string[] }) {
-  const searchParams = useSearchParams()
-  const q = searchParams.get("q") || ""
-  const categoria = searchParams.get("categoria") || "todas"
-
   return (
     <div className="py-8">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-8">
@@ -18,7 +13,11 @@ export default function HerramientasContent({ userFavorites = [] }: { userFavori
           Todas las calculadoras, generadores y utilidades.
         </p>
       </div>
-      <ToolGrid initialCategory={categoria} initialQuery={q} userFavorites={userFavorites} />
+      <ToolGrid 
+        userFavorites={userFavorites} 
+        showSearch={true}
+        showTypeFilter={true}
+      />
     </div>
   )
 }

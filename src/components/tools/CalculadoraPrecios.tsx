@@ -101,7 +101,7 @@ export function CalculadoraPrecios() {
 
   return (
     <div className="grid gap-8 items-start w-full lg:grid-cols-2 max-w-6xl mx-auto">
-      <div className="bg-white rounded-2xl shadow-sm border border-neutral-200 p-6 sm:p-8 space-y-8">
+      <div className="bg-white rounded-xl shadow-sm border border-neutral-200 p-6 sm:p-8 space-y-8">
         
         {/* Mode Selection */}
         <div className="flex bg-neutral-100 p-1 rounded-xl">
@@ -350,7 +350,7 @@ export function CalculadoraPrecios() {
         lg:block lg:sticky lg:top-8
       `}>
         {result?.ok && (
-          <div aria-live="polite" className="bg-neutral-900 text-white rounded-2xl p-6 sm:p-8 shadow-xl">
+          <div aria-live="polite" className="bg-neutral-900 text-white rounded-xl p-6 sm:p-8 shadow-md">
             <h3 className="text-neutral-900 text-sm font-medium mb-1 opacity-90">
               {mode === 'target' ? 'PRECIO FINAL (CON IVA)' : 'GANANCIA NETA POR UNIDAD'}
             </h3>

@@ -1,7 +1,7 @@
 import { tools } from "./tools"
 
 export type Category = {
-  id: "todas" | "calculadoras" | "generadores" | "utilidades"
+  id: "todas" | "precios-costos" | "plata-finanzas" | "gestion-negocio" | "clientes-utilidades" | "salud-fitness"
   name: string
   count: number
   icon: string
@@ -24,22 +24,34 @@ export const getCategories = (): Category[] => {
       icon: "LayoutGrid",
     },
     {
-      id: "calculadoras",
-      name: "Calculadoras",
-      count: counts["calculadoras"] || 0,
-      icon: "Calculator",
+      id: "precios-costos",
+      name: "Precios y costos",
+      count: counts["precios-costos"] || 0,
+      icon: "Tag",
     },
     {
-      id: "generadores",
-      name: "Generadores",
-      count: counts["generadores"] || 0,
-      icon: "Sparkles",
+      id: "plata-finanzas",
+      name: "Plata y finanzas",
+      count: counts["plata-finanzas"] || 0,
+      icon: "Wallet",
     },
     {
-      id: "utilidades",
-      name: "Utilidades",
-      count: counts["utilidades"] || 0,
-      icon: "Wrench",
+      id: "gestion-negocio",
+      name: "Gestión de negocio",
+      count: counts["gestion-negocio"] || 0,
+      icon: "Briefcase",
+    },
+    {
+      id: "clientes-utilidades",
+      name: "Clientes y utilidades",
+      count: counts["clientes-utilidades"] || 0,
+      icon: "Users",
+    },
+    {
+      id: "salud-fitness",
+      name: "Salud y fitness",
+      count: counts["salud-fitness"] || 0,
+      icon: "Heart",
     },
   ]
 }
