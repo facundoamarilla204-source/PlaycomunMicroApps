@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Search } from "lucide-react"
+import { Search, Lock } from "lucide-react"
 import Image from "next/image"
 
 export default function Hero() {
@@ -46,6 +46,11 @@ export default function Hero() {
                 Buscar
               </button>
             </form>
+
+            <div className="mt-4 flex items-center gap-2 text-sm text-foreground-muted">
+              <Lock className="w-4 h-4 text-brand shrink-0" />
+              <span>Las herramientas básicas corren en tu navegador y no guardan lo que ingresás.</span>
+            </div>
           </div>
           
           <div className="relative flex justify-center lg:justify-end">

@@ -2,6 +2,7 @@ import Hero from "@/components/home/Hero"
 import ToolGrid from "@/components/home/ToolGrid"
 import TrustStrip from "@/components/home/TrustStrip"
 import ServicesBanner from "@/components/home/ServicesBanner"
+import ContactForm from "@/components/home/ContactForm"
 import { createClient } from "@/utils/supabase/server"
 import { buildMetadata } from "@/lib/metadata"
 import { JsonLd } from "@/components/seo/JsonLd"
@@ -49,6 +50,7 @@ export default async function Home() {
       <ToolGrid userFavorites={userFavorites} />
       <TrustStrip />
       <ServicesBanner />
+      <ContactForm />
     </>
   )
 }
