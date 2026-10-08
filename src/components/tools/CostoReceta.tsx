@@ -375,11 +375,8 @@ export function CostoReceta({ user }: { user: User | null }) {
 
             {/* Ingredientes */}
             <div className="bg-white rounded-xl shadow-sm border border-neutral-200 p-6 sm:p-8 space-y-6">
-              <div className="flex items-center justify-between mb-4">
+              <div className="mb-4">
                 <h2 className="text-xl font-bold text-neutral-900">Ingredientes</h2>
-                <button onClick={addIngredient} className="flex items-center gap-1 text-sm font-medium text-brand hover:text-brand-dark px-3 py-1.5 rounded-lg border border-brand/30 hover:bg-brand/5 transition-colors">
-                  <Plus className="h-4 w-4" /> Agregar
-                </button>
               </div>
               
               {recipe.ingredients.length === 0 ? (
@@ -438,18 +435,20 @@ export function CostoReceta({ user }: { user: User | null }) {
                   ))}
                 </div>
               )}
+
+              <button 
+                onClick={addIngredient} 
+                className="w-full flex items-center justify-center gap-2 mt-4 px-4 py-3 border-2 border-dashed border-brand/30 text-brand hover:text-brand-dark hover:bg-brand/5 hover:border-brand/50 rounded-xl font-medium transition-colors"
+              >
+                <Plus className="h-5 w-5" /> Agregar ingrediente
+              </button>
             </div>
 
             {/* Otros Costos */}
             <div className="bg-white rounded-xl shadow-sm border border-neutral-200 p-6 sm:p-8 space-y-6">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h2 className="text-xl font-bold text-neutral-900">Otros Costos</h2>
-                  <p className="text-xs text-neutral-500 mt-1">Mano de obra, gas, luz, packaging, etc.</p>
-                </div>
-                <button onClick={addAdditionalCost} className="flex items-center gap-1 text-sm font-medium text-brand hover:text-brand-dark px-3 py-1.5 rounded-lg border border-brand/30 hover:bg-brand/5 transition-colors">
-                  <Plus className="h-4 w-4" /> Agregar
-                </button>
+              <div className="mb-4">
+                <h2 className="text-xl font-bold text-neutral-900">Otros Costos</h2>
+                <p className="text-xs text-neutral-500 mt-1">Mano de obra, gas, luz, packaging, etc.</p>
               </div>
               
               {recipe.additional_costs.length === 0 ? (
@@ -475,6 +474,13 @@ export function CostoReceta({ user }: { user: User | null }) {
                   ))}
                 </div>
               )}
+
+              <button 
+                onClick={addAdditionalCost} 
+                className="w-full flex items-center justify-center gap-2 mt-4 px-4 py-3 border-2 border-dashed border-brand/30 text-brand hover:text-brand-dark hover:bg-brand/5 hover:border-brand/50 rounded-xl font-medium transition-colors"
+              >
+                <Plus className="h-5 w-5" /> Agregar costo adicional
+              </button>
             </div>
           </div>
 
