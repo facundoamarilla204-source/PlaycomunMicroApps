@@ -32,6 +32,8 @@ type Recipe = {
   yield_quantity: number
   yield_unit: Unit
   target_margin: number
+  target_markup: number
+  pricing_mode: 'margin' | 'markup'
   ingredients: Ingredient[]
   additional_costs: AdditionalCost[]
   created_at?: string
@@ -45,6 +47,8 @@ const emptyRecipe: Recipe = {
   yield_quantity: 1,
   yield_unit: 'unidades',
   target_margin: 0,
+  target_markup: 0,
+  pricing_mode: 'margin',
   ingredients: [],
   additional_costs: [],
 }
@@ -94,6 +98,8 @@ export function CostoReceta({ user }: { user: User | null }) {
         yield_quantity: Number(r.yield_quantity),
         yield_unit: r.yield_unit as Unit,
         target_margin: Number(r.target_margin),
+        target_markup: Number(r.target_markup || 0),
+        pricing_mode: (r.pricing_mode || 'margin') as 'margin' | 'markup',
         created_at: r.created_at,
         updated_at: r.updated_at,
         ingredients: r.recipe_ingredients.map((i: any) => ({
@@ -184,6 +190,8 @@ export function CostoReceta({ user }: { user: User | null }) {
       yield_quantity: recipe.yield_quantity,
       yield_unit: recipe.yield_unit,
       target_margin: recipe.target_margin,
+      target_markup: recipe.target_markup,
+      pricing_mode: recipe.pricing_mode,
     }
 
     let savedRecipeId = recipe.id
@@ -270,10 +278,20 @@ export function CostoReceta({ user }: { user: User | null }) {
     const totalCost = totalIngredients + totalAdditional
     const unitCost = recipe.yield_quantity > 0 ? totalCost / recipe.yield_quantity : 0
     
-    let margin = recipe.target_margin / 100
-    if (margin >= 1) margin = 0.99 
-    
-    const suggestedPrice = unitCost / (1 - margin)
+    let suggestedPrice = 0
+    let realMarginPct = 0
+
+    if (recipe.pricing_mode === 'margin') {
+      let margin = recipe.target_margin / 100
+      if (margin >= 1) margin = 0.99 
+      suggestedPrice = unitCost > 0 ? unitCost / (1 - margin) : 0
+      realMarginPct = recipe.target_margin
+    } else {
+      let markup = recipe.target_markup / 100
+      suggestedPrice = unitCost * (1 + markup)
+      realMarginPct = suggestedPrice > 0 ? ((suggestedPrice - unitCost) / suggestedPrice) * 100 : 0
+    }
+
     const profitPerUnit = suggestedPrice - unitCost
     const totalProfit = profitPerUnit * recipe.yield_quantity
 
@@ -285,6 +303,7 @@ export function CostoReceta({ user }: { user: User | null }) {
       suggestedPrice,
       profitPerUnit,
       totalProfit,
+      realMarginPct,
       ingredientsWithCost
     }
   }, [recipe])
@@ -487,22 +506,60 @@ export function CostoReceta({ user }: { user: User | null }) {
                     </div>
                   </div>
 
-                  <div className="space-y-2 mt-6">
-                    <label className="block text-sm font-bold text-brand-dark">Margen de ganancia deseado (%)</label>
-                    <div className="relative">
-                      <input 
-                        type="number" 
-                        min="0" 
-                        max="99" 
-                        value={recipe.target_margin || ''} 
-                        onChange={e => setRecipe({...recipe, target_margin: Number(e.target.value)})} 
-                        className="block w-full pl-3 pr-8 py-3 rounded-xl border border-neutral-300 focus:border-brand focus:ring-brand sm:text-lg font-bold"
-                      />
-                      <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                        <span className="text-neutral-500 font-bold">%</span>
-                      </div>
+                  <div className="space-y-4 mt-6">
+                    <div className="space-y-2">
+                      <label className="block text-sm font-bold text-neutral-800">¿Cómo querés calcular tu precio de venta?</label>
+                      <select 
+                        value={recipe.pricing_mode} 
+                        onChange={(e: any) => setRecipe({...recipe, pricing_mode: e.target.value})} 
+                        className="block w-full px-3 py-3 rounded-xl border border-neutral-300 focus:border-brand focus:ring-brand sm:text-sm bg-white"
+                      >
+                        <option value="margin">Por margen de ganancia</option>
+                        <option value="markup">Por recargo sobre el costo</option>
+                      </select>
+                      <p className="text-xs text-neutral-500">
+                        {recipe.pricing_mode === 'margin' 
+                          ? 'Garantiza que un porcentaje específico del precio de venta sea ganancia.' 
+                          : 'Añade un porcentaje directamente sobre el costo total de la receta.'}
+                      </p>
                     </div>
-                    {recipe.target_margin >= 100 && <span className="text-xs text-red-500">El margen debe ser menor al 100%</span>}
+
+                    {recipe.pricing_mode === 'margin' ? (
+                      <div className="space-y-2">
+                        <label className="block text-sm font-bold text-brand-dark">Margen deseado (%)</label>
+                        <div className="relative">
+                          <input 
+                            type="number" 
+                            min="0" 
+                            max="99" 
+                            value={recipe.target_margin || ''} 
+                            onChange={e => setRecipe({...recipe, target_margin: Number(e.target.value)})} 
+                            className="block w-full pl-3 pr-8 py-3 rounded-xl border border-neutral-300 focus:border-brand focus:ring-brand sm:text-lg font-bold"
+                          />
+                          <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                            <span className="text-neutral-500 font-bold">%</span>
+                          </div>
+                        </div>
+                        {recipe.target_margin >= 100 && <span className="text-xs text-red-500">El margen debe ser menor al 100% para poder calcular el precio.</span>}
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        <label className="block text-sm font-bold text-brand-dark">Recargo sobre el costo (%)</label>
+                        <div className="relative">
+                          <input 
+                            type="number" 
+                            min="0" 
+                            value={recipe.target_markup || ''} 
+                            onChange={e => setRecipe({...recipe, target_markup: Number(e.target.value)})} 
+                            className="block w-full pl-3 pr-8 py-3 rounded-xl border border-neutral-300 focus:border-brand focus:ring-brand sm:text-lg font-bold"
+                          />
+                          <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                            <span className="text-neutral-500 font-bold">%</span>
+                          </div>
+                        </div>
+                        {recipe.target_markup < 0 && <span className="text-xs text-red-500">El recargo no puede ser negativo.</span>}
+                      </div>
+                    )}
                   </div>
 
                   <div className="pt-5 border-t border-neutral-100 space-y-3">
@@ -514,6 +571,11 @@ export function CostoReceta({ user }: { user: User | null }) {
                       <span>Ganancia por unidad</span>
                       <span className="font-medium text-neutral-900">{formatCurrency(calculations.profitPerUnit)}</span>
                     </div>
+                    {recipe.pricing_mode === 'markup' && (
+                      <div className="bg-amber-50 p-2 rounded border border-amber-200 text-xs text-amber-800">
+                        Esta ganancia representa un margen real del <strong>{calculations.realMarginPct.toFixed(2)}%</strong> sobre el precio de venta, no un {recipe.target_markup}%.
+                      </div>
+                    )}
                     <div className="flex justify-between text-sm text-neutral-600">
                       <span>Ganancia total estimada</span>
                       <span className="font-medium text-neutral-900">{formatCurrency(calculations.totalProfit)}</span>

@@ -19,6 +19,17 @@ export function CostoRecetaContent() {
       <h3>Preguntas frecuentes</h3>
       <dl className="mt-8 space-y-6">
         <div>
+          <dt className="font-semibold text-foreground">¿Cuál es la diferencia entre Margen de ganancia y Recargo sobre el costo?</dt>
+          <dd className="mt-2 text-foreground-muted">
+            <p className="mb-2">Son dos formas distintas de calcular el precio de venta:</p>
+            <ul className="list-disc pl-5 mb-2">
+              <li><strong>Margen de ganancia (Margin):</strong> Calcula qué porcentaje del <em>precio de venta final</em> será tu ganancia. Por ejemplo, si querés un margen del 50%, tu ganancia será la mitad de lo que paga el cliente. La fórmula es: <code className="text-xs">Costo / (1 - Margen%)</code>.</li>
+              <li><strong>Recargo (Markup):</strong> Es el porcentaje que le sumás directamente a tu <em>costo</em>. Si tu costo es $1.000 y querés un recargo del 50%, le sumás $500 y lo vendés a $1.500. La fórmula es: <code className="text-xs">Costo × (1 + Recargo%)</code>.</li>
+            </ul>
+            <p><strong>Dato clave:</strong> Un recargo del 50% NO es igual a un margen del 50%. Si aplicás un recargo del 50% ($1.000 costo + 50% = $1.500 precio), tu ganancia real sobre el precio de venta final es del 33%.</p>
+          </dd>
+        </div>
+        <div>
           <dt className="font-semibold text-foreground">¿Cómo calculo la porción exacta de un ingrediente?</dt>
           <dd className="mt-2 text-foreground-muted">Nuestra calculadora convierte automáticamente las unidades por vos. Solo tenés que ingresar el precio de compra (por ejemplo, por 1 kilo) y cuánto usás (por ejemplo, 300 gramos).</dd>
         </div>

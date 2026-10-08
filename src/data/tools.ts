@@ -592,5 +592,44 @@ export const tools: Tool[] = [
       }
     ],
     related: ["generador-qr"]
+  },
+  {
+    slug: "generador-listas-precios",
+    name: "Generador de listas de precios",
+    type: "generador",
+    category: "gestion-negocio",
+    exampleResult: "PDF generado al instante",
+    tier: "free",
+    description: "Creá listas de precios profesionales en PDF. Actualizá importes, organizá por categorías y compartilas con tus clientes.",
+    icon: "FileSpreadsheet",
+    status: "live",
+    featured: true,
+    keywords: ["generador de listas de precios", "crear lista de precios", "lista de precios en PDF", "actualizar precios de productos", "hacer lista de precios", "lista de productos"],
+    updatedAt: NOW,
+    seo: {
+      title: "Generador de listas de precios en PDF | Crear lista online",
+      description: "Creá listas de precios profesionales en PDF. Modificá precios masivamente, organizá por categorías y compartí tu lista. Ideal para emprendedores y pequeños comercios.",
+      h1: "Generador de Listas de Precios",
+      intro: "La forma más fácil de crear, actualizar y descargar tu lista de precios en formato PDF. Agregá tus productos, organizalos y compartí un documento profesional."
+    },
+    faqs: [
+      {
+        question: '¿Puedo generar mi lista de precios en formato PDF?',
+        answer: 'Sí. Una vez que agregues tus productos, podés previsualizar y descargar tu lista en PDF con formato A4, listo para imprimir o enviar por WhatsApp.'
+      },
+      {
+        question: '¿Qué pasa si quiero aumentar todos los precios juntos?',
+        answer: 'Contamos con una función de actualización masiva. Podés seleccionar aplicar un aumento o descuento porcentual a toda la lista, o solo a ciertos productos, e incluso elegir cómo redondear los centavos.'
+      },
+      {
+        question: '¿Mis listas quedan guardadas?',
+        answer: 'Si iniciás sesión de forma gratuita en PlayComun, tus listas se guardarán en tu cuenta para que puedas editarlas y descargar el PDF actualizado cuando lo necesites.'
+      },
+      {
+        question: '¿Es necesario registrarse para usar la herramienta?',
+        answer: 'No es obligatorio. Podés crear tu lista, agregar productos y descargar el PDF sin necesidad de registro, aunque si cerrás la ventana sin guardar los datos en una cuenta, se perderán.'
+      }
+    ],
+    related: ["generador-presupuestos", "calculadora-precios", "calculadora-rentabilidad"]
   }
 ]

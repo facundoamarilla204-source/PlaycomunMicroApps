@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { Search, Menu, X, ChevronDown, Calculator, Sparkles, Wrench, LogOut, User as UserIcon } from "lucide-react"
+import { Search, Menu, X, ChevronDown, Calculator, Sparkles, Wrench, LogOut, User as UserIcon, Heart } from "lucide-react"
 import { siteConfig } from "@/config/site"
 import CommandSearch from "./CommandSearch"
 import { getCategories } from "@/data/categories"
@@ -76,6 +76,12 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
                   </div>
                 )
               })}
+              <Link
+                href="/#servicios"
+                className="text-base font-semibold text-foreground/80 transition-colors hover:text-brand"
+              >
+                Servicios
+              </Link>
             </nav>
           </div>
 
@@ -100,31 +106,28 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
                   Planes
                 </Link>
               )}
-              {isAuthenticated && (
-                <Link href="/favoritas" className="rounded-full px-4 py-2 text-base font-semibold text-brand transition-colors hover:bg-brand-light">
-                  Favoritas
-                </Link>
-              )}
-              <Link 
-                href="/#servicios"
-                className="rounded-full px-4 py-2 text-base font-semibold text-foreground/80 transition-colors hover:bg-gray-100 hover:text-foreground"
-              >
-                Servicios
-              </Link>
               {isAuthenticated ? (
                 <div className="relative">
                   <button
                     onClick={() => setUserMenuOpen(!userMenuOpen)}
-                    className="w-10 h-10 rounded-full bg-brand flex items-center justify-center text-white font-bold text-lg shadow-sm transition-all hover:scale-105 hover:shadow-md active:scale-95"
+                    className="w-10 h-10 rounded-full bg-brand/10 text-brand flex items-center justify-center font-bold shadow-sm transition-all hover:scale-105 hover:bg-brand/20 hover:shadow-md active:scale-95"
                     title="Mi Cuenta"
                   >
-                    {user?.email?.charAt(0).toUpperCase() || 'U'}
+                    <UserIcon className="h-5 w-5" />
                   </button>
                   {userMenuOpen && (
                     <>
                       <div className="fixed inset-0 z-40" onClick={() => setUserMenuOpen(false)} />
                       <div className="absolute right-0 top-full mt-2 w-48 flex-col rounded-2xl border border-border/50 bg-white shadow-xl shadow-brand/5 flex z-50 animate-in slide-in-from-top-2">
                         <div className="p-2 flex flex-col gap-1">
+                          <Link
+                            href="/favoritas"
+                            onClick={() => setUserMenuOpen(false)}
+                            className="flex items-center gap-2.5 rounded-xl px-4 py-2.5 text-sm font-medium text-foreground/80 transition-all hover:bg-brand-light/50 hover:text-brand"
+                          >
+                            <Heart className="h-4 w-4" />
+                            Favoritos
+                          </Link>
                           <Link
                             href="/cuenta"
                             onClick={() => setUserMenuOpen(false)}
@@ -204,7 +207,25 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
                     {type.name}
                   </Link>
                 ))}
+                <Link 
+                  href="/#servicios"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block py-2 text-foreground font-medium hover:text-brand"
+                >
+                  Servicios
+                </Link>
               </div>
+
+              {isAuthenticated && (
+                <div className="flex flex-col gap-2 border-b border-border pb-4">
+                  <Link href="/favoritas" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-2 py-2 text-foreground font-medium hover:text-brand">
+                    <Heart className="h-4 w-4" /> Favoritos
+                  </Link>
+                  <Link href="/cuenta" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-2 py-2 text-foreground font-medium hover:text-brand">
+                    <UserIcon className="h-4 w-4" /> Mi Perfil
+                  </Link>
+                </div>
+              )}
 
               {isAuthenticated && !isPro && (
                 <Link href="/planes" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-amber-600 font-medium border-b border-border pb-4">
@@ -216,18 +237,15 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
                   Planes
                 </Link>
               )}
-              {isAuthenticated && (
-                <Link href="/favoritas" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-foreground font-medium border-b border-border pb-4">
-                  Favoritas
-                </Link>
-              )}
+              
               <div className="mt-auto flex flex-col gap-3 pt-4">
                 {isAuthenticated ? (
                   <form action={logout} className="w-full">
                     <button
                       type="submit"
-                      className="w-full rounded border border-border px-4 py-3 text-center text-sm font-medium text-red-600 hover:bg-red-50"
+                      className="w-full rounded border border-border px-4 py-3 flex items-center justify-center gap-2 text-sm font-medium text-red-600 hover:bg-red-50"
                     >
+                      <LogOut className="h-4 w-4" />
                       Cerrar Sesión
                     </button>
                   </form>
@@ -236,26 +254,19 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
                     <Link
                       href="/registro"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="w-full rounded bg-brand px-4 py-3 text-center text-sm font-medium text-white"
+                      className="w-full rounded bg-brand px-4 py-3 text-center text-sm font-medium text-white shadow-sm shadow-brand/20 transition-all active:scale-95"
                     >
                       Crear cuenta gratis
                     </Link>
                     <Link
                       href="/ingresar"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="w-full rounded border border-border px-4 py-3 text-center text-sm font-medium text-foreground"
+                      className="w-full rounded border border-border px-4 py-3 text-center text-sm font-medium text-foreground transition-colors hover:bg-gray-100"
                     >
                       Ingresar
                     </Link>
                   </>
                 )}
-                <Link 
-                  href="/#servicios"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="text-center text-sm font-medium text-foreground-subtle hover:text-brand mt-4"
-                >
-                  Ver Servicios PlayComun
-                </Link>
               </div>
             </div>
           </div>
