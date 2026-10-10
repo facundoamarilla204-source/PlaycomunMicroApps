@@ -179,6 +179,9 @@ export function CostoReceta({ user }: { user: User | null }) {
       return
     }
 
+    const validIngredients = recipe.ingredients.filter(i => i.name.trim() !== '')
+    const validCosts = recipe.additional_costs.filter(c => c.name.trim() !== '')
+
     setLoading(true)
     const isEditing = !!recipe.id
 
@@ -196,51 +199,61 @@ export function CostoReceta({ user }: { user: User | null }) {
 
     let savedRecipeId = recipe.id
 
-    if (isEditing) {
-      await supabase.from('recipes').update(recipeData).eq('id', recipe.id)
-    } else {
-      const { data, error } = await supabase.from('recipes').insert(recipeData).select('id').single()
-      if (data) savedRecipeId = data.id
-    }
-
-    if (savedRecipeId) {
+    try {
       if (isEditing) {
-        await supabase.from('recipe_ingredients').delete().eq('recipe_id', savedRecipeId)
-        await supabase.from('recipe_additional_costs').delete().eq('recipe_id', savedRecipeId)
+        const { error } = await supabase.from('recipes').update(recipeData).eq('id', recipe.id)
+        if (error) throw error
+      } else {
+        const { data, error } = await supabase.from('recipes').insert(recipeData).select('id').single()
+        if (error) throw error
+        if (data) savedRecipeId = data.id
       }
 
-      if (recipe.ingredients.length > 0) {
-        const ingredientsData = recipe.ingredients.map(i => {
-          let refQtyConverted = unitConversion(i.reference_unit, i.unit, i.reference_quantity)
-          let cost = refQtyConverted > 0 ? (i.reference_price / refQtyConverted) * i.quantity : 0
-          return {
+      if (savedRecipeId) {
+        if (isEditing) {
+          await supabase.from('recipe_ingredients').delete().eq('recipe_id', savedRecipeId)
+          await supabase.from('recipe_additional_costs').delete().eq('recipe_id', savedRecipeId)
+        }
+
+        if (validIngredients.length > 0) {
+          const ingredientsData = validIngredients.map(i => {
+            let refQtyConverted = unitConversion(i.reference_unit, i.unit, i.reference_quantity)
+            let cost = refQtyConverted > 0 ? (i.reference_price / refQtyConverted) * i.quantity : 0
+            return {
+              recipe_id: savedRecipeId,
+              name: i.name,
+              quantity: i.quantity,
+              unit: i.unit,
+              reference_quantity: i.reference_quantity,
+              reference_unit: i.reference_unit,
+              reference_price: i.reference_price,
+              calculated_cost: cost
+            }
+          })
+          const { error: ingError } = await supabase.from('recipe_ingredients').insert(ingredientsData)
+          if (ingError) throw ingError
+        }
+
+        if (validCosts.length > 0) {
+          const costsData = validCosts.map(c => ({
             recipe_id: savedRecipeId,
-            name: i.name,
-            quantity: i.quantity,
-            unit: i.unit,
-            reference_quantity: i.reference_quantity,
-            reference_unit: i.reference_unit,
-            reference_price: i.reference_price,
-            calculated_cost: cost
-          }
-        })
-        await supabase.from('recipe_ingredients').insert(ingredientsData)
+            name: c.name,
+            amount: c.amount
+          }))
+          const { error: costsError } = await supabase.from('recipe_additional_costs').insert(costsData)
+          if (costsError) throw costsError
+        }
       }
-
-      if (recipe.additional_costs.length > 0) {
-        const costsData = recipe.additional_costs.map(c => ({
-          recipe_id: savedRecipeId,
-          name: c.name,
-          amount: c.amount
-        }))
-        await supabase.from('recipe_additional_costs').insert(costsData)
-      }
+      
+      await fetchRecipes()
+      setActiveTab('list')
+      setRecipe(emptyRecipe) // Reset
+    } catch (error: any) {
+      console.error("Error al guardar:", error)
+      alert("Error al guardar la receta: " + (error.message || "Error desconocido"))
+    } finally {
+      setLoading(false)
     }
-
-    setLoading(false)
-    await fetchRecipes()
-    setActiveTab('list')
-    setRecipe(emptyRecipe) // Reset
   }
 
   const handleDelete = async (id: string) => {
