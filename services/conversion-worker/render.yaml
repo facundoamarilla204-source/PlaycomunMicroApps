@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: playcomun-conversion-worker
+    runtime: docker
+    dockerfilePath: services/conversion-worker/Dockerfile
+    dockerContext: services/conversion-worker
+    plan: free # o 'starter' para evitar suspensión tras inactividad
+    region: oregon # o frankfurt / ohio
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: WORKER_SECRET
+        generateValue: true # Render genera automáticamente un secreto seguro de 32 caracteres
+      - key: MAX_FILE_SIZE_MB
+        value: 25
+      - key: MAX_CONCURRENT_CONVERSIONS
+        value: 3
+      - key: ALLOWED_ORIGINS
+        value: "*"

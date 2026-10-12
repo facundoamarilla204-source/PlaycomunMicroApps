@@ -34,6 +34,10 @@ import { CostoReceta } from "@/components/tools/CostoReceta"
 import { CostoRecetaContent } from "@/components/tools/content/CostoRecetaContent"
 import { ConversorUnidades } from "@/components/tools/ConversorUnidades"
 import { ConversorUnidadesContent } from "@/components/tools/content/ConversorUnidadesContent"
+import { CompresorImagenes } from "@/components/tools/compresor-imagenes/CompresorImagenes"
+import { CompresorImagenesContent } from "@/components/tools/content/CompresorImagenesContent"
+import { ConvertidorArchivos } from "@/components/tools/convertidor-archivos/ConvertidorArchivos"
+import { ConvertidorArchivosContent } from "@/components/tools/content/ConvertidorArchivosContent"
 
 function getToolComponent(slug: string, user: User | null): React.ReactNode {
   switch (slug) {
@@ -151,6 +155,24 @@ function getToolComponent(slug: string, user: User | null): React.ReactNode {
           <ConversorUnidades />
           <div className="mt-16 flex justify-center">
             <ConversorUnidadesContent />
+          </div>
+        </>
+      )
+    case "compresor-imagenes":
+      return (
+        <>
+          <CompresorImagenes />
+          <div className="mt-16 flex justify-center">
+            <CompresorImagenesContent />
+          </div>
+        </>
+      )
+    case "convertidor-archivos":
+      return (
+        <>
+          <ConvertidorArchivos />
+          <div className="mt-16 flex justify-center">
+            <ConvertidorArchivosContent />
           </div>
         </>
       )

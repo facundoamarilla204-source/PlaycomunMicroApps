@@ -631,5 +631,115 @@ export const tools: Tool[] = [
       }
     ],
     related: ["generador-presupuestos", "calculadora-precios", "calculadora-rentabilidad"]
+  },
+  {
+    slug: "compresor-imagenes",
+    name: "Compresor de imágenes",
+    type: "utilidad",
+    category: "clientes-utilidades",
+    exampleResult: "-65% de peso optimizado",
+    tier: "free",
+    description: "Comprimí y convertí imágenes JPG, PNG y WebP en lote. Reducí el peso de tus fotos sin perder calidad ni subir archivos a la nube.",
+    icon: "FileImage",
+    status: "live",
+    featured: true,
+    keywords: [
+      "compresor de imágenes",
+      "comprimir imágenes online",
+      "reducir peso de imágenes",
+      "convertir JPG a WebP",
+      "convertir PNG a JPG",
+      "optimizar imágenes",
+      "compresor imagenes gratis",
+      "reducir tamaño de fotos",
+      "convertidor de imagenes"
+    ],
+    updatedAt: NOW,
+    seo: {
+      title: "Compresor de Imágenes Online Gratis | Reducir y Convertir JPG, PNG y WebP",
+      description: "Comprimí y convertí imágenes JPG, PNG y WebP online sin perder calidad. Procesamiento seguro y privado en tu dispositivo, sin registros ni límites de prueba.",
+      h1: "Compresor y conversor de imágenes online",
+      intro: "Reducí el peso de tus fotografías y convertí entre formatos JPG, PNG y WebP de forma rápida, privada y sin subir archivos a servidores externos."
+    },
+    faqs: [
+      {
+        question: "¿Cómo funciona la compresión de imágenes en mi navegador?",
+        answer: "El procesamiento se realiza directamente en tu computadora o celular utilizando HTML5 Canvas y aceleración gráfica local. Ninguna imagen viaja por internet ni se almacena en servidores externos."
+      },
+      {
+        question: "¿Qué diferencia hay entre comprimir y convertir un formato?",
+        answer: "Comprimir reduce la cantidad de kilobytes que ocupa el archivo optimizando sus datos o calidad. Convertir transforma la estructura del archivo a otro estándar técnico, como transformar un PNG en WebP o un JPG en PNG."
+      },
+      {
+        question: "¿Por qué se pierde la transparencia si convierto a JPG?",
+        answer: "El estándar JPG no cuenta con canal alfa de transparencia. Por eso, al convertir imágenes transparentes (como logos PNG) a JPG, la herramienta te permite elegir un color de fondo para rellenar las zonas vacías."
+      },
+      {
+        question: "¿Por qué una imagen comprimida podría pesar más que la original?",
+        answer: "Si un archivo ya fue comprimido previamente al máximo, o si convertís una imagen a un formato sin pérdida como PNG con mayor profundidad de color, el peso resultante puede aumentar. La herramienta siempre te muestra la variación real con total honestidad."
+      },
+      {
+        question: "¿Puedo descargar todas las imágenes procesadas en un solo archivo ZIP?",
+        answer: "Sí. Al finalizar tu lote podés descargar cada imagen de forma individual o descargar un archivo ZIP con todos los resultados exitosos y sus extensiones correctas."
+      }
+    ],
+    related: ["convertidor-archivos", "generador-qr", "conversor-unidades", "calculadora-precios"]
+  },
+  {
+    slug: "convertidor-archivos",
+    name: "Convertidor de archivos",
+    type: "utilidad",
+    category: "clientes-utilidades",
+    exampleResult: "Word / Excel / JPG → PDF",
+    tier: "free",
+    description: "Convertí documentos Word, planillas Excel, presentaciones PowerPoint, PDF e imágenes entre formatos compatibles de forma rápida, privada y segura.",
+    icon: "ArrowRightLeft",
+    status: "live",
+    featured: true,
+    keywords: [
+      "convertidor de archivos",
+      "convertir word a pdf",
+      "convertir excel a pdf",
+      "convertir powerpoint a pdf",
+      "convertir pdf a word",
+      "convertir pdf a excel",
+      "convertir pdf a jpg",
+      "pasar imagenes a pdf",
+      "convertir pdf a docx",
+      "convertidor documentos gratis",
+      "convertir pdf a png",
+      "convertir a pdf a"
+    ],
+    updatedAt: NOW,
+    seo: {
+      title: "Convertidor de Archivos Online Gratis | Word, Excel, PowerPoint, PDF e Imágenes",
+      description: "Convertí archivos entre PDF, Word, Excel, PowerPoint e imágenes online. Procesamiento seguro y privado con descarga individual o en ZIP, sin registros obligatorios.",
+      h1: "Convertidor de archivos online",
+      intro: "Transformá documentos, planillas, presentaciones, PDF e imágenes entre formatos compatibles con procesamiento seguro, rápido y de alta fidelidad."
+    },
+    faqs: [
+      {
+        question: "¿Cómo funciona la privacidad de mis archivos al convertirlos?",
+        answer: "Las conversiones de imágenes a PDF, de PDF a imágenes y las extracciones desde PDF se realizan 100% en tu dispositivo utilizando las capacidades de tu navegador. Para documentos de oficina que requieren nuestro servicio documental de LibreOffice, los archivos se procesan temporalmente en un entorno aislado con nombres aleatorios y se eliminan inmediatamente tras finalizar."
+      },
+      {
+        question: "¿Puedo convertir varias imágenes en un solo archivo PDF?",
+        answer: "Sí. En la sección 'Convertir a PDF' podés seleccionar múltiples imágenes JPG, PNG o WebP, ordenar las páginas a tu gusto, definir márgenes y orientación, y combinarlas en un único PDF."
+      },
+      {
+        question: "¿Por qué un PDF escaneado no se convierte en Word editable?",
+        answer: "Los documentos escaneados o fotografiados consisten únicamente en imágenes de mapa de bits sin capas de caracteres vectoriales. Para convertir fotos de texto a palabras editables se requiere un motor de OCR (reconocimiento óptico de caracteres). La herramienta detecta esta situación y te avisa con total claridad."
+      },
+      {
+        question: "¿Qué diferencia hay entre convertir a imágenes y comprimir imágenes?",
+        answer: "Convertir a imágenes renderiza las páginas de un documento PDF como archivos gráficos JPG o PNG con una resolución elegida. Para reducir el peso de fotos existentes sin alterar su formato ni propósito, podés utilizar nuestro Compresor de imágenes."
+      },
+      {
+        question: "¿Puedo descargar múltiples páginas convertidas en un solo archivo?",
+        answer: "Sí. Cuando una conversión produce varias imágenes (por ejemplo, todas las páginas de un PDF), podés descargarlas una a una o descargarlas todas empaquetadas en un único archivo comprimido ZIP."
+      }
+    ],
+    related: ["compresor-imagenes", "generador-presupuestos", "generador-qr", "conversor-unidades"]
   }
 ]
+

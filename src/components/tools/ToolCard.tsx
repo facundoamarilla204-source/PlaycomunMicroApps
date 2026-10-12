@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { Tool } from "@/data/tools"
-import { ArrowDownLeft, Calculator, FileText, Receipt, TrendingUp, QrCode, Wallet, Dumbbell, ArrowRightLeft, Banknote, CreditCard, Boxes, Flame, Sparkles, Wrench, LucideIcon } from "lucide-react"
+import { ArrowDownLeft, Calculator, FileText, Receipt, TrendingUp, QrCode, Wallet, Dumbbell, ArrowRightLeft, Banknote, CreditCard, Boxes, Flame, Sparkles, Wrench, FileImage, LucideIcon } from "lucide-react"
 import FavoriteButton from "./FavoriteButton"
 
 // Map of icons
@@ -18,7 +18,8 @@ const iconMap: Record<string, LucideIcon> = {
   Boxes,
   Flame,
   Sparkles,
-  Wrench
+  Wrench,
+  FileImage
 }
 
 interface ToolCardProps {

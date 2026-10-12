@@ -1,0 +1,21 @@
+services:
+  conversion-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: playcomun-conversion-worker
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - NODE_ENV=production
+      - WORKER_SECRET=playcomun-dev-secret-change-in-prod
+      - MAX_FILE_SIZE_MB=25
+      - MAX_CONCURRENT_CONVERSIONS=3
+      - ALLOWED_ORIGINS=http://localhost:3000,https://playcomun.com
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
