@@ -435,11 +435,11 @@ export function GeneradorPresupuestos() {
           </div>
 
           {/* OBSERVACIONES */}
-          <div className="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-neutral-200">
-            <h2 className="text-lg font-semibold mb-4 text-neutral-900 border-b pb-2">5. Observaciones o Condiciones</h2>
+          <div className="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-slate-200">
+            <h2 className="text-base font-bold mb-4 text-slate-900 border-b border-slate-100 pb-2">5. Observaciones o Condiciones</h2>
             <textarea 
               rows={4}
-              className="w-full px-3 py-2 border border-neutral-300 rounded-xl focus:ring-2 focus:ring-brand focus:border-brand outline-none resize-none transition-shadow" 
+              className="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-100 focus:border-purple-600 outline-none resize-none transition-shadow text-sm placeholder:text-slate-400" 
               placeholder="Ej: El presupuesto tiene una validez de 15 días. Las formas de pago son 50% de anticipo y 50% contra entrega. No incluye costos de dominio o hosting."
               value={presupuesto.info.condiciones}
               onChange={(e) => handleInfoChange("condiciones", e.target.value)}
@@ -447,7 +447,7 @@ export function GeneradorPresupuestos() {
           </div>
           
           <div className="text-center mb-8">
-             <button onClick={limpiarFormulario} className="px-4 py-2 text-sm text-neutral-600 font-medium hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors">
+             <button type="button" onClick={limpiarFormulario} className="px-4 py-2 text-xs font-semibold text-slate-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors">
               Borrar todos los datos y empezar de cero
             </button>
           </div>
@@ -455,42 +455,45 @@ export function GeneradorPresupuestos() {
         </div>
 
         {/* VISTA PREVIA Y ACCIONES (FIJO EN ESCRITORIO) */}
-        <div className="w-full lg:w-[55%] lg:sticky lg:top-8 flex flex-col gap-6">
+        <div className="w-full lg:w-[55%] lg:sticky lg:top-24 flex flex-col gap-5">
           
           {/* ACCIONES PRINCIPALES */}
-          <div className="bg-white p-5 rounded-2xl shadow-sm border border-neutral-200 print:hidden flex flex-col sm:flex-row flex-wrap gap-3">
+          <div className="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 print:hidden flex flex-col sm:flex-row flex-wrap gap-2.5">
             <button 
+              type="button"
               onClick={generarPDF} 
               disabled={generando}
-              className="flex-1 bg-brand hover:bg-brand-dark disabled:opacity-70 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-md shadow-brand/20"
+              className="flex-1 bg-purple-600 hover:bg-purple-700 active:bg-purple-800 disabled:opacity-70 disabled:cursor-not-allowed text-white font-bold py-2.5 px-5 rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm text-sm"
             >
-              <Download className="w-5 h-5" /> {generando ? "Generando..." : "Descargar PDF"}
+              <Download className="w-4 h-4" /> {generando ? "Generando..." : "Descargar PDF"}
             </button>
             <button 
+              type="button"
               onClick={imprimir} 
-              className="flex-1 bg-neutral-800 hover:bg-neutral-900 text-white font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-md shadow-neutral-900/20"
+              className="flex-1 bg-slate-900 hover:bg-slate-800 active:bg-slate-950 text-white font-bold py-2.5 px-5 rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm text-sm"
             >
-              <Printer className="w-5 h-5" /> Imprimir
+              <Printer className="w-4 h-4" /> Imprimir
             </button>
             {typeof navigator !== "undefined" && typeof navigator.share === "function" && (
               <button 
+                type="button"
                 onClick={compartir} 
-                className="w-full sm:w-auto bg-white border-2 border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50 text-neutral-700 font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-colors"
+                className="w-full sm:w-auto bg-white border border-slate-300 hover:border-slate-400 hover:bg-slate-50 text-slate-700 font-semibold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-all text-sm"
               >
-                <Share2 className="w-5 h-5" /> Compartir
+                <Share2 className="w-4 h-4" /> Compartir
               </button>
             )}
           </div>
 
-          <div className="flex items-center justify-between print:hidden px-2">
-            <h3 className="font-bold text-lg text-neutral-900 flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-green-500 inline-block animate-pulse"></span>
-              Vista Previa del Documento
+          <div className="flex items-center justify-between print:hidden px-1">
+            <h3 className="font-bold text-sm text-slate-800 flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
+              Vista previa del documento en tiempo real
             </h3>
           </div>
 
           {/* CONTENEDOR VISTA PREVIA */}
-          <div className="w-full bg-[#e5e5e5]/70 p-4 md:p-6 rounded-2xl print:p-0 print:bg-white shadow-inner flex justify-center overflow-x-auto">
+          <div className="w-full bg-slate-100/90 border border-slate-200/80 p-4 md:p-6 rounded-2xl print:p-0 print:bg-white print:border-none flex justify-center overflow-x-auto">
             
             {/* ELEMENTO A CAPTURAR */}
             <div 

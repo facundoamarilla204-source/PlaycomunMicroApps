@@ -2,7 +2,7 @@ import React from "react"
 import { Tool, tools } from "@/data/tools"
 import { Breadcrumbs, BreadcrumbItem } from "@/components/seo/Breadcrumbs"
 import ToolCard from "@/components/tools/ToolCard"
-
+import { ShieldCheck, HelpCircle, ArrowRight } from "lucide-react"
 
 type ToolPageLayoutProps = {
   tool: Tool
@@ -38,61 +38,102 @@ export function ToolPageLayout({ tool, children, content }: ToolPageLayoutProps)
   })
 
   return (
-    <div className="py-8 md:py-12">
+    <div className="py-6 sm:py-10">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Breadcrumbs items={breadcrumbItems} />
 
-        <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+        {/* Tool Header */}
+        <div className="mt-4 mb-8 sm:mb-10 max-w-3xl">
+          <div className="flex flex-wrap items-center gap-2 mb-3">
+            <span className="inline-flex items-center rounded-md bg-purple-50 px-2.5 py-1 text-xs font-semibold text-brand ring-1 ring-inset ring-purple-600/10">
+              {categoryName}
+            </span>
+            <span className={`inline-flex items-center rounded-md px-2.5 py-1 text-xs font-medium ring-1 ring-inset ${
+              tool.tier === "pro" 
+                ? "bg-purple-100/70 text-purple-800 ring-purple-600/20" 
+                : "bg-emerald-50 text-emerald-800 ring-emerald-600/10"
+            }`}>
+              {tool.tier === "pro" ? "Plan Pro" : "100% Gratis"}
+            </span>
+            <span className="inline-flex items-center gap-1 text-xs text-slate-500 ml-1">
+              <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
+              Sin registro requerido
+            </span>
+          </div>
+
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight mb-3">
             {tool.seo?.h1 || tool.name}
           </h1>
-          <p className="text-lg text-gray-600">
+          <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
             {tool.seo?.intro || tool.description}
           </p>
         </div>
 
         {/* Slot para la aplicación principal */}
-        <div className="mb-16">
+        <main className="mb-14 sm:mb-20">
           {children}
-        </div>
+        </main>
 
-        {/* Contenido explicativo */}
+        {/* Contenido explicativo SEO */}
         {content && (
-          <div className="prose prose-violet max-w-none mb-16">
-            {content}
-          </div>
+          <section className="mb-14 sm:mb-20 border-t border-slate-200/80 pt-10">
+            <div className="max-w-4xl mx-auto">
+              <div className="prose prose-slate prose-violet max-w-none">
+                {content}
+              </div>
+            </div>
+          </section>
         )}
 
         {/* Preguntas frecuentes */}
         {tool.faqs && tool.faqs.length > 0 && (
-          <div className="mb-16">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Preguntas frecuentes</h2>
-            <dl className="space-y-6">
-              {tool.faqs.map((faq, index) => (
-                <div key={index}>
-                  <dt className="font-semibold text-gray-900 mb-2">{faq.question}</dt>
-                  <dd className="text-gray-600">{faq.answer}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
+          <section className="mb-14 sm:mb-20 border-t border-slate-200/80 pt-10">
+            <div className="max-w-4xl mx-auto">
+              <div className="flex items-center gap-2 mb-6">
+                <HelpCircle className="h-5 w-5 text-brand" />
+                <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+                  Preguntas frecuentes
+                </h2>
+              </div>
+              <div className="grid gap-4">
+                {tool.faqs.map((faq, index) => (
+                  <div 
+                    key={index} 
+                    className="rounded-xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-xs"
+                  >
+                    <h3 className="text-base font-bold text-slate-900 mb-2">
+                      {faq.question}
+                    </h3>
+                    <p className="text-sm text-slate-600 leading-relaxed">
+                      {faq.answer}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
         )}
 
         {/* Herramientas relacionadas */}
         {relatedTools.length > 0 && (
-          <div className="mb-16">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Herramientas relacionadas</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <section className="mb-14 sm:mb-20 border-t border-slate-200/80 pt-10">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+                Herramientas recomendadas
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
               {relatedTools.map((relatedTool) => (
                 <ToolCard key={relatedTool.slug} tool={relatedTool} />
               ))}
             </div>
-          </div>
+          </section>
         )}
 
-        {/* Fecha de actualización */}
-        <div className="text-sm text-gray-500 border-t border-gray-200 pt-6">
-          Última actualización: {formattedDate}
+        {/* Footer info */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 border-t border-slate-200 pt-6">
+          <span>Última actualización: {formattedDate}</span>
+          <span className="text-slate-400">PlayComun Online · Herramientas para tu negocio</span>
         </div>
       </div>
     </div>

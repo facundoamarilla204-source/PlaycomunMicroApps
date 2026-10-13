@@ -358,13 +358,13 @@ export function ConversorUnidades() {
                     setActiveCategoryId(cat.id);
                     setIsCategoryMenuOpen(false);
                   }}
-                  className={`flex items-center gap-3 w-full text-left px-3 py-2.5 rounded-xl transition-all text-sm font-medium ${
+                  className={`flex items-center gap-3 w-full text-left px-3 py-2.5 rounded-xl transition-all text-xs sm:text-sm font-semibold ${
                     activeCategoryId === cat.id 
-                      ? 'bg-brand/10 text-brand-dark' 
-                      : 'text-neutral-600 hover:bg-neutral-100'
+                      ? 'bg-purple-50 text-purple-700 border border-purple-200/80 shadow-xs' 
+                      : 'text-slate-600 hover:bg-slate-50 border border-transparent'
                   }`}
                 >
-                  <span className={activeCategoryId === cat.id ? 'text-brand' : 'text-neutral-400'}>
+                  <span className={activeCategoryId === cat.id ? 'text-purple-600' : 'text-slate-400'}>
                     {cat.icon}
                   </span>
                   {cat.name}
@@ -374,13 +374,14 @@ export function ConversorUnidades() {
           </div>
           
           <div className="mt-6 hidden lg:block">
-            <h4 className="text-sm font-bold text-neutral-900 mb-3 px-1">Conversiones rápidas</h4>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 px-1">Atajos frecuentes</h4>
             <div className="space-y-1.5">
               {QUICK_CONVERSIONS.map((qc, i) => (
                 <button 
                   key={i}
+                  type="button"
                   onClick={() => applyQuickConversion(qc.from, qc.to, qc.cat)}
-                  className="w-full text-left px-3 py-2 text-xs font-medium text-neutral-600 hover:text-brand-dark hover:bg-brand/5 rounded-lg border border-transparent hover:border-brand/10 transition-colors"
+                  className="w-full text-left px-3 py-2 text-xs font-medium text-slate-600 hover:text-purple-700 hover:bg-purple-50/60 rounded-xl border border-transparent hover:border-purple-200 transition-colors"
                 >
                   {qc.label}
                 </button>
@@ -391,19 +392,19 @@ export function ConversorUnidades() {
 
         {/* Principal Converter */}
         <div className="flex-1 space-y-6">
-          <div className="bg-white rounded-2xl shadow-sm border border-neutral-200 p-5 sm:p-8">
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-7">
             <div className="flex items-center gap-3 mb-6">
-              <div className="p-2.5 bg-brand/10 text-brand rounded-xl">
+              <div className="p-2.5 bg-purple-50 text-purple-700 rounded-xl border border-purple-200/60">
                 {activeCategory.icon}
               </div>
-              <h2 className="text-2xl font-bold text-neutral-900">{activeCategory.name}</h2>
+              <h2 className="text-xl font-bold text-slate-900">{activeCategory.name}</h2>
             </div>
 
             <div className="flex flex-col sm:flex-row items-center gap-4 relative">
               
               {/* Origen */}
               <div className="w-full flex-1 space-y-2">
-                <label className="block text-sm font-medium text-neutral-700 ml-1">De</label>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 ml-1">De (Valor original)</label>
                 <div className="relative group">
                   <input
                     type="text"
@@ -411,13 +412,13 @@ export function ConversorUnidades() {
                     value={inputValue}
                     onChange={handleInputChange}
                     placeholder="Ingresá un valor..."
-                    className="block w-full px-4 py-3.5 bg-neutral-50 rounded-xl border border-neutral-200 focus:bg-white focus:border-brand focus:ring-1 focus:ring-brand sm:text-lg font-medium transition-all"
+                    className="block w-full px-4 py-3 bg-slate-50 rounded-xl border border-slate-300 focus:bg-white focus:border-purple-600 focus:ring-2 focus:ring-purple-100 text-slate-900 sm:text-base font-semibold transition-all placeholder:text-slate-400"
                   />
                 </div>
                 <select
                   value={fromUnitId}
                   onChange={e => setFromUnitId(e.target.value)}
-                  className="block w-full px-4 py-3 rounded-xl border border-neutral-200 bg-white focus:border-brand focus:ring-1 focus:ring-brand sm:text-sm font-medium text-neutral-800 transition-all cursor-pointer"
+                  className="block w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:border-purple-600 focus:ring-2 focus:ring-purple-100 sm:text-sm font-medium text-slate-800 transition-all cursor-pointer"
                 >
                   {activeCategory.units.map(u => (
                     <option key={u.id} value={u.id}>{u.name} ({u.symbol})</option>
@@ -426,28 +427,29 @@ export function ConversorUnidades() {
               </div>
 
               {/* Swap Button */}
-              <div className="flex items-center justify-center pt-6 sm:pt-0 sm:mt-6 shrink-0 z-10">
+              <div className="flex items-center justify-center pt-2 sm:pt-0 sm:mt-6 shrink-0 z-10">
                 <button 
+                  type="button"
                   onClick={handleSwap}
-                  className="p-3 bg-white border border-neutral-200 rounded-full text-brand hover:bg-brand/5 hover:border-brand/30 shadow-sm transition-all transform hover:scale-105 active:scale-95"
+                  className="p-3 bg-white border border-slate-300 rounded-full text-purple-700 hover:bg-purple-50 hover:border-purple-300 shadow-sm transition-all transform hover:scale-105 active:scale-95 cursor-pointer"
                   title="Intercambiar unidades"
                 >
-                  <ArrowRightLeft className="w-5 h-5" />
+                  <ArrowRightLeft className="w-4 h-4" />
                 </button>
               </div>
 
               {/* Destino */}
               <div className="w-full flex-1 space-y-2">
-                <label className="block text-sm font-medium text-neutral-700 ml-1">A</label>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 ml-1">A (Resultado)</label>
                 <div className="relative">
-                  <div className="block w-full px-4 py-3.5 bg-brand/5 rounded-xl border border-brand/20 sm:text-lg font-bold text-brand-dark min-h-[54px] flex items-center overflow-x-auto no-scrollbar">
+                  <div className="block w-full px-4 py-3 bg-purple-50/60 rounded-xl border border-purple-200/80 sm:text-base font-extrabold text-purple-900 min-h-[48px] flex items-center overflow-x-auto scrollbar-thin">
                     {numValue !== null ? formatOutput(conversionResult) : '-'}
                   </div>
                 </div>
                 <select
                   value={toUnitId}
                   onChange={e => setToUnitId(e.target.value)}
-                  className="block w-full px-4 py-3 rounded-xl border border-neutral-200 bg-white focus:border-brand focus:ring-1 focus:ring-brand sm:text-sm font-medium text-neutral-800 transition-all cursor-pointer"
+                  className="block w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:border-purple-600 focus:ring-2 focus:ring-purple-100 sm:text-sm font-medium text-slate-800 transition-all cursor-pointer"
                 >
                   {activeCategory.units.map(u => (
                     <option key={u.id} value={u.id}>{u.name} ({u.symbol})</option>
@@ -458,15 +460,15 @@ export function ConversorUnidades() {
             </div>
 
             {/* Acciones & Notas */}
-            <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-neutral-100">
-              <div className="text-sm text-neutral-500">
+            <div className="mt-7 flex flex-col sm:flex-row items-center justify-between gap-4 pt-5 border-t border-slate-100">
+              <div className="text-xs text-slate-500">
                 {activeCategory.note ? (
-                  <span className="flex items-center gap-2 bg-neutral-50 px-3 py-1.5 rounded-lg border border-neutral-100">
+                  <span className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200/70">
                     {activeCategory.note}
                   </span>
                 ) : (
                   numValue !== null && fromUnitId && toUnitId && (
-                    <span className="font-medium">
+                    <span className="font-medium bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200/70 inline-block">
                       1 {activeCategory.units.find(u => u.id === fromUnitId)?.symbol} = {
                         formatOutput(
                           activeCategory.units.find(u => u.id === toUnitId)?.fromBase 
@@ -490,18 +492,20 @@ export function ConversorUnidades() {
               
               <div className="flex gap-2 w-full sm:w-auto">
                 <button
+                  type="button"
                   onClick={() => setInputValue('')}
-                  className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-neutral-200 text-neutral-600 hover:bg-neutral-50 font-medium text-sm transition-colors"
+                  className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-slate-300 text-slate-600 hover:bg-slate-50 font-semibold text-xs transition-colors"
                 >
-                  <RotateCcw className="w-4 h-4" />
+                  <RotateCcw className="w-3.5 h-3.5" />
                   Limpiar
                 </button>
                 <button
+                  type="button"
                   onClick={handleCopy}
                   disabled={numValue === null}
-                  className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-brand text-white hover:bg-brand-dark disabled:opacity-50 disabled:hover:bg-brand font-medium text-sm transition-colors"
+                  className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-purple-600 text-white hover:bg-purple-700 active:bg-purple-800 disabled:opacity-50 font-bold text-xs transition-all shadow-sm"
                 >
-                  {copied ? <CheckCircle2 className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                  {copied ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-300" /> : <Copy className="w-3.5 h-3.5" />}
                   {copied ? 'Copiado' : 'Copiar'}
                 </button>
               </div>
@@ -510,13 +514,14 @@ export function ConversorUnidades() {
           </div>
           
           <div className="lg:hidden">
-            <h4 className="text-sm font-bold text-neutral-900 mb-3 px-1">Conversiones rápidas</h4>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 px-1">Atajos frecuentes</h4>
             <div className="grid grid-cols-2 gap-2">
               {QUICK_CONVERSIONS.map((qc, i) => (
                 <button 
                   key={i}
+                  type="button"
                   onClick={() => applyQuickConversion(qc.from, qc.to, qc.cat)}
-                  className="w-full text-center px-3 py-2.5 text-xs font-medium text-neutral-700 bg-white shadow-sm border border-neutral-200 hover:border-brand/30 hover:text-brand-dark rounded-xl transition-colors"
+                  className="w-full text-center px-3 py-2 text-xs font-semibold text-slate-700 bg-white shadow-xs border border-slate-200 hover:border-purple-300 hover:text-purple-700 rounded-xl transition-colors"
                 >
                   {qc.label}
                 </button>

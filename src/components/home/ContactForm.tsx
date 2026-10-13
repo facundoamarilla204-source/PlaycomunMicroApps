@@ -93,10 +93,10 @@ export default function ContactForm() {
                     name="nombre"
                     required
                     className="w-full px-4 py-3 rounded-xl border border-border bg-slate-50/50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all placeholder:text-slate-400"
-                    placeholder="Ej. Facundo Amarilla"
+                    placeholder="Pablo Diaz"
                   />
                 </div>
-                
+
                 <div className="space-y-2">
                   <label htmlFor="email" className="block text-sm font-semibold text-slate-900">
                     Correo electrónico

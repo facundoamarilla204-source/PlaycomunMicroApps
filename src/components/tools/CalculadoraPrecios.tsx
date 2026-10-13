@@ -100,20 +100,29 @@ export function CalculadoraPrecios() {
   };
 
   return (
-    <div className="grid gap-8 items-start w-full lg:grid-cols-2 max-w-6xl mx-auto">
-      <div className="bg-white rounded-xl shadow-sm border border-neutral-200 p-6 sm:p-8 space-y-8">
+    <div className="grid gap-8 items-start w-full lg:grid-cols-12 max-w-5xl mx-auto">
+      {/* Form Section */}
+      <div className="lg:col-span-7 bg-white rounded-xl border border-slate-200/90 p-5 sm:p-7 shadow-xs space-y-6">
         
         {/* Mode Selection */}
-        <div className="flex bg-neutral-100 p-1 rounded-xl">
+        <div className="flex bg-slate-100 p-1 rounded-lg border border-slate-200/60">
           <button
             onClick={() => setMode('target')}
-            className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${mode === 'target' ? 'bg-white shadow-sm text-neutral-900' : 'text-neutral-500 hover:text-neutral-700'}`}
+            className={`flex-1 py-2 text-xs sm:text-sm font-semibold rounded-md transition-colors ${
+              mode === 'target' 
+                ? 'bg-white text-slate-900 shadow-2xs' 
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
           >
             Calcular mi precio
           </button>
           <button
             onClick={() => setMode('profit')}
-            className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${mode === 'profit' ? 'bg-white shadow-sm text-neutral-900' : 'text-neutral-500 hover:text-neutral-700'}`}
+            className={`flex-1 py-2 text-xs sm:text-sm font-semibold rounded-md transition-colors ${
+              mode === 'profit' 
+                ? 'bg-white text-slate-900 shadow-2xs' 
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
           >
             Calcular mi ganancia
           </button>
@@ -121,83 +130,86 @@ export function CalculadoraPrecios() {
 
         {/* 1. Costos */}
         <section className="space-y-4">
-          <h3 className="font-semibold text-lg text-neutral-900">1. Costos (por unidad)</h3>
+          <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">1. Costos por unidad</h3>
+            <span className="text-xs text-slate-500">Materia prima y variables</span>
+          </div>
           
           <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">Costo del producto o servicio</label>
-            <p className="text-xs text-neutral-500 mb-2">Lo que te cuesta producir o comprar una unidad.</p>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Costo del producto o servicio *</label>
+            <p className="text-xs text-slate-500 mb-1.5">Lo que te cuesta producir o comprar una unidad.</p>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <span className="text-neutral-500 sm:text-sm">$</span>
+                <span className="text-slate-400 text-sm">$</span>
               </div>
               <input
                 type="text"
                 inputMode="decimal"
                 value={productCostStr}
                 onChange={handleCurrencyChange(setProductCostStr)}
-                className="block w-full pl-7 pr-3 py-3 rounded-xl border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm transition-colors"
+                className="block w-full pl-7 pr-3 py-2.5 rounded-lg border border-slate-300 bg-white text-sm text-slate-900 shadow-2xs placeholder:text-slate-400 focus:border-brand focus:ring-2 focus:ring-brand/20 transition-colors"
                 placeholder="1000"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">Otros costos variables (opcional)</label>
-            <p className="text-xs text-neutral-500 mb-2">Envase, envío, mano de obra directa.</p>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Otros costos variables (opcional)</label>
+            <p className="text-xs text-slate-500 mb-1.5">Envase, embalaje, envío o mano de obra directa.</p>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <span className="text-neutral-500 sm:text-sm">$</span>
+                <span className="text-slate-400 text-sm">$</span>
               </div>
               <input
                 type="text"
                 inputMode="decimal"
                 value={otherVariableCostsStr}
                 onChange={handleCurrencyChange(setOtherVariableCostsStr)}
-                className="block w-full pl-7 pr-3 py-3 rounded-xl border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm transition-colors"
+                className="block w-full pl-7 pr-3 py-2.5 rounded-lg border border-slate-300 bg-white text-sm text-slate-900 shadow-2xs placeholder:text-slate-400 focus:border-brand focus:ring-2 focus:ring-brand/20 transition-colors"
                 placeholder="0"
               />
             </div>
           </div>
 
-          <div>
-            <label className="flex items-center gap-3 cursor-pointer">
+          <div className="pt-2">
+            <label className="flex items-center gap-2.5 cursor-pointer select-none">
               <input
                 type="checkbox"
                 checked={showFixedCosts}
                 onChange={(e) => setShowFixedCosts(e.target.checked)}
-                className="w-4 h-4 accent-neutral-900 focus:ring-neutral-900 border-neutral-300 rounded text-neutral-900"
+                className="w-4 h-4 accent-brand rounded border-slate-300"
               />
-              <span className="text-sm font-medium text-neutral-700">Sumar mis costos fijos</span>
+              <span className="text-xs font-semibold text-slate-800">Prorratear costos fijos mensuales</span>
             </label>
-            <p className="text-xs text-neutral-500 mt-1 ml-7">Alquiler, sueldos, servicios y todo lo que pagás aunque no vendas.</p>
+            <p className="text-xs text-slate-500 mt-1 ml-6.5">Alquiler, sueldos, servicios e internet.</p>
           </div>
 
           {showFixedCosts && (
-            <div className="grid grid-cols-2 gap-4 pl-7 pt-2">
+            <div className="grid grid-cols-2 gap-3 pl-6.5 pt-1">
               <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-1">Costos fijos del mes</label>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Fijos del mes</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <span className="text-neutral-500 sm:text-sm">$</span>
+                    <span className="text-slate-400 text-xs">$</span>
                   </div>
                   <input
                     type="text"
                     inputMode="decimal"
                     value={fixedMonthlyCostsStr}
                     onChange={handleCurrencyChange(setFixedMonthlyCostsStr)}
-                    className="block w-full pl-7 pr-3 py-2 rounded-xl border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm"
+                    className="block w-full pl-6 pr-2.5 py-2 rounded-lg border border-slate-300 text-xs text-slate-900 focus:border-brand focus:ring-1 focus:ring-brand"
                     placeholder="200000"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-1">Unidades al mes</label>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Unidades al mes</label>
                 <input
                   type="text"
                   inputMode="decimal"
                   value={unitsPerMonthStr}
                   onChange={handleCurrencyChange(setUnitsPerMonthStr)}
-                  className="block w-full px-3 py-2 rounded-xl border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm"
+                  className="block w-full px-2.5 py-2 rounded-lg border border-slate-300 text-xs text-slate-900 focus:border-brand focus:ring-1 focus:ring-brand"
                   placeholder="500"
                 />
               </div>
@@ -205,18 +217,19 @@ export function CalculadoraPrecios() {
           )}
         </section>
 
-        <hr className="border-neutral-200" />
-
         {/* 2. Impuestos y comisiones */}
-        <section className="space-y-4">
-          <h3 className="font-semibold text-lg text-neutral-900">2. Impuestos y comisiones</h3>
+        <section className="space-y-4 pt-2 border-t border-slate-100">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">2. Impuestos y cobro</h3>
+            <span className="text-xs text-slate-500">Comisiones y retenciones</span>
+          </div>
           
           <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-2">Condición frente al IVA</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Condición de IVA</label>
             <select
               value={vatRateStr}
               onChange={(e) => setVatRateStr(e.target.value)}
-              className="block w-full px-3 py-3 rounded-xl border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm bg-white"
+              className="block w-full px-3 py-2.5 rounded-lg border border-slate-300 bg-white text-sm text-slate-900 shadow-2xs focus:border-brand focus:ring-2 focus:ring-brand/20"
             >
               {PRECIO_VENTA_CONFIG.IVA_RATES.map((rate) => (
                 <option key={rate.label} value={rate.value}>
@@ -226,110 +239,114 @@ export function CalculadoraPrecios() {
             </select>
           </div>
 
-          <div className="grid sm:grid-cols-2 gap-4">
+          <div className="grid sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-neutral-700 mb-1">Comisión de cobro (%)</label>
-              <p className="text-xs text-neutral-500 mb-2 min-h-[32px]">Mirá el porcentaje en Mercado Pago o tarjeta.</p>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">Comisión pasarela / tarjeta (%)</label>
               <div className="relative">
                 <input
                   type="text"
                   inputMode="decimal"
                   value={paymentFeeStr}
                   onChange={handleCurrencyChange(setPaymentFeeStr)}
-                  className="block w-full pl-3 pr-8 py-3 rounded-xl border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm"
+                  className="block w-full pl-3 pr-8 py-2 rounded-lg border border-slate-300 text-sm text-slate-900 focus:border-brand focus:ring-1 focus:ring-brand"
                   placeholder="5,99"
                 />
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                  <span className="text-neutral-500 sm:text-sm">%</span>
+                  <span className="text-slate-400 text-xs">%</span>
                 </div>
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-neutral-700 mb-1">Ingresos Brutos (%)</label>
-              <p className="text-xs text-neutral-500 mb-2 min-h-[32px]">Depende de tu provincia y actividad.</p>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">Ingresos Brutos (%)</label>
               <div className="relative">
                 <input
                   type="text"
                   inputMode="decimal"
                   value={grossIncomeTaxStr}
                   onChange={handleCurrencyChange(setGrossIncomeTaxStr)}
-                  className="block w-full pl-3 pr-8 py-3 rounded-xl border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm"
+                  className="block w-full pl-3 pr-8 py-2 rounded-lg border border-slate-300 text-sm text-slate-900 focus:border-brand focus:ring-1 focus:ring-brand"
                   placeholder="3"
                 />
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                  <span className="text-neutral-500 sm:text-sm">%</span>
+                  <span className="text-slate-400 text-xs">%</span>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        <hr className="border-neutral-200" />
-
         {/* 3. Objetivo */}
-        <section className="space-y-4">
-          <h3 className="font-semibold text-lg text-neutral-900">3. Objetivo</h3>
+        <section className="space-y-4 pt-2 border-t border-slate-100">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">3. Margen u objetivo</h3>
+          </div>
           
           {mode === 'target' ? (
-            <div>
-              <label className="block text-sm font-medium text-neutral-700 mb-2">¿Cómo querés calcular tu ganancia?</label>
-              <div className="grid sm:grid-cols-2 gap-3 mb-3">
-                <label className={`cursor-pointer rounded-xl border p-3 flex items-center gap-3 transition-colors ${targetType === 'margin' ? 'border-neutral-900 bg-neutral-900/5 text-neutral-900' : 'border-neutral-200 hover:bg-neutral-50'}`}>
+            <div className="space-y-3">
+              <label className="block text-xs font-semibold text-slate-700">Tipo de ganancia deseada</label>
+              <div className="grid sm:grid-cols-2 gap-2.5">
+                <label className={`cursor-pointer rounded-lg border p-2.5 flex items-center gap-2.5 transition-colors ${
+                  targetType === 'margin' 
+                    ? 'border-brand bg-purple-50/40 text-slate-900' 
+                    : 'border-slate-200 hover:bg-slate-50 text-slate-700'
+                }`}>
                   <input 
                     type="radio" 
                     checked={targetType === 'margin'} 
                     onChange={() => setTargetType('margin')}
-                    className="w-4 h-4 accent-neutral-900 focus:ring-neutral-900"
+                    className="w-4 h-4 accent-brand"
                   />
                   <div className="flex flex-col">
-                    <span className="font-medium text-sm">Margen de ganancia</span>
-                    <span className="text-xs text-neutral-500">Sobre precio sin IVA</span>
+                    <span className="font-semibold text-xs">Margen de ganancia</span>
+                    <span className="text-[11px] text-slate-500">Sobre el precio de venta</span>
                   </div>
                 </label>
-                <label className={`cursor-pointer rounded-xl border p-3 flex items-center gap-3 transition-colors ${targetType === 'markup' ? 'border-neutral-900 bg-neutral-900/5 text-neutral-900' : 'border-neutral-200 hover:bg-neutral-50'}`}>
+                <label className={`cursor-pointer rounded-lg border p-2.5 flex items-center gap-2.5 transition-colors ${
+                  targetType === 'markup' 
+                    ? 'border-brand bg-purple-50/40 text-slate-900' 
+                    : 'border-slate-200 hover:bg-slate-50 text-slate-700'
+                }`}>
                   <input 
                     type="radio" 
                     checked={targetType === 'markup'} 
                     onChange={() => setTargetType('markup')}
-                    className="w-4 h-4 accent-neutral-900 focus:ring-neutral-900"
+                    className="w-4 h-4 accent-brand"
                   />
                   <div className="flex flex-col">
-                    <span className="font-medium text-sm">Recargo (Markup)</span>
-                    <span className="text-xs text-neutral-500">Sobre tus costos</span>
+                    <span className="font-semibold text-xs">Recargo (Markup)</span>
+                    <span className="text-[11px] text-slate-500">Sobre el costo total</span>
                   </div>
                 </label>
               </div>
-              <p className="text-xs text-neutral-500 mb-3">
-                Un 30% de recargo equivale a un margen menor. <a href="#margen-vs-recargo" className="text-neutral-900 hover:underline">¿Cuál es la diferencia?</a>
-              </p>
-              <div className="relative w-1/2">
+
+              <div className="relative w-full sm:w-1/2 pt-1">
                 <input
                   type="text"
                   inputMode="decimal"
                   value={targetValueStr}
                   onChange={handleCurrencyChange(setTargetValueStr)}
-                  className={`block w-full pl-3 pr-8 py-3 rounded-xl border ${result && !result.ok ? 'border-red-300' : 'border-neutral-300'} focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm`}
+                  className={`block w-full pl-3 pr-8 py-2.5 rounded-lg border ${result && !result.ok ? 'border-red-300' : 'border-slate-300'} text-sm text-slate-900 focus:border-brand focus:ring-2 focus:ring-brand/20`}
                   placeholder="30"
                 />
-                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                  <span className="text-neutral-500 sm:text-sm">%</span>
+                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none pt-1">
+                  <span className="text-slate-400 text-xs">%</span>
                 </div>
               </div>
             </div>
           ) : (
             <div>
-              <label className="block text-sm font-medium text-neutral-700 mb-1">Precio de venta final</label>
-              <p className="text-xs text-neutral-500 mb-2">Lo que va a pagar el cliente (con IVA incluido).</p>
-              <div className="relative w-1/2">
+              <label className="block text-xs font-semibold text-slate-700 mb-1">Precio de venta final cobrado</label>
+              <p className="text-xs text-slate-500 mb-1.5">Lo que abona el cliente con IVA incluido.</p>
+              <div className="relative w-full sm:w-1/2">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <span className="text-neutral-500 sm:text-sm">$</span>
+                  <span className="text-slate-400 text-sm">$</span>
                 </div>
                 <input
                   type="text"
                   inputMode="decimal"
                   value={finalPriceStr}
                   onChange={handleCurrencyChange(setFinalPriceStr)}
-                  className="block w-full pl-7 pr-3 py-3 rounded-xl border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm transition-colors"
+                  className="block w-full pl-7 pr-3 py-2.5 rounded-lg border border-slate-300 text-sm text-slate-900 focus:border-brand focus:ring-2 focus:ring-brand/20"
                   placeholder="1500"
                 />
               </div>
@@ -337,7 +354,7 @@ export function CalculadoraPrecios() {
           )}
 
           {result && !result.ok && (
-            <div className="p-4 bg-red-50 text-red-700 text-sm rounded-xl border border-red-200">
+            <div className="p-3 bg-red-50 text-red-700 text-xs rounded-lg border border-red-200">
               {result.error}
             </div>
           )}
@@ -345,77 +362,74 @@ export function CalculadoraPrecios() {
       </div>
 
       {/* Result Card */}
-      <div className={`
-        ${result?.ok ? 'block mt-8 lg:mt-0' : 'hidden'} 
-        lg:block lg:sticky lg:top-8
-      `}>
-        {result?.ok && (
-          <div aria-live="polite" className="bg-neutral-900 text-white rounded-xl p-6 sm:p-8 shadow-md">
-            <h3 className="text-neutral-900 text-sm font-medium mb-1 opacity-90">
-              {mode === 'target' ? 'PRECIO FINAL (CON IVA)' : 'GANANCIA NETA POR UNIDAD'}
+      <div className="lg:col-span-5 lg:sticky lg:top-24">
+        {result?.ok ? (
+          <div aria-live="polite" className="bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950 text-white rounded-xl p-5 sm:p-7 shadow-sm border border-slate-800">
+            <h3 className="text-slate-300 text-xs font-bold uppercase tracking-wider mb-1">
+              {mode === 'target' ? 'Precio de venta final sugerido' : 'Ganancia neta por unidad'}
             </h3>
-            <div className="text-4xl lg:text-5xl font-bold mb-6">
+            <div className="text-3xl sm:text-4xl font-extrabold mb-5 tracking-tight text-white">
               ${mode === 'target' 
                 ? result.finalPrice.toLocaleString('es-AR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }) 
                 : result.profitPerUnit.toLocaleString('es-AR', { maximumFractionDigits: 2, minimumFractionDigits: 2 })}
             </div>
             
-            <div className="space-y-4 mb-6">
-              <div className="flex justify-between items-center text-sm lg:text-base border-b border-white/20 pb-3">
-                <span className="opacity-90">Precio neto (sin IVA)</span>
-                <span className="font-semibold">${result.netPrice.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
+            <div className="space-y-2.5 mb-5 text-xs sm:text-sm">
+              <div className="flex justify-between items-center border-b border-slate-800/80 pb-2">
+                <span className="text-slate-400">Precio neto (sin IVA)</span>
+                <span className="font-semibold text-slate-200">${result.netPrice.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
               </div>
-              <div className="flex justify-between items-center text-sm lg:text-base border-b border-white/20 pb-3">
-                <span className="opacity-90">IVA ({vatRate * 100}%)</span>
-                <span className="font-semibold">${result.vat.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
+              <div className="flex justify-between items-center border-b border-slate-800/80 pb-2">
+                <span className="text-slate-400">IVA ({vatRate * 100}%)</span>
+                <span className="font-semibold text-slate-200">${result.vat.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
               </div>
-              <div className="flex justify-between items-center text-sm lg:text-base border-b border-white/20 pb-3">
-                <span className="opacity-90">Costo total por unidad</span>
-                <span className="font-semibold">${result.totalCost.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
+              <div className="flex justify-between items-center border-b border-slate-800/80 pb-2">
+                <span className="text-slate-400">Costo total por unidad</span>
+                <span className="font-semibold text-slate-200">${result.totalCost.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
               </div>
-              <div className="flex justify-between items-center text-sm lg:text-base border-b border-white/20 pb-3">
-                <span className="opacity-90">Margen real</span>
-                <span className="font-semibold">{(result.realMargin * 100).toLocaleString('es-AR', { maximumFractionDigits: 2 })}%</span>
+              <div className="flex justify-between items-center border-b border-slate-800/80 pb-2">
+                <span className="text-slate-400">Margen neto real</span>
+                <span className="font-semibold text-emerald-400">{(result.realMargin * 100).toLocaleString('es-AR', { maximumFractionDigits: 2 })}%</span>
               </div>
-              <div className="flex justify-between items-center text-sm lg:text-base border-b border-white/20 pb-3">
-                <span className="opacity-90">Recargo real (markup)</span>
-                <span className="font-semibold">{(result.realMarkup * 100).toLocaleString('es-AR', { maximumFractionDigits: 2 })}%</span>
+              <div className="flex justify-between items-center border-b border-slate-800/80 pb-2">
+                <span className="text-slate-400">Recargo (markup) real</span>
+                <span className="font-semibold text-slate-200">{(result.realMarkup * 100).toLocaleString('es-AR', { maximumFractionDigits: 2 })}%</span>
               </div>
               {result.monthlyProfit !== undefined && (
-                <div className="flex justify-between items-center text-sm lg:text-base border-b border-white/20 pb-3">
-                  <span className="opacity-90">Ganancia mensual est.</span>
-                  <span className="font-semibold">${result.monthlyProfit.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
+                <div className="flex justify-between items-center border-b border-slate-800/80 pb-2">
+                  <span className="text-slate-400">Ganancia mensual est.</span>
+                  <span className="font-semibold text-emerald-400">${result.monthlyProfit.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
                 </div>
               )}
             </div>
 
-            {/* Visual Breakdown */}
-            <div className="mb-6">
-              <p className="text-xs opacity-90 mb-2 font-medium">De cada $100 de tu precio sin IVA:</p>
-              <div className="h-4 w-full flex rounded-full overflow-hidden bg-white/20">
-                <div style={{ width: `${Math.max(0, (result.breakdown.cost / result.netPrice) * 100)}%` }} className="bg-[#10b981]" title="Costos" />
-                <div style={{ width: `${Math.max(0, (result.breakdown.taxes / result.netPrice) * 100)}%` }} className="bg-[#f59e0b]" title="Impuestos" />
-                <div style={{ width: `${Math.max(0, (result.breakdown.fee / result.netPrice) * 100)}%` }} className="bg-[#ef4444]" title="Comisiones" />
-                <div style={{ width: `${Math.max(0, (result.breakdown.profit / result.netPrice) * 100)}%` }} className="bg-white" title="Ganancia" />
+            {/* Visual Breakdown Bar */}
+            <div className="mb-5 bg-slate-800/60 p-3 rounded-lg border border-slate-800">
+              <p className="text-[11px] text-slate-400 mb-2 font-medium">Composición por cada $100 netos:</p>
+              <div className="h-3 w-full flex rounded-full overflow-hidden bg-slate-800">
+                <div style={{ width: `${Math.max(0, (result.breakdown.cost / result.netPrice) * 100)}%` }} className="bg-emerald-500" title="Costos" />
+                <div style={{ width: `${Math.max(0, (result.breakdown.taxes / result.netPrice) * 100)}%` }} className="bg-amber-500" title="Impuestos" />
+                <div style={{ width: `${Math.max(0, (result.breakdown.fee / result.netPrice) * 100)}%` }} className="bg-rose-500" title="Comisiones" />
+                <div style={{ width: `${Math.max(0, (result.breakdown.profit / result.netPrice) * 100)}%` }} className="bg-brand" title="Ganancia" />
               </div>
-              <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
-                <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-[#10b981]" /> Costos: ${(result.breakdown.cost / result.netPrice * 100).toLocaleString('es-AR', {maximumFractionDigits:1})}</div>
-                <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-[#f59e0b]" /> Impuestos: ${(result.breakdown.taxes / result.netPrice * 100).toLocaleString('es-AR', {maximumFractionDigits:1})}</div>
-                <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-[#ef4444]" /> Comisiones: ${((result.breakdown.fee / (1+vatRate)) / result.netPrice * 100).toLocaleString('es-AR', {maximumFractionDigits:1})}</div>
-                <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-white" /> Ganancia: ${(result.breakdown.profit / result.netPrice * 100).toLocaleString('es-AR', {maximumFractionDigits:1})}</div>
+              <div className="mt-2.5 grid grid-cols-2 gap-1.5 text-[11px] text-slate-300">
+                <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-emerald-500" /> Costos: ${(result.breakdown.cost / result.netPrice * 100).toLocaleString('es-AR', {maximumFractionDigits:1})}</div>
+                <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-amber-500" /> Impuestos: ${(result.breakdown.taxes / result.netPrice * 100).toLocaleString('es-AR', {maximumFractionDigits:1})}</div>
+                <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-rose-500" /> Comisiones: ${((result.breakdown.fee / (1+vatRate)) / result.netPrice * 100).toLocaleString('es-AR', {maximumFractionDigits:1})}</div>
+                <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-brand" /> Ganancia: ${(result.breakdown.profit / result.netPrice * 100).toLocaleString('es-AR', {maximumFractionDigits:1})}</div>
               </div>
             </div>
 
             {/* Steps Toggle */}
-            <div className="mb-6">
+            <div className="mb-5">
               <button 
                 onClick={() => setShowSteps(!showSteps)}
-                className="text-xs font-medium bg-white/10 hover:bg-white/20 rounded-lg px-3 py-1.5 transition-colors"
+                className="text-xs font-semibold text-purple-300 hover:text-purple-200 transition-colors"
               >
-                {showSteps ? 'Ocultar cuenta paso a paso' : 'Ver la cuenta paso a paso'}
+                {showSteps ? 'Ocultar cuenta paso a paso' : 'Ver detalle del cálculo paso a paso'}
               </button>
               {showSteps && (
-                <div className="mt-3 p-3 bg-white/10 rounded-xl text-xs space-y-2 opacity-90 font-mono">
+                <div className="mt-2.5 p-3 bg-slate-950/70 rounded-lg text-xs space-y-1.5 text-slate-300 font-mono border border-slate-800">
                   {result.steps.map((step, idx) => (
                     <div key={idx}>{step}</div>
                   ))}
@@ -423,24 +437,27 @@ export function CalculadoraPrecios() {
               )}
             </div>
 
-            <div className="flex items-center gap-3">
+            {/* Action buttons */}
+            <div className="flex items-center gap-2">
               <button
                 onClick={handleCopy}
-                className="flex-1 bg-white text-neutral-900 hover:bg-white/90 active:bg-white transition-colors py-3 px-4 rounded-xl font-medium flex items-center justify-center gap-2"
+                className="flex-1 bg-brand hover:bg-brand-hover active:bg-brand-active text-white text-xs sm:text-sm font-semibold py-2.5 px-3 rounded-lg shadow-xs transition-colors flex items-center justify-center gap-2"
               >
-                {copied ? <CheckCircle2 className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
-                {copied ? 'Copiado' : 'Copiar resultado'}
+                {copied ? <CheckCircle2 className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                {copied ? '¡Copiado!' : 'Copiar resultado'}
               </button>
               <button
                 onClick={reset}
-                className="px-4 py-3 border border-white/30 hover:bg-white/10 rounded-xl font-medium transition-colors"
+                className="px-3 py-2.5 border border-slate-700 hover:bg-slate-800/80 rounded-lg text-xs font-medium text-slate-300 transition-colors"
               >
                 Limpiar
               </button>
             </div>
-            
-            <p className="text-center text-xs opacity-70 mt-4">
-              Resultado orientativo. Para temas impositivos, consultá con un contador.
+          </div>
+        ) : (
+          <div className="p-8 rounded-xl border border-dashed border-slate-200 bg-slate-50/50 text-center">
+            <p className="text-xs text-slate-500 leading-relaxed">
+              Ingresá el costo unitario del producto y tu porcentaje de ganancia o precio de venta para ver el resultado en tiempo real.
             </p>
           </div>
         )}

@@ -193,11 +193,12 @@ export function RecipeSummarySidebar({
           </div>
 
           {/* Action buttons */}
-          <div className="p-5 sm:p-6 bg-neutral-50 border-t border-neutral-100 space-y-2.5">
+          <div className="p-5 sm:p-6 bg-slate-50 border-t border-slate-100 space-y-2.5">
             <button
+              type="button"
               onClick={onSave}
               disabled={loading}
-              className="w-full flex justify-center items-center gap-2 bg-brand text-white py-3 px-4 rounded-xl font-bold hover:bg-brand-hover shadow-xs transition-colors disabled:opacity-50 text-sm cursor-pointer"
+              className="w-full flex justify-center items-center gap-2 bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-white py-3 px-4 rounded-xl font-bold shadow-sm transition-all disabled:opacity-50 text-sm cursor-pointer"
             >
               {loading ? (
                 <RefreshCw className="h-4 w-4 animate-spin" />
@@ -211,12 +212,12 @@ export function RecipeSummarySidebar({
               type="button"
               onClick={handleDownloadPdf}
               disabled={downloadingPdf}
-              className="w-full flex justify-center items-center gap-2 bg-white border border-neutral-300 text-neutral-700 py-2.5 px-4 rounded-xl font-semibold hover:bg-neutral-100 hover:text-brand shadow-2xs transition-colors disabled:opacity-50 text-xs sm:text-sm cursor-pointer"
+              className="w-full flex justify-center items-center gap-2 bg-white border border-slate-300 text-slate-700 py-2.5 px-4 rounded-xl font-semibold hover:bg-slate-50 hover:text-purple-700 shadow-sm transition-colors disabled:opacity-50 text-xs sm:text-sm cursor-pointer"
             >
               {downloadingPdf ? (
-                <RefreshCw className="h-4 w-4 animate-spin text-brand" />
+                <RefreshCw className="h-4 w-4 animate-spin text-purple-600" />
               ) : (
-                <FileDown className="h-4 w-4 text-brand" />
+                <FileDown className="h-4 w-4 text-purple-600" />
               )}
               <span>Exportar Ficha en PDF</span>
             </button>

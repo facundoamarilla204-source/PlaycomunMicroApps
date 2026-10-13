@@ -77,15 +77,15 @@ export default function GeneradorListasContent() {
       <div className="flex flex-col gap-8 md:flex-row">
         
         <div className="flex-1 space-y-6">
-          <div className="rounded-2xl bg-white p-6 shadow-sm border border-border">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6 border-b border-border">
-              <h1 className="flex items-center gap-2 text-2xl font-bold text-foreground">
-                <FileSpreadsheet className="text-brand" /> Editor de Lista
+          <div className="rounded-2xl bg-white p-6 sm:p-7 shadow-sm border border-slate-200">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6 border-b border-slate-100">
+              <h1 className="flex items-center gap-2.5 text-xl sm:text-2xl font-bold text-slate-900">
+                <FileSpreadsheet className="text-purple-600 w-6 h-6" /> Editor de Catálogo y Precios
               </h1>
               <div className="flex items-center gap-2">
-                <label className="text-sm font-medium text-foreground-muted">Rubro:</label>
+                <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">Plantilla:</label>
                 <select 
-                  className="rounded-xl border border-border px-4 py-2 font-medium focus:border-brand focus:outline-none"
+                  className="rounded-xl border border-slate-300 px-3.5 py-2 text-sm font-semibold text-slate-800 bg-white focus:border-purple-600 focus:ring-2 focus:ring-purple-100 focus:outline-none"
                   value={activeList.rubro}
                   onChange={handleRubroChange}
                 >
@@ -96,87 +96,100 @@ export default function GeneradorListasContent() {
               </div>
             </div>
             
-            <p className="mt-2 text-foreground-muted mb-6">
-              Agregá categorías y luego cargá tus productos o servicios en ellas.
+            <p className="text-sm text-slate-600 mb-6">
+              Organizá tus productos por categoría, definí sus precios y descargá una lista imprimible en PDF con formato profesional.
             </p>
 
             {/* Crear Categoría */}
-            <div className="flex flex-col md:flex-row gap-4 mb-6 pb-6 border-b border-border">
+            <div className="flex flex-col sm:flex-row gap-3 mb-6 pb-6 border-b border-slate-100">
               <input 
                 type="text" 
-                placeholder="Nueva Categoría (ej: Entradas, Remeras, Tratamientos)" 
-                className="flex-1 rounded-xl border border-border px-4 py-2 focus:border-brand focus:outline-none"
+                placeholder="Nueva categoría (ej: Promociones, Pastas, Ropa deportiva)" 
+                className="flex-1 rounded-xl border border-slate-300 px-4 py-2.5 text-sm text-slate-900 focus:border-purple-600 focus:ring-2 focus:ring-purple-100 focus:outline-none placeholder:text-slate-400 font-medium"
                 value={catName}
                 onChange={(e) => setCatName(e.target.value)}
               />
               <button 
+                type="button"
                 onClick={handleAddCategory}
-                className="flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-6 py-2 font-semibold text-white transition-all hover:bg-gray-800"
+                className="flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-slate-800 active:bg-slate-950 shrink-0"
               >
-                <Plus size={18} /> Crear Categoría
+                <Plus size={16} /> Crear Categoría
               </button>
             </div>
 
             {/* Crear Producto */}
-            <div className="flex flex-col md:flex-row gap-4 mb-8">
-              <select 
-                className="rounded-xl border border-border px-4 py-2 focus:border-brand focus:outline-none"
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-              >
-                <option value="">Seleccionar Categoría...</option>
-                {activeList.categories.map(c => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
-                ))}
-              </select>
-              <input 
-                type="text" 
-                placeholder="Nombre del ítem" 
-                className="flex-1 rounded-xl border border-border px-4 py-2 focus:border-brand focus:outline-none"
-                value={prodName}
-                onChange={(e) => setProdName(e.target.value)}
-              />
-              <input 
-                type="number" 
-                placeholder="Precio $" 
-                className="w-full md:w-32 rounded-xl border border-border px-4 py-2 focus:border-brand focus:outline-none"
-                value={prodPrice}
-                onChange={(e) => setProdPrice(e.target.value)}
-              />
-              <button 
-                onClick={handleAddProduct}
-                className="flex items-center justify-center gap-2 rounded-xl bg-brand px-6 py-2 font-semibold text-white transition-all hover:bg-brand-hover"
-              >
-                <Plus size={18} /> Agregar
-              </button>
+            <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 mb-8 p-4 bg-slate-50/80 rounded-xl border border-slate-200/80">
+              <div className="sm:col-span-4">
+                <select 
+                  className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-medium bg-white text-slate-800 focus:border-purple-600 focus:ring-2 focus:ring-purple-100 focus:outline-none"
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                >
+                  <option value="">Seleccionar Categoría...</option>
+                  {activeList.categories.map(c => (
+                    <option key={c.id} value={c.id}>{c.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="sm:col-span-5">
+                <input 
+                  type="text" 
+                  placeholder="Nombre del producto o servicio" 
+                  className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 font-medium bg-white focus:border-purple-600 focus:ring-2 focus:ring-purple-100 focus:outline-none placeholder:text-slate-400"
+                  value={prodName}
+                  onChange={(e) => setProdName(e.target.value)}
+                />
+              </div>
+              <div className="sm:col-span-3 flex gap-2">
+                <input 
+                  type="number" 
+                  placeholder="Precio $" 
+                  className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm text-slate-900 font-medium bg-white focus:border-purple-600 focus:ring-2 focus:ring-purple-100 focus:outline-none"
+                  value={prodPrice}
+                  onChange={(e) => setProdPrice(e.target.value)}
+                />
+                <button 
+                  type="button"
+                  onClick={handleAddProduct}
+                  className="flex items-center justify-center gap-1.5 rounded-xl bg-purple-600 px-4 py-2.5 text-sm font-bold text-white transition-all hover:bg-purple-700 active:bg-purple-800 shrink-0"
+                >
+                  <Plus size={16} />
+                </button>
+              </div>
             </div>
 
             {/* Lista */}
             <div className="space-y-6">
               {activeList.categories.length === 0 ? (
-                <div className="text-center p-8 text-foreground-muted border-2 border-dashed border-border rounded-xl">
-                  Aún no agregaste categorías.
+                <div className="text-center p-8 text-slate-500 border border-dashed border-slate-300 rounded-xl bg-slate-50/50 text-sm">
+                  Aún no agregaste categorías. Ingresá un nombre arriba para comenzar.
                 </div>
               ) : (
                 activeList.categories.map(cat => {
                   const catProducts = activeList.products.filter(p => p.category_id === cat.id)
                   return (
                     <div key={cat.id} className="space-y-3">
-                      <h3 className="font-bold text-lg text-foreground border-b-2 border-brand/20 pb-1">{cat.name}</h3>
+                      <div className="flex items-center justify-between border-b border-slate-200 pb-2">
+                        <h3 className="font-bold text-base text-slate-900">{cat.name}</h3>
+                        <span className="text-xs text-slate-400 font-medium">{catProducts.length} {catProducts.length === 1 ? 'producto' : 'productos'}</span>
+                      </div>
                       {catProducts.length === 0 ? (
-                        <p className="text-sm text-foreground-muted italic px-2">Categoría vacía</p>
+                        <p className="text-xs text-slate-400 italic px-2">Categoría vacía — agregale ítems usando el formulario superior.</p>
                       ) : (
                         <div className="flex flex-col gap-2">
                           {catProducts.map(product => (
-                            <div key={product.id} className="flex justify-between items-center p-3 rounded-lg border border-border/50 bg-gray-50/50">
-                              <span className="font-medium text-foreground">{product.name}</span>
+                            <div key={product.id} className="flex justify-between items-center p-3 rounded-xl border border-slate-200/80 bg-white hover:bg-slate-50/70 transition-colors">
+                              <span className="font-medium text-sm text-slate-800">{product.name}</span>
                               <div className="flex items-center gap-4">
-                                <span className="font-bold text-brand">${product.price.toLocaleString('es-AR')}</span>
+                                <span className="font-bold text-purple-700 text-sm">${product.price.toLocaleString('es-AR')}</span>
                                 <button 
+                                  type="button"
                                   onClick={() => removeProduct(product.id)}
-                                  className="text-red-500 hover:text-red-700 transition-colors p-1"
+                                  className="text-slate-400 hover:text-red-600 transition-colors p-1"
+                                  title="Eliminar producto"
                                 >
-                                  <Trash2 size={16} />
+                                  <Trash2 size={15} />
                                 </button>
                               </div>
                             </div>
@@ -193,33 +206,49 @@ export default function GeneradorListasContent() {
 
         {/* Sidebar */}
         <div className="w-full md:w-80 space-y-6">
-          <div className="rounded-2xl bg-brand/5 p-6 border border-brand/20 sticky top-24">
-            <h3 className="font-bold text-brand mb-4">Exportar PDF</h3>
-            <p className="text-sm text-foreground-muted mb-6">
-              El diseño de {RUBROS.find(r => r.id === activeList.rubro)?.title} se aplicará automáticamente al descargar.
-            </p>
-            <button 
-              onClick={handleDownloadPDF}
-              className="w-full flex items-center justify-center gap-2 rounded-xl bg-brand px-6 py-3 font-semibold text-white shadow-md shadow-brand/20 transition-all hover:bg-brand-hover mb-6"
-            >
-              <Download size={20} /> Generar PDF
-            </button>
-
-            <h4 className="font-semibold text-foreground border-t border-border pt-4 mb-3">Actualización Masiva</h4>
-            <div className="flex gap-2">
-              <input 
-                type="number"
-                value={percentage}
-                onChange={(e) => setPercentage(e.target.value)}
-                className="flex-1 rounded-xl border border-border px-3 py-2 text-sm focus:border-brand focus:outline-none"
-                placeholder="%"
-              />
+          <div className="rounded-2xl bg-white p-6 border border-slate-200 shadow-sm sticky top-24 space-y-6">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-purple-600 mb-1 block">Acción Principal</span>
+              <h3 className="font-bold text-base text-slate-900 mb-2">Exportar lista en PDF</h3>
+              <p className="text-xs text-slate-500 mb-4 leading-relaxed">
+                El diseño para <strong>{RUBROS.find(r => r.id === activeList.rubro)?.title}</strong> se compilará con formato de hoja A4 listo para imprimir o enviar.
+              </p>
               <button 
-                onClick={handleUpdatePrices}
-                className="flex items-center gap-1 rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 transition-colors"
+                type="button"
+                onClick={handleDownloadPDF}
+                className="w-full flex items-center justify-center gap-2 rounded-xl bg-purple-600 px-5 py-3 font-bold text-sm text-white shadow-sm transition-all hover:bg-purple-700 active:bg-purple-800"
               >
-                <ArrowUpCircle size={16} /> Subir %
+                <Download size={18} /> Descargar PDF
               </button>
+            </div>
+
+            <div className="pt-5 border-t border-slate-100">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1 block">Ajuste de Precios</span>
+              <h4 className="font-bold text-sm text-slate-900 mb-2">Aumento porcentual masivo</h4>
+              <p className="text-xs text-slate-500 mb-3 leading-relaxed">
+                Actualizá todos los precios de la lista en simultáneo por inflación o cambio de costos.
+              </p>
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <input 
+                    type="number"
+                    value={percentage}
+                    onChange={(e) => setPercentage(e.target.value)}
+                    className="w-full rounded-xl border border-slate-300 px-3 pr-7 py-2 text-sm font-semibold text-slate-900 focus:border-purple-600 focus:ring-2 focus:ring-purple-100 focus:outline-none"
+                    placeholder="10"
+                  />
+                  <span className="absolute inset-y-0 right-0 pr-2.5 flex items-center text-slate-400 font-bold text-xs pointer-events-none">
+                    %
+                  </span>
+                </div>
+                <button 
+                  type="button"
+                  onClick={handleUpdatePrices}
+                  className="flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-700 transition-colors shrink-0"
+                >
+                  <ArrowUpCircle size={15} /> Aplicar
+                </button>
+              </div>
             </div>
           </div>
         </div>

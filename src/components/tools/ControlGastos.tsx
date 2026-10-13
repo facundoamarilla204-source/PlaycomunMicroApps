@@ -84,20 +84,10 @@ export function ControlGastos({ user }: { user: User | null }) {
   }, [expenses, searchQuery, period, categoryFilter, paymentFilter, sortBy]);
 
   return (
-    <div className="w-full max-w-6xl mx-auto px-4 py-8 lg:py-12 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
-      <div className="mb-8 text-center max-w-3xl mx-auto">
-        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-neutral-900 mb-4 font-sora">
-          Control de Gastos
-        </h2>
-        <p className="text-lg text-slate-600 leading-relaxed">
-          Registrá y organizá tus gastos diarios de forma rápida. 
-          Conocé en qué se va tu dinero y empezá a ahorrar.
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+    <div className="w-full max-w-6xl mx-auto pb-12">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Lado Izquierdo: Formulario */}
-        <div className="lg:col-span-4 bg-white p-6 lg:p-8 rounded-2xl shadow-sm border border-slate-200 sticky top-24">
+        <div className="lg:col-span-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 lg:sticky lg:top-24">
           <ExpenseForm 
             user={user}
             onAdd={addExpense}

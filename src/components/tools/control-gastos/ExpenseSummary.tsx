@@ -51,32 +51,32 @@ export function ExpenseSummary({ expenses }: { expenses: Expense[] }) {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div className="bg-neutral-900 text-white rounded-2xl p-6 shadow-sm">
-        <div className="flex items-center gap-3 mb-4 opacity-80">
-          <DollarSign className="w-5 h-5" />
-          <h3 className="font-medium">Total del Mes</h3>
+      <div className="bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950 border border-slate-800 text-white rounded-2xl p-6 shadow-md">
+        <div className="flex items-center gap-2 mb-3">
+          <DollarSign className="w-4 h-4 text-purple-300" />
+          <h3 className="text-xs font-bold uppercase tracking-wider text-purple-300">Total del Mes</h3>
         </div>
-        <p className="text-3xl lg:text-4xl font-bold font-sora">
+        <p className="text-3xl font-extrabold tracking-tight font-sora text-white">
           {formatter.format(summary.totalMonth)}
         </p>
       </div>
 
       <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-        <div className="flex items-center gap-3 mb-4 text-slate-500">
-          <TrendingUp className="w-5 h-5 text-red-500" />
-          <h3 className="font-medium">Mayor Gasto (Mes)</h3>
+        <div className="flex items-center gap-2 mb-3 text-slate-500">
+          <TrendingUp className="w-4 h-4 text-rose-500" />
+          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">Mayor Gasto (Mes)</h3>
         </div>
-        <p className="text-2xl font-bold text-neutral-900 font-sora">
+        <p className="text-2xl font-bold text-slate-900 font-sora">
           {formatter.format(summary.maxExpense)}
         </p>
       </div>
 
       <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-        <div className="flex items-center gap-3 mb-4 text-slate-500">
-          <PieChart className="w-5 h-5 text-blue-500" />
-          <h3 className="font-medium">Categoría Principal</h3>
+        <div className="flex items-center gap-2 mb-3 text-slate-500">
+          <PieChart className="w-4 h-4 text-purple-600" />
+          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">Categoría Principal</h3>
         </div>
-        <p className="text-2xl font-bold text-neutral-900 font-sora truncate" title={summary.topCategory}>
+        <p className="text-2xl font-bold text-slate-900 font-sora truncate" title={summary.topCategory}>
           {summary.topCategory}
         </p>
       </div>

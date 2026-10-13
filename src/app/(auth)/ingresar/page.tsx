@@ -8,65 +8,64 @@ export default async function LoginPage(props: {
   const searchParams = await props.searchParams
   return (
     <div className="max-w-sm mx-auto w-full">
-      <h1 className="text-3xl font-semibold tracking-tight text-foreground mb-2">
+      <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 mb-2">
         Ingresá a tu cuenta
       </h1>
-      <p className="text-foreground-muted mb-6 text-sm">
-        Guardá tus herramientas favoritas y usalas desde cualquier dispositivo.
+      <p className="text-slate-500 mb-6 text-xs sm:text-sm font-medium">
+        Accedé a tus herramientas favoritas desde cualquier dispositivo.
       </p>
 
       {searchParams?.error && (
-        <div className="bg-red-50 text-red-600 p-3 rounded-xl mb-6 text-sm">
+        <div className="bg-rose-50 border border-rose-200 text-rose-700 p-3.5 rounded-xl mb-6 text-xs sm:text-sm font-medium">
           {searchParams.error}
         </div>
       )}
 
-
       <form action={login} className="space-y-4">
         <div className="space-y-1.5">
-          <label htmlFor="email" className="text-sm font-medium text-foreground block">
-            Email
+          <label htmlFor="email" className="text-xs font-bold uppercase tracking-wider text-slate-700 block">
+            Correo electrónico
           </label>
           <input
             id="email"
             name="email"
             type="email"
-            placeholder="nombre@email.com"
+            placeholder="tu@email.com"
             required
-            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all placeholder:text-gray-400"
+            className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/70 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-600 transition-all placeholder:text-slate-400 text-sm font-medium text-slate-900"
           />
         </div>
 
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
-            <label htmlFor="password" className="text-sm font-medium text-foreground block">
+            <label htmlFor="password" className="text-xs font-bold uppercase tracking-wider text-slate-700 block">
               Contraseña
             </label>
             <Link 
               href="/recuperar"
-              className="text-sm text-brand hover:text-brand-hover transition-colors"
+              className="text-xs font-semibold text-purple-700 hover:text-purple-800 transition-colors"
             >
-              Olvidé mi contraseña
+              ¿Olvidaste tu clave?
             </Link>
           </div>
           <input
             id="password"
             name="password"
             type="password"
-            placeholder="Tu contraseña"
+            placeholder="••••••••"
             required
-            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all placeholder:text-gray-400"
+            className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/70 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-600 transition-all placeholder:text-slate-400 text-sm font-medium text-slate-900"
           />
         </div>
 
         <SubmitButton pendingText="Ingresando...">
-          Ingresar
+          Iniciar Sesión
         </SubmitButton>
       </form>
 
-      <p className="text-center text-sm text-foreground-muted mt-6">
-        ¿No tenés cuenta?{" "}
-        <Link href="/registro" className="text-brand hover:text-brand-hover transition-colors">
+      <p className="text-center text-xs text-slate-500 mt-6 font-medium">
+        ¿Aún no tenés cuenta?{" "}
+        <Link href="/registro" className="text-purple-700 hover:text-purple-800 font-bold transition-colors">
           Creá una gratis
         </Link>
       </p>

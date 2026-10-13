@@ -15,7 +15,7 @@ export function SubmitButton({
     <button
       type="submit"
       disabled={pending}
-      className="w-full bg-brand hover:bg-brand-hover text-white py-3 rounded-xl font-medium transition-colors shadow-sm mt-2 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center"
+      className="w-full bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-white py-3 px-4 rounded-xl font-bold text-sm transition-all shadow-sm mt-3 active:scale-[0.99] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center min-h-[46px] focus:outline-none focus:ring-2 focus:ring-purple-500/20"
     >
       {pending ? (
         <span className="flex items-center gap-2">

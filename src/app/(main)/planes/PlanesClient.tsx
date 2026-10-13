@@ -86,137 +86,144 @@ export default function PlanesClient({ isAuthenticated, isPro, priceMensual, pri
           </div>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto items-stretch">
           {/* Plan Gratuito */}
-          <motion.div variants={itemVariants} className="bg-white border border-slate-200 rounded-xl p-8 sm:p-10 shadow-sm flex flex-col">
+          <motion.div variants={itemVariants} className="bg-white border border-slate-200/80 rounded-3xl p-8 sm:p-10 shadow-sm flex flex-col">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 block">
+              Comenzá Gratis
+            </span>
             <h2 className="text-3xl font-black text-slate-900 mb-2">Básico</h2>
-            <p className="text-slate-500 mb-6 font-medium">Ideal para uso casual y tareas rápidas.</p>
+            <p className="text-slate-500 mb-6 text-sm font-medium">Ideal para uso personal, consultas y cálculos rápidos del día a día.</p>
             
-            <div className="mb-8 flex items-end gap-1">
-              <span className="text-5xl font-extrabold text-slate-900">$0</span>
-              <span className="text-slate-500 font-medium mb-1">/ para siempre</span>
+            <div className="mb-8 flex items-baseline gap-1.5 pb-6 border-b border-slate-100">
+              <span className="text-5xl font-black text-slate-900">$0</span>
+              <span className="text-slate-500 text-sm font-medium">/ para siempre</span>
             </div>
             
-            <ul className="space-y-4 mb-10 flex-1">
+            <ul className="space-y-3.5 mb-10 flex-1">
               {[
-                'Acceso al 100% de las herramientas', 
-                'Generación de documentos estándar', 
-                'Guardado de herramientas favoritas', 
-                'Soporte comunitario'
+                'Acceso al 100% de las calculadoras y utilidades', 
+                'Generación de documentos estándar en PDF', 
+                'Guardado de herramientas en accesos rápidos', 
+                'Ejecución 100% privada en tu navegador'
               ].map((feature, i) => (
-                <li key={i} className="flex items-start gap-3 text-slate-700 font-medium">
-                  <div className="w-6 h-6 rounded bg-slate-100 flex items-center justify-center text-slate-600 flex-shrink-0 mt-0.5">
-                    <Check className="w-4 h-4" />
+                <li key={i} className="flex items-start gap-3 text-slate-700 text-sm font-medium">
+                  <div className="w-5 h-5 rounded-md bg-slate-100 flex items-center justify-center text-slate-700 flex-shrink-0 mt-0.5 text-xs font-bold">
+                    ✓
                   </div>
                   <span>{feature}</span>
                 </li>
               ))}
             </ul>
 
-            {!isAuthenticated ? (
-              <Link 
-                href="/registro"
-                className="block w-full text-center bg-slate-100 hover:bg-slate-200 text-slate-900 px-6 py-4 rounded-xl font-bold transition-colors"
-              >
-                Crear cuenta gratis
-              </Link>
-            ) : isPro ? (
-              <button 
-                disabled
-                className="w-full text-center bg-slate-50 text-slate-400 px-6 py-4 rounded-xl font-bold cursor-default"
-              >
-                Incluido
-              </button>
-            ) : (
-              <button 
-                disabled
-                className="w-full text-center bg-slate-100 text-slate-500 px-6 py-4 rounded-xl font-bold cursor-default"
-              >
-                Plan actual
-              </button>
-            )}
+            <div className="pt-2">
+              {!isAuthenticated ? (
+                <Link 
+                  href="/registro"
+                  className="block w-full text-center bg-slate-100 hover:bg-slate-200 text-slate-900 px-6 py-3.5 rounded-xl text-sm font-bold transition-all min-h-[46px] flex items-center justify-center"
+                >
+                  Crear cuenta gratis
+                </Link>
+              ) : isPro ? (
+                <button 
+                  disabled
+                  className="w-full text-center bg-slate-50 text-slate-400 px-6 py-3.5 rounded-xl text-sm font-bold cursor-default min-h-[46px]"
+                >
+                  Incluido en tu cuenta
+                </button>
+              ) : (
+                <button 
+                  disabled
+                  className="w-full text-center bg-slate-100 text-slate-600 px-6 py-3.5 rounded-xl text-sm font-bold cursor-default min-h-[46px]"
+                >
+                  Plan actual
+                </button>
+              )}
+            </div>
           </motion.div>
 
           {/* Plan Pro */}
-          <motion.div variants={itemVariants} className="bg-slate-900 rounded-xl p-8 sm:p-10 shadow-md relative overflow-hidden flex flex-col group">
-            {/* Eliminado: Pro background effects (orbes) */}
-            
-            <div className="absolute top-0 right-8 bg-amber-400 text-amber-950 text-xs font-black px-4 py-1.5 rounded-b-xl uppercase tracking-wider shadow-sm">
-              Recomendado
+          <motion.div variants={itemVariants} className="bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950 border border-slate-800 rounded-3xl p-8 sm:p-10 shadow-xl relative overflow-hidden flex flex-col group">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-bold uppercase tracking-wider text-purple-300 block">
+                Máxima Productividad
+              </span>
+              <span className="bg-purple-600 text-white text-[11px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
+                Recomendado
+              </span>
             </div>
 
-            <div className="relative z-10 flex flex-col h-full">
-              <h2 className="text-3xl font-black text-white mb-2 flex items-center gap-2">
-                Pro
-              </h2>
-              <p className="text-slate-400 mb-6 font-medium">Potencia total para profesionales.</p>
-              
-              <div className="mb-8 flex flex-col">
-                <div className="flex items-end gap-1">
-                  <span className="text-5xl font-extrabold text-white">
-                    ${(isAnual ? priceAnual : priceMensual).toLocaleString('es-AR')}
-                  </span>
-                  <span className="text-slate-400 font-medium mb-1">
-                    / {isAnual ? 'año' : 'mes'}
-                  </span>
-                </div>
-                {isAnual && (
-                  <span className="text-amber-400 text-sm font-bold mt-1">
-                    Equivale a ${(priceAnual / 12).toLocaleString('es-AR')}/mes (Ahorrás 2 meses)
-                  </span>
-                )}
+            <h2 className="text-3xl font-black text-white mb-2 flex items-center gap-2">
+              PlayComun Pro
+            </h2>
+            <p className="text-slate-400 mb-6 text-sm font-medium">Potencia sin restricciones para profesionales y negocios.</p>
+            
+            <div className="mb-8 flex flex-col pb-6 border-b border-slate-800">
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-5xl font-black text-white">
+                  ${(isAnual ? priceAnual : priceMensual).toLocaleString('es-AR')}
+                </span>
+                <span className="text-slate-400 text-sm font-medium">
+                  / {isAnual ? 'año' : 'mes'}
+                </span>
               </div>
-              
-              <ul className="space-y-4 mb-10 flex-1">
-                {[
-                  'Todo lo de Básico, más:',
-                  'Sin publicidad en toda la plataforma',
-                  'Personalización de marca (tu logo y colores)', 
-                  'Exportación a Excel / CSV en herramientas',
-                  'Sin marca de agua en PDFs',
-                  'Historial guardado de documentos'
-                ].map((feature, i) => (
-                  <li key={i} className="flex items-start gap-3 text-slate-200 font-medium">
-                    <div className="w-6 h-6 rounded bg-brand/20 flex items-center justify-center text-amber-400 flex-shrink-0 mt-0.5 border border-amber-400/20">
-                      <Check className="w-4 h-4" />
-                    </div>
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
+              {isAnual && (
+                <span className="text-emerald-400 text-xs font-bold mt-1.5 flex items-center gap-1">
+                  ✓ Equivale a ${(Math.round(priceAnual / 12)).toLocaleString('es-AR')}/mes (Ahorrás 2 meses)
+                </span>
+              )}
+            </div>
+            
+            <ul className="space-y-3.5 mb-10 flex-1">
+              {[
+                'Todo lo incluido en Básico, más:',
+                'Navegación 100% limpia sin publicidad',
+                'Personalización de marca (tu logo y colores en presupuestos)', 
+                'Códigos QR dinámicos reutilizables en planchas A4',
+                'Exportación de presupuestos y listas sin marca de agua',
+                'Soporte prioritario por email'
+              ].map((feature, i) => (
+                <li key={i} className="flex items-start gap-3 text-slate-200 text-sm font-medium">
+                  <div className="w-5 h-5 rounded-md bg-purple-900/60 border border-purple-700/50 flex items-center justify-center text-purple-300 flex-shrink-0 mt-0.5 text-xs font-bold">
+                    ✓
+                  </div>
+                  <span>{feature}</span>
+                </li>
+              ))}
+            </ul>
 
-              <div className="w-full">
-                {isPro ? (
-                   <Link 
-                    href="/cuenta"
-                    className="flex w-full items-center justify-center bg-white/10 text-white hover:bg-white/20 px-6 py-4 rounded-xl font-bold transition-colors"
-                  >
-                    Gestionar suscripción
-                  </Link>
-                ) : !isAuthenticated ? (
-                  <Link 
-                    href="/ingresar?callbackUrl=/planes"
-                    className="flex w-full items-center justify-center gap-2 bg-amber-400 hover:bg-amber-500 text-amber-950 px-6 py-4 rounded-xl font-bold transition-all hover:scale-[1.02] active:scale-95 shadow-md shadow-amber-400/20"
-                  >
-                    Ingresar para suscribirme
-                    <ArrowRight className="w-5 h-5" />
-                  </Link>
-                ) : (
-                  <button 
-                    onClick={handleCheckout}
-                    disabled={isLoading}
-                    className="flex w-full items-center justify-center gap-2 bg-amber-400 hover:bg-amber-500 disabled:bg-amber-400/50 text-amber-950 px-6 py-4 rounded-xl font-bold transition-all hover:scale-[1.02] active:scale-95 shadow-md shadow-amber-400/20"
-                  >
-                    {isLoading ? 'Redirigiendo...' : 'Actualizar a Pro ahora'}
-                    {!isLoading && <ArrowRight className="w-5 h-5" />}
-                  </button>
-                )}
-              </div>
+            <div className="w-full pt-2">
+              {isPro ? (
+                 <Link 
+                  href="/cuenta"
+                  className="flex w-full items-center justify-center bg-white/10 text-white hover:bg-white/20 px-6 py-3.5 rounded-xl text-sm font-bold transition-all min-h-[46px]"
+                >
+                  Gestionar suscripción
+                </Link>
+              ) : !isAuthenticated ? (
+                <Link 
+                  href="/ingresar?callbackUrl=/planes"
+                  className="flex w-full items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-white px-6 py-3.5 rounded-xl text-sm font-bold transition-all shadow-md min-h-[46px]"
+                >
+                  Ingresar para suscribirme
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              ) : (
+                <button 
+                  type="button"
+                  onClick={handleCheckout}
+                  disabled={isLoading}
+                  className="flex w-full items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 active:bg-purple-800 disabled:opacity-50 text-white px-6 py-3.5 rounded-xl text-sm font-bold transition-all shadow-md min-h-[46px]"
+                >
+                  {isLoading ? 'Redirigiendo a checkout...' : 'Actualizar a Pro ahora'}
+                  {!isLoading && <ArrowRight className="w-4 h-4" />}
+                </button>
+              )}
+            </div>
 
-              <div className="mt-4 flex items-center justify-center gap-4 text-xs font-medium text-slate-500">
-                <div className="flex items-center gap-1.5"><Shield className="w-4 h-4" /> Pago seguro</div>
-                <div className="flex items-center gap-1.5"><CreditCard className="w-4 h-4" /> Cancela cuando quieras</div>
-              </div>
+            <div className="mt-4 flex items-center justify-center gap-4 text-xs font-medium text-slate-400">
+              <div className="flex items-center gap-1.5"><Shield className="w-3.5 h-3.5 text-emerald-400" /> Cobro seguro</div>
+              <div className="flex items-center gap-1.5"><CreditCard className="w-3.5 h-3.5" /> Cancelación inmediata</div>
             </div>
           </motion.div>
         </div>

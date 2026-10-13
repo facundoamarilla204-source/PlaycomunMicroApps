@@ -90,58 +90,99 @@ export function CalculadoraIVA() {
   };
 
   return (
-    <div className="grid gap-8 items-start w-full lg:grid-cols-2 max-w-6xl mx-auto">
-      <div className="bg-white rounded-xl shadow-sm border border-neutral-200 p-6 sm:p-8 space-y-8">
-        
-        {/* Mode Selection */}
-        <div className="flex bg-neutral-100 p-1 rounded-xl">
-          <button
-            onClick={() => setMode('add')}
-            className={`flex-1 py-3 text-sm font-medium rounded-lg transition-colors ${mode === 'add' ? 'bg-white shadow-sm text-neutral-900' : 'text-neutral-500 hover:text-neutral-700'}`}
-          >
-            Agregar IVA
-          </button>
-          <button
-            onClick={() => setMode('remove')}
-            className={`flex-1 py-3 text-sm font-medium rounded-lg transition-colors ${mode === 'remove' ? 'bg-white shadow-sm text-neutral-900' : 'text-neutral-500 hover:text-neutral-700'}`}
-          >
-            Quitar IVA
-          </button>
+    <div className="grid gap-8 items-start w-full lg:grid-cols-12 max-w-5xl mx-auto">
+      {/* Input Form */}
+      <div className="lg:col-span-7 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-7 space-y-6">
+        {/* Mode Selector */}
+        <div>
+          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
+            Operación
+          </label>
+          <div className="grid grid-cols-2 p-1 bg-slate-100 rounded-xl border border-slate-200/80">
+            <button
+              type="button"
+              onClick={() => setMode('add')}
+              className={`py-2.5 text-xs sm:text-sm font-semibold rounded-lg transition-all ${
+                mode === 'add'
+                  ? 'bg-white text-purple-700 shadow-sm border border-slate-200/60'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Agregar IVA (+21%)
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode('remove')}
+              className={`py-2.5 text-xs sm:text-sm font-semibold rounded-lg transition-all ${
+                mode === 'remove'
+                  ? 'bg-white text-purple-700 shadow-sm border border-slate-200/60'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Desglosar IVA (Quitar)
+            </button>
+          </div>
         </div>
 
-        <section className="space-y-4">
+        {/* Input Value */}
+        <section className="space-y-4 pt-2">
           <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">
-              {mode === 'add' ? 'Precio Neto (sin IVA)' : 'Precio Final (con IVA)'}
+            <label className="block text-sm font-semibold text-slate-800 mb-1">
+              {mode === 'add' ? 'Precio neto (sin IVA)' : 'Precio final facturado (con IVA)'}
             </label>
-            <p className="text-xs text-neutral-500 mb-2">
-              {mode === 'add' ? 'Ingresá el importe al que querés sumarle el impuesto.' : 'Ingresá el importe total para desglosar el impuesto.'}
+            <p className="text-xs text-slate-500 mb-2">
+              {mode === 'add'
+                ? 'Ingresá el importe base sobre el cual aplicar el impuesto.'
+                : 'Ingresá el importe total cobrado o facturado para discriminar el impuesto.'}
             </p>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <span className="text-neutral-500 sm:text-sm">$</span>
-              </div>
+              <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 font-semibold text-base">
+                $
+              </span>
               <input
                 type="text"
                 inputMode="decimal"
                 value={priceStr}
                 onChange={handleCurrencyChange(setPriceStr)}
-                className="block w-full pl-7 pr-3 py-3 rounded-xl border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm transition-colors"
-                placeholder="1000"
+                className="block w-full pl-8 pr-4 py-3 rounded-xl border border-slate-300 focus:border-purple-600 focus:ring-2 focus:ring-purple-100 text-slate-900 font-medium text-base transition-colors placeholder:text-slate-400"
+                placeholder="10.000,00"
               />
             </div>
           </div>
 
+          {/* Quick Rate Selector */}
           <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-2">Alícuota de IVA</label>
+            <label className="block text-sm font-semibold text-slate-800 mb-1.5">
+              Alícuota de IVA
+            </label>
+            <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-3">
+              {VAT_RATES.map((rate) => {
+                const isSelected = parseFloat(vatRateStr) === rate.value;
+                return (
+                  <button
+                    key={rate.label}
+                    type="button"
+                    onClick={() => setVatRateStr(rate.value.toString())}
+                    className={`py-2 px-1 text-center rounded-lg border text-xs font-semibold transition-all ${
+                      isSelected
+                        ? 'border-purple-600 bg-purple-50 text-purple-700 ring-2 ring-purple-100'
+                        : 'border-slate-200 hover:border-slate-300 text-slate-700 bg-white'
+                    }`}
+                  >
+                    {rate.label}
+                  </button>
+                );
+              })}
+            </div>
+
             <select
               value={vatRateStr}
               onChange={(e) => setVatRateStr(e.target.value)}
-              className="block w-full px-3 py-3 rounded-xl border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm bg-white"
+              className="block w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-purple-600 focus:ring-2 focus:ring-purple-100 text-sm font-medium bg-white text-slate-700"
             >
               {VAT_RATES.map((rate) => (
                 <option key={rate.label} value={rate.value}>
-                  {rate.label} {rate.value === 0.21 ? '(General)' : rate.value === 0.105 ? '(Reducida)' : ''}
+                  {rate.label} {rate.value === 0.21 ? '— Tasa General' : rate.value === 0.105 ? '— Tasa Reducida (Bienes de capital, carnes, etc.)' : rate.value === 0.27 ? '— Servicios públicos / Telecom' : ''}
                 </option>
               ))}
             </select>
@@ -149,48 +190,61 @@ export function CalculadoraIVA() {
         </section>
       </div>
 
-      {/* Result Card (Sticky on desktop, below on mobile) */}
-      <div className={`
-        ${result ? 'block' : 'hidden'} 
-        lg:block lg:sticky lg:top-8
-        mt-8 lg:mt-0 w-full
-      `}>
-        {result && (
-          <div aria-live="polite" className="bg-neutral-900 text-white rounded-xl p-6 lg:p-8 shadow-md w-full">
-            <h3 className="text-white text-sm font-semibold mb-1 opacity-90">
-              {mode === 'add' ? 'PRECIO FINAL (CON IVA)' : 'PRECIO NETO (SIN IVA)'}
-            </h3>
-            <div className="text-4xl lg:text-5xl font-bold mb-6">
-              ${mode === 'add' 
-                ? result.finalPrice.toLocaleString('es-AR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }) 
-                : result.netPrice.toLocaleString('es-AR', { maximumFractionDigits: 2, minimumFractionDigits: 2 })}
+      {/* Result Card */}
+      <div className="lg:col-span-5 lg:sticky lg:top-24 w-full">
+        {result ? (
+          <div
+            aria-live="polite"
+            className="bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950 border border-slate-800 text-white rounded-2xl p-6 sm:p-7 shadow-lg"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-bold uppercase tracking-wider text-purple-300">
+                {mode === 'add' ? 'Precio Final (con IVA)' : 'Precio Neto (sin IVA)'}
+              </span>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-200 border border-purple-400/30 font-medium">
+                Alícuota {(vatRate * 100).toLocaleString('es-AR')}%
+              </span>
             </div>
-            
-            <div className="space-y-4 mb-6">
-              <div className="flex justify-between items-center text-sm lg:text-base border-b border-white/20 pb-3">
-                <span className="opacity-90">Precio neto (sin IVA)</span>
-                <span className="font-semibold">${result.netPrice.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
+
+            <div className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mb-6">
+              ${(mode === 'add' ? result.finalPrice : result.netPrice).toLocaleString('es-AR', {
+                maximumFractionDigits: 2,
+                minimumFractionDigits: 2,
+              })}
+            </div>
+
+            <div className="space-y-3 pt-4 border-t border-slate-800/80 mb-6 text-sm">
+              <div className="flex justify-between items-center text-slate-300">
+                <span>Precio neto base</span>
+                <span className="font-semibold text-white">
+                  ${result.netPrice.toLocaleString('es-AR', { maximumFractionDigits: 2 })}
+                </span>
               </div>
-              <div className="flex justify-between items-center text-sm lg:text-base border-b border-white/20 pb-3">
-                <span className="opacity-90">Monto del IVA ({vatRate * 100}%)</span>
-                <span className="font-semibold">${result.vatAmount.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
+              <div className="flex justify-between items-center text-slate-300">
+                <span>Impuesto IVA ({(vatRate * 100).toLocaleString('es-AR')}%)</span>
+                <span className="font-semibold text-purple-300">
+                  + ${result.vatAmount.toLocaleString('es-AR', { maximumFractionDigits: 2 })}
+                </span>
               </div>
-              <div className="flex justify-between items-center text-sm lg:text-base border-b border-white/20 pb-3">
-                <span className="opacity-90">Precio final (con IVA)</span>
-                <span className="font-semibold">${result.finalPrice.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
+              <div className="flex justify-between items-center text-slate-200 pt-2 border-t border-slate-800">
+                <span className="font-medium">Total facturado</span>
+                <span className="font-bold text-white text-base">
+                  ${result.finalPrice.toLocaleString('es-AR', { maximumFractionDigits: 2 })}
+                </span>
               </div>
             </div>
 
-            {/* Steps Toggle */}
+            {/* Step-by-step account */}
             <div className="mb-6">
-              <button 
+              <button
+                type="button"
                 onClick={() => setShowSteps(!showSteps)}
-                className="text-xs font-medium bg-white/10 hover:bg-white/20 rounded-lg px-3 py-1.5 transition-colors"
+                className="text-xs font-medium text-slate-300 hover:text-white bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 rounded-lg px-3 py-1.5 transition-colors"
               >
-                {showSteps ? 'Ocultar cuenta paso a paso' : 'Ver la cuenta paso a paso'}
+                {showSteps ? 'Ocultar cuenta paso a paso' : 'Ver cuenta paso a paso'}
               </button>
               {showSteps && (
-                <div className="mt-3 p-3 bg-white/10 rounded-xl text-xs space-y-2 opacity-90 font-mono">
+                <div className="mt-3 p-3 bg-slate-950/70 border border-slate-800 rounded-xl text-xs space-y-1.5 text-slate-300 font-mono">
                   {result.steps.map((step, idx) => (
                     <div key={idx}>{step}</div>
                   ))}
@@ -200,22 +254,30 @@ export function CalculadoraIVA() {
 
             <div className="flex items-center gap-3">
               <button
+                type="button"
                 onClick={handleCopy}
-                className="flex-1 bg-white text-neutral-900 hover:bg-white/90 active:bg-white transition-colors py-3 px-4 rounded-xl font-medium flex items-center justify-center gap-2"
+                className="flex-1 bg-white text-slate-950 hover:bg-slate-100 active:bg-slate-200 transition-colors py-3 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-sm"
               >
-                {copied ? <CheckCircle2 className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
-                {copied ? 'Copiado' : 'Copiar'}
+                {copied ? <CheckCircle2 className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
+                {copied ? 'Copiado al portapapeles' : 'Copiar desglose'}
               </button>
               <button
+                type="button"
                 onClick={reset}
-                className="px-4 py-3 border border-white/30 hover:bg-white/10 rounded-xl font-medium transition-colors"
+                className="px-4 py-3 border border-slate-700 hover:bg-slate-800 text-slate-300 rounded-xl text-sm font-semibold transition-colors"
               >
                 Limpiar
               </button>
             </div>
-            
-            <p className="text-center text-xs opacity-70 mt-4">
-              Herramienta gratuita provista por PlayComun Online.
+          </div>
+        ) : (
+          <div className="border border-dashed border-slate-300 rounded-2xl p-7 text-center bg-white/70">
+            <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 font-bold flex items-center justify-center mx-auto mb-3">
+              %
+            </div>
+            <h4 className="font-semibold text-slate-800 text-sm mb-1">Ingresá un importe</h4>
+            <p className="text-xs text-slate-500 leading-relaxed max-w-xs mx-auto">
+              Escribí el precio para calcular de forma inmediata el desglose impositivo y el paso a paso contable.
             </p>
           </div>
         )}

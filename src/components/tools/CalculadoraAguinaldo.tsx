@@ -76,52 +76,52 @@ export function CalculadoraAguinaldo() {
     : AGUINALDO_CONFIG.PAYMENT_DATES.DECEMBER;
 
   return (
-    <div className={`grid gap-8 items-start ${result ? 'lg:grid-cols-2' : 'max-w-xl mx-auto'}`}>
-      <div className="bg-white rounded-2xl shadow-sm border border-neutral-200 p-6 sm:p-8 space-y-6">
+    <div className={`grid gap-8 items-start w-full ${result ? 'lg:grid-cols-12 max-w-5xl mx-auto' : 'max-w-xl mx-auto'}`}>
+      <div className={`${result ? 'lg:col-span-7' : 'w-full'} bg-white rounded-xl border border-slate-200/90 p-5 sm:p-7 shadow-xs space-y-6`}>
         {/* Semester Selection */}
         <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-2">Semestre</label>
-          <div className="grid sm:grid-cols-2 gap-3">
-            <label className={`cursor-pointer rounded-xl border p-3 flex items-center gap-3 transition-colors ${semester === '1' ? 'border-neutral-900 bg-neutral-900/5 text-neutral-900' : 'border-neutral-200 hover:bg-neutral-50'}`}>
+          <label className="block text-xs font-semibold text-slate-700 mb-2">Semestre a liquidar</label>
+          <div className="grid sm:grid-cols-2 gap-2.5">
+            <label className={`cursor-pointer rounded-lg border p-3 flex items-center gap-2.5 transition-colors ${semester === '1' ? 'border-brand bg-purple-50/40 text-slate-900' : 'border-slate-200 hover:bg-slate-50 text-slate-700'}`}>
               <input 
                 type="radio" 
                 name="semester" 
                 value="1" 
                 checked={semester === '1'} 
                 onChange={() => setSemester('1')}
-                className="w-4 h-4 accent-neutral-900 focus:ring-neutral-900"
+                className="w-4 h-4 accent-brand"
               />
-              <span className="font-medium text-sm">1.er semestre (enero a junio)</span>
+              <span className="font-semibold text-xs">1.er semestre (junio)</span>
             </label>
-            <label className={`cursor-pointer rounded-xl border p-3 flex items-center gap-3 transition-colors ${semester === '2' ? 'border-neutral-900 bg-neutral-900/5 text-neutral-900' : 'border-neutral-200 hover:bg-neutral-50'}`}>
+            <label className={`cursor-pointer rounded-lg border p-3 flex items-center gap-2.5 transition-colors ${semester === '2' ? 'border-brand bg-purple-50/40 text-slate-900' : 'border-slate-200 hover:bg-slate-50 text-slate-700'}`}>
               <input 
                 type="radio" 
                 name="semester" 
                 value="2" 
                 checked={semester === '2'} 
                 onChange={() => setSemester('2')}
-                className="w-4 h-4 accent-neutral-900 focus:ring-neutral-900"
+                className="w-4 h-4 accent-brand"
               />
-              <span className="font-medium text-sm">2.º semestre (julio a diciembre)</span>
+              <span className="font-semibold text-xs">2.º semestre (diciembre)</span>
             </label>
           </div>
         </div>
 
         {/* Salary Input */}
         <div>
-          <label htmlFor="bestSalary" className="block text-sm font-medium text-neutral-700 mb-1">
-            Mejor remuneración mensual bruta
+          <label htmlFor="bestSalary" className="block text-xs font-semibold text-slate-700 mb-1">
+            Mejor remuneración mensual bruta del semestre *
           </label>
-          <p className="text-xs text-neutral-500 mb-2">Tu sueldo bruto más alto del semestre, con horas extras y adicionales. No sumes conceptos no remunerativos.</p>
+          <p className="text-xs text-slate-500 mb-2">El sueldo bruto más alto percibido, incluyendo horas extras y adicionales remunerativos.</p>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <span className="text-neutral-500 sm:text-sm">$</span>
+              <span className="text-slate-400 text-sm">$</span>
             </div>
             <input
               type="text"
               id="bestSalary"
               inputMode="decimal"
-              className={`block w-full pl-7 pr-3 py-3 rounded-xl border ${errorMsg && bestSalaryStr ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900'} sm:text-sm transition-colors`}
+              className={`block w-full pl-7 pr-3 py-2.5 rounded-lg border ${errorMsg && bestSalaryStr ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-slate-300 focus:border-brand focus:ring-2 focus:ring-brand/20'} text-sm text-slate-900 shadow-2xs transition-colors`}
               placeholder="1000000"
               value={bestSalaryStr}
               onChange={handleSalaryChange}
@@ -131,44 +131,44 @@ export function CalculadoraAguinaldo() {
 
         {/* Worked All Semester */}
         <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-2">¿Trabajaste todo el semestre?</label>
-          <div className="grid sm:grid-cols-2 gap-3">
-            <label className={`cursor-pointer rounded-xl border p-3 flex items-center gap-3 transition-colors ${workedAllSemester ? 'border-neutral-900 bg-neutral-900/5 text-neutral-900' : 'border-neutral-200 hover:bg-neutral-50'}`}>
+          <label className="block text-xs font-semibold text-slate-700 mb-2">¿Trabajaste durante todo el semestre?</label>
+          <div className="grid sm:grid-cols-2 gap-2.5">
+            <label className={`cursor-pointer rounded-lg border p-3 flex items-center gap-2.5 transition-colors ${workedAllSemester ? 'border-brand bg-purple-50/40 text-slate-900' : 'border-slate-200 hover:bg-slate-50 text-slate-700'}`}>
               <input 
                 type="radio" 
                 name="workedAllSemester" 
                 checked={workedAllSemester} 
                 onChange={() => setWorkedAllSemester(true)}
-                className="w-4 h-4 accent-neutral-900 focus:ring-neutral-900"
+                className="w-4 h-4 accent-brand"
               />
-              <span className="font-medium text-sm">Sí</span>
+              <span className="font-semibold text-xs">Sí, semestre completo</span>
             </label>
-            <label className={`cursor-pointer rounded-xl border p-3 flex items-center gap-3 transition-colors ${!workedAllSemester ? 'border-neutral-900 bg-neutral-900/5 text-neutral-900' : 'border-neutral-200 hover:bg-neutral-50'}`}>
+            <label className={`cursor-pointer rounded-lg border p-3 flex items-center gap-2.5 transition-colors ${!workedAllSemester ? 'border-brand bg-purple-50/40 text-slate-900' : 'border-slate-200 hover:bg-slate-50 text-slate-700'}`}>
               <input 
                 type="radio" 
                 name="workedAllSemester" 
                 checked={!workedAllSemester} 
                 onChange={() => setWorkedAllSemester(false)}
-                className="w-4 h-4 accent-neutral-900 focus:ring-neutral-900"
+                className="w-4 h-4 accent-brand"
               />
-              <span className="font-medium text-sm">No, ingresé o dejé de trabajar durante el semestre</span>
+              <span className="font-semibold text-xs">No, trabajé menos días</span>
             </label>
           </div>
         </div>
 
         {/* Days Worked */}
         {!workedAllSemester && (
-          <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-            <label htmlFor="daysWorked" className="block text-sm font-medium text-neutral-700 mb-1">
-              Días trabajados
+          <div className="animate-in fade-in slide-in-from-top-1 duration-200">
+            <label htmlFor="daysWorked" className="block text-xs font-semibold text-slate-700 mb-1">
+              Días trabajados en el semestre
             </label>
-            <p className="text-xs text-neutral-500 mb-2">Contá 30 días por mes. Si ingresaste el 1 de octubre, son 90 días.</p>
+            <p className="text-xs text-slate-500 mb-1.5">Contá 30 días por cada mes completo trabajado (máximo 180 días).</p>
             <input
               type="number"
               id="daysWorked"
               min="1"
               max={AGUINALDO_CONFIG.SEMESTER_DAYS}
-              className={`block w-full px-3 py-3 rounded-xl border ${errorMsg && daysWorkedStr && (!daysWorked || daysWorked <= 0 || daysWorked > AGUINALDO_CONFIG.SEMESTER_DAYS) ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900'} sm:text-sm transition-colors`}
+              className={`block w-full px-3 py-2.5 rounded-lg border ${errorMsg && daysWorkedStr && (!daysWorked || daysWorked <= 0 || daysWorked > AGUINALDO_CONFIG.SEMESTER_DAYS) ? 'border-red-300' : 'border-slate-300'} text-sm text-slate-900 focus:border-brand focus:ring-2 focus:ring-brand/20 transition-colors`}
               placeholder="90"
               value={daysWorkedStr}
               onChange={(e) => setDaysWorkedStr(e.target.value)}
@@ -177,26 +177,22 @@ export function CalculadoraAguinaldo() {
         )}
 
         {/* Show Net Option */}
-        <div className="flex items-start">
-          <div className="flex items-center h-5">
-            <input
-              id="showNet"
-              type="checkbox"
-              checked={showNet}
-              onChange={(e) => setShowNet(e.target.checked)}
-              className="focus:ring-neutral-900 h-4 w-4 accent-neutral-900 border-neutral-300 rounded text-neutral-900"
-            />
-          </div>
-          <div className="ml-3 text-sm">
-            <label htmlFor="showNet" className="font-medium text-neutral-700 cursor-pointer">
-              Ver neto estimado (con descuentos de ley)
-            </label>
-          </div>
+        <div className="flex items-center gap-2.5 pt-1">
+          <input
+            id="showNet"
+            type="checkbox"
+            checked={showNet}
+            onChange={(e) => setShowNet(e.target.checked)}
+            className="w-4 h-4 accent-brand rounded border-slate-300"
+          />
+          <label htmlFor="showNet" className="text-xs font-semibold text-slate-800 cursor-pointer">
+            Calcular aguinaldo neto estimado (con descuentos de ley 17%)
+          </label>
         </div>
 
         {/* Error Message */}
         {errorMsg && (
-          <div className="p-3 bg-red-50 text-red-700 text-sm rounded-lg" role="alert">
+          <div className="p-3 bg-red-50 text-red-700 text-xs rounded-lg border border-red-200" role="alert">
             {errorMsg}
           </div>
         )}
@@ -204,78 +200,78 @@ export function CalculadoraAguinaldo() {
 
       {/* Results */}
       {result && (
-        <div className="mt-8 lg:mt-0 lg:sticky lg:top-8 bg-neutral-900 text-white rounded-2xl p-6 sm:p-8 shadow-xl" aria-live="polite">
-            <div className="text-center mb-6">
-              <p className="text-sm text-white/80 font-medium mb-1">Aguinaldo Bruto</p>
-              <p className="text-4xl lg:text-5xl font-bold text-white">
-                ${result.gross.toLocaleString('es-AR', { maximumFractionDigits: 2 })}
+        <div className="lg:col-span-5 lg:sticky lg:top-24 bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950 text-white rounded-xl p-5 sm:p-7 shadow-sm border border-slate-800" aria-live="polite">
+          <div className="mb-5">
+            <p className="text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">Aguinaldo Bruto Estimado</p>
+            <p className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+              ${result.gross.toLocaleString('es-AR', { maximumFractionDigits: 2 })}
+            </p>
+          </div>
+
+          {showNet && result.netEstimate && (
+            <div className="mb-5 space-y-2 text-xs sm:text-sm bg-slate-800/60 p-3.5 rounded-lg border border-slate-800">
+              <div className="flex justify-between text-slate-400">
+                <span>Jubilación (11%)</span>
+                <span>-${result.netEstimate.deductions.retirement.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
+              </div>
+              <div className="flex justify-between text-slate-400">
+                <span>Obra Social (3%)</span>
+                <span>-${result.netEstimate.deductions.healthInsurance.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
+              </div>
+              <div className="flex justify-between text-slate-400">
+                <span>PAMI Ley 19.032 (3%)</span>
+                <span>-${result.netEstimate.deductions.pami.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
+              </div>
+              <div className="pt-2 border-t border-slate-700 flex justify-between font-bold text-emerald-400 text-sm">
+                <span>Neto de bolsillo est.</span>
+                <span>${result.netEstimate.net.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
+              </div>
+            </div>
+          )}
+
+          <div className="space-y-3 mb-5 text-xs text-slate-300">
+            <div>
+              <p className="font-bold text-white mb-1.5">Fórmula aplicada:</p>
+              <ul className="space-y-1 list-disc pl-4 text-slate-300">
+                {result.steps.map((step, idx) => (
+                  <li key={idx}>{step}</li>
+                ))}
+              </ul>
+            </div>
+            
+            <div className="pt-2 border-t border-slate-800">
+              <p className="font-bold text-white mb-0.5">Fecha límite legal de cobro:</p>
+              <p className="text-slate-300">
+                Hasta el <strong>{deadline.LEGAL_DEADLINE}</strong> {deadline.MARGIN_TEXT}.
               </p>
             </div>
-
-            {showNet && result.netEstimate && (
-              <div className="mb-6 space-y-3">
-                <div className="flex justify-between text-sm text-white/80">
-                  <span>Jubilación (11%)</span>
-                  <span>-${result.netEstimate.deductions.retirement.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
-                </div>
-                <div className="flex justify-between text-sm text-white/80">
-                  <span>Obra Social (3%)</span>
-                  <span>-${result.netEstimate.deductions.healthInsurance.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
-                </div>
-                <div className="flex justify-between text-sm text-white/80">
-                  <span>PAMI (3%)</span>
-                  <span>-${result.netEstimate.deductions.pami.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
-                </div>
-                <div className="pt-3 border-t border-white/20 flex justify-between font-semibold text-white">
-                  <span>Aguinaldo Neto Estimado</span>
-                  <span>${result.netEstimate.net.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
-                </div>
-              </div>
-            )}
-
-            <div className="space-y-4 mb-6">
-              <div>
-                <p className="text-sm font-semibold text-white mb-2">La cuenta paso a paso:</p>
-                <ul className="text-sm text-white/80 space-y-1 list-disc pl-5">
-                  {result.steps.map((step, idx) => (
-                    <li key={idx}>{step}</li>
-                  ))}
-                </ul>
-              </div>
-              
-              <div>
-                <p className="text-sm font-semibold text-white mb-1">Fecha límite de pago:</p>
-                <p className="text-sm text-white/80">
-                  Hasta el <strong>{deadline.LEGAL_DEADLINE}</strong> {deadline.MARGIN_TEXT}.
-                </p>
-              </div>
-            </div>
-
-            <div className="text-xs text-white/70 bg-white/10 p-3 rounded-lg border border-white/10 mb-6">
-              <strong className="text-white">Importante:</strong> Resultado orientativo. Tu liquidación real puede variar según tu convenio colectivo, los conceptos de tu recibo y tus descuentos. Consultalo con tu empleador o un contador.
-            </div>
-
-            <div className="flex gap-3">
-              <button
-                onClick={handleCopy}
-                className="flex-1 bg-white text-neutral-900 hover:bg-white/90 active:bg-white transition-colors py-3 px-4 rounded-xl font-medium flex items-center justify-center gap-2"
-              >
-                {copied ? '¡Copiado!' : 'Copiar resultado'}
-              </button>
-              <button
-                onClick={() => {
-                  setBestSalaryStr('');
-                  setDaysWorkedStr('');
-                  setWorkedAllSemester(true);
-                  setShowNet(false);
-                }}
-                className="px-4 py-3 border border-white/30 hover:bg-white/10 rounded-xl font-medium transition-colors"
-              >
-                Limpiar
-              </button>
-            </div>
           </div>
-        )}
+
+          <div className="text-[11px] text-slate-400 bg-slate-800/40 p-2.5 rounded-lg border border-slate-800 mb-5 leading-relaxed">
+            <strong className="text-slate-200">Aviso:</strong> Cálculo orientativo según Ley 23.041. Liquidaciones sujetas a CCT específico y conceptos no remunerativos.
+          </div>
+
+          <div className="flex gap-2">
+            <button
+              onClick={handleCopy}
+              className="flex-1 bg-brand hover:bg-brand-hover active:bg-brand-active text-white text-xs sm:text-sm font-semibold py-2.5 px-3 rounded-lg shadow-xs transition-colors flex items-center justify-center gap-2"
+            >
+              {copied ? '¡Copiado!' : 'Copiar resultado'}
+            </button>
+            <button
+              onClick={() => {
+                setBestSalaryStr('');
+                setDaysWorkedStr('');
+                setWorkedAllSemester(true);
+                setShowNet(false);
+              }}
+              className="px-3 py-2.5 border border-slate-700 hover:bg-slate-800/80 rounded-lg text-xs font-medium text-slate-300 transition-colors"
+            >
+              Limpiar
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

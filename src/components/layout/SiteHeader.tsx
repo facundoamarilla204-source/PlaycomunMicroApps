@@ -30,20 +30,20 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 border-b border-border/40 ${
+        className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-200 border-b ${
           isScrolled 
-            ? "bg-white/80 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.05)] py-3" 
-            : "bg-white py-4"
+            ? "bg-white/95 backdrop-blur-md border-slate-200 shadow-xs py-2.5" 
+            : "bg-white border-slate-200/70 py-3 sm:py-3.5"
         }`}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-12">
-            <Link href="/" className="flex items-center gap-2 transition-transform hover:scale-[1.02] active:scale-95">
-              <Image src="/logotemanegro.png" alt={siteConfig.name} width={240} height={64} className="h-10 sm:h-12 w-auto" style={{ width: "auto" }} priority />
+          <div className="flex items-center gap-8 lg:gap-12">
+            <Link href="/" className="flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-lg">
+              <Image src="/logotemanegro.png" alt={siteConfig.name} width={220} height={56} className="h-9 sm:h-10 w-auto" style={{ width: "auto" }} priority />
             </Link>
 
             {/* Desktop Nav */}
-            <nav className="hidden md:flex items-center gap-8">
+            <nav className="hidden md:flex items-center gap-6 lg:gap-8">
               {[
                 { id: 'calculadora', name: 'Calculadoras' },
                 { id: 'generador', name: 'Generadores' },
@@ -54,18 +54,18 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
                   <div key={type.id} className="relative group">
                     <Link
                       href={`/herramientas?tipo=${type.id}`}
-                      className="flex items-center gap-1.5 text-base font-semibold text-foreground/80 transition-colors hover:text-brand"
+                      className="flex items-center gap-1.5 text-sm font-semibold text-slate-700 transition-colors hover:text-brand py-2"
                     >
-                      {type.name} <ChevronDown className="h-4 w-4 transition-transform group-hover:rotate-180" />
+                      {type.name} <ChevronDown className="h-3.5 w-3.5 text-slate-400 transition-transform group-hover:rotate-180" />
                     </Link>
                     {typeTools.length > 0 && (
-                      <div className="absolute left-0 top-[100%] hidden w-64 flex-col rounded-2xl border border-border/50 bg-white shadow-xl shadow-brand/5 group-hover:flex transform opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-2 transition-all">
-                        <div className="p-2 max-h-80 overflow-y-auto">
+                      <div className="absolute left-0 top-[100%] hidden w-64 flex-col rounded-xl border border-slate-200 bg-white shadow-md group-hover:flex z-50 animate-in fade-in slide-in-from-top-1 duration-150">
+                        <div className="p-1.5 max-h-80 overflow-y-auto scrollbar-thin">
                           {typeTools.map((tool) => (
                             <Link
                               key={tool.slug}
                               href={`${tool.customUrl || `/herramientas/${tool.slug}`}`}
-                              className="block rounded-xl px-4 py-2.5 text-sm font-medium text-foreground/80 transition-all hover:bg-brand-light/50 hover:text-brand"
+                              className="block rounded-lg px-3 py-2 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50 hover:text-brand"
                             >
                               {tool.name}
                             </Link>
@@ -78,31 +78,31 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
               })}
               <Link
                 href="/#servicios"
-                className="text-base font-semibold text-foreground/80 transition-colors hover:text-brand"
+                className="text-sm font-semibold text-slate-700 transition-colors hover:text-brand py-2"
               >
                 Servicios
               </Link>
             </nav>
           </div>
 
-          <div className="flex items-center gap-3 sm:gap-5">
+          <div className="flex items-center gap-3">
             <button
               onClick={() => setSearchOpen(true)}
-              className="flex h-10 w-10 items-center justify-center rounded-full text-foreground/70 transition-all hover:bg-brand-light hover:text-brand hover:scale-105 active:scale-95"
+              className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-slate-50/60 text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
               aria-label="Buscar herramientas"
+              title="Buscar (Ctrl+K)"
             >
-              <Search className="h-5 w-5" />
+              <Search className="h-4 w-4" />
             </button>
             
-            <div className="hidden md:flex items-center gap-4">
-
+            <div className="hidden md:flex items-center gap-3">
               {isAuthenticated && !isPro && (
-                <Link href="/planes" className="rounded-full px-4 py-2 text-base font-semibold text-amber-600 transition-colors hover:bg-amber-50">
+                <Link href="/planes" className="rounded-lg px-3 py-1.5 text-xs font-bold text-amber-700 bg-amber-50 hover:bg-amber-100 transition-colors">
                   Pro
                 </Link>
               )}
               {!isAuthenticated && (
-                <Link href="/planes" className="rounded-full px-4 py-2 text-base font-semibold text-foreground/80 transition-colors hover:bg-gray-100 hover:text-foreground">
+                <Link href="/planes" className="rounded-lg px-3 py-1.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900">
                   Planes
                 </Link>
               )}
@@ -110,38 +110,38 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
                 <div className="relative">
                   <button
                     onClick={() => setUserMenuOpen(!userMenuOpen)}
-                    className="w-10 h-10 rounded-full bg-brand/10 text-brand flex items-center justify-center font-bold shadow-sm transition-all hover:scale-105 hover:bg-brand/20 hover:shadow-md active:scale-95"
+                    className="w-9 h-9 rounded-lg bg-brand-light text-brand flex items-center justify-center font-bold border border-brand-border/60 shadow-xs transition-colors hover:bg-purple-100"
                     title="Mi Cuenta"
                   >
-                    <UserIcon className="h-5 w-5" />
+                    <UserIcon className="h-4 w-4" />
                   </button>
                   {userMenuOpen && (
                     <>
                       <div className="fixed inset-0 z-40" onClick={() => setUserMenuOpen(false)} />
-                      <div className="absolute right-0 top-full mt-2 w-48 flex-col rounded-2xl border border-border/50 bg-white shadow-xl shadow-brand/5 flex z-50 animate-in slide-in-from-top-2">
-                        <div className="p-2 flex flex-col gap-1">
+                      <div className="absolute right-0 top-full mt-2 w-48 flex-col rounded-xl border border-slate-200 bg-white shadow-md flex z-50">
+                        <div className="p-1.5 flex flex-col gap-0.5">
                           <Link
                             href="/favoritas"
                             onClick={() => setUserMenuOpen(false)}
-                            className="flex items-center gap-2.5 rounded-xl px-4 py-2.5 text-sm font-medium text-foreground/80 transition-all hover:bg-brand-light/50 hover:text-brand"
+                            className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50 hover:text-brand"
                           >
-                            <Heart className="h-4 w-4" />
+                            <Heart className="h-3.5 w-3.5 text-rose-500" />
                             Favoritos
                           </Link>
                           <Link
                             href="/cuenta"
                             onClick={() => setUserMenuOpen(false)}
-                            className="flex items-center gap-2.5 rounded-xl px-4 py-2.5 text-sm font-medium text-foreground/80 transition-all hover:bg-brand-light/50 hover:text-brand"
+                            className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50 hover:text-brand"
                           >
-                            <UserIcon className="h-4 w-4" />
+                            <UserIcon className="h-3.5 w-3.5" />
                             Mi Perfil
                           </Link>
                           <form action={logout}>
                             <button
                               type="submit"
-                              className="w-full flex items-center gap-2.5 rounded-xl px-4 py-2.5 text-sm font-medium text-red-600 transition-all hover:bg-red-50"
+                              className="w-full flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium text-red-600 transition-colors hover:bg-red-50 text-left"
                             >
-                              <LogOut className="h-4 w-4" />
+                              <LogOut className="h-3.5 w-3.5" />
                               Cerrar Sesión
                             </button>
                           </form>
@@ -154,15 +154,15 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
                 <>
                   <Link
                     href="/ingresar"
-                    className="rounded-full px-4 py-2 text-sm font-semibold text-foreground/70 transition-colors hover:bg-gray-100 hover:text-foreground"
+                    className="rounded-lg px-3.5 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900"
                   >
                     Ingresar
                   </Link>
                   <Link
                     href="/registro"
-                    className="rounded-full bg-brand px-6 py-2.5 text-sm font-semibold text-white shadow-sm shadow-brand/20 transition-all hover:bg-brand-hover hover:shadow-md hover:shadow-brand/30 hover:-translate-y-0.5 active:translate-y-0 active:scale-95"
+                    className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-brand-hover active:bg-brand-active"
                   >
-                    Crear cuenta gratis
+                    Crear cuenta
                   </Link>
                 </>
               )}
@@ -170,9 +170,10 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
 
             <button
               onClick={() => setMobileMenuOpen(true)}
-              className="md:hidden flex h-10 w-10 items-center justify-center rounded-full text-foreground/70 transition-colors hover:bg-gray-100"
+              className="md:hidden flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-100 transition-colors"
+              aria-label="Abrir menú"
             >
-              <Menu className="h-6 w-6" />
+              <Menu className="h-5 w-5" />
             </button>
           </div>
         </div>
@@ -181,18 +182,22 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
       {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-50 flex">
-          <div className="fixed inset-0 bg-black/20" onClick={() => setMobileMenuOpen(false)} />
-          <div className="relative ml-auto w-full max-w-sm bg-white shadow-xl h-full flex flex-col">
-            <div className="flex items-center justify-between p-4 border-b border-border">
+          <div className="fixed inset-0 bg-slate-900/30 backdrop-blur-xs" onClick={() => setMobileMenuOpen(false)} />
+          <div className="relative ml-auto w-full max-w-sm bg-white shadow-lg h-full flex flex-col z-10">
+            <div className="flex items-center justify-between p-4 border-b border-slate-200">
               <div className="flex items-center gap-2">
-                <Image src="/logotemanegro.png" alt={siteConfig.name} width={240} height={64} className="h-12 w-auto" style={{ width: "auto" }} priority />
+                <Image src="/logotemanegro.png" alt={siteConfig.name} width={200} height={50} className="h-8 w-auto" style={{ width: "auto" }} priority />
               </div>
-              <button onClick={() => setMobileMenuOpen(false)} className="p-2 text-foreground-muted">
-                <X className="h-6 w-6" />
+              <button 
+                onClick={() => setMobileMenuOpen(false)} 
+                className="h-9 w-9 flex items-center justify-center rounded-lg text-slate-600 hover:bg-slate-100 transition-colors"
+                aria-label="Cerrar menú"
+              >
+                <X className="h-5 w-5" />
               </button>
             </div>
             <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
-              <div className="flex flex-col gap-2 border-b border-border pb-4">
+              <div className="flex flex-col gap-1 border-b border-slate-200 pb-4">
                 {[
                   { id: 'calculadora', name: 'Calculadoras' },
                   { id: 'generador', name: 'Generadores' },
@@ -202,7 +207,7 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
                     key={type.id}
                     href={`/herramientas?tipo=${type.id}`}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block py-2 text-foreground font-medium hover:text-brand"
+                    className="block px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-800 hover:bg-slate-50 hover:text-brand transition-colors"
                   >
                     {type.name}
                   </Link>
@@ -210,40 +215,40 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
                 <Link 
                   href="/#servicios"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block py-2 text-foreground font-medium hover:text-brand"
+                  className="block px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-800 hover:bg-slate-50 hover:text-brand transition-colors"
                 >
                   Servicios
                 </Link>
               </div>
 
               {isAuthenticated && (
-                <div className="flex flex-col gap-2 border-b border-border pb-4">
-                  <Link href="/favoritas" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-2 py-2 text-foreground font-medium hover:text-brand">
-                    <Heart className="h-4 w-4" /> Favoritos
+                <div className="flex flex-col gap-1 border-b border-slate-200 pb-4">
+                  <Link href="/favoritas" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-800 hover:bg-slate-50 hover:text-brand transition-colors">
+                    <Heart className="h-4 w-4 text-rose-500" /> Favoritos
                   </Link>
-                  <Link href="/cuenta" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-2 py-2 text-foreground font-medium hover:text-brand">
+                  <Link href="/cuenta" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-800 hover:bg-slate-50 hover:text-brand transition-colors">
                     <UserIcon className="h-4 w-4" /> Mi Perfil
                   </Link>
                 </div>
               )}
 
               {isAuthenticated && !isPro && (
-                <Link href="/planes" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-amber-600 font-medium border-b border-border pb-4">
-                  Pro
+                <Link href="/planes" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2.5 text-sm font-bold text-amber-700 bg-amber-50 rounded-lg">
+                  Suscribirse a Pro
                 </Link>
               )}
               {!isAuthenticated && (
-                <Link href="/planes" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-foreground font-medium border-b border-border pb-4">
-                  Planes
+                <Link href="/planes" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-800 hover:bg-slate-50">
+                  Planes y Precios
                 </Link>
               )}
               
-              <div className="mt-auto flex flex-col gap-3 pt-4">
+              <div className="mt-auto flex flex-col gap-2 pt-4">
                 {isAuthenticated ? (
                   <form action={logout} className="w-full">
                     <button
                       type="submit"
-                      className="w-full rounded border border-border px-4 py-3 flex items-center justify-center gap-2 text-sm font-medium text-red-600 hover:bg-red-50"
+                      className="w-full rounded-lg border border-slate-200 px-4 py-2.5 flex items-center justify-center gap-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
                     >
                       <LogOut className="h-4 w-4" />
                       Cerrar Sesión
@@ -254,14 +259,14 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
                     <Link
                       href="/registro"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="w-full rounded bg-brand px-4 py-3 text-center text-sm font-medium text-white shadow-sm shadow-brand/20 transition-all active:scale-95"
+                      className="w-full rounded-lg bg-brand px-4 py-2.5 text-center text-sm font-semibold text-white shadow-xs transition-colors hover:bg-brand-hover"
                     >
                       Crear cuenta gratis
                     </Link>
                     <Link
                       href="/ingresar"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="w-full rounded border border-border px-4 py-3 text-center text-sm font-medium text-foreground transition-colors hover:bg-gray-100"
+                      className="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-center text-sm font-medium text-slate-800 transition-colors hover:bg-slate-50"
                     >
                       Ingresar
                     </Link>

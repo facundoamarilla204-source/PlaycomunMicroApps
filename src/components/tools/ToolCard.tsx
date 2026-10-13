@@ -1,9 +1,29 @@
 import Link from "next/link"
 import { Tool } from "@/data/tools"
-import { ArrowDownLeft, Calculator, FileText, Receipt, TrendingUp, QrCode, Wallet, Dumbbell, ArrowRightLeft, Banknote, CreditCard, Boxes, Flame, Sparkles, Wrench, FileImage, LucideIcon } from "lucide-react"
+import { 
+  Calculator, 
+  FileText, 
+  Receipt, 
+  TrendingUp, 
+  QrCode, 
+  Wallet, 
+  Dumbbell, 
+  ArrowRightLeft, 
+  Banknote, 
+  CreditCard, 
+  Boxes, 
+  Flame, 
+  Sparkles, 
+  Wrench, 
+  FileImage, 
+  Files, 
+  ChefHat, 
+  Scale, 
+  ArrowUpRight,
+  LucideIcon 
+} from "lucide-react"
 import FavoriteButton from "./FavoriteButton"
 
-// Map of icons
 const iconMap: Record<string, LucideIcon> = {
   Calculator,
   FileText,
@@ -19,7 +39,18 @@ const iconMap: Record<string, LucideIcon> = {
   Flame,
   Sparkles,
   Wrench,
-  FileImage
+  FileImage,
+  Files,
+  ChefHat,
+  Scale
+}
+
+const CATEGORY_LABELS: Record<string, string> = {
+  "precios-costos": "Costos",
+  "plata-finanzas": "Finanzas",
+  "gestion-negocio": "Negocio",
+  "clientes-utilidades": "Utilidades",
+  "salud-fitness": "Fitness"
 }
 
 interface ToolCardProps {
@@ -29,41 +60,55 @@ interface ToolCardProps {
 
 export default function ToolCard({ tool, isFavorite = false }: ToolCardProps) {
   const Icon = iconMap[tool.icon] || Calculator
+  const categoryLabel = CATEGORY_LABELS[tool.category] || "Herramienta"
 
   return (
     <Link 
       href={`${tool.customUrl || `/herramientas/${tool.slug}`}`}
-      className="group relative flex flex-col h-full justify-between rounded-2xl border border-border/80 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-brand/40 hover:shadow-xl hover:shadow-brand/5 active:scale-[0.98]"
+      className="group relative flex flex-col h-full rounded-xl border border-slate-200/90 bg-white p-5 shadow-xs transition-all duration-200 hover:border-brand/40 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
     >
-      <FavoriteButton toolSlug={tool.slug} initialIsFavorite={isFavorite} />
-      
-      <div className="absolute right-3 top-3">
-        {tool.tier === "free" ? (
-          <span className="rounded bg-free-bg px-2 py-1 text-xs font-medium text-free-text">
-            Gratis
+      {/* Header row: Icon & Status / Favorite */}
+      <div className="flex items-center justify-between gap-3 mb-3.5">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-light text-brand transition-colors group-hover:bg-brand group-hover:text-white">
+            <Icon className="h-4.5 w-4.5" />
+          </div>
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+            {categoryLabel}
           </span>
-        ) : (
-          <span className="rounded bg-pro-bg px-2 py-1 text-xs font-medium text-pro-text">
-            Pro
-          </span>
-        )}
+        </div>
+
+        <div className="flex items-center gap-2">
+          {tool.tier === "pro" ? (
+            <span className="inline-flex items-center rounded-md bg-purple-50 px-2 py-0.5 text-[11px] font-semibold text-brand ring-1 ring-inset ring-purple-600/10">
+              Pro
+            </span>
+          ) : (
+            <span className="inline-flex items-center rounded-md bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/10">
+              Gratis
+            </span>
+          )}
+          <FavoriteButton toolSlug={tool.slug} initialIsFavorite={isFavorite} />
+        </div>
       </div>
 
-      <div className="mt-8 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-light text-brand mb-4 transition-transform group-hover:scale-105">
-        <Icon className="h-6 w-6" />
-      </div>
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col justify-between">
+        <div>
+          <h3 className="text-base font-bold text-slate-900 group-hover:text-brand transition-colors line-clamp-1 mb-1.5">
+            {tool.name}
+          </h3>
+          <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
+            {tool.description}
+          </p>
+        </div>
 
-      <h3 className="mb-2 text-xl font-bold text-foreground group-hover:text-brand transition-colors">
-        {tool.name}
-      </h3>
-      
-      <p className="mb-4 text-sm text-foreground-subtle line-clamp-2 flex-1">
-        {tool.description}
-      </p>
-
-      <div className="mt-auto flex justify-end">
-        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-light/50 text-brand transition-all duration-300 group-hover:-rotate-45 group-hover:bg-brand group-hover:text-white">
-          <ArrowDownLeft className="h-4 w-4 rotate-180 transition-transform" />
+        {/* Footer affordance */}
+        <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+          <span className="font-medium text-slate-600 group-hover:text-brand transition-colors">
+            Abrir herramienta
+          </span>
+          <ArrowUpRight className="h-3.5 w-3.5 text-slate-400 group-hover:text-brand transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
         </div>
       </div>
     </Link>

@@ -162,103 +162,136 @@ export function CalculadoraCuotas() {
   const desglose = useMemo(() => getDesglose(), [result]);
 
   return (
-    <div className="grid gap-8 items-start w-full lg:grid-cols-2 max-w-6xl mx-auto">
-      <div className="bg-white rounded-xl shadow-sm border border-neutral-200 p-6 sm:p-8 space-y-8">
-        
+    <div className="grid gap-8 items-start w-full lg:grid-cols-12 max-w-5xl mx-auto">
+      {/* Input Form */}
+      <div className="lg:col-span-7 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-7 space-y-6">
         {/* Mode Selection */}
-        <div className="flex bg-neutral-100 p-1 rounded-xl">
-          <button
-            onClick={() => { setMode('sin_interes'); }}
-            className={`flex-1 py-3 px-2 text-sm font-medium rounded-lg transition-colors ${mode === 'sin_interes' ? 'bg-white shadow-sm text-neutral-900' : 'text-neutral-500 hover:text-neutral-700'}`}
-          >
-            Sin interés
-          </button>
-          <button
-            onClick={() => { setMode('con_interes'); }}
-            className={`flex-1 py-3 px-2 text-sm font-medium rounded-lg transition-colors ${mode === 'con_interes' ? 'bg-white shadow-sm text-neutral-900' : 'text-neutral-500 hover:text-neutral-700'}`}
-          >
-            Con interés
-          </button>
+        <div>
+          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
+            Tipo de financiación
+          </label>
+          <div className="grid grid-cols-2 p-1 bg-slate-100 rounded-xl border border-slate-200/80">
+            <button
+              type="button"
+              onClick={() => setMode('sin_interes')}
+              className={`py-2.5 px-2 text-xs sm:text-sm font-semibold rounded-lg transition-all text-center ${
+                mode === 'sin_interes'
+                  ? 'bg-white text-purple-700 shadow-sm border border-slate-200/60'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Cuotas sin interés
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode('con_interes')}
+              className={`py-2.5 px-2 text-xs sm:text-sm font-semibold rounded-lg transition-all text-center ${
+                mode === 'con_interes'
+                  ? 'bg-white text-purple-700 shadow-sm border border-slate-200/60'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Con interés (Sistema Francés)
+            </button>
+          </div>
         </div>
 
-        <section className="space-y-4">
-          <h3 className="font-semibold text-lg text-neutral-900">1. Datos principales</h3>
+        {/* Inputs */}
+        <section className="space-y-4 pt-1">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="w-5 h-5 rounded-full bg-purple-100 text-purple-700 font-bold text-xs flex items-center justify-center">
+              1
+            </span>
+            <h3 className="font-bold text-sm text-slate-900">Monto y plazos</h3>
+          </div>
+
           <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">
-              Monto a financiar
+            <label className="block text-sm font-semibold text-slate-800 mb-1">
+              Monto total a financiar
             </label>
-            <p className="text-xs text-neutral-500 mb-2">
-              El valor total de la compra o préstamo.
+            <p className="text-xs text-slate-500 mb-2">
+              El valor de compra de contado o el capital inicial del crédito.
             </p>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <span className="text-neutral-500 sm:text-sm">$</span>
-              </div>
+              <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 font-semibold text-base">
+                $
+              </span>
               <input
                 type="text"
                 inputMode="decimal"
                 value={montoStr}
                 onChange={handleCurrencyChange(setMontoStr)}
-                className="block w-full pl-7 pr-3 py-3 rounded-xl border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm transition-colors"
+                className="block w-full pl-8 pr-4 py-3 rounded-xl border border-slate-300 focus:border-purple-600 focus:ring-2 focus:ring-purple-100 text-slate-900 font-medium text-base transition-colors placeholder:text-slate-400"
                 placeholder="120.000"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">
+            <label className="block text-sm font-semibold text-slate-800 mb-1">
               Cantidad de cuotas
             </label>
+            <div className="grid grid-cols-4 sm:grid-cols-6 gap-2 mb-2">
+              {['3', '6', '12', '18', '24', '36'].map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  onClick={() => setCuotasStr(c)}
+                  className={`py-1.5 rounded-lg border text-xs font-semibold transition-all ${
+                    cuotasStr === c
+                      ? 'border-purple-600 bg-purple-50 text-purple-700 ring-2 ring-purple-100'
+                      : 'border-slate-200 hover:border-slate-300 text-slate-700 bg-white'
+                  }`}
+                >
+                  {c} pagos
+                </button>
+              ))}
+            </div>
             <input
               type="text"
               inputMode="numeric"
               value={cuotasStr}
               onChange={handleQuantityChange}
-              className="block w-full px-3 py-3 rounded-xl border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm transition-colors"
-              placeholder="12"
+              className="block w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:border-purple-600 focus:ring-2 focus:ring-purple-100 text-slate-900 font-medium text-sm transition-colors"
+              placeholder="O ingresá otra cantidad (ej: 9)"
             />
             {cuotasStr !== '' && cuotas === 0 && (
-              <p className="mt-1 text-xs text-red-500">Debe ser mayor a 0</p>
+              <p className="mt-1.5 text-xs text-red-600 font-medium">La cantidad debe ser mayor a 0</p>
             )}
           </div>
 
           {mode === 'con_interes' && (
-            <div className="pt-2 border-t border-neutral-100">
-              <label className="block text-sm font-medium text-neutral-700 mb-1">
+            <div className="pt-3 border-t border-slate-100 space-y-3">
+              <label className="block text-sm font-semibold text-slate-800 mb-1">
                 Tasa de interés
               </label>
-              <p className="text-xs text-neutral-500 mb-2">
-                Especificá la tasa y su periodicidad.
-              </p>
-              
-              <div className="flex gap-4">
-                <div className="relative flex-1">
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
+                <div className="sm:col-span-6 relative">
                   <input
                     type="text"
                     inputMode="decimal"
                     value={tasaStr}
                     onChange={handlePercentageChange(setTasaStr)}
-                    className="block w-full pl-3 pr-8 py-3 rounded-xl border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm transition-colors"
-                    placeholder="50"
+                    className="block w-full pl-4 pr-9 py-2.5 rounded-xl border border-slate-300 focus:border-purple-600 focus:ring-2 focus:ring-purple-100 text-slate-900 font-medium text-sm transition-colors placeholder:text-slate-400"
+                    placeholder="Ej: 5.5"
                   />
-                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                    <span className="text-neutral-500 sm:text-sm">%</span>
-                  </div>
+                  <span className="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-slate-500 font-semibold text-sm">
+                    %
+                  </span>
                 </div>
-                
-                <div className="flex-1">
+                <div className="sm:col-span-6">
                   <select
                     value={tipoTasa}
                     onChange={(e) => setTipoTasa(e.target.value as 'mensual' | 'anual')}
-                    className="block w-full px-3 py-3 rounded-xl border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm transition-colors bg-white"
+                    className="block w-full px-3 py-2.5 rounded-xl border border-slate-300 focus:border-purple-600 focus:ring-2 focus:ring-purple-100 text-sm font-medium bg-white text-slate-700"
                   >
                     <option value="mensual">Mensual (TEM)</option>
                     <option value="anual">Anual (TNA)</option>
                   </select>
                 </div>
               </div>
-              <p className="text-xs text-neutral-500 mt-3 bg-neutral-50 p-2 rounded-lg">
-                La calculadora utiliza el <strong>sistema de amortización francés</strong> (cuota fija), calculando el interés sobre el saldo deudor.
+              <p className="text-xs text-slate-500 bg-slate-50 border border-slate-200/80 p-2.5 rounded-xl leading-relaxed">
+                Utiliza el <strong>sistema de amortización francés</strong>: cuota fija periódica con intereses decrecientes calculados sobre el saldo adeudado.
               </p>
             </div>
           )}
@@ -266,104 +299,129 @@ export function CalculadoraCuotas() {
       </div>
 
       {/* Result Card */}
-      <div className={`
-        ${result ? 'block' : 'hidden'} 
-        lg:block lg:sticky lg:top-28
-        mt-8 lg:mt-0 w-full flex flex-col gap-6
-      `}>
-        {result && (
+      <div className="lg:col-span-5 lg:sticky lg:top-24 w-full space-y-6">
+        {result ? (
           <>
-            <div aria-live="polite" className="bg-neutral-900 text-white rounded-xl p-6 lg:p-8 shadow-md w-full">
-              <h3 className="text-white text-sm font-semibold mb-1 opacity-90">
-                VALOR DE LA CUOTA
-              </h3>
-              <div className="text-4xl lg:text-5xl font-bold mb-6">
-                ${result.valorCuota.toLocaleString('es-AR', { maximumFractionDigits: 2, minimumFractionDigits: 2 })}
+            <div
+              aria-live="polite"
+              className="bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950 border border-slate-800 text-white rounded-2xl p-6 sm:p-7 shadow-lg"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-bold uppercase tracking-wider text-purple-300">
+                  Cuota Mensual Estimada
+                </span>
+                <span className="text-xs px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-200 border border-purple-400/30 font-semibold">
+                  {result.cantidadCuotas} cuotas {mode === 'sin_interes' ? 'fijas' : ''}
+                </span>
               </div>
-              
-              <div className="space-y-4 mb-6">
-                <div className="flex justify-between items-center text-sm lg:text-base border-b border-white/20 pb-3">
-                  <span className="opacity-90">Monto financiado</span>
-                  <span className="font-semibold">${result.montoFinanciado.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
+
+              <div className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mb-6">
+                ${result.valorCuota.toLocaleString('es-AR', {
+                  maximumFractionDigits: 2,
+                  minimumFractionDigits: 2,
+                })}
+              </div>
+
+              <div className="space-y-3 pt-4 border-t border-slate-800/80 mb-6 text-sm">
+                <div className="flex justify-between items-center text-slate-300">
+                  <span>Monto financiado</span>
+                  <span className="font-semibold text-white">
+                    ${result.montoFinanciado.toLocaleString('es-AR', { maximumFractionDigits: 2 })}
+                  </span>
                 </div>
-                <div className="flex justify-between items-center text-sm lg:text-base border-b border-white/20 pb-3">
-                  <span className="opacity-90">Cantidad de cuotas</span>
-                  <span className="font-semibold">{result.cantidadCuotas}</span>
+                <div className="flex justify-between items-center text-slate-300">
+                  <span>Total de intereses</span>
+                  <span className="font-semibold text-purple-300">
+                    {result.totalIntereses > 0
+                      ? `+ $${result.totalIntereses.toLocaleString('es-AR', { maximumFractionDigits: 2 })}`
+                      : '$0 (Sin interés)'}
+                  </span>
                 </div>
-                <div className="flex justify-between items-center text-sm lg:text-base border-b border-white/20 pb-3">
-                  <span className="opacity-90">Total de intereses</span>
-                  <span className="font-semibold">${result.totalIntereses.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
-                </div>
-                <div className="flex justify-between items-center text-sm lg:text-base border-b border-white/20 pb-3">
-                  <span className="opacity-90">Total pagado al final</span>
-                  <span className="font-semibold">${result.totalPagado.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
+                <div className="flex justify-between items-center text-slate-200 pt-2 border-t border-slate-800">
+                  <span className="font-medium">Total a pagar</span>
+                  <span className="font-bold text-white text-base">
+                    ${result.totalPagado.toLocaleString('es-AR', { maximumFractionDigits: 2 })}
+                  </span>
                 </div>
               </div>
 
               <div className="flex items-center gap-3">
                 <button
+                  type="button"
                   onClick={handleCopy}
-                  className="flex-1 bg-white text-neutral-900 hover:bg-white/90 active:bg-white transition-colors py-3 px-4 rounded-xl font-medium flex items-center justify-center gap-2"
+                  className="flex-1 bg-white text-slate-950 hover:bg-slate-100 active:bg-slate-200 transition-colors py-3 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-sm"
                 >
-                  {copied ? <CheckCircle2 className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
-                  {copied ? 'Copiado' : 'Copiar'}
+                  {copied ? <CheckCircle2 className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
+                  {copied ? 'Copiado al portapapeles' : 'Copiar desglose'}
                 </button>
                 <button
+                  type="button"
                   onClick={reset}
-                  className="px-4 py-3 border border-white/30 hover:bg-white/10 rounded-xl font-medium transition-colors"
+                  className="px-4 py-3 border border-slate-700 hover:bg-slate-800 text-slate-300 rounded-xl text-sm font-semibold transition-colors"
                 >
                   Limpiar
                 </button>
               </div>
             </div>
 
-            {/* Desglose */}
+            {/* Amortization Table */}
             {desglose.length > 0 && desglose.length <= 60 && (
-              <div className="bg-white rounded-xl shadow-sm border border-neutral-200 p-6 w-full">
-                <h4 className="font-semibold text-neutral-900 mb-4">Desglose del financiamiento</h4>
-                
-                {/* Mobile View (Cards) */}
-                <div className="block sm:hidden space-y-3 max-h-[400px] overflow-y-auto pr-1">
+              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 w-full">
+                <h4 className="font-bold text-slate-900 text-sm mb-3">Cronograma de pagos</h4>
+
+                {/* Mobile Cards */}
+                <div className="block sm:hidden space-y-2.5 max-h-[350px] overflow-y-auto pr-1 scrollbar-thin">
                   {desglose.map((d) => (
-                    <div key={d.nro} className="bg-neutral-50 p-3 rounded-lg border border-neutral-100 text-sm">
-                      <div className="font-medium text-neutral-900 mb-2 border-b border-neutral-200 pb-1">Cuota {d.nro}</div>
-                      <div className="flex justify-between mb-1">
-                        <span className="text-neutral-500">Capital</span>
+                    <div key={d.nro} className="bg-slate-50 p-3 rounded-xl border border-slate-200/80 text-xs">
+                      <div className="flex justify-between items-center font-bold text-slate-900 mb-2 border-b border-slate-200/60 pb-1">
+                        <span>Cuota {d.nro}</span>
+                        <span className="text-purple-700">${d.cuota.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
+                      </div>
+                      <div className="flex justify-between text-slate-600 mb-1">
+                        <span>Capital:</span>
                         <span>${d.capital.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
                       </div>
-                      <div className="flex justify-between mb-1">
-                        <span className="text-neutral-500">Interés</span>
+                      <div className="flex justify-between text-slate-600 mb-1">
+                        <span>Interés:</span>
                         <span>${d.interes.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
                       </div>
-                      <div className="flex justify-between font-medium mt-2 pt-2 border-t border-neutral-200">
-                        <span>Total cuota</span>
-                        <span>${d.cuota.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
+                      <div className="flex justify-between text-slate-500 pt-1 border-t border-slate-200/60">
+                        <span>Saldo residual:</span>
+                        <span>${Math.abs(d.saldoResidual).toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
                       </div>
                     </div>
                   ))}
                 </div>
 
-                {/* Desktop View (Table) */}
+                {/* Desktop Table */}
                 <div className="hidden sm:block overflow-x-auto w-full">
-                  <div className="max-h-[400px] overflow-y-auto">
-                    <table className="w-full text-sm text-left">
-                      <thead className="text-xs text-neutral-500 uppercase bg-neutral-50 sticky top-0">
+                  <div className="max-h-[350px] overflow-y-auto scrollbar-thin">
+                    <table className="w-full text-xs text-left">
+                      <thead className="text-[11px] font-bold text-slate-500 uppercase bg-slate-100 sticky top-0">
                         <tr>
-                          <th className="px-4 py-3 rounded-tl-lg">Nº</th>
-                          <th className="px-4 py-3 text-right">Cuota</th>
-                          <th className="px-4 py-3 text-right">Capital</th>
-                          <th className="px-4 py-3 text-right">Interés</th>
-                          <th className="px-4 py-3 text-right rounded-tr-lg">Saldo</th>
+                          <th className="px-3 py-2 rounded-l-lg">Nº</th>
+                          <th className="px-3 py-2 text-right">Cuota</th>
+                          <th className="px-3 py-2 text-right">Capital</th>
+                          <th className="px-3 py-2 text-right">Interés</th>
+                          <th className="px-3 py-2 text-right rounded-r-lg">Saldo</th>
                         </tr>
                       </thead>
-                      <tbody>
+                      <tbody className="divide-y divide-slate-100">
                         {desglose.map((d) => (
-                          <tr key={d.nro} className="border-b border-neutral-100 last:border-0 hover:bg-neutral-50/50">
-                            <td className="px-4 py-3 font-medium text-neutral-900">{d.nro}</td>
-                            <td className="px-4 py-3 text-right font-medium">${d.cuota.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</td>
-                            <td className="px-4 py-3 text-right text-neutral-600">${d.capital.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</td>
-                            <td className="px-4 py-3 text-right text-neutral-600">${d.interes.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</td>
-                            <td className="px-4 py-3 text-right text-neutral-500">${Math.abs(d.saldoResidual).toLocaleString('es-AR', { maximumFractionDigits: 2 })}</td>
+                          <tr key={d.nro} className="hover:bg-slate-50/70 transition-colors">
+                            <td className="px-3 py-2 font-bold text-slate-900">{d.nro}</td>
+                            <td className="px-3 py-2 text-right font-semibold text-slate-900">
+                              ${d.cuota.toLocaleString('es-AR', { maximumFractionDigits: 2 })}
+                            </td>
+                            <td className="px-3 py-2 text-right text-slate-600">
+                              ${d.capital.toLocaleString('es-AR', { maximumFractionDigits: 2 })}
+                            </td>
+                            <td className="px-3 py-2 text-right text-slate-600">
+                              ${d.interes.toLocaleString('es-AR', { maximumFractionDigits: 2 })}
+                            </td>
+                            <td className="px-3 py-2 text-right text-slate-500 font-mono">
+                              ${Math.abs(d.saldoResidual).toLocaleString('es-AR', { maximumFractionDigits: 2 })}
+                            </td>
                           </tr>
                         ))}
                       </tbody>
@@ -373,6 +431,16 @@ export function CalculadoraCuotas() {
               </div>
             )}
           </>
+        ) : (
+          <div className="border border-dashed border-slate-300 rounded-2xl p-7 text-center bg-white/70">
+            <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 font-bold flex items-center justify-center mx-auto mb-3">
+              %
+            </div>
+            <h4 className="font-semibold text-slate-800 text-sm mb-1">Simulador de cuotas</h4>
+            <p className="text-xs text-slate-500 leading-relaxed max-w-xs mx-auto">
+              Ingresá el importe y número de cuotas para calcular el valor mensual y la tabla detallada de amortización.
+            </p>
+          </div>
         )}
       </div>
     </div>

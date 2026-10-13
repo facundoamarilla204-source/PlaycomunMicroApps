@@ -238,13 +238,14 @@ export function CostoReceta({ user }: { user: User | null }) {
   return (
     <div className="w-full max-w-6xl mx-auto space-y-6">
       {/* Navigation tabs */}
-      <div className="flex bg-neutral-100 p-1 rounded-xl w-fit mx-auto md:mx-0 shadow-2xs">
+      <div className="flex bg-slate-100 p-1 rounded-xl w-fit mx-auto md:mx-0 border border-slate-200/80">
         <button
+          type="button"
           onClick={() => setActiveTab('create')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all ${
             activeTab === 'create'
-              ? 'bg-white shadow-2xs text-brand font-semibold'
-              : 'text-neutral-500 hover:text-neutral-900'
+              ? 'bg-white shadow-sm text-purple-700'
+              : 'text-slate-600 hover:text-slate-900'
           }`}
         >
           <Calculator className="h-4 w-4" />
@@ -252,24 +253,25 @@ export function CostoReceta({ user }: { user: User | null }) {
         </button>
 
         <button
+          type="button"
           onClick={() => {
             setActiveTab('list')
             setRecipe(emptyRecipe)
           }}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all ${
             activeTab === 'list'
-              ? 'bg-white shadow-2xs text-brand font-semibold'
-              : 'text-neutral-500 hover:text-neutral-900'
+              ? 'bg-white shadow-sm text-purple-700'
+              : 'text-slate-600 hover:text-slate-900'
           }`}
         >
           <List className="h-4 w-4" />
           <span>Mis recetas</span>
           {myRecipes.length > 0 && (
             <span
-              className={`text-2xs px-1.5 py-0.5 rounded-full font-bold ${
+              className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
                 activeTab === 'list'
-                  ? 'bg-brand/10 text-brand'
-                  : 'bg-neutral-200 text-neutral-600'
+                  ? 'bg-purple-100 text-purple-800'
+                  : 'bg-slate-200 text-slate-700'
               }`}
             >
               {myRecipes.length}

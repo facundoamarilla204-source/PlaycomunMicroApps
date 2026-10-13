@@ -96,9 +96,22 @@ export default async function SuscripcionPage({
     .order('created_at', { ascending: false })
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center border-b border-slate-100 pb-5">
-        <h1 className="text-2xl font-bold text-slate-800">Suscripción y Pagos</h1>
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 w-full space-y-6">
+      <div className="flex flex-col gap-2 pb-5 border-b border-slate-200/80">
+        <a 
+          href="/cuenta" 
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-purple-600 transition-colors w-fit py-1"
+        >
+          <span>← Volver a mi cuenta</span>
+        </a>
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+            Suscripción y Pagos
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+            Administrá tu plan activo, métodos de pago e historial de comprobantes.
+          </p>
+        </div>
       </div>
 
       <SuscripcionClient

@@ -740,6 +740,63 @@ export const tools: Tool[] = [
       }
     ],
     related: ["compresor-imagenes", "generador-presupuestos", "generador-qr", "conversor-unidades"]
+  },
+  {
+    slug: "ordenar-pdf",
+    name: "Ordenar PDF",
+    type: "utilidad",
+    category: "clientes-utilidades",
+    exampleResult: "Organizar, unir, dividir y escanear páginas",
+    tier: "free",
+    description: "Organizá, uní, dividí, rotá y eliminá páginas de tus archivos PDF. Incluye escáner de documentos con cámara física 100% privado.",
+    icon: "Files",
+    status: "live",
+    featured: true,
+    keywords: [
+      "ordenar pdf",
+      "unir pdf",
+      "dividir pdf",
+      "eliminar paginas de pdf",
+      "extraer paginas pdf",
+      "rotar pdf",
+      "escanear documentos a pdf",
+      "juntar pdf gratis",
+      "separar pdf online",
+      "organizar hojas pdf",
+      "escanear con celular a pdf",
+      "combinar pdf"
+    ],
+    updatedAt: NOW,
+    seo: {
+      title: "Ordenar PDF Gratis Online | Unir, Dividir, Rotar y Escanear a PDF",
+      description: "Organizá tus documentos PDF online: uní varios archivos, reordená y rotá páginas, dividí por partes o rangos y escaneá con la cámara de tu celular de forma 100% privada.",
+      h1: "Ordenar PDF y Escanear Documentos Online",
+      intro: "La forma más simple y privada de organizar, combinar, dividir, rotar y escanear páginas de tus documentos PDF directamente desde el navegador."
+    },
+    faqs: [
+      {
+        question: "¿Cómo funciona la privacidad de mis documentos PDF y fotografías escaneadas?",
+        answer: "Todas las operaciones (unión, ordenamiento, división, rotación, eliminación y escaneo) se procesan 100% en la memoria de tu dispositivo usando las capacidades de tu navegador. Tus archivos y capturas nunca se suben a servidores remotos ni a ninguna base de datos."
+      },
+      {
+        question: "¿Puedo combinar varios archivos PDF y luego ordenar las páginas a mi gusto?",
+        answer: "Sí. Podés subir múltiples archivos PDF a la vez o añadir nuevos documentos en cualquier momento. La herramienta te permite reordenar el orden de los archivos y luego desplazar, girar o eliminar cualquiera de las páginas del conjunto."
+      },
+      {
+        question: "¿Cómo funciona el escáner a PDF desde el celular sin instalar aplicaciones?",
+        answer: "El escáner utiliza la cámara de tu teléfono móvil mediante los estándares seguros del navegador. Podés capturar varias páginas seguidas, ajustar los bordes con corrección de perspectiva, aplicar filtros de alto contraste y generar un documento PDF estándar A4 listo para compartir."
+      },
+      {
+        question: "¿Cómo divido un PDF en varias partes o extraigo páginas específicas?",
+        answer: "En la función 'Dividir PDF' podés elegir entre separar el documento en grupos iguales (por ejemplo, cada 10 páginas), definir rangos personalizados (como 1-5, 6-12) o separar cada página en un archivo individual. Podés descargar los documentos uno a uno o empaquetarlos en un archivo comprimido ZIP."
+      },
+      {
+        question: "¿Se altera el archivo original al eliminar o rotar páginas?",
+        answer: "No. Tus archivos originales en tu computadora o celular nunca se modifican ni se sobrescriben. La herramienta genera siempre una copia nueva con las modificaciones elegidas cuando pulsás el botón de descarga."
+      }
+    ],
+    related: ["convertidor-archivos", "compresor-imagenes", "generador-presupuestos", "generador-qr"]
   }
 ]
+
 

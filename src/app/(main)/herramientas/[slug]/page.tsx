@@ -38,6 +38,8 @@ import { CompresorImagenes } from "@/components/tools/compresor-imagenes/Compres
 import { CompresorImagenesContent } from "@/components/tools/content/CompresorImagenesContent"
 import { ConvertidorArchivos } from "@/components/tools/convertidor-archivos/ConvertidorArchivos"
 import { ConvertidorArchivosContent } from "@/components/tools/content/ConvertidorArchivosContent"
+import { OrdenarPdf } from "@/components/tools/ordenar-pdf/OrdenarPdf"
+import { OrdenarPdfContent } from "@/components/tools/content/OrdenarPdfContent"
 
 function getToolComponent(slug: string, user: User | null): React.ReactNode {
   switch (slug) {
@@ -173,6 +175,15 @@ function getToolComponent(slug: string, user: User | null): React.ReactNode {
           <ConvertidorArchivos />
           <div className="mt-16 flex justify-center">
             <ConvertidorArchivosContent />
+          </div>
+        </>
+      )
+    case "ordenar-pdf":
+      return (
+        <>
+          <OrdenarPdf />
+          <div className="mt-16 flex justify-center">
+            <OrdenarPdfContent />
           </div>
         </>
       )

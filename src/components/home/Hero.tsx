@@ -17,56 +17,61 @@ export default function Hero() {
   }
 
   return (
-    <section className="bg-brand-light pt-16 pb-8 md:pt-24 md:pb-12">
+    <section className="relative overflow-hidden bg-gradient-to-b from-purple-50/50 via-white to-white pt-12 pb-10 sm:pt-16 sm:pb-14 md:pt-20 md:pb-16 border-b border-slate-100">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-8 items-center">
-          <div className="max-w-2xl">
-            <h1 className="text-4xl font-extrabold text-foreground sm:text-5xl lg:text-6xl mb-6 text-balance leading-[1.1]">
-              Herramientas online para tu <span className="text-brand">negocio</span>
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-8 items-center">
+
+          <div className="lg:col-span-7 max-w-2xl">
+            <h1 className="text-3xl sm:text-5xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-[1.15] mb-5">
+              Herramientas inteligentes para potenciar tu <span className="text-brand">negocio</span>
             </h1>
-            <p className="text-lg text-foreground-muted mb-8 max-w-xl text-balance leading-relaxed">
-              Calculá, generá y resolvé en segundos. Las básicas son gratis y sin registro.
+
+            <p className="text-base sm:text-lg text-slate-600 mb-8 max-w-xl leading-relaxed">
+              Calculá costos y precios, editá PDFs, convertí archivos y administrá tus finanzas en segundos. Directo en tu navegador y sin registros obligatorios.
             </p>
-            
-            <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3 max-w-md">
+
+            {/* Search form */}
+            <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-2.5 max-w-lg mb-4">
               <div className="relative flex-1">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-foreground-subtle transition-colors peer-focus:text-brand" />
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4.5 w-4.5 text-slate-400" />
                 <input
                   type="text"
-                  placeholder="Buscar una herramienta..."
+                  placeholder="Buscar calculadora, PDF, precios..."
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  className="peer w-full rounded-xl border border-border/60 bg-white py-3.5 pl-12 pr-4 shadow-sm outline-none transition-all placeholder:text-foreground-subtle/50 hover:border-brand/30 focus:border-brand focus:ring-4 focus:ring-brand/10"
+                  className="w-full rounded-xl border border-slate-300 bg-white py-3 pl-10 pr-4 text-sm text-slate-900 shadow-xs outline-none transition-colors placeholder:text-slate-400 focus:border-brand focus:ring-2 focus:ring-brand/20"
                 />
               </div>
-              <button 
+              <button
                 type="submit"
-                className="rounded-xl bg-brand px-8 py-3.5 font-semibold text-white shadow-sm shadow-brand/20 transition-all hover:bg-brand-hover hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-95 text-lg"
+                className="inline-flex items-center justify-center rounded-xl bg-brand px-6 py-3 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-brand-hover active:bg-brand-active"
               >
                 Buscar
               </button>
             </form>
 
-            <div className="mt-4 flex items-center gap-2 text-sm text-foreground-muted">
-              <Lock className="w-4 h-4 text-brand shrink-0" />
-              <span>Las herramientas básicas corren en tu navegador y no guardan lo que ingresás.</span>
+            {/* Privacy note */}
+            <div className="flex items-center gap-2 text-xs text-slate-500">
+              <Lock className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+              <span>Procesamiento 100% privado en tu navegador. Tus datos nunca salen de tu dispositivo.</span>
             </div>
           </div>
-          
-          <div className="relative flex justify-center lg:justify-end">
-            <div className="relative w-full max-w-[500px] aspect-square">
+
+          <div className="lg:col-span-5 flex justify-center lg:justify-end">
+            <div className="relative w-full max-w-[380px] aspect-square rounded-2xl bg-gradient-to-tr from-purple-100/40 to-transparent p-4 flex items-center justify-center">
               <Image
                 src="/otter-hero.png"
-                alt="Nutria de PlayComun Herramientas"
+                alt="Mascota de PlayComun"
                 fill
-                sizes="(max-width: 768px) 100vw, 500px"
-                className="object-contain object-center"
+                sizes="(max-width: 768px) 100vw, 380px"
+                className="object-contain object-center drop-shadow-sm select-none"
                 priority
                 unoptimized
                 onContextMenu={(e) => e.preventDefault()}
               />
             </div>
           </div>
+
         </div>
       </div>
     </section>

@@ -140,17 +140,17 @@ export default function CuentaClient({ email, name, initial, logoutAction, updat
                     type="text"
                     defaultValue={name}
                     placeholder="Tu nombre completo"
-                    className="w-full px-5 py-4 rounded-2xl border-2 border-slate-100 focus:outline-none focus:border-brand/40 focus:ring-4 focus:ring-brand/10 transition-all placeholder:text-slate-400 font-semibold text-slate-800 bg-white shadow-sm hover:border-slate-200"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/70 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-600 transition-all placeholder:text-slate-400 font-semibold text-slate-900 text-sm"
                   />
-                  {errorMsg && <p className="text-red-500 text-sm ml-1">{errorMsg}</p>}
-                  {successMsg && <p className="text-green-600 text-sm ml-1 font-medium">{successMsg}</p>}
+                  {errorMsg && <p className="text-rose-600 text-xs mt-1 font-medium">{errorMsg}</p>}
+                  {successMsg && <p className="text-emerald-600 text-xs mt-1 font-medium">{successMsg}</p>}
                 </div>
 
-                <div className="pt-2">
+                <div className="pt-1">
                   <button 
                     disabled={isPending}
                     type="submit" 
-                    className="bg-slate-900 hover:bg-brand disabled:bg-slate-400 text-white px-8 py-3.5 rounded-xl text-sm font-bold transition-colors shadow-sm hover:shadow-md"
+                    className="bg-slate-900 hover:bg-slate-800 disabled:opacity-50 text-white px-6 py-3 rounded-xl text-xs sm:text-sm font-bold transition-all shadow-sm min-h-[44px]"
                   >
                     {isPending ? "Guardando..." : "Actualizar perfil"}
                   </button>
@@ -168,35 +168,36 @@ export default function CuentaClient({ email, name, initial, logoutAction, updat
               variants={itemVariants} 
               onMouseEnter={() => setIsHoveringPlan(true)}
               onMouseLeave={() => setIsHoveringPlan(false)}
-              className="relative rounded-xl p-8 text-white overflow-hidden group cursor-pointer shadow-sm bg-brand"
+              className="relative rounded-2xl p-6 sm:p-7 text-white overflow-hidden shadow-md bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950 border border-slate-800"
             >
-              
               <div className="relative z-10 flex flex-col h-full min-h-[220px]">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <CreditCard className="w-5 h-5 text-white/80" />
-                    <span className="text-white/80 font-medium text-sm tracking-wide uppercase">Suscripción actual</span>
+                    <CreditCard className="w-4 h-4 text-purple-300" />
+                    <span className="text-purple-300 font-bold text-xs tracking-wider uppercase">Suscripción actual</span>
                   </div>
-                  <span className={`px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-white text-xs font-black uppercase tracking-widest shadow-inner border border-white/10 ${isPro ? 'text-amber-300 border-amber-300/30' : ''}`}>
+                  <span className={`px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wider border ${
+                    isPro ? 'bg-purple-900/60 text-purple-200 border-purple-700/50' : 'bg-white/10 text-white border-white/20'
+                  }`}>
                     {isPro ? 'Pro' : 'Gratis'}
                   </span>
                 </div>
                 
-                <div className="mt-6 mb-8">
-                  <h3 className="text-3xl font-black mb-2 tracking-tight">{isPro ? 'Plan Pro' : 'Plan Básico'}</h3>
-                  <p className="text-white/80 font-medium leading-relaxed text-sm">
+                <div className="mt-5 mb-6">
+                  <h3 className="text-2xl font-black mb-1.5 tracking-tight">{isPro ? 'Plan PlayComun Pro' : 'Plan Básico Gratuito'}</h3>
+                  <p className="text-slate-300 font-medium leading-relaxed text-xs sm:text-sm">
                     {isPro 
-                      ? 'Acceso total a todas las herramientas, sin publicidad y con funcionalidades premium desbloqueadas.' 
-                      : 'Acceso a herramientas esenciales para arrancar. Mejorá a Premium para desbloquear todo el potencial.'}
+                      ? 'Acceso total sin publicidad, planchas de QR dinámicos y personalización de marca desbloqueadas.' 
+                      : 'Acceso ilimitado a todas las herramientas gratuitas. Actualizá a Pro para funciones avanzadas sin publicidad.'}
                   </p>
                 </div>
                 
                 <Link 
                   href={isPro ? "/cuenta/suscripcion" : "/planes"}
-                  className="mt-auto flex items-center justify-center gap-2 w-full bg-white text-[#7b2cbf] hover:bg-slate-50 px-6 py-4 rounded-xl text-sm font-bold transition-all duration-300 group-hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] active:scale-95"
+                  className="mt-auto flex items-center justify-center gap-2 w-full bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-white px-5 py-3 rounded-xl text-xs sm:text-sm font-bold transition-all shadow-sm min-h-[44px]"
                 >
-                  {isPro ? "Gestionar suscripción" : "Mejorar plan"}
-                  <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  {isPro ? "Gestionar suscripción" : "Mejorar a Pro"}
+                  <ChevronRight className="w-4 h-4" />
                 </Link>
               </div>
             </motion.div>

@@ -3,19 +3,27 @@
 @theme {
   --color-brand: #7C3AED;
   --color-brand-hover: #6D28D9;
+  --color-brand-active: #5B21B6;
   --color-brand-light: #F5F3FF;
+  --color-brand-border: #DDD6FE;
   
-  --color-foreground: #111827;
-  --color-foreground-muted: #4B5563;
-  --color-foreground-subtle: #6B7280;
+  --color-foreground: #0F172A;
+  --color-foreground-muted: #334155;
+  --color-foreground-subtle: #64748B;
+  --color-foreground-faint: #94A3B8;
   
-  --color-border: #E5E7EB;
+  --color-border: #E2E8F0;
+  --color-border-subtle: #F1F5F9;
   --color-background: #ffffff;
+  --color-surface-subtle: #F8FAFC;
 
-  --color-free-bg: #DCFCE7;
-  --color-free-text: #166534;
-  --color-pro-bg: #EDE9FE;
+  --color-free-bg: #ECFDF5;
+  --color-free-text: #065F46;
+  --color-free-border: #A7F3D0;
+
+  --color-pro-bg: #F5F3FF;
   --color-pro-text: #6D28D9;
+  --color-pro-border: #DDD6FE;
   
   --font-sans: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
   --font-heading: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
@@ -27,4 +35,29 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom scrollbars for compact tool panels */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 9999px;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }

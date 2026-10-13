@@ -7,9 +7,14 @@ import { toggleFavorite as toggleFavoriteAction } from "@/app/actions/favorites"
 interface FavoriteButtonProps {
   toolSlug: string
   initialIsFavorite?: boolean
+  className?: string
 }
 
-export default function FavoriteButton({ toolSlug, initialIsFavorite = false }: FavoriteButtonProps) {
+export default function FavoriteButton({ 
+  toolSlug, 
+  initialIsFavorite = false,
+  className = "" 
+}: FavoriteButtonProps) {
   const [isPending, startTransition] = useTransition()
   const [isFavorite, setIsFavorite] = useState(initialIsFavorite)
 
@@ -33,12 +38,13 @@ export default function FavoriteButton({ toolSlug, initialIsFavorite = false }: 
     <button
       onClick={toggleFavorite}
       disabled={isPending}
-      className={`absolute top-3 left-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 backdrop-blur shadow-sm transition-colors hover:bg-white ${
-        isFavorite ? "text-brand" : "text-foreground-subtle hover:text-brand"
-      } disabled:opacity-50`}
+      className={`inline-flex h-7 w-7 items-center justify-center rounded-md transition-colors hover:bg-slate-100 ${
+        isFavorite ? "text-rose-500 hover:text-rose-600" : "text-slate-400 hover:text-slate-600"
+      } disabled:opacity-50 ${className}`}
       aria-label={isFavorite ? "Quitar de favoritas" : "Agregar a favoritas"}
+      title={isFavorite ? "Quitar de favoritas" : "Guardar en favoritas"}
     >
-      <Heart className={`h-4 w-4 ${isFavorite ? "fill-current" : ""}`} />
+      <Heart className={`h-4 w-4 transition-transform active:scale-90 ${isFavorite ? "fill-current" : ""}`} />
     </button>
   )
 }

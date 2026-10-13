@@ -117,44 +117,72 @@ export function CalculadoraRentabilidad() {
   };
 
   return (
-    <div className="grid gap-8 items-start w-full lg:grid-cols-2 max-w-6xl mx-auto">
-      <div className="bg-white rounded-2xl shadow-sm border border-neutral-200 p-6 sm:p-8 space-y-8">
-        
+    <div className="grid gap-8 items-start w-full lg:grid-cols-12 max-w-5xl mx-auto">
+      {/* Form Column */}
+      <div className="lg:col-span-7 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-7 space-y-6">
         {/* Mode Selection */}
-        <div className="flex bg-neutral-100 p-1 rounded-xl">
-          <button
-            onClick={() => { setMode('rentabilidad'); setMarginStr(''); }}
-            className={`flex-1 py-3 px-2 text-sm font-medium rounded-lg transition-colors ${mode === 'rentabilidad' ? 'bg-white shadow-sm text-neutral-900' : 'text-neutral-500 hover:text-neutral-700'}`}
-          >
-            Calcular ganancia y margen
-          </button>
-          <button
-            onClick={() => { setMode('inverso'); setPriceStr(''); }}
-            className={`flex-1 py-3 px-2 text-sm font-medium rounded-lg transition-colors ${mode === 'inverso' ? 'bg-white shadow-sm text-neutral-900' : 'text-neutral-500 hover:text-neutral-700'}`}
-          >
-            Calcular precio por margen
-          </button>
+        <div>
+          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
+            Tipo de cálculo
+          </label>
+          <div className="grid grid-cols-2 p-1 bg-slate-100 rounded-xl border border-slate-200/80">
+            <button
+              type="button"
+              onClick={() => {
+                setMode('rentabilidad');
+                setMarginStr('');
+              }}
+              className={`py-2.5 px-2 text-xs sm:text-sm font-semibold rounded-lg transition-all text-center ${
+                mode === 'rentabilidad'
+                  ? 'bg-white text-purple-700 shadow-sm border border-slate-200/60'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Ganancia y margen
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setMode('inverso');
+                setPriceStr('');
+              }}
+              className={`py-2.5 px-2 text-xs sm:text-sm font-semibold rounded-lg transition-all text-center ${
+                mode === 'inverso'
+                  ? 'bg-white text-purple-700 shadow-sm border border-slate-200/60'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Precio según margen
+            </button>
+          </div>
         </div>
 
-        <section className="space-y-4">
-          <h3 className="font-semibold text-lg text-neutral-900">1. Datos principales</h3>
+        {/* Primary Inputs */}
+        <section className="space-y-4 pt-1">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="w-5 h-5 rounded-full bg-purple-100 text-purple-700 font-bold text-xs flex items-center justify-center">
+              1
+            </span>
+            <h3 className="font-bold text-sm text-slate-900">Variables de costo y venta</h3>
+          </div>
+
           <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">
-              Costo {qty > 1 ? 'unitario' : ''}
+            <label className="block text-sm font-semibold text-slate-800 mb-1">
+              Costo {qty > 1 ? 'unitario' : 'del producto o servicio'}
             </label>
-            <p className="text-xs text-neutral-500 mb-2">
-              Cuánto te cuesta el producto o servicio.
+            <p className="text-xs text-slate-500 mb-2">
+              Cuánto te cuesta producirlo, adquirirlo o prestar el servicio.
             </p>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <span className="text-neutral-500 sm:text-sm">$</span>
-              </div>
+              <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 font-semibold text-base">
+                $
+              </span>
               <input
                 type="text"
                 inputMode="decimal"
                 value={costStr}
                 onChange={handleCurrencyChange(setCostStr)}
-                className="block w-full pl-7 pr-3 py-3 rounded-xl border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm transition-colors"
+                className="block w-full pl-8 pr-4 py-3 rounded-xl border border-slate-300 focus:border-purple-600 focus:ring-2 focus:ring-purple-100 text-slate-900 font-medium text-base transition-colors placeholder:text-slate-400"
                 placeholder="600"
               />
             </div>
@@ -162,33 +190,33 @@ export function CalculadoraRentabilidad() {
 
           {mode === 'rentabilidad' ? (
             <div>
-              <label className="block text-sm font-medium text-neutral-700 mb-1">
+              <label className="block text-sm font-semibold text-slate-800 mb-1">
                 Precio de venta {qty > 1 ? 'unitario' : ''}
               </label>
-              <p className="text-xs text-neutral-500 mb-2">
-                A cuánto vendés el producto o servicio.
+              <p className="text-xs text-slate-500 mb-2">
+                A cuánto lo vas a vender al cliente final.
               </p>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <span className="text-neutral-500 sm:text-sm">$</span>
-                </div>
+                <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 font-semibold text-base">
+                  $
+                </span>
                 <input
                   type="text"
                   inputMode="decimal"
                   value={priceStr}
                   onChange={handleCurrencyChange(setPriceStr)}
-                  className="block w-full pl-7 pr-3 py-3 rounded-xl border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm transition-colors"
-                  placeholder="1000"
+                  className="block w-full pl-8 pr-4 py-3 rounded-xl border border-slate-300 focus:border-purple-600 focus:ring-2 focus:ring-purple-100 text-slate-900 font-medium text-base transition-colors placeholder:text-slate-400"
+                  placeholder="1.000"
                 />
               </div>
             </div>
           ) : (
             <div>
-              <label className="block text-sm font-medium text-neutral-700 mb-1">
+              <label className="block text-sm font-semibold text-slate-800 mb-1">
                 Margen de ganancia deseado
               </label>
-              <p className="text-xs text-neutral-500 mb-2">
-                Qué porcentaje del precio final querés que sea ganancia.
+              <p className="text-xs text-slate-500 mb-2">
+                Qué porcentaje del precio final querés que represente tu ganancia.
               </p>
               <div className="relative">
                 <input
@@ -196,103 +224,144 @@ export function CalculadoraRentabilidad() {
                   inputMode="decimal"
                   value={marginStr}
                   onChange={handlePercentageChange(setMarginStr)}
-                  className={`block w-full pl-3 pr-8 py-3 rounded-xl border ${errorMargin ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900'} sm:text-sm transition-colors`}
+                  className={`block w-full pl-4 pr-9 py-3 rounded-xl border ${
+                    errorMargin
+                      ? 'border-red-400 focus:ring-red-100 focus:border-red-500'
+                      : 'border-slate-300 focus:border-purple-600 focus:ring-2 focus:ring-purple-100'
+                  } text-slate-900 font-medium text-base transition-colors placeholder:text-slate-400`}
                   placeholder="40"
                 />
-                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                  <span className="text-neutral-500 sm:text-sm">%</span>
-                </div>
+                <span className="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-slate-500 font-semibold text-base">
+                  %
+                </span>
               </div>
-              {errorMargin && <p className="mt-1 text-xs text-red-500">{errorMargin}</p>}
+              {errorMargin && <p className="mt-1.5 text-xs text-red-600 font-medium">{errorMargin}</p>}
             </div>
           )}
         </section>
 
-        <hr className="border-neutral-200" />
-
-        <section className="space-y-4">
-          <h3 className="font-semibold text-lg text-neutral-900">2. Unidades (Opcional)</h3>
+        {/* Quantities */}
+        <section className="space-y-4 pt-4 border-t border-slate-100">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="w-5 h-5 rounded-full bg-purple-100 text-purple-700 font-bold text-xs flex items-center justify-center">
+              2
+            </span>
+            <h3 className="font-bold text-sm text-slate-900">Volumen proyectado (opcional)</h3>
+          </div>
 
           <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">
-              Cantidad
+            <label className="block text-sm font-semibold text-slate-800 mb-1">
+              Cantidad de unidades
             </label>
-            <p className="text-xs text-neutral-500 mb-2">
-              Cuántas unidades querés calcular (opcional).
+            <p className="text-xs text-slate-500 mb-2">
+              Proyectá la facturación y ganancia bruta multiplicada por lote.
             </p>
             <input
               type="text"
               inputMode="numeric"
               value={quantityStr}
               onChange={handleQuantityChange}
-              className="block w-full px-3 py-3 rounded-xl border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900 sm:text-sm transition-colors"
+              className="block w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:border-purple-600 focus:ring-2 focus:ring-purple-100 text-slate-900 font-medium text-sm transition-colors"
               placeholder="1"
             />
           </div>
         </section>
       </div>
 
-      {/* Result Card */}
-      <div className={`
-        ${result ? 'block' : 'hidden'} 
-        lg:block lg:sticky lg:top-8
-        mt-8 lg:mt-0 w-full
-      `}>
-        {result && (
-          <div aria-live="polite" className="bg-neutral-900 text-white rounded-2xl p-6 lg:p-8 shadow-xl w-full">
+      {/* Result Card Column */}
+      <div className="lg:col-span-5 lg:sticky lg:top-24 w-full">
+        {result ? (
+          <div
+            aria-live="polite"
+            className="bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950 border border-slate-800 text-white rounded-2xl p-6 sm:p-7 shadow-lg"
+          >
             {result.type === 'rentabilidad' ? (
               <>
-                <h3 className="text-white text-sm font-semibold mb-1 opacity-90">
-                  GANANCIA {qty > 1 ? 'TOTAL' : 'NETA'}
-                </h3>
-                <div className="text-4xl lg:text-5xl font-bold mb-6">
-                  ${result.profit.toLocaleString('es-AR', { maximumFractionDigits: 2, minimumFractionDigits: 2 })}
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs font-bold uppercase tracking-wider text-purple-300">
+                    Ganancia {qty > 1 ? 'Total' : 'Neta'}
+                  </span>
+                  <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 font-semibold">
+                    {result.margin.toLocaleString('es-AR', { maximumFractionDigits: 1 })}% margen
+                  </span>
                 </div>
-                
-                <div className="space-y-4 mb-6">
-                  <div className="flex justify-between items-center text-sm lg:text-base border-b border-white/20 pb-3">
-                    <span className="opacity-90">Margen de rentabilidad</span>
-                    <span className="font-semibold">{result.margin.toLocaleString('es-AR', { maximumFractionDigits: 2 })}%</span>
+
+                <div className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mb-6">
+                  ${result.profit.toLocaleString('es-AR', {
+                    maximumFractionDigits: 2,
+                    minimumFractionDigits: 2,
+                  })}
+                </div>
+
+                <div className="space-y-3 pt-4 border-t border-slate-800/80 mb-6 text-sm">
+                  <div className="flex justify-between items-center text-slate-300">
+                    <span>Margen sobre venta</span>
+                    <span className="font-semibold text-white">
+                      {result.margin.toLocaleString('es-AR', { maximumFractionDigits: 2 })}%
+                    </span>
                   </div>
-                  <div className="flex justify-between items-center text-sm lg:text-base border-b border-white/20 pb-3">
-                    <span className="opacity-90">Markup (Recargo al costo)</span>
-                    <span className="font-semibold">{result.markup.toLocaleString('es-AR', { maximumFractionDigits: 2 })}%</span>
+                  <div className="flex justify-between items-center text-slate-300">
+                    <span>Markup (recargo al costo)</span>
+                    <span className="font-semibold text-purple-300">
+                      {result.markup.toLocaleString('es-AR', { maximumFractionDigits: 2 })}%
+                    </span>
                   </div>
-                  <div className="flex justify-between items-center text-sm lg:text-base border-b border-white/20 pb-3">
-                    <span className="opacity-90">Costo total</span>
-                    <span className="font-semibold">${result.totalCost.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
+                  <div className="flex justify-between items-center text-slate-300">
+                    <span>Costo total ({qty} un.)</span>
+                    <span className="font-semibold text-slate-200">
+                      ${result.totalCost.toLocaleString('es-AR', { maximumFractionDigits: 2 })}
+                    </span>
                   </div>
-                  <div className="flex justify-between items-center text-sm lg:text-base border-b border-white/20 pb-3">
-                    <span className="opacity-90">Ingresos totales</span>
-                    <span className="font-semibold">${result.totalRevenue.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
+                  <div className="flex justify-between items-center text-slate-200 pt-2 border-t border-slate-800">
+                    <span className="font-medium">Ingresos brutos</span>
+                    <span className="font-bold text-white text-base">
+                      ${result.totalRevenue.toLocaleString('es-AR', { maximumFractionDigits: 2 })}
+                    </span>
                   </div>
                 </div>
               </>
             ) : (
               <>
-                <h3 className="text-white text-sm font-semibold mb-1 opacity-90">
-                  PRECIO DE VENTA {qty > 1 ? 'UNITARIO ' : ''}RECOMENDADO
-                </h3>
-                <div className="text-4xl lg:text-5xl font-bold mb-6">
-                  ${result.targetPrice!.toLocaleString('es-AR', { maximumFractionDigits: 2, minimumFractionDigits: 2 })}
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs font-bold uppercase tracking-wider text-purple-300">
+                    Precio {qty > 1 ? 'Unitario ' : ''}Recomendado
+                  </span>
+                  <span className="text-xs px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-200 border border-purple-400/30 font-semibold">
+                    Margen objetivo
+                  </span>
                 </div>
 
-                <div className="space-y-4 mb-6">
-                  <div className="flex justify-between items-center text-sm lg:text-base border-b border-white/20 pb-3">
-                    <span className="opacity-90">Ganancia {qty > 1 ? 'total' : 'neta'}</span>
-                    <span className="font-semibold">${result.profit.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
+                <div className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mb-6">
+                  ${result.targetPrice!.toLocaleString('es-AR', {
+                    maximumFractionDigits: 2,
+                    minimumFractionDigits: 2,
+                  })}
+                </div>
+
+                <div className="space-y-3 pt-4 border-t border-slate-800/80 mb-6 text-sm">
+                  <div className="flex justify-between items-center text-slate-300">
+                    <span>Ganancia {qty > 1 ? 'total' : 'unitaria'}</span>
+                    <span className="font-semibold text-emerald-400">
+                      + ${result.profit.toLocaleString('es-AR', { maximumFractionDigits: 2 })}
+                    </span>
                   </div>
-                  <div className="flex justify-between items-center text-sm lg:text-base border-b border-white/20 pb-3">
-                    <span className="opacity-90">Markup (Recargo al costo)</span>
-                    <span className="font-semibold">{result.markup.toLocaleString('es-AR', { maximumFractionDigits: 2 })}%</span>
+                  <div className="flex justify-between items-center text-slate-300">
+                    <span>Markup equivalente</span>
+                    <span className="font-semibold text-purple-300">
+                      {result.markup.toLocaleString('es-AR', { maximumFractionDigits: 2 })}%
+                    </span>
                   </div>
-                  <div className="flex justify-between items-center text-sm lg:text-base border-b border-white/20 pb-3">
-                    <span className="opacity-90">Costo total</span>
-                    <span className="font-semibold">${result.totalCost.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
+                  <div className="flex justify-between items-center text-slate-300">
+                    <span>Costo total ({qty} un.)</span>
+                    <span className="font-semibold text-slate-200">
+                      ${result.totalCost.toLocaleString('es-AR', { maximumFractionDigits: 2 })}
+                    </span>
                   </div>
-                  <div className="flex justify-between items-center text-sm lg:text-base border-b border-white/20 pb-3">
-                    <span className="opacity-90">Ingresos totales</span>
-                    <span className="font-semibold">${result.totalRevenue.toLocaleString('es-AR', { maximumFractionDigits: 2 })}</span>
+                  <div className="flex justify-between items-center text-slate-200 pt-2 border-t border-slate-800">
+                    <span className="font-medium">Facturación estimada</span>
+                    <span className="font-bold text-white text-base">
+                      ${result.totalRevenue.toLocaleString('es-AR', { maximumFractionDigits: 2 })}
+                    </span>
                   </div>
                 </div>
               </>
@@ -300,22 +369,34 @@ export function CalculadoraRentabilidad() {
 
             <div className="flex items-center gap-3">
               <button
+                type="button"
                 onClick={handleCopy}
-                className="flex-1 bg-white text-neutral-900 hover:bg-white/90 active:bg-white transition-colors py-3 px-4 rounded-xl font-medium flex items-center justify-center gap-2"
+                className="flex-1 bg-white text-slate-950 hover:bg-slate-100 active:bg-slate-200 transition-colors py-3 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-sm"
               >
-                {copied ? <CheckCircle2 className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
-                {copied ? 'Copiado' : 'Copiar'}
+                {copied ? <CheckCircle2 className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
+                {copied ? 'Copiado al portapapeles' : 'Copiar resultados'}
               </button>
               <button
+                type="button"
                 onClick={reset}
-                className="px-4 py-3 border border-white/30 hover:bg-white/10 rounded-xl font-medium transition-colors"
+                className="px-4 py-3 border border-slate-700 hover:bg-slate-800 text-slate-300 rounded-xl text-sm font-semibold transition-colors"
               >
                 Limpiar
               </button>
             </div>
-            
-            <p className="text-center text-xs opacity-70 mt-4">
-              Margen y Markup no son lo mismo. El margen es sobre el precio de venta, el markup es sobre el costo.
+
+            <p className="text-center text-xs text-slate-400 mt-4 leading-relaxed">
+              <strong>Tip:</strong> El <em>margen</em> es la porción de la venta que te queda como ganancia. El <em>markup</em> es el porcentaje que le sumás a tu costo.
+            </p>
+          </div>
+        ) : (
+          <div className="border border-dashed border-slate-300 rounded-2xl p-7 text-center bg-white/70">
+            <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 font-bold flex items-center justify-center mx-auto mb-3">
+              $
+            </div>
+            <h4 className="font-semibold text-slate-800 text-sm mb-1">Cálculo de rentabilidad</h4>
+            <p className="text-xs text-slate-500 leading-relaxed max-w-xs mx-auto">
+              Ingresá tu costo y precio de venta para obtener al instante tu margen real, markup y ganancias por volumen.
             </p>
           </div>
         )}

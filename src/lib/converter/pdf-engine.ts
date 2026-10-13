@@ -553,7 +553,7 @@ export async function convertPdfToPdfA(
   const metadataRef = pdfDoc.context.register(metadataStream)
   pdfDoc.catalog.set(pdfDoc.context.obj("Metadata"), metadataRef)
 
-  const pdfBytes = await pdfDoc.save({ updateMetadata: false })
+  const pdfBytes = await pdfDoc.save({ updateMetadata: false } as any)
   const outBuffer = pdfBytes.buffer.slice(
     pdfBytes.byteOffset,
     pdfBytes.byteOffset + pdfBytes.byteLength
