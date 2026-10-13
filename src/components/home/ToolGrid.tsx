@@ -7,6 +7,7 @@ import { ArrowRight, Calculator, FileText, Receipt, TrendingUp, QrCode, Wallet, 
 import { tools } from "@/data/tools"
 import { getCategories } from "@/data/categories"
 import ToolCard from "@/components/tools/ToolCard"
+import ViewAllToolsBanner from "@/components/home/ViewAllToolsBanner"
 
 const iconMap: Record<string, LucideIcon> = {
   Calculator,
@@ -31,6 +32,8 @@ interface ToolGridProps {
   userFavorites?: string[]
   showSearch?: boolean
   showTypeFilter?: boolean
+  isHome?: boolean
+  limit?: number
 }
 
 export default function ToolGrid({ 
@@ -38,7 +41,9 @@ export default function ToolGrid({
   initialQuery = "", 
   userFavorites = [],
   showSearch = false,
-  showTypeFilter = false
+  showTypeFilter = false,
+  isHome = false,
+  limit = 20
 }: ToolGridProps) {
   const router = useRouter()
   const pathname = usePathname()
@@ -118,6 +123,9 @@ export default function ToolGrid({
     filteredTools = filteredTools.filter((tool) => tool.type === activeType)
   }
 
+  const shouldLimit = isHome && typeof limit === "number" && limit > 0
+  const displayedTools = shouldLimit ? filteredTools.slice(0, limit) : filteredTools
+
   const favoriteTools = userFavorites.length > 0 
     ? tools.filter(t => userFavorites.includes(t.slug))
     : []
@@ -188,7 +196,7 @@ export default function ToolGrid({
 
       {/* Favorites Row */}
       {!query && activeCategory === "todas" && favoriteTools.length > 0 && !showSearch && (
-        <div className="mb-10 p-4 rounded-xl bg-purple-50/50 border border-brand-border/60">
+        <div className="mb-10 p-4 rounded-xl bg-slate-50 border border-slate-200/80">
           <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-500">
             Tus herramientas favoritas
           </h2>
@@ -199,7 +207,7 @@ export default function ToolGrid({
                 <Link 
                   key={tool.slug}
                   href={`${tool.customUrl || `/herramientas/${tool.slug}`}`}
-                  className="group flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 transition-colors hover:border-brand/50 hover:bg-white hover:text-brand shadow-2xs"
+                  className="group flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 transition-colors hover:border-slate-300 hover:text-brand shadow-2xs"
                 >
                   <Icon className="h-3.5 w-3.5 text-brand" />
                   <span>{tool.name}</span>
@@ -211,33 +219,58 @@ export default function ToolGrid({
       )}
 
       {/* Main Grid Header */}
-      <div className="flex items-center justify-between mb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
-            {query 
-              ? `Resultados para "${query}"` 
-              : activeCategory === "todas" && !showSearch 
-                ? "Herramientas destacadas" 
-                : activeCategoryName}
-          </h2>
-          <p className="text-xs text-slate-500 mt-0.5">
-            {filteredTools.length} {filteredTools.length === 1 ? "herramienta disponible" : "herramientas disponibles"}
+          <div className="flex items-center gap-2.5">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+              {query 
+                ? `Resultados para "${query}"` 
+                : activeCategory === "todas" && !showSearch 
+                  ? "Herramientas destacadas" 
+                  : activeCategoryName}
+            </h2>
+            {isHome && !query && (
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200 shadow-2xs">
+                Destacadas ({displayedTools.length})
+              </span>
+            )}
+          </div>
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+            {isHome && filteredTools.length > displayedTools.length ? (
+              <span>Mostrando las {displayedTools.length} principales de {filteredTools.length} disponibles</span>
+            ) : (
+              <span>{displayedTools.length} {displayedTools.length === 1 ? "herramienta disponible" : "herramientas disponibles"}</span>
+            )}
           </p>
         </div>
         
-        {(!query && activeCategory === "todas" && !showSearch) && (
-          <Link href="/herramientas" className="flex items-center gap-1 text-xs font-bold text-brand hover:text-brand-hover transition-colors">
-            Ver todas ({tools.length}) <ArrowRight className="h-3.5 w-3.5" />
+        {(isHome || (!query && activeCategory === "todas" && !showSearch)) && (
+          <Link 
+            href="/herramientas" 
+            className="group self-start sm:self-auto inline-flex items-center gap-2 rounded-xl bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 px-4 py-2 text-xs sm:text-sm font-semibold shadow-2xs hover:shadow-xs transition-colors"
+          >
+            <span>Ver todas las herramientas</span>
+            <span className="inline-flex items-center justify-center rounded-md bg-slate-100 text-slate-700 px-2 py-0.5 text-xs font-mono font-medium">
+              {tools.length}
+            </span>
+            <ArrowRight className="h-4 w-4 text-slate-400 transition-transform group-hover:translate-x-1 group-hover:text-slate-700" />
           </Link>
         )}
       </div>
 
-      {filteredTools.length > 0 ? (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {filteredTools.map((tool) => {
-            return <ToolCard key={tool.slug} tool={tool} isFavorite={userFavorites.includes(tool.slug)} />
-          })}
-        </div>
+      {displayedTools.length > 0 ? (
+        <>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {displayedTools.map((tool) => {
+              return <ToolCard key={tool.slug} tool={tool} isFavorite={userFavorites.includes(tool.slug)} />
+            })}
+          </div>
+
+          {/* Bottom Callout Banner on Home */}
+          {isHome && (
+            <ViewAllToolsBanner totalTools={tools.length} displayedCount={displayedTools.length} />
+          )}
+        </>
       ) : (
         <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 bg-slate-50/50 py-16 px-4 text-center">
           <img src="/otter-hero.png" alt="No encontrado" className="mb-4 h-28 w-auto object-contain opacity-80" />

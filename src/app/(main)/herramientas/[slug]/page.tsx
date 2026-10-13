@@ -14,6 +14,8 @@ import { CalculadoraPrecios } from "@/components/tools/CalculadoraPrecios"
 import { PrecioVentaContent } from "@/components/tools/content/PrecioVentaContent"
 import { GeneradorPresupuestos } from "@/components/tools/GeneradorPresupuestos"
 import { GeneradorPresupuestosContent } from "@/components/tools/content/GeneradorPresupuestosContent"
+import { GeneradorFacturasTool } from "@/components/tools/generador-facturas/GeneradorFacturasTool"
+import { GeneradorFacturasContent } from "@/components/tools/content/GeneradorFacturasContent"
 import { GeneradorQR } from "@/components/tools/GeneradorQR"
 import { GeneradorQRContent } from "@/components/tools/content/GeneradorQRContent"
 import { CalculadoraIVA } from "@/components/tools/CalculadoraIVA"
@@ -67,6 +69,15 @@ function getToolComponent(slug: string, user: User | null): React.ReactNode {
           <GeneradorPresupuestos />
           <div className="mt-16 flex justify-center">
             <GeneradorPresupuestosContent />
+          </div>
+        </>
+      )
+    case "generador-facturas":
+      return (
+        <>
+          <GeneradorFacturasTool />
+          <div className="mt-16 flex justify-center">
+            <GeneradorFacturasContent />
           </div>
         </>
       )

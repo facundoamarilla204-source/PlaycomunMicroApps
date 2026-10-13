@@ -47,7 +47,7 @@ export default async function Home() {
     <>
       <JsonLd data={jsonLdData} />
       <Hero />
-      <ToolGrid userFavorites={userFavorites} />
+      <ToolGrid userFavorites={userFavorites} isHome={true} limit={20} />
       <TrustStrip />
       <ServicesBanner />
       <ContactForm />

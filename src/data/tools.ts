@@ -194,7 +194,64 @@ export const tools: Tool[] = [
         answer: 'Sí. Un presupuesto es un documento comercial previo y no requiere firma obligatoria, aunque podés incluir tus condiciones de aceptación (como un adelanto) en el recuadro de observaciones.'
       }
     ],
-    related: ["calculadora-precios"]
+    related: ["calculadora-precios", "generador-facturas"]
+  },
+  {
+    slug: "generador-facturas",
+    name: "Generador de documentos comerciales",
+    type: "generador",
+    category: "gestion-negocio",
+    exampleResult: "Presupuestos, Recibos y Órdenes en PDF",
+    tier: "free",
+    description: "Creá presupuestos, recibos de pago, órdenes de trabajo y facturas proforma en PDF al instante.",
+    icon: "FileSpreadsheet",
+    status: "live",
+    featured: true,
+    keywords: [
+      "generador de facturas",
+      "documentos comerciales",
+      "hacer presupuesto online",
+      "recibo de pago en pdf",
+      "orden de trabajo pdf",
+      "factura proforma online",
+      "crear presupuestos gratis",
+      "comprobantes comerciales",
+      "plantilla presupuesto argentina"
+    ],
+    updatedAt: new Date().toISOString(),
+    seo: {
+      title: "Generador de Documentos Comerciales en PDF Gratis | PlayComun",
+      description: "Creá presupuestos, recibos de pago, órdenes de trabajo y facturas proforma personalizadas en PDF. Gratis, sin registro y listo para compartir.",
+      h1: "Generador de documentos comerciales en PDF",
+      intro: "Creá cotizaciones, comprobantes de cobro, órdenes técnicas y facturas proforma profesionales. Personalizá tu logo, ajustá conceptos y descargá un PDF auténtico al instante."
+    },
+    faqs: [
+      {
+        question: "¿Qué tipo de documentos puedo crear con esta herramienta?",
+        answer: "Podés generar cuatro tipos de documentos comerciales esenciales: Presupuestos (cotizaciones), Recibos de pago (comprobantes de cobro y señas con saldo pendiente), Órdenes de trabajo (para servicios técnicos y talleres con datos del equipo y diagnóstico) y Facturas proforma (comprobantes informativos para acuerdos comerciales)."
+      },
+      {
+        question: "¿Estos documentos tienen validez fiscal ante ARCA (AFIP)?",
+        answer: "No. Son documentos comerciales y de gestión interna. En Argentina, la facturación oficial electrónica se emite únicamente a través de ARCA con CAE. La factura proforma, el presupuesto y el recibo sirven para acordar precios, registrar señas y formalizar trabajos antes de la facturación definitiva."
+      },
+      {
+        question: "¿Necesito registrarme o pagar para descargar el PDF?",
+        answer: "No. La herramienta es 100% gratuita y no requiere registro ni ingresar tarjetas. Completás los datos de tu negocio, cargás tus productos o servicios y descargás el archivo PDF auténtico directamente en tu computadora o celular."
+      },
+      {
+        question: "¿Se guardan los datos de mis clientes en sus servidores?",
+        answer: "No. Por motivos de privacidad y seguridad, toda la información se procesa de forma local en tu navegador. Los datos se guardan únicamente como borrador en tu dispositivo para que no los pierdas si recargás la página."
+      },
+      {
+        question: "¿Puedo agregar el logo de mi negocio?",
+        answer: "Sí. Podés subir una imagen de tu logo (PNG, JPG o WEBP) y se incorporará automáticamente en el encabezado de todas las páginas de tu documento PDF."
+      },
+      {
+        question: "¿Permite calcular descuentos e impuestos?",
+        answer: "Sí. Podés aplicar descuentos individuales por línea, un descuento global sobre el total y activar el desglose de IVA con alícuotas configurables (21%, 10.5%, etc.) con cálculos matemáticos precisos."
+      }
+    ],
+    related: ["generador-listas-precios", "calculadora-precios", "calculadora-iva", "calculadora-rentabilidad"]
   },
   {
     slug: "calculadora-iva",

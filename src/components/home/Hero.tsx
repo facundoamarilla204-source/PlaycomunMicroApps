@@ -2,8 +2,10 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Search, Lock } from "lucide-react"
+import Link from "next/link"
+import { Search, Lock, LayoutGrid, ArrowRight } from "lucide-react"
 import Image from "next/image"
+import { tools } from "@/data/tools"
 
 export default function Hero() {
   const [query, setQuery] = useState("")
@@ -17,17 +19,17 @@ export default function Hero() {
   }
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-purple-50/50 via-white to-white pt-12 pb-10 sm:pt-16 sm:pb-14 md:pt-20 md:pb-16 border-b border-slate-100">
+    <section className="relative overflow-hidden bg-slate-50/50 pt-12 pb-10 sm:pt-16 sm:pb-14 md:pt-20 md:pb-16 border-b border-slate-200/80">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-8 items-center">
 
           <div className="lg:col-span-7 max-w-2xl">
             <h1 className="text-3xl sm:text-5xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-[1.15] mb-5">
-              Herramientas inteligentes para potenciar tu <span className="text-brand">negocio</span>
+              Calculadoras y herramientas prácticas para tu <span className="text-brand">negocio</span>
             </h1>
 
             <p className="text-base sm:text-lg text-slate-600 mb-8 max-w-xl leading-relaxed">
-              Calculá costos y precios, editá PDFs, convertí archivos y administrá tus finanzas en segundos. Directo en tu navegador y sin registros obligatorios.
+              Calculá costos y márgenes de venta, convertí archivos y administrá tus gastos. Todo funciona directo en el navegador, sin necesidad de registros obligatorios.
             </p>
 
             {/* Search form */}
@@ -44,11 +46,23 @@ export default function Hero() {
               </div>
               <button
                 type="submit"
-                className="inline-flex items-center justify-center rounded-xl bg-brand px-6 py-3 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-brand-hover active:bg-brand-active"
+                className="inline-flex items-center justify-center rounded-xl bg-brand px-6 py-3 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-brand-hover active:bg-brand-active cursor-pointer"
               >
                 Buscar
               </button>
             </form>
+
+            {/* Quick action / View all tools */}
+            <div className="flex flex-wrap items-center gap-2 mb-4">
+              <Link
+                href="/herramientas"
+                className="group inline-flex items-center gap-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 px-3.5 py-1.5 text-xs sm:text-sm font-semibold text-slate-800 shadow-2xs hover:shadow-xs transition-all"
+              >
+                <LayoutGrid className="h-4 w-4 text-brand" />
+                <span>Explorar catálogo completo ({tools.length} herramientas)</span>
+                <ArrowRight className="h-3.5 w-3.5 text-slate-400 transition-transform group-hover:translate-x-1 group-hover:text-slate-700" />
+              </Link>
+            </div>
 
             {/* Privacy note */}
             <div className="flex items-center gap-2 text-xs text-slate-500">
@@ -58,13 +72,15 @@ export default function Hero() {
           </div>
 
           <div className="lg:col-span-5 flex justify-center lg:justify-end">
-            <div className="relative w-full max-w-[380px] aspect-square rounded-2xl bg-gradient-to-tr from-purple-100/40 to-transparent p-4 flex items-center justify-center">
+            <div className="relative w-full max-w-[420px] aspect-square flex items-center justify-center">
+              {/* Soft ambient aura matching the hero's purple tone */}
+              <div className="absolute w-3/4 h-3/4 rounded-full bg-[#8e60fb]/10 blur-3xl pointer-events-none" />
               <Image
                 src="/otter-hero.png"
                 alt="Mascota de PlayComun"
                 fill
-                sizes="(max-width: 768px) 100vw, 380px"
-                className="object-contain object-center drop-shadow-sm select-none"
+                sizes="(max-width: 768px) 100vw, 420px"
+                className="object-contain object-center select-none relative z-10"
                 priority
                 unoptimized
                 onContextMenu={(e) => e.preventDefault()}
