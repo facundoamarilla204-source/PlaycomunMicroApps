@@ -1,0 +1,20 @@
+FFmpeg and FFmpeg.wasm Licensing Notice
+=========================================
+
+This directory contains precompiled WebAssembly binaries and loader scripts derived from the FFmpeg and FFmpeg.wasm projects:
+
+1. FFmpeg:
+   - Source: https://ffmpeg.org/
+   - License: FFmpeg is licensed under the GNU Lesser General Public License (LGPL) version 2.1 or later (or GNU General Public License (GPL) version 2 or later depending on build configuration).
+   - FFmpeg is a trademark of Fabrice Bellard, originator of the FFmpeg project.
+   - Source code and build scripts are publicly available at https://github.com/ffmpegwasm/ffmpeg.wasm
+
+2. @ffmpeg/core & @ffmpeg/ffmpeg:
+   - Repository: https://github.com/ffmpegwasm/ffmpeg.wasm
+   - @ffmpeg/ffmpeg wrapper library is licensed under the MIT License. Copyright (c) 2019-present Jerome Wu.
+   - @ffmpeg/core is built from FFmpeg sources for WebAssembly.
+
+3. Codec & Format notice:
+   - Audio decoding: WAV (PCM), MP3, AAC/M4A, OGG/Vorbis.
+   - Audio encoding: WAV (PCM 16-bit little endian), MP3 (MPEG Audio Layer 3).
+   - Audio processing runs 100% locally inside the client's browser using WebAssembly. No audio data is uploaded, stored, or transferred to remote servers.

@@ -404,7 +404,7 @@ export function LiveDocumentPreview({
 
         {/* PIE DE PÁGINA INFORMATIVO */}
         <div className="mt-6 pt-3 border-t border-slate-100 text-[10px] text-slate-400 flex items-center justify-between">
-          <span>PlayComún Online • playcomun.com</span>
+          <span>PlayComun Herramientas • playcomun.online</span>
           <span>Documento comercial de gestión interna</span>
         </div>
       </div>

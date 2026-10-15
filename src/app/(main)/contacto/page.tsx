@@ -1,9 +1,11 @@
 import { Mail, MessageSquare, MapPin } from "lucide-react"
+import { buildMetadata } from "@/lib/metadata"
 
-export const metadata = {
-  title: "Contacto | PlayComun",
-  description: "Contactate con el equipo de PlayComun",
-}
+export const metadata = buildMetadata({
+  title: "Contacto y soporte",
+  description: "Contactate con el equipo de PlayComun Herramientas para dudas, consultas y sugerencias.",
+  path: "/contacto",
+})
 
 export default function ContactoPage() {
   return (

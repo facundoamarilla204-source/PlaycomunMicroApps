@@ -1,7 +1,10 @@
-export const metadata = {
-  title: "Términos de Servicio | PlayComun",
-  description: "Términos y condiciones de uso de PlayComun",
-}
+import { buildMetadata } from "@/lib/metadata"
+
+export const metadata = buildMetadata({
+  title: "Términos y condiciones",
+  description: "Términos y condiciones de uso de PlayComun Herramientas.",
+  path: "/terminos",
+})
 
 export default function TerminosPage() {
   return (

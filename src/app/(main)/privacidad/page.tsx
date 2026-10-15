@@ -1,7 +1,10 @@
-export const metadata = {
-  title: "Política de Privacidad | PlayComun",
-  description: "Política de Privacidad de PlayComun",
-}
+import { buildMetadata } from "@/lib/metadata"
+
+export const metadata = buildMetadata({
+  title: "Política de privacidad",
+  description: "Política de privacidad de PlayComun Herramientas. Transparencia sobre el uso y protección de tus datos.",
+  path: "/privacidad",
+})
 
 export default function PrivacidadPage() {
   return (

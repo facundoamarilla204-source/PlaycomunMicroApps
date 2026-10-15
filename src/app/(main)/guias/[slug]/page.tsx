@@ -8,6 +8,8 @@ import { siteConfig } from "@/config/site";
 import Link from "next/link";
 import { JsonLd } from "@/components/seo/JsonLd";
 
+import { buildMetadata } from "@/lib/metadata";
+
 const guiasDir = path.join(process.cwd(), "content", "guias");
 
 export async function generateStaticParams() {
@@ -33,29 +35,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const guide = await getGuide(resolvedParams.slug);
   
   if (!guide) {
-    return { title: "Guía no encontrada" };
+    return buildMetadata({ title: "Guía no encontrada", noindex: true });
   }
 
   const { title, description } = guide.frontmatter;
 
-  return {
-    title: `${title} | Guías PlayComun`,
+  return buildMetadata({
+    title,
     description,
-    openGraph: {
-      title,
-      description,
-      type: "article",
-      url: `${siteConfig.url}/guias/${resolvedParams.slug}`,
-      images: [
-        {
-          url: `${siteConfig.url}/og-image.png`,
-          width: 1200,
-          height: 630,
-          alt: title,
-        },
-      ],
-    },
-  };
+    path: `/guias/${resolvedParams.slug}`,
+  });
 }
 
 export default async function GuiaPage({ params }: { params: Promise<{ slug: string }> }) {

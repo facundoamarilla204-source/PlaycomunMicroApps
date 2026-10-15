@@ -19,6 +19,7 @@ import {
   Files, 
   ChefHat, 
   Scale, 
+  Scissors,
   ArrowUpRight,
   LucideIcon 
 } from "lucide-react"
@@ -42,7 +43,8 @@ const iconMap: Record<string, LucideIcon> = {
   FileImage,
   Files,
   ChefHat,
-  Scale
+  Scale,
+  Scissors
 }
 
 const CATEGORY_LABELS: Record<string, string> = {

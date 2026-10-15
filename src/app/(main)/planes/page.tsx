@@ -4,7 +4,7 @@ import { isProUser } from "@/lib/pro"
 import PlanesClient from "./PlanesClient"
 
 export const metadata = buildMetadata({
-  title: "Planes y Precios | PlayComun Pro",
+  title: "Planes y precios",
   description: "Conocé nuestros planes y precios. Herramientas gratuitas para siempre y funciones avanzadas para profesionales con PlayComun Pro.",
   path: "/planes",
 })

@@ -1,6 +1,13 @@
 import Link from "next/link"
 import { login } from "../actions"
 import { SubmitButton } from "../submit-button"
+import { buildMetadata } from "@/lib/metadata"
+
+export const metadata = buildMetadata({
+  title: "Iniciar sesión",
+  description: "Ingresá a tu cuenta de PlayComun Herramientas para acceder a tus aplicaciones y funciones guardadas.",
+  path: "/ingresar",
+})
 
 export default async function LoginPage(props: {
   searchParams: Promise<{ error?: string }>

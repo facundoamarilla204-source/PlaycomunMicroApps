@@ -2,11 +2,14 @@ import { createClient } from "@/utils/supabase/server"
 import { redirect } from "next/navigation"
 import { Bookmark, Search, ArrowRight } from "lucide-react"
 import Link from "next/link"
+import { buildMetadata } from "@/lib/metadata"
 
-export const metadata = {
-  title: "Mis Favoritas | PlayComun",
-  description: "Tus herramientas guardadas",
-}
+export const metadata = buildMetadata({
+  title: "Herramientas favoritas",
+  description: "Tus herramientas guardadas en PlayComun Herramientas.",
+  path: "/favoritas",
+  noindex: true,
+})
 
 export default async function FavoritasPage() {
   const supabase = await createClient()

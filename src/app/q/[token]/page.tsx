@@ -1,6 +1,12 @@
 import { getQrByTokenPublic } from "@/app/actions/qr"
 import { redirect } from "next/navigation"
 import Link from "next/link"
+import { buildMetadata } from "@/lib/metadata"
+
+export const metadata = buildMetadata({
+  title: "Acceso QR",
+  noindex: true,
+})
 
 export default async function QrPublicResolver({ params }: { params: Promise<{ token: string }> }) {
   const resolvedParams = await params

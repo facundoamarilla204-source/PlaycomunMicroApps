@@ -2,6 +2,13 @@ import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 import { resetPassword } from "../actions"
 import { SubmitButton } from "../submit-button"
+import { buildMetadata } from "@/lib/metadata"
+
+export const metadata = buildMetadata({
+  title: "Recuperar contraseña",
+  path: "/recuperar",
+  noindex: true,
+})
 
 export default async function RecoverPage(props: {
   searchParams: Promise<{ error?: string }>

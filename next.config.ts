@@ -42,6 +42,16 @@ const nextConfig: NextConfig = {
         destination: "/herramientas/link-resenas-google",
         permanent: true,
       },
+      {
+        source: "/herramientas/generador-facturas",
+        destination: "/herramientas/generador-documentos-comerciales",
+        permanent: true,
+      },
+      {
+        source: "/generador-facturas",
+        destination: "/herramientas/generador-documentos-comerciales",
+        permanent: true,
+      },
     ];
   },
 };

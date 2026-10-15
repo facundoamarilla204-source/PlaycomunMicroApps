@@ -28,8 +28,6 @@ export function getToolUrl(tool: Tool): string {
 }
 
 
-const NOW = new Date().toISOString()
-
 export const tools: Tool[] = [
   {
     slug: "costo-receta",
@@ -43,9 +41,9 @@ export const tools: Tool[] = [
     status: "live",
     featured: true,
     keywords: ["calculadora de costo de receta", "costo de receta", "calcular costo de receta", "precio de venta de una receta", "costos gastronomicos", "recetas", "rentabilidad receta"],
-    updatedAt: NOW,
+    updatedAt: "2026-10-10T00:00:00.000Z",
     seo: {
-      title: "Calculadora de costo de receta | PlayComun",
+      title: "Calculadora de costo de receta online",
       description: "Calculadora online para obtener el costo real de elaboración de una receta y el precio de venta sugerido. Guardá tus recetas y calculá tus ganancias.",
       h1: "Calculadora de costo de receta",
       intro: "Ingresá tus ingredientes, calculá el costo real de elaboración y obtené un precio de venta sugerido según tu margen de ganancia."
@@ -75,16 +73,16 @@ export const tools: Tool[] = [
     name: "Control de gastos",
     type: "utilidad",
     category: "plata-finanzas",
-    exampleResult: "Gastos del mes: Control de gastos50.000",
+    exampleResult: "Gastos del mes: $150.000",
     tier: "free",
     description: "Registrá y organizá tus gastos diarios de forma rápida. Conocé en qué se va tu dinero.",
     icon: "Wallet",
     status: "live",
     featured: true,
     keywords: ["control de gastos", "app gastos", "registro de gastos", "organizar finanzas", "control gastos personales"],
-    updatedAt: NOW,
+    updatedAt: "2026-10-05T00:00:00.000Z",
     seo: {
-      title: "Control de Gastos Personales | PlayComun",
+      title: "Control de gastos personales y finanzas",
       description: "Llevá un registro de tus gastos, conocé en qué se va tu dinero y organizá tus finanzas. App gratis, rápida y fácil de usar desde el celular.",
       h1: "Control de Gastos Personales",
       intro: "La forma más simple de registrar lo que gastás y cuidar tu bolsillo mes a mes."
@@ -161,7 +159,7 @@ export const tools: Tool[] = [
     status: "live",
     featured: true,
     keywords: ["generador de presupuestos", "hacer presupuesto online", "presupuesto en PDF", "generador de presupuestos gratis", "crear cotización"],
-    updatedAt: new Date().toISOString(),
+    updatedAt: "2026-10-03T00:00:00.000Z",
     seo: {
       title: "Generador de presupuestos online gratis en PDF",
       description: "Creá, editá y descargá presupuestos profesionales en PDF de forma rápida, gratis y sin registrarte. Especial para emprendedores y freelancers en Argentina.",
@@ -194,45 +192,44 @@ export const tools: Tool[] = [
         answer: 'Sí. Un presupuesto es un documento comercial previo y no requiere firma obligatoria, aunque podés incluir tus condiciones de aceptación (como un adelanto) en el recuadro de observaciones.'
       }
     ],
-    related: ["calculadora-precios", "generador-facturas"]
+    related: ["calculadora-precios", "generador-documentos-comerciales"]
   },
   {
-    slug: "generador-facturas",
+    slug: "generador-documentos-comerciales",
     name: "Generador de documentos comerciales",
     type: "generador",
     category: "gestion-negocio",
-    exampleResult: "Presupuestos, Recibos y Órdenes en PDF",
+    exampleResult: "Recibos, Órdenes y Facturas Proforma en PDF",
     tier: "free",
-    description: "Creá presupuestos, recibos de pago, órdenes de trabajo y facturas proforma en PDF al instante.",
+    description: "Creá recibos de pago, órdenes de trabajo y facturas proforma personalizadas en PDF al instante.",
     icon: "FileSpreadsheet",
     status: "live",
     featured: true,
     keywords: [
-      "generador de facturas",
       "documentos comerciales",
-      "hacer presupuesto online",
       "recibo de pago en pdf",
       "orden de trabajo pdf",
       "factura proforma online",
-      "crear presupuestos gratis",
+      "recibo de seña",
       "comprobantes comerciales",
-      "plantilla presupuesto argentina"
+      "orden de servicio tecnico",
+      "plantillas comerciales pdf"
     ],
-    updatedAt: new Date().toISOString(),
+    updatedAt: "2026-10-13T00:00:00.000Z",
     seo: {
-      title: "Generador de Documentos Comerciales en PDF Gratis | PlayComun",
-      description: "Creá presupuestos, recibos de pago, órdenes de trabajo y facturas proforma personalizadas en PDF. Gratis, sin registro y listo para compartir.",
+      title: "Generador de documentos comerciales en PDF gratis",
+      description: "Creá recibos de pago, órdenes de trabajo y facturas proforma personalizadas en PDF. Gratis, sin registro y listo para compartir.",
       h1: "Generador de documentos comerciales en PDF",
-      intro: "Creá cotizaciones, comprobantes de cobro, órdenes técnicas y facturas proforma profesionales. Personalizá tu logo, ajustá conceptos y descargá un PDF auténtico al instante."
+      intro: "Creá comprobantes de cobro, órdenes técnicas y facturas proforma profesionales. Personalizá tu logo, ajustá conceptos y descargá un PDF auténtico al instante."
     },
     faqs: [
       {
         question: "¿Qué tipo de documentos puedo crear con esta herramienta?",
-        answer: "Podés generar cuatro tipos de documentos comerciales esenciales: Presupuestos (cotizaciones), Recibos de pago (comprobantes de cobro y señas con saldo pendiente), Órdenes de trabajo (para servicios técnicos y talleres con datos del equipo y diagnóstico) y Facturas proforma (comprobantes informativos para acuerdos comerciales)."
+        answer: "Podés generar documentos comerciales esenciales: Recibos de pago (comprobantes de cobro y señas con saldo pendiente), Órdenes de trabajo (para servicios técnicos y talleres con datos del equipo y diagnóstico) y Facturas proforma (comprobantes informativos para acuerdos comerciales)."
       },
       {
         question: "¿Estos documentos tienen validez fiscal ante ARCA (AFIP)?",
-        answer: "No. Son documentos comerciales y de gestión interna. En Argentina, la facturación oficial electrónica se emite únicamente a través de ARCA con CAE. La factura proforma, el presupuesto y el recibo sirven para acordar precios, registrar señas y formalizar trabajos antes de la facturación definitiva."
+        answer: "No. Son documentos comerciales y de gestión interna. En Argentina, la facturación oficial electrónica se emite únicamente a través de ARCA con CAE. La factura proforma y el recibo sirven para acordar precios, registrar señas y formalizar trabajos antes de la facturación definitiva."
       },
       {
         question: "¿Necesito registrarme o pagar para descargar el PDF?",
@@ -251,7 +248,7 @@ export const tools: Tool[] = [
         answer: "Sí. Podés aplicar descuentos individuales por línea, un descuento global sobre el total y activar el desglose de IVA con alícuotas configurables (21%, 10.5%, etc.) con cálculos matemáticos precisos."
       }
     ],
-    related: ["generador-listas-precios", "calculadora-precios", "calculadora-iva", "calculadora-rentabilidad"]
+    related: ["generador-listas-precios", "generador-presupuestos", "calculadora-precios", "calculadora-iva"]
   },
   {
     slug: "calculadora-iva",
@@ -265,7 +262,7 @@ export const tools: Tool[] = [
     status: "live",
     featured: true,
     keywords: ["calculadora de IVA", "calcular IVA", "calculadora IVA Argentina", "calcular IVA online", "calcular precio con IVA", "calcular precio sin IVA", "quitar IVA", "agregar IVA", "IVA 21%", "calcular IVA incluido", "impuestos", "precios"],
-    updatedAt: NOW,
+    updatedAt: "2026-10-03T00:00:00.000Z",
     seo: {
       title: "Calculadora de IVA Argentina: Agregar o quitar IVA",
       description: "Calculadora de IVA gratuita para Argentina. Agregá IVA a un precio neto o desglosá el IVA de un precio final. Tasas del 21%, 10,5% y 27%.",
@@ -358,7 +355,13 @@ export const tools: Tool[] = [
     status: "live",
     featured: true,
     keywords: ["qr", "codigo", "scan", "enlace", "pago"],
-    updatedAt: NOW,
+    updatedAt: "2026-10-07T00:00:00.000Z",
+    seo: {
+      title: "Generador de códigos QR gratis online",
+      description: "Creá códigos QR personalizados gratis para links, redes, WiFi o texto sin registro.",
+      h1: "Generador de códigos QR",
+      intro: "Generá códigos QR listos para descargar o imprimir en segundos."
+    }
   },
   {
     slug: "calculadora-1rm",
@@ -419,9 +422,9 @@ export const tools: Tool[] = [
     status: "live",
     featured: true,
     keywords: ["conversor", "unidades", "medidas", "kilos", "libras", "metros", "centimetros", "conversor de unidades", "convertir unidades", "convertir medidas"],
-    updatedAt: NOW,
+    updatedAt: "2026-10-03T00:00:00.000Z",
     seo: {
-      title: "Conversor de unidades online: Convertí medidas al instante",
+      title: "Conversor de unidades online: Medidas al instante",
       description: "Convertí longitud, peso, volumen, temperatura, almacenamiento y más con este conversor gratuito y rápido. Sin descargar nada, funciona en tu celular.",
       h1: "Conversor de Unidades",
       intro: "Convertí rápidamente entre múltiples sistemas de medida. Seleccioná la categoría, ingresá el valor y obtené el resultado al instante."
@@ -501,7 +504,7 @@ export const tools: Tool[] = [
     keywords: ["calculadora de cuotas", "calcular cuotas", "calculadora de cuotas con interés", "calculadora de cuotas sin interés", "calcular cuota mensual", "calcular cuotas de una compra", "calculadora de financiación", "calcular financiación", "cuotas", "interés", "préstamo"],
     updatedAt: "2026-10-03T00:00:00.000Z",
     seo: {
-      title: "Calculadora de cuotas con o sin interés: Simulá tu financiación",
+      title: "Calculadora de cuotas: Simulá tu financiación",
       description: "Calculadora de cuotas online gratis. Calculá el valor mensual, los intereses y el total a pagar de una compra financiada en cuotas fijas.",
       h1: "Calculadora de cuotas",
       intro: "Simulá tu financiación de forma rápida. Conocé cuánto vas a pagar por mes y el total de intereses de tu compra."
@@ -546,7 +549,7 @@ export const tools: Tool[] = [
     status: "soon",
     featured: true,
     keywords: ["stock", "inventario", "productos", "gestion", "deposito"],
-    updatedAt: NOW,
+    updatedAt: "2026-10-03T00:00:00.000Z",
   },
   {
     slug: "calculadora-calorias",
@@ -562,7 +565,7 @@ export const tools: Tool[] = [
     keywords: ["calculadora de calorias", "calcular calorias", "calculadora de calorias diarias", "calcular calorias diarias", "cuantas calorias necesito", "calorias de mantenimiento", "calculadora de calorias para bajar de peso", "calculadora TDEE", "calcular metabolismo basal", "calculadora BMR", "nutricion", "BMR", "TDEE", "metabolismo"],
     updatedAt: "2026-10-04T00:00:00.000Z",
     seo: {
-      title: "Calculadora de Calorías: Calculá tu TDEE y BMR",
+      title: "Calculadora de calorías: Calculá tu TDEE y BMR",
       description: "Calculá cuántas calorías necesitás por día. Obtené tu metabolismo basal (BMR) y gasto energético (TDEE) para mantener, perder o ganar peso.",
       h1: "Calculadora de Calorías",
       intro: "Ingresá tus datos para conocer tu gasto energético diario (TDEE) y tu metabolismo basal (BMR)."
@@ -615,9 +618,9 @@ export const tools: Tool[] = [
     status: "live",
     featured: true,
     keywords: ["link de reseñas de Google", "link reseñas Google", "enlace reseñas Google", "link para reseñas de Google", "enlace para dejar reseña en Google", "link directo reseña Google", "crear link reseñas Google", "enlace para pedir reseñas Google"],
-    updatedAt: NOW,
+    updatedAt: "2026-10-05T00:00:00.000Z",
     seo: {
-      title: "Generador de link de reseñas de Google: Directo a tu ficha",
+      title: "Generador de link de reseñas de Google",
       description: "Obtené el enlace directo para que tus clientes dejen una reseña en Google Maps. Fácil, rápido y listo para usar en QR, NFC o WhatsApp.",
       h1: "Link de reseñas de Google",
       intro: "Generá el enlace directo para que tus clientes califiquen tu negocio en Google en un solo paso."
@@ -662,9 +665,9 @@ export const tools: Tool[] = [
     status: "live",
     featured: true,
     keywords: ["generador de listas de precios", "crear lista de precios", "lista de precios en PDF", "actualizar precios de productos", "hacer lista de precios", "lista de productos"],
-    updatedAt: NOW,
+    updatedAt: "2026-10-08T00:00:00.000Z",
     seo: {
-      title: "Generador de listas de precios en PDF | Crear lista online",
+      title: "Generador de listas de precios en PDF online",
       description: "Creá listas de precios profesionales en PDF. Modificá precios masivamente, organizá por categorías y compartí tu lista. Ideal para emprendedores y pequeños comercios.",
       h1: "Generador de Listas de Precios",
       intro: "La forma más fácil de crear, actualizar y descargar tu lista de precios en formato PDF. Agregá tus productos, organizalos y compartí un documento profesional."
@@ -711,9 +714,9 @@ export const tools: Tool[] = [
       "reducir tamaño de fotos",
       "convertidor de imagenes"
     ],
-    updatedAt: NOW,
+    updatedAt: "2026-10-11T00:00:00.000Z",
     seo: {
-      title: "Compresor de Imágenes Online Gratis | Reducir y Convertir JPG, PNG y WebP",
+      title: "Compresor de imágenes online: JPG, PNG y WebP",
       description: "Comprimí y convertí imágenes JPG, PNG y WebP online sin perder calidad. Procesamiento seguro y privado en tu dispositivo, sin registros ni límites de prueba.",
       h1: "Compresor y conversor de imágenes online",
       intro: "Reducí el peso de tus fotografías y convertí entre formatos JPG, PNG y WebP de forma rápida, privada y sin subir archivos a servidores externos."
@@ -767,9 +770,9 @@ export const tools: Tool[] = [
       "convertir pdf a png",
       "convertir a pdf a"
     ],
-    updatedAt: NOW,
+    updatedAt: "2026-10-12T00:00:00.000Z",
     seo: {
-      title: "Convertidor de Archivos Online Gratis | Word, Excel, PowerPoint, PDF e Imágenes",
+      title: "Convertidor de archivos online: PDF, Word y Excel",
       description: "Convertí archivos entre PDF, Word, Excel, PowerPoint e imágenes online. Procesamiento seguro y privado con descarga individual o en ZIP, sin registros obligatorios.",
       h1: "Convertidor de archivos online",
       intro: "Transformá documentos, planillas, presentaciones, PDF e imágenes entre formatos compatibles con procesamiento seguro, rápido y de alta fidelidad."
@@ -823,9 +826,9 @@ export const tools: Tool[] = [
       "escanear con celular a pdf",
       "combinar pdf"
     ],
-    updatedAt: NOW,
+    updatedAt: "2026-10-12T00:00:00.000Z",
     seo: {
-      title: "Ordenar PDF Gratis Online | Unir, Dividir, Rotar y Escanear a PDF",
+      title: "Ordenar PDF gratis: Unir, dividir y rotar",
       description: "Organizá tus documentos PDF online: uní varios archivos, reordená y rotá páginas, dividí por partes o rangos y escaneá con la cámara de tu celular de forma 100% privada.",
       h1: "Ordenar PDF y Escanear Documentos Online",
       intro: "La forma más simple y privada de organizar, combinar, dividir, rotar y escanear páginas de tus documentos PDF directamente desde el navegador."
@@ -853,6 +856,59 @@ export const tools: Tool[] = [
       }
     ],
     related: ["convertidor-archivos", "compresor-imagenes", "generador-presupuestos", "generador-qr"]
+  },
+  {
+    slug: "cortar-audio",
+    name: "Cortador de audio online",
+    type: "utilidad",
+    category: "clientes-utilidades",
+    exampleResult: "Audio recortado en MP3 / WAV al instante",
+    tier: "free",
+    description: "Cortá canciones, notas de voz y grabaciones online con forma de onda visual y descarga en MP3 o WAV. 100% privado en tu navegador.",
+    icon: "Scissors",
+    status: "live",
+    featured: true,
+    keywords: [
+      "cortador de audio online",
+      "cortar audio",
+      "recortar mp3",
+      "cortar cancion online",
+      "cortar audio gratis",
+      "recortar audio whatsapp",
+      "editor de audio online",
+      "cortar wav online",
+      "cortar audio celular"
+    ],
+    updatedAt: "2026-10-14T00:00:00.000Z",
+    seo: {
+      title: "Cortador de audio online: Cortar MP3 y WAV",
+      description: "Cortá y recortá canciones, audios de voz y grabaciones online gratis con forma de onda interactiva. Exportá a MP3 o WAV de forma 100% privada sin subir archivos a servidores.",
+      h1: "Cortador de audio online",
+      intro: "Seleccioná el fragmento exacto que necesitás con forma de onda interactiva, escuchalo antes de exportarlo y descargalo en MP3 o WAV con total privacidad."
+    },
+    faqs: [
+      {
+        question: "¿Cómo se garantiza la privacidad de mis archivos de audio?",
+        answer: "Todo el procesamiento se realiza de forma local dentro de tu propio navegador web mediante WebAssembly y Web Audio API. Tus audios y grabaciones nunca se envían a servidores remotos ni se almacenan en la nube."
+      },
+      {
+        question: "¿Qué formatos de entrada admite la herramienta?",
+        answer: "Podés cargar archivos de audio en formatos MP3, WAV, M4A (AAC) y OGG de hasta 100 MB. La herramienta analiza la pista, decodifica los canales de sonido y genera la forma de onda visual automáticamente."
+      },
+      {
+        question: "¿Qué diferencia hay entre descargar en MP3 o en WAV?",
+        answer: "El formato MP3 genera un archivo comprimido a 192 kbps, ideal para compartir por WhatsApp, redes sociales o usar como tono de celular. El formato WAV conserva la calidad de estudio original sin compresión (PCM 16-bit), ideal para edición profesional o producción musical."
+      },
+      {
+        question: "¿Puedo ingresar los tiempos de inicio y fin manualmente?",
+        answer: "Sí. Podés arrastrar los controles violetas sobre la forma de onda o escribir los minutos, segundos y milisegundos exactos en los casilleros de tiempo. También contás con botones de ajuste fino (+/- 0.1s y +/- 1s) para recortar al milisegundo exacto."
+      },
+      {
+        question: "¿Puedo escuchar la selección antes de exportarla?",
+        answer: "Sí. El botón 'Escuchar selección' reproduce únicamente el intervalo elegido y se detiene automáticamente al llegar al límite final, para que estés 100% seguro del resultado antes de descargarlo."
+      }
+    ],
+    related: ["compresor-imagenes", "convertidor-archivos", "ordenar-pdf", "generador-qr"]
   }
 ]
 

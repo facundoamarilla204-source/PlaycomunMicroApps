@@ -547,8 +547,8 @@ export async function generateDocumentPdf(
     doc.setTextColor(156, 163, 175)
 
     const footerText = docData.type === 'factura-proforma'
-      ? 'Documento comercial proforma sin validez fiscal ni contable • PlayComún Online (playcomun.com)'
-      : 'Documento comercial de gestión interna • Generado con PlayComún Online (playcomun.com)'
+      ? 'Documento comercial proforma sin validez fiscal ni contable • PlayComun Herramientas (playcomun.online)'
+      : 'Documento comercial de gestión interna • Generado con PlayComun Herramientas (playcomun.online)'
 
     doc.text(footerText, margin, pageHeight - 8)
     doc.text(`Página ${i} de ${totalPages}`, pageWidth - margin, pageHeight - 8, { align: 'right' })

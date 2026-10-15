@@ -4,6 +4,13 @@ import CuentaClient from "./cuenta-client"
 import { redirect } from "next/navigation"
 import { updateProfile } from "@/app/(auth)/actions"
 import { isProUser } from "@/lib/pro"
+import { buildMetadata } from "@/lib/metadata"
+
+export const metadata = buildMetadata({
+  title: "Mi cuenta",
+  path: "/cuenta",
+  noindex: true,
+})
 
 export default async function AccountPage() {
   const supabase = await createClient()

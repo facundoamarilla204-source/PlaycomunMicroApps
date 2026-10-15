@@ -534,14 +534,14 @@ export async function convertPdfToPdfA(
       </dc:date>
     </rdf:Description>
     <rdf:Description rdf:about="" xmlns:pdf="http://ns.adobe.com/pdf/1.3/">
-      <pdf:Producer>PlayComun PDF/A Engine ISO 19005</pdf:Producer>
+      <pdf:Producer>PlayComun Herramientas PDF Engine ISO 19005</pdf:Producer>
     </rdf:Description>
   </rdf:RDF>
 </x:xmpmeta>
 <?xpacket end="w"?>`
 
   pdfDoc.setTitle(file.name)
-  pdfDoc.setProducer("PlayComun PDF/A Engine")
+  pdfDoc.setProducer("PlayComun Herramientas PDF Engine")
   pdfDoc.setCreationDate(new Date())
   pdfDoc.setModificationDate(new Date())
 

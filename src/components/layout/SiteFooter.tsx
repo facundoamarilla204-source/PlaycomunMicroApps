@@ -19,7 +19,7 @@ export default function SiteFooter() {
             </p>
             <div className="mt-4 flex items-center gap-2">
               <span className="inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-              <span className="text-xs font-medium text-slate-600">Herramientas 100% operativas</span>
+              <span className="text-xs font-medium text-slate-600">Herramientas activas y gratuitas</span>
             </div>
           </div>
           
@@ -94,7 +94,7 @@ export default function SiteFooter() {
         
         <div className="mt-10 pt-6 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-3">
           <p className="text-xs text-slate-500">
-            &copy; {currentYear} PlayComun Online. Todos los derechos reservados.
+            &copy; {currentYear} PlayComun Herramientas. Todos los derechos reservados.
           </p>
           <p className="text-xs text-slate-400">
             Desarrollado para simplificar tareas cotidianas de negocios y creadores.

@@ -42,6 +42,8 @@ import { ConvertidorArchivos } from "@/components/tools/convertidor-archivos/Con
 import { ConvertidorArchivosContent } from "@/components/tools/content/ConvertidorArchivosContent"
 import { OrdenarPdf } from "@/components/tools/ordenar-pdf/OrdenarPdf"
 import { OrdenarPdfContent } from "@/components/tools/content/OrdenarPdfContent"
+import { CortadorAudio } from "@/components/tools/cortador-audio/CortadorAudio"
+import { CortadorAudioContent } from "@/components/tools/content/CortadorAudioContent"
 
 function getToolComponent(slug: string, user: User | null): React.ReactNode {
   switch (slug) {
@@ -72,6 +74,7 @@ function getToolComponent(slug: string, user: User | null): React.ReactNode {
           </div>
         </>
       )
+    case "generador-documentos-comerciales":
     case "generador-facturas":
       return (
         <>
@@ -195,6 +198,15 @@ function getToolComponent(slug: string, user: User | null): React.ReactNode {
           <OrdenarPdf />
           <div className="mt-16 flex justify-center">
             <OrdenarPdfContent />
+          </div>
+        </>
+      )
+    case "cortar-audio":
+      return (
+        <>
+          <CortadorAudio />
+          <div className="mt-16 flex justify-center">
+            <CortadorAudioContent />
           </div>
         </>
       )

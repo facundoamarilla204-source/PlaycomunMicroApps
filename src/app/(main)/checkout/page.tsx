@@ -1,6 +1,13 @@
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import { CheckoutClient } from './CheckoutClient'
+import { buildMetadata } from '@/lib/metadata'
+
+export const metadata = buildMetadata({
+  title: 'Finalizar compra',
+  path: '/checkout',
+  noindex: true,
+})
 
 export default async function CheckoutPage({
   searchParams

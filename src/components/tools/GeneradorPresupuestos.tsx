@@ -626,7 +626,7 @@ export function GeneradorPresupuestos() {
                 {!isPremium ? (
                   <div className="flex items-center gap-1 opacity-60">
                     <span className="text-[10px]" style={{ color: "#9ca3af" }}>Generado gratis con</span>
-                    <strong className="text-[10px]" style={{ color: "#111827" }}>Playcomun</strong>
+                    <strong className="text-[10px]" style={{ color: "#111827" }}>PlayComun Herramientas</strong>
                   </div>
                 ) : (
                   <div className="h-4"></div>

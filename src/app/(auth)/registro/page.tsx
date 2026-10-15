@@ -1,6 +1,13 @@
 import Link from "next/link"
 import { signup } from "../actions"
 import { SubmitButton } from "../submit-button"
+import { buildMetadata } from "@/lib/metadata"
+
+export const metadata = buildMetadata({
+  title: "Crear cuenta gratis",
+  description: "Registrate gratis en PlayComun Herramientas para guardar tus aplicaciones favoritas y recetas.",
+  path: "/registro",
+})
 
 export default async function RegisterPage(props: {
   searchParams: Promise<{ error?: string }>

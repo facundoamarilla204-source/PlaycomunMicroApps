@@ -1,5 +1,12 @@
 import Link from "next/link"
 import { Mail } from "lucide-react"
+import { buildMetadata } from "@/lib/metadata"
+
+export const metadata = buildMetadata({
+  title: "Verificar correo",
+  path: "/verificar-email",
+  noindex: true,
+})
 
 export default function VerifyEmailPage() {
   return (

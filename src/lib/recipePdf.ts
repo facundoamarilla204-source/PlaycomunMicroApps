@@ -318,7 +318,7 @@ export async function exportSingleRecipePdf(recipe: Recipe): Promise<void> {
     doc.line(margin, pageHeight - 10, pageWidth - margin, pageHeight - 10)
 
     doc.text(
-      'Generado con PlayComún - Herramientas para Emprendedores | playcomun.com',
+      'Generado con PlayComun Herramientas | playcomun.online',
       margin,
       pageHeight - 6
     )
@@ -355,7 +355,7 @@ export async function exportAllRecipesPdf(recipes: Recipe[]): Promise<void> {
   doc.setTextColor(255, 255, 255)
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(14)
-  doc.text('PLAYCOMÚN', margin, 12)
+  doc.text('PLAYCOMUN HERRAMIENTAS', margin, 12)
 
   doc.setFont('helvetica', 'normal')
   doc.setFontSize(9)
@@ -439,7 +439,7 @@ export async function exportAllRecipesPdf(recipes: Recipe[]): Promise<void> {
     doc.line(margin, pageHeight - 10, pageWidth - margin, pageHeight - 10)
 
     doc.text(
-      'PlayComún - Catálogo de Costos y Recetas | Generado desde playcomun.com',
+      'PlayComun Herramientas - Catálogo de Costos y Recetas | Generado desde playcomun.online',
       margin,
       pageHeight - 6
     )

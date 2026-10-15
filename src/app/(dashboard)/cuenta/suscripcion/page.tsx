@@ -2,6 +2,13 @@ import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import { SuscripcionClient } from './SuscripcionClient'
 import { cancelSubscription } from './actions'
+import { buildMetadata } from '@/lib/metadata'
+
+export const metadata = buildMetadata({
+  title: 'Mi suscripción',
+  path: '/cuenta/suscripcion',
+  noindex: true,
+})
 
 /**
  * /cuenta/suscripcion

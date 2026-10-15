@@ -12,22 +12,25 @@ export default function sitemap(): MetadataRoute.Sitemap {
     return []
   }
 
+  // Fecha base de última actualización global del hub
+  const hubLastMod = new Date("2026-10-15T00:00:00.000Z")
+
   const routes = [
     {
       url: siteConfig.url,
-      lastModified: new Date(),
+      lastModified: hubLastMod,
       changeFrequency: "weekly",
       priority: 1,
     },
     {
       url: `${siteConfig.url}/herramientas`,
-      lastModified: new Date(),
+      lastModified: hubLastMod,
       changeFrequency: "weekly",
       priority: 0.9,
     },
     {
       url: `${siteConfig.url}/planes`,
-      lastModified: new Date(),
+      lastModified: hubLastMod,
       changeFrequency: "monthly",
       priority: 0.8,
     },
@@ -46,12 +49,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
   try {
     const guiasDir = path.join(process.cwd(), "content", "guias")
     const files = fs.readdirSync(guiasDir)
-    guideRoutes = files.map((file) => ({
-      url: `${siteConfig.url}/guias/${file.replace(".mdx", "")}`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.7,
-    }))
+    guideRoutes = files.map((file) => {
+      const filePath = path.join(guiasDir, file)
+      const stat = fs.statSync(filePath)
+      return {
+        url: `${siteConfig.url}/guias/${file.replace(".mdx", "")}`,
+        lastModified: stat.mtime || hubLastMod,
+        changeFrequency: "monthly",
+        priority: 0.7,
+      }
+    })
   } catch (e) {
     // directory might not exist in some builds if not committed yet, ignore
   }
