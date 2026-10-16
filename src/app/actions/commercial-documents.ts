@@ -252,17 +252,21 @@ export async function getCommercialProductsServer() {
     return { data: [], error: error.message }
   }
 
-  const mapped: CommercialProduct[] = (data || []).map((p) => ({
-    id: p.id,
-    name: p.name,
-    description: p.description || '',
-    defaultUnitPrice: Number(p.default_unit_price) || 0,
-    defaultDiscountPercent: Number(p.default_discount) || 0,
-    category: p.category || '',
-    isActive: p.is_active,
-    createdAt: p.created_at,
-    updatedAt: p.updated_at,
-  }))
+  const mapped: CommercialProduct[] = (data || []).map((p) => {
+    const discount = Number(p.default_discount) || 0
+    return {
+      id: p.id,
+      name: p.name,
+      description: p.description || '',
+      defaultUnitPrice: Number(p.default_unit_price) || 0,
+      defaultDiscountPercent: discount,
+      defaultDiscount: discount,
+      category: p.category || '',
+      isActive: p.is_active,
+      createdAt: p.created_at,
+      updatedAt: p.updated_at,
+    }
+  })
 
   return { data: mapped, error: null }
 }
@@ -279,12 +283,14 @@ export async function saveCommercialProductServer(product: Partial<CommercialPro
     return { data: null, error: 'El nombre del producto es obligatorio' }
   }
 
+  const discountVal = product.defaultDiscountPercent ?? product.defaultDiscount ?? 0
+
   const payload: Record<string, unknown> = {
     user_id: user.id,
     name: product.name.trim(),
     description: product.description?.trim() || null,
     default_unit_price: Number(product.defaultUnitPrice) || 0,
-    default_discount: Number(product.defaultDiscountPercent) || 0,
+    default_discount: Number(discountVal) || 0,
     category: product.category?.trim() || null,
     is_active: product.isActive !== false,
     updated_at: new Date().toISOString(),

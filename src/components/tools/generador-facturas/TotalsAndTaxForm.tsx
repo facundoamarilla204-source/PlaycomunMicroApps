@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { CurrencyCode } from './types'
+import { CurrencyCode, CommercialDocument } from './types'
 import { DocumentTotals, formatCurrencyAmount } from './math'
 import { Percent, Receipt, Calculator } from 'lucide-react'
 
@@ -11,7 +11,7 @@ interface Props {
   globalDiscountPercent: number
   applyTax: boolean
   taxRate: number
-  onUpdateGeneral: (field: string, value: unknown) => void
+  onUpdateGeneral: (field: keyof CommercialDocument, value: unknown) => void
 }
 
 export function TotalsAndTaxForm({

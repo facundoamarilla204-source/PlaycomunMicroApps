@@ -65,9 +65,7 @@ export function GlobalConfigPanel({
     })
   }
 
-  const isConvertingToJpg =
-    config.targetFormat === "jpeg" ||
-    (config.operation !== "compress" && config.targetFormat === "jpeg")
+  const isConvertingToJpg = config.targetFormat === "jpeg"
 
   const showTransparencyWarning =
     isConvertingToJpg &&

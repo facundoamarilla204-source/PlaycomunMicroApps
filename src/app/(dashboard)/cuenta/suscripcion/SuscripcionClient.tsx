@@ -1,42 +1,55 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { cancelSubscription } from './actions'
+import { useState, useEffect, useRef } from 'react'
+import { useRouter } from 'next/navigation'
+import { cancelSubscription, syncCurrentUserSubscription } from './actions'
 import { motion, AnimatePresence } from 'framer-motion'
-import { CheckCircle2, Zap, CreditCard, Calendar, AlertCircle, XCircle, Clock } from 'lucide-react'
+import { 
+  CheckCircle2, 
+  Zap, 
+  CreditCard, 
+  Calendar, 
+  AlertCircle, 
+  XCircle, 
+  Clock, 
+  RotateCw, 
+  ShieldCheck,
+  AlertTriangle,
+  Info
+} from 'lucide-react'
+import { PlanComparison } from '@/components/subscription/PlanComparison'
 
 // ---------------------------------------------------------------------------
-// Success Banner — shown when user returns from payment
+// Success Banner: mostrado tras confirmar pago
 // ---------------------------------------------------------------------------
 function SuccessBanner({ onClose }: { onClose: () => void }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: -20, scale: 0.97 }}
+      initial={{ opacity: 0, y: -20, scale: 0.98 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: -20, scale: 0.97 }}
-      className="relative bg-emerald-600 rounded-xl p-8 text-white shadow-md overflow-hidden"
+      exit={{ opacity: 0, y: -20, scale: 0.98 }}
+      className="relative bg-emerald-600 rounded-2xl p-6 md:p-8 text-white shadow-lg overflow-hidden border border-emerald-500"
     >
-      {/* Eliminado: blur blob */}
-      <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-6">
-        <div className="w-16 h-16 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center flex-shrink-0">
+      <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-5">
+        <div className="w-14 h-14 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center flex-shrink-0">
           <CheckCircle2 className="w-8 h-8 text-white" />
         </div>
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
             <Zap className="w-4 h-4 text-yellow-300 fill-yellow-300" />
-            <span className="text-sm font-bold uppercase tracking-wider text-emerald-100">¡Pago confirmado!</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-emerald-100">¡Pago confirmado!</span>
           </div>
-          <h2 className="text-2xl font-black mb-1">PlayComun Pro ya está activo</h2>
-          <p className="text-emerald-100 font-medium">
-            Tu suscripción fue procesada correctamente. Ahora tenés acceso a todas las funciones Pro y sin publicidad en las herramientas.
+          <h2 className="text-xl md:text-2xl font-black mb-1">PlayComun Pro ya está activo</h2>
+          <p className="text-emerald-100 text-sm leading-relaxed">
+            Tu suscripción fue procesada correctamente por Mercado Pago. Todas las herramientas y funciones avanzadas ya están desbloqueadas en tu cuenta.
           </p>
         </div>
         <button
           onClick={onClose}
-          className="sm:self-start text-white/70 hover:text-white transition-colors"
+          aria-label="Cerrar notificación"
+          className="sm:self-start text-white/70 hover:text-white transition-colors p-1"
         >
-          <XCircle className="w-6 h-6" />
+          <XCircle className="w-5 h-5" />
         </button>
       </div>
     </motion.div>
@@ -44,29 +57,84 @@ function SuccessBanner({ onClose }: { onClose: () => void }) {
 }
 
 // ---------------------------------------------------------------------------
-// Status badge
+// Verification Banner: sondeo activo tras retorno de MP
 // ---------------------------------------------------------------------------
-function StatusBadge({ status }: { status: string }) {
-  const map: Record<string, { label: string; className: string; dot: string }> = {
-    active: { label: 'Activa', className: 'text-emerald-600', dot: 'bg-emerald-500 animate-pulse' },
-    trialing: { label: 'En prueba', className: 'text-blue-600', dot: 'bg-blue-500 animate-pulse' },
-    paused: { label: 'Pausada', className: 'text-amber-600', dot: 'bg-amber-500' },
-    cancelled: { label: 'Cancelada', className: 'text-slate-500', dot: 'bg-slate-400' },
-    past_due: { label: 'Pago vencido', className: 'text-red-600', dot: 'bg-red-500 animate-pulse' },
-    expired: { label: 'Expirada', className: 'text-slate-400', dot: 'bg-slate-300' },
-  }
-  const config = map[status] || { label: status, className: 'text-slate-500', dot: 'bg-slate-400' }
+function VerificationBanner({ onRetry, isSyncing }: { onRetry: () => void; isSyncing: boolean }) {
   return (
-    <div className="flex items-center gap-2 mt-2">
-      <span className={`w-2.5 h-2.5 rounded-full ${config.dot}`} />
-      <span className={`text-sm font-medium ${config.className}`}>{config.label}</span>
-    </div>
+    <motion.div
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      className="bg-purple-50 border border-purple-200 rounded-2xl p-5 text-purple-900 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm"
+    >
+      <div className="flex items-center gap-3">
+        <RotateCw className={`w-5 h-5 text-purple-600 flex-shrink-0 ${isSyncing ? 'animate-spin' : ''}`} />
+        <div>
+          <p className="font-bold text-sm text-purple-950">Verificando estado con Mercado Pago</p>
+          <p className="text-xs text-purple-700 mt-0.5">
+            Estamos sincronizando la confirmación de tu pago. Esto suele tardar sólo unos instantes.
+          </p>
+        </div>
+      </div>
+      <button
+        onClick={onRetry}
+        disabled={isSyncing}
+        className="px-4 py-2 text-xs font-semibold bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors disabled:opacity-50 flex items-center gap-1.5 flex-shrink-0"
+      >
+        <RotateCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
+        {isSyncing ? 'Verificando...' : 'Verificar ahora'}
+      </button>
+    </motion.div>
   )
 }
 
 // ---------------------------------------------------------------------------
-// Plan display name helper
+// Status badge
 // ---------------------------------------------------------------------------
+function StatusBadge({ 
+  status, 
+  providerStatus,
+  isPeriodActive = false 
+}: { 
+  status: string
+  providerStatus?: string
+  isPeriodActive?: boolean 
+}) {
+  if (providerStatus === 'refunded' || providerStatus === 'charged_back') {
+    return (
+      <div className="flex items-center gap-2 mt-2">
+        <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
+        <span className="text-sm font-semibold text-red-700">Acceso revocado ({providerStatus === 'refunded' ? 'Reembolsado' : 'Contracargo'})</span>
+      </div>
+    )
+  }
+
+  if (status === 'cancelled' && isPeriodActive) {
+    return (
+      <div className="flex items-center gap-2 mt-2">
+        <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" />
+        <span className="text-sm font-semibold text-amber-700">Renovación cancelada (Pro activo)</span>
+      </div>
+    )
+  }
+
+  const map: Record<string, { label: string; className: string; dot: string }> = {
+    active: { label: 'Activa con renovación automática', className: 'text-emerald-700 font-semibold', dot: 'bg-emerald-500 animate-pulse' },
+    trialing: { label: 'En prueba / Verificación', className: 'text-blue-700 font-semibold', dot: 'bg-blue-500 animate-pulse' },
+    paused: { label: 'Pausada', className: 'text-amber-700 font-semibold', dot: 'bg-amber-500' },
+    cancelled: { label: 'Suscripción finalizada', className: 'text-slate-500', dot: 'bg-slate-400' },
+    past_due: { label: 'Pago pendiente de cobro', className: 'text-red-700 font-semibold', dot: 'bg-red-500 animate-pulse' },
+    expired: { label: 'Suscripción finalizada', className: 'text-slate-500', dot: 'bg-slate-400' },
+  }
+  const config = map[status] || { label: status, className: 'text-slate-600', dot: 'bg-slate-400' }
+  return (
+    <div className="flex items-center gap-2 mt-2">
+      <span className={`w-2.5 h-2.5 rounded-full ${config.dot}`} />
+      <span className={`text-sm ${config.className}`}>{config.label}</span>
+    </div>
+  )
+}
+
 function planDisplayName(planCode: string | undefined, planName: string | undefined): string {
   if (planCode === 'pro_yearly') return 'PlayComun Pro (Anual)'
   if (planCode === 'pro_monthly') return 'PlayComun Pro (Mensual)'
@@ -79,28 +147,38 @@ function billingLabel(planCode: string | undefined): string {
 }
 
 // ---------------------------------------------------------------------------
-// Main component
+// Componente Principal
 // ---------------------------------------------------------------------------
 export function SuscripcionClient({
   subscription,
   paymentMethods,
   payments,
   userEmail,
+  isPro,
   showSuccessBanner = false,
+  incomingPreapprovalId,
+  priceMensual = 5900,
+  priceAnual = 59000,
 }: {
-  subscription: any,
-  paymentMethods: any[],
-  payments: any[],
-  userEmail: string,
-  showSuccessBanner?: boolean,
+  subscription: any
+  paymentMethods: any[]
+  payments: any[]
+  userEmail: string
+  isPro: boolean
+  showSuccessBanner?: boolean
+  incomingPreapprovalId?: string
+  priceMensual?: number
+  priceAnual?: number
 }) {
   const router = useRouter()
-  const searchParams = useSearchParams()
   const [isCancelling, setIsCancelling] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [bannerVisible, setBannerVisible] = useState(showSuccessBanner)
+  const [bannerVisible, setBannerVisible] = useState(showSuccessBanner && isPro)
+  const [isVerifying, setIsVerifying] = useState(showSuccessBanner && !isPro)
+  const [syncAttempts, setSyncAttempts] = useState(0)
+  const pollingRef = useRef<NodeJS.Timeout | null>(null)
 
-  // Limpiar el ?success=true de la URL sin recargar
+  // Limpiar parámetros de éxito de la URL sin provocar recarga de página
   useEffect(() => {
     if (showSuccessBanner) {
       const url = new URL(window.location.href)
@@ -110,10 +188,59 @@ export function SuscripcionClient({
     }
   }, [showSuccessBanner])
 
-  const isPro = subscription && ['active', 'trialing'].includes(subscription.status)
+  // Polling de verificación si regresa de pago y todavía no figura como Pro
+  useEffect(() => {
+    if (isVerifying && syncAttempts < 4) {
+      pollingRef.current = setTimeout(async () => {
+        try {
+          const res = await syncCurrentUserSubscription(incomingPreapprovalId)
+          if (res?.isPro) {
+            setIsVerifying(false)
+            setBannerVisible(true)
+            router.refresh()
+          } else {
+            setSyncAttempts((prev) => prev + 1)
+          }
+        } catch (e) {
+          console.error('[polling sync error]:', e)
+          setSyncAttempts((prev) => prev + 1)
+        }
+      }, 2500)
+    } else if (syncAttempts >= 4) {
+      setIsVerifying(false)
+    }
+
+    return () => {
+      if (pollingRef.current) clearTimeout(pollingRef.current)
+    }
+  }, [isVerifying, syncAttempts, incomingPreapprovalId, router])
+
+  const handleManualSync = async () => {
+    setIsVerifying(true)
+    setError(null)
+    try {
+      const res = await syncCurrentUserSubscription(incomingPreapprovalId)
+      if (res?.isPro) {
+        setBannerVisible(true)
+      }
+      router.refresh()
+    } catch (e: any) {
+      setError(e.message || 'Error al sincronizar con Mercado Pago')
+    } finally {
+      setIsVerifying(false)
+    }
+  }
+
+  const isPeriodActive = subscription?.current_period_end
+    ? new Date(subscription.current_period_end).getTime() > Date.now()
+    : false
+
+  const isCancelledWithAccess = subscription?.status === 'cancelled' && isPeriodActive
   const isCancelled = subscription?.status === 'cancelled'
+  const isExpired = subscription?.status === 'cancelled' && !isPeriodActive
   const isPaused = subscription?.status === 'paused'
   const isPastDue = subscription?.status === 'past_due'
+  const isRevoked = subscription?.provider_status === 'refunded' || subscription?.provider_status === 'charged_back'
   const hasSubscription = !!subscription
 
   const mainPaymentMethod = paymentMethods?.find(pm => pm.is_default) || paymentMethods?.[0]
@@ -121,7 +248,7 @@ export function SuscripcionClient({
   const handleCancel = async () => {
     if (!subscription) return
     const confirmed = window.confirm(
-      '¿Estás seguro que querés cancelar tu suscripción? Perderás el acceso a Pro al finalizar tu período actual.'
+      '¿Estás seguro de cancelar la renovación automática? Mantendrás tu acceso a PlayComun Pro hasta la fecha de finalización de tu período actual y no se te cobrará nuevamente.'
     )
     if (!confirmed) return
 
@@ -135,7 +262,7 @@ export function SuscripcionClient({
         router.refresh()
       }
     } catch (e: any) {
-      setError(e.message || 'Error al cancelar la suscripción')
+      setError(e.message || 'Error al cancelar la renovación automática')
     } finally {
       setIsCancelling(false)
     }
@@ -143,7 +270,7 @@ export function SuscripcionClient({
 
   return (
     <div className="space-y-8 max-w-4xl mx-auto w-full">
-      {/* Error banner */}
+      {/* Mensaje de error si ocurre */}
       <AnimatePresence>
         {error && (
           <motion.div
@@ -156,234 +283,367 @@ export function SuscripcionClient({
         )}
       </AnimatePresence>
 
-      {/* Success banner */}
+      {/* Banner de Verificación Activa tras Checkout */}
+      <AnimatePresence>
+        {isVerifying && (
+          <VerificationBanner onRetry={handleManualSync} isSyncing={isVerifying} />
+        )}
+      </AnimatePresence>
+
+      {/* Banner de Pago Confirmado */}
       <AnimatePresence>
         {bannerVisible && (
           <SuccessBanner onClose={() => setBannerVisible(false)} />
         )}
       </AnimatePresence>
 
-      {/* Plan Details Card */}
+      {/* Tarjeta de Detalle del Plan Actual */}
       <motion.div
         initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-        className="bg-white rounded-xl p-6 md:p-8 shadow-sm border border-slate-100 overflow-hidden relative"
+        className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-200/80 overflow-hidden relative"
       >
-        {/* Eliminado: background blob amber */}
         <div className="relative z-10">
-          <h2 className="text-2xl font-bold mb-8 text-slate-800 tracking-tight">Mi Plan Actual</h2>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl md:text-2xl font-bold text-slate-800 tracking-tight">Estado de mi suscripción</h2>
+            {hasSubscription && (
+              <button
+                onClick={handleManualSync}
+                disabled={isVerifying}
+                title="Sincronizar con Mercado Pago"
+                className="text-xs font-semibold text-slate-500 hover:text-purple-600 transition-colors flex items-center gap-1.5 p-1.5 rounded-lg hover:bg-slate-50 disabled:opacity-50"
+              >
+                <RotateCw className={`w-3.5 h-3.5 ${isVerifying ? 'animate-spin' : ''}`} />
+                <span>Actualizar</span>
+              </button>
+            )}
+          </div>
 
           {hasSubscription ? (
             <div className="space-y-8">
-              {/* Header */}
-              <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
+              {/* Encabezado del Plan */}
+              <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 pb-6 border-b border-slate-100">
                 <div className="flex items-start gap-4">
-                  <div className="w-14 h-14 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-2xl shadow-inner">
+                  <div className="w-14 h-14 rounded-2xl bg-purple-100 text-purple-800 flex items-center justify-center font-black text-2xl shadow-inner flex-shrink-0">
                     P
                   </div>
                   <div>
-                    <h3 className="font-bold text-slate-800 text-xl tracking-tight">
+                    <h3 className="font-extrabold text-slate-900 text-xl tracking-tight">
                       {planDisplayName(subscription.plans?.code, subscription.plans?.name)}
                     </h3>
-                    <StatusBadge status={subscription.status} />
+                    <StatusBadge 
+                      status={subscription.status} 
+                      providerStatus={subscription.provider_status}
+                      isPeriodActive={isPeriodActive} 
+                    />
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-1 w-full md:w-auto md:text-right">
-                  <div className="text-3xl font-black text-slate-800">
+                <div className="flex flex-col gap-1 w-full md:w-auto md:text-right bg-slate-50/80 md:bg-transparent p-4 md:p-0 rounded-xl">
+                  <div className="text-2xl md:text-3xl font-black text-slate-900">
                     ${(subscription.plans?.price || 0).toLocaleString('es-AR')}{' '}
-                    <span className="text-base font-medium text-slate-500">{subscription.plans?.currency || 'ARS'}</span>
+                    <span className="text-sm font-semibold text-slate-500">{subscription.plans?.currency || 'ARS'}</span>
                   </div>
-                  <div className="text-sm text-slate-500">{billingLabel(subscription.plans?.code)}</div>
+                  <div className="text-xs font-medium text-slate-500">{billingLabel(subscription.plans?.code)}</div>
                 </div>
               </div>
 
-              {/* Data grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t border-slate-100">
-                {/* Dates */}
+              {/* Grid de Información y Fechas */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Fechas Importantes */}
                 <div className="space-y-4">
                   <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5" /> Fechas importantes
+                    <Calendar className="w-3.5 h-3.5 text-purple-500" /> Período y Fechas
                   </h4>
                   <ul className="space-y-3">
-                    <li className="flex justify-between text-sm">
-                      <span className="text-slate-500">Suscripto desde</span>
-                      <span className="font-medium text-slate-700">
+                    <li className="flex justify-between text-sm py-1 border-b border-slate-50">
+                      <span className="text-slate-500">Fecha de inicio</span>
+                      <span className="font-medium text-slate-800">
                         {new Date(subscription.created_at).toLocaleDateString('es-AR', { year: 'numeric', month: 'long', day: 'numeric' })}
                       </span>
                     </li>
                     {subscription.current_period_start && (
-                      <li className="flex justify-between text-sm">
-                        <span className="text-slate-500">Inicio del período</span>
-                        <span className="font-medium text-slate-700">
+                      <li className="flex justify-between text-sm py-1 border-b border-slate-50">
+                        <span className="text-slate-500">Período actual desde</span>
+                        <span className="font-medium text-slate-800">
                           {new Date(subscription.current_period_start).toLocaleDateString('es-AR', { year: 'numeric', month: 'long', day: 'numeric' })}
                         </span>
                       </li>
                     )}
                     {subscription.current_period_end && (
-                      <li className="flex justify-between text-sm">
+                      <li className="flex justify-between text-sm py-1 border-b border-slate-50">
                         <span className="text-slate-500">
-                          {isCancelled ? 'Acceso hasta' : isPastDue ? 'Período venció el' : 'Próximo cobro'}
+                          {isCancelled ? 'Acceso Pro asegurado hasta' : isPastDue ? 'Vencimiento pendiente' : 'Próxima renovación'}
                         </span>
-                        <span className={`font-medium ${isPastDue ? 'text-red-600' : 'text-slate-700'}`}>
+                        <span className={`font-semibold ${isPastDue ? 'text-red-600' : isCancelledWithAccess ? 'text-amber-700' : 'text-slate-900'}`}>
                           {new Date(subscription.current_period_end).toLocaleDateString('es-AR', { year: 'numeric', month: 'long', day: 'numeric' })}
                         </span>
                       </li>
                     )}
-                    {subscription.cancelled_at && (
-                      <li className="flex justify-between text-sm">
-                        <span className="text-slate-500">Cancelada el</span>
-                        <span className="font-medium text-slate-700">
-                          {new Date(subscription.cancelled_at).toLocaleDateString('es-AR', { year: 'numeric', month: 'long', day: 'numeric' })}
-                        </span>
-                      </li>
-                    )}
+                    <li className="flex justify-between text-sm py-1">
+                      <span className="text-slate-500">Renovación automática</span>
+                      <span className={`font-semibold text-xs px-2 py-0.5 rounded-full ${
+                        isCancelled ? 'bg-slate-100 text-slate-600' : 'bg-emerald-50 text-emerald-700'
+                      }`}>
+                        {isCancelled ? 'Desactivada' : 'Activa'}
+                      </span>
+                    </li>
                   </ul>
                 </div>
 
-                {/* Payment method */}
+                {/* Método de Pago */}
                 <div className="space-y-4">
                   <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                    <CreditCard className="w-3.5 h-3.5" /> Método de pago principal
+                    <CreditCard className="w-3.5 h-3.5 text-purple-500" /> Medio de pago
                   </h4>
                   {mainPaymentMethod ? (
-                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 flex items-center justify-between">
+                    <div className="bg-slate-50/80 p-4 rounded-xl border border-slate-200/60 flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-6 bg-white border border-slate-200 rounded flex items-center justify-center text-[10px] font-bold text-slate-600 uppercase shadow-sm">
+                        <div className="w-10 h-6 bg-white border border-slate-200 rounded flex items-center justify-center text-[10px] font-black text-slate-700 uppercase shadow-xs">
                           {mainPaymentMethod.brand || (mainPaymentMethod.provider === 'mercadopago' ? 'MP' : '••••')}
                         </div>
-                        <div className="text-sm font-medium text-slate-700">
+                        <div className="text-sm font-semibold text-slate-800">
                           {mainPaymentMethod.last_four_digits
                             ? `•••• ${mainPaymentMethod.last_four_digits}`
-                            : mainPaymentMethod.type === 'card'
-                            ? 'Tarjeta registrada'
-                            : 'Mercado Pago'}
+                            : 'Tarjeta registrada'}
                           {mainPaymentMethod.expiration_month && mainPaymentMethod.expiration_year && (
                             <span className="text-slate-400 font-normal ml-2 text-xs">
-                              vence {String(mainPaymentMethod.expiration_month).padStart(2, '0')}/{mainPaymentMethod.expiration_year}
+                              (vence {String(mainPaymentMethod.expiration_month).padStart(2, '0')}/{mainPaymentMethod.expiration_year})
                             </span>
                           )}
                         </div>
                       </div>
+                      <ShieldCheck className="w-4 h-4 text-emerald-600" />
                     </div>
                   ) : (
-                    <div className="text-sm text-slate-500 p-4 bg-slate-50 rounded-xl border border-slate-100">
-                      Gestionado vía Mercado Pago
+                    <div className="text-sm text-slate-600 p-4 bg-slate-50 rounded-xl border border-slate-200/60 flex items-center gap-2">
+                      <CreditCard className="w-4 h-4 text-slate-400" />
+                      <span>Gestionado directamente por Mercado Pago</span>
                     </div>
                   )}
+
+                  <div className="flex items-start gap-2 p-3 bg-slate-50/60 rounded-xl text-xs text-slate-500 border border-slate-100">
+                    <Info className="w-4 h-4 text-slate-400 flex-shrink-0 mt-0.5" />
+                    <p>
+                      Para cambiar la tarjeta asociada a tu suscripción, podés hacerlo desde tu cuenta de Mercado Pago o reactivando el plan con tu nueva tarjeta al terminar el ciclo actual.
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              {/* Past due warning */}
-              {isPastDue && (
-                <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-100 rounded-2xl text-sm text-red-700">
-                  <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+              {/* Aviso: Renovación cancelada pero período vigente */}
+              {isCancelledWithAccess && (
+                <div className="flex items-start gap-3 p-4 bg-amber-50/90 border border-amber-200/80 rounded-2xl text-sm text-amber-950">
+                  <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5 text-amber-600" />
                   <div>
-                    <p className="font-semibold mb-1">Pago pendiente</p>
-                    <p>Tu último cobro no fue procesado. Mercado Pago intentará cobrarlo automáticamente. Si el problema persiste, actualizá tu método de pago.</p>
+                    <p className="font-bold mb-1">Renovación automática cancelada</p>
+                    <p className="text-xs md:text-sm text-amber-900 leading-relaxed">
+                      Tu acceso a PlayComun Pro se mantiene <strong>100% activo</strong> hasta el{' '}
+                      <strong>
+                        {subscription.current_period_end &&
+                          new Date(subscription.current_period_end).toLocaleDateString('es-AR', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                          })}
+                      </strong>
+                      . No se debitarán nuevas cuotas en tu tarjeta. Si deseás continuar con Pro después de esa fecha, podés reactivar la renovación en cualquier momento.
+                    </p>
                   </div>
                 </div>
               )}
 
-              {/* Actions */}
-              <div className="pt-6 flex flex-col md:flex-row gap-3 justify-end border-t border-slate-100">
-                {isPro && !isPastDue && (
+              {/* Aviso: Pago pendiente o rechazado */}
+              {isPastDue && (
+                <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-2xl text-sm text-red-900">
+                  <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5 text-red-600" />
+                  <div>
+                    <p className="font-bold mb-1">Cobro pendiente de confirmación</p>
+                    <p className="text-xs md:text-sm text-red-800 leading-relaxed">
+                      Mercado Pago no pudo procesar el cobro automático de tu última cuota. El sistema reintentará el cobro automáticamente. Podés verificar el estado con el botón de actualización o regularizar tu suscripción en Mercado Pago.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Aviso: Acceso revocado por reembolso o contracargo */}
+              {isRevoked && (
+                <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-2xl text-sm text-red-900">
+                  <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5 text-red-600" />
+                  <div>
+                    <p className="font-bold mb-1">Acceso Pro cancelado</p>
+                    <p className="text-xs md:text-sm text-red-800 leading-relaxed">
+                      La suscripción fue revocada debido a un reembolso o contracargo confirmado por el proveedor de pagos. Podés contratar un nuevo plan Pro cuando lo desees.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Aviso: Suscripción vencida con datos preservados */}
+              {(isExpired || isPaused) && !isRevoked && (
+                <div className="flex items-start gap-3 p-4 bg-purple-50/80 border border-purple-200/70 rounded-2xl text-sm text-purple-950">
+                  <ShieldCheck className="w-5 h-5 flex-shrink-0 mt-0.5 text-purple-600" />
+                  <div>
+                    <p className="font-bold mb-1">Tus datos están protegidos</p>
+                    <p className="text-xs md:text-sm text-purple-900 leading-relaxed">
+                      Tu período Pro finalizó, pero todos tus documentos comerciales, recetas, listas de precios, movimientos de gastos y tandas QR continúan guardados de forma segura en tu cuenta. Al reactivar Pro, recuperarás el acceso completo e inmediato a todos ellos.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Botones de Acción */}
+              <div className="pt-6 flex flex-col sm:flex-row gap-3 justify-end border-t border-slate-100">
+                {['active', 'trialing'].includes(subscription.status) && !isPastDue && !isRevoked && (
                   <>
                     <button
                       onClick={() => router.push('/planes')}
-                      className="px-6 py-2.5 rounded-xl text-slate-700 bg-slate-100 hover:bg-slate-200 font-medium transition-colors text-sm"
+                      className="px-5 py-2.5 rounded-xl text-slate-700 bg-slate-100 hover:bg-slate-200 font-semibold transition-colors text-xs sm:text-sm"
                     >
-                      Cambiar plan
+                      Cambiar modalidad de plan
                     </button>
                     <button
                       onClick={handleCancel}
                       disabled={isCancelling}
-                      className="px-6 py-2.5 rounded-xl text-red-600 hover:bg-red-50 font-medium transition-colors disabled:opacity-50 text-sm"
+                      className="px-5 py-2.5 rounded-xl text-red-600 hover:bg-red-50 font-semibold transition-colors disabled:opacity-50 text-xs sm:text-sm border border-red-100"
                     >
-                      {isCancelling ? 'Cancelando...' : 'Cancelar suscripción'}
+                      {isCancelling ? 'Cancelando...' : 'Cancelar renovación automática'}
                     </button>
                   </>
                 )}
-                {(isCancelled || isPaused) && (
+                {isCancelledWithAccess && (
                   <button
                     onClick={() => router.push('/planes')}
-                    className="px-8 py-2.5 rounded-xl text-white bg-slate-900 hover:bg-slate-800 font-medium transition-colors shadow-md text-sm"
+                    className="px-6 py-2.5 rounded-xl text-white bg-purple-600 hover:bg-purple-700 font-bold transition-all shadow-sm text-xs sm:text-sm"
                   >
-                    Reactivar suscripción
+                    Reactivar renovación automática
+                  </button>
+                )}
+                {(isExpired || isPaused || isPastDue || isRevoked) && (
+                  <button
+                    onClick={() => router.push('/planes')}
+                    className="px-6 py-2.5 rounded-xl text-white bg-slate-900 hover:bg-slate-800 font-bold transition-all shadow-md text-xs sm:text-sm"
+                  >
+                    Reactivar suscripción Pro
                   </button>
                 )}
               </div>
             </div>
           ) : (
-            /* No subscription */
-            <div className="text-center py-12">
-              <div className="w-20 h-20 bg-slate-50 rounded-xl flex items-center justify-center mx-auto mb-6 shadow-inner">
-                <span className="text-3xl text-slate-300">P</span>
+            /* Usuario sin suscripción: Plan Básico */
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-2xl bg-slate-100 text-slate-800 flex items-center justify-center font-black text-2xl shadow-inner flex-shrink-0">
+                    B
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                      <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Plan actual</span>
+                    </div>
+                    <h3 className="font-extrabold text-slate-900 text-xl tracking-tight mt-0.5">
+                      Básico (Gratuito)
+                    </h3>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-1 w-full sm:w-auto sm:text-right bg-slate-50 p-4 sm:p-0 rounded-xl">
+                  <div className="text-2xl sm:text-3xl font-black text-slate-900">
+                    $0 <span className="text-sm font-semibold text-slate-500">ARS</span>
+                  </div>
+                  <div className="text-xs font-medium text-slate-500">Sin costo de suscripción</div>
+                </div>
               </div>
-              <h3 className="text-xl font-bold text-slate-800 mb-3 tracking-tight">Plan Gratuito</h3>
-              <p className="text-slate-500 mb-8 max-w-sm mx-auto leading-relaxed">
-                Estás usando la versión básica. Actualizá a Pro para desbloquear herramientas avanzadas y eliminar la publicidad.
-              </p>
-              <button
-                onClick={() => router.push('/planes')}
-                className="px-8 py-3.5 rounded-xl text-white bg-slate-900 hover:bg-slate-800 font-bold transition-all shadow-sm hover:shadow-md"
-              >
-                Ver planes Pro
-              </button>
+
+              <div className="bg-slate-50/80 p-4 rounded-xl border border-slate-200/60 text-xs sm:text-sm text-slate-600 leading-relaxed">
+                Tu cuenta tiene acceso libre a todas las calculadoras, códigos QR estáticos y generación de documentos estándar en PDF. Para guardar recetas con ingredientes, conservar el historial de presupuestos en la nube, sincronizar gastos entre dispositivos y exportar a Excel, podés contratar PlayComun Pro.
+              </div>
             </div>
           )}
         </div>
       </motion.div>
 
-      {/* Historial de Pagos */}
+      {/* Sección Comparativa de Planes */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.05 }}
+        className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-200/80"
+      >
+        <PlanComparison
+          isPro={isPro}
+          priceMensual={priceMensual}
+          priceAnual={priceAnual}
+          currentPeriodEnd={subscription?.current_period_end}
+          isAuthenticated={true}
+          mode="dashboard"
+          title={hasSubscription ? "Beneficios y funciones de los planes" : "Comparativa de planes"}
+          subtitle={
+            hasSubscription
+              ? "Revisá las funciones incluidas en tu plan Pro y la comparativa con el plan Básico."
+              : "Conocé en detalle qué incluye tu plan Básico y las herramientas adicionales de PlayComun Pro."
+          }
+        />
+      </motion.div>
+
+      {/* Historial de Pagos y Comprobantes */}
       <motion.div
         initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-        className="bg-white rounded-xl p-6 md:p-8 shadow-sm border border-slate-100"
+        className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-200/80"
       >
-        <h2 className="text-xl font-bold text-slate-800 tracking-tight mb-6">Historial de pagos</h2>
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-lg md:text-xl font-bold text-slate-900 tracking-tight">Historial de pagos</h2>
+            <p className="text-xs text-slate-500 mt-0.5">Registro de cobros recurrentes y comprobantes de tu cuenta.</p>
+          </div>
+        </div>
 
         {payments && payments.length > 0 ? (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-slate-500">
-              <thead className="text-xs text-slate-400 uppercase bg-slate-50">
+            <table className="w-full text-left text-sm text-slate-600">
+              <thead className="text-xs text-slate-400 uppercase bg-slate-50 border-b border-slate-100">
                 <tr>
                   <th scope="col" className="px-4 py-3 rounded-l-xl font-semibold">Fecha</th>
-                  <th scope="col" className="px-4 py-3 font-semibold">Monto</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Importe</th>
                   <th scope="col" className="px-4 py-3 font-semibold">Estado</th>
                   <th scope="col" className="px-4 py-3 font-semibold">Método</th>
-                  <th scope="col" className="px-4 py-3 rounded-r-xl font-semibold text-right">ID</th>
+                  <th scope="col" className="px-4 py-3 rounded-r-xl font-semibold text-right">Comprobante ID</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-slate-100">
                 {payments.map((payment) => (
-                  <tr key={payment.id} className="border-b border-slate-50 last:border-0 hover:bg-slate-50/50 transition-colors">
-                    <td className="px-4 py-4 font-medium text-slate-700">
+                  <tr key={payment.id} className="hover:bg-slate-50/60 transition-colors">
+                    <td className="px-4 py-3.5 font-medium text-slate-800 text-xs sm:text-sm">
                       {new Date(payment.paid_at || payment.created_at).toLocaleDateString('es-AR', {
-                        year: 'numeric', month: 'long', day: 'numeric'
+                        year: 'numeric', month: 'short', day: 'numeric'
                       })}
                     </td>
-                    <td className="px-4 py-4 font-semibold text-slate-800">
+                    <td className="px-4 py-3.5 font-bold text-slate-900 text-xs sm:text-sm">
                       ${(payment.amount || 0).toLocaleString('es-AR')}{' '}
-                      <span className="text-xs text-slate-400 font-normal">{payment.currency}</span>
+                      <span className="text-[11px] text-slate-400 font-semibold">{payment.currency}</span>
                     </td>
-                    <td className="px-4 py-4">
-                      <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
-                        payment.status === 'approved' ? 'bg-emerald-100 text-emerald-700' :
-                        payment.status === 'pending' ? 'bg-amber-100 text-amber-700' :
-                        payment.status === 'rejected' ? 'bg-red-100 text-red-700' :
+                    <td className="px-4 py-3.5">
+                      <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                        payment.status === 'approved' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
+                        payment.status === 'pending' || payment.status === 'in_process' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
+                        payment.status === 'rejected' ? 'bg-red-50 text-red-700 border border-red-200' :
+                        payment.status === 'refunded' ? 'bg-slate-100 text-slate-600 border border-slate-200' :
                         'bg-slate-100 text-slate-700'
                       }`}>
                         {payment.status === 'approved' ? 'Aprobado' :
                          payment.status === 'pending' ? 'Pendiente' :
+                         payment.status === 'in_process' ? 'En proceso' :
                          payment.status === 'rejected' ? 'Rechazado' :
+                         payment.status === 'refunded' ? 'Reembolsado' :
                          payment.status}
                       </span>
                     </td>
-                    <td className="px-4 py-4 text-slate-600 capitalize">
-                      {payment.payment_method || '—'}
+                    <td className="px-4 py-3.5 text-xs text-slate-600 capitalize">
+                      {payment.payment_method || 'Mercado Pago'}
                     </td>
-                    <td className="px-4 py-4 text-right">
+                    <td className="px-4 py-3.5 text-right">
                       <span className="text-xs text-slate-400 font-mono">
-                        {payment.provider_payment_id?.slice(-8) || '—'}
+                        {payment.provider_payment_id || payment.id.slice(0, 8)}
                       </span>
                     </td>
                   </tr>
@@ -392,9 +652,9 @@ export function SuscripcionClient({
             </table>
           </div>
         ) : (
-          <div className="text-center py-10 border-2 border-dashed border-slate-100 rounded-2xl">
-            <Clock className="w-8 h-8 text-slate-300 mx-auto mb-3" />
-            <p className="text-slate-500 font-medium">Todavía no hay pagos registrados.</p>
+          <div className="text-center py-10 border border-dashed border-slate-200 rounded-2xl bg-slate-50/50">
+            <Clock className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+            <p className="text-slate-500 font-medium text-xs sm:text-sm">Todavía no hay comprobantes de pago registrados.</p>
           </div>
         )}
       </motion.div>

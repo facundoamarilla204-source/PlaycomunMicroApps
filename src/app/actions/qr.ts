@@ -4,6 +4,7 @@ import { createClient } from "@/utils/supabase/server"
 import { createClient as createSupabaseClient } from "@supabase/supabase-js"
 import { revalidatePath } from "next/cache"
 import crypto from "crypto"
+import { isProUser } from "@/lib/pro"
 
 export type QrCodeStatus = "unconfigured" | "active" | "paused" | "archived"
 
@@ -29,12 +30,31 @@ export interface QrCode {
   activated_at: string | null
 }
 
+export async function getUserQrPreservedCount(): Promise<{ groupCount: number; codeCount: number }> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { groupCount: 0, codeCount: 0 }
+
+  const { data: groupCount } = await supabase.rpc("get_user_qr_group_count")
+  const { data: codeCount } = await supabase.rpc("get_user_qr_code_count")
+
+  return {
+    groupCount: Number(groupCount) || 0,
+    codeCount: Number(codeCount) || 0,
+  }
+}
+
 export async function getUserQrGroups() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
     throw new Error("No autenticado")
+  }
+
+  const isPro = await isProUser(user.id)
+  if (!isPro) {
+    throw new Error("Se requiere suscripción PlayComun Pro activa para acceder a los grupos de QR.")
   }
 
   const { data, error } = await supabase
@@ -58,6 +78,11 @@ export async function getGroupQrs(groupId: string) {
     throw new Error("No autenticado")
   }
 
+  const isPro = await isProUser(user.id)
+  if (!isPro) {
+    throw new Error("Se requiere suscripción PlayComun Pro activa para acceder a los códigos QR.")
+  }
+
   const { data, error } = await supabase
     .from("qr_codes")
     .select("*")
@@ -78,6 +103,11 @@ export async function getUserQrCodes() {
 
   if (!user) {
     throw new Error("No autenticado")
+  }
+
+  const isPro = await isProUser(user.id)
+  if (!isPro) {
+    throw new Error("Se requiere suscripción PlayComun Pro activa para acceder a los códigos QR.")
   }
 
   const { data, error } = await supabase
@@ -104,6 +134,11 @@ export async function generateQrCodes(count: number) {
 
   if (!user) {
     throw new Error("No autenticado")
+  }
+
+  const isPro = await isProUser(user.id)
+  if (!isPro) {
+    throw new Error("Se requiere suscripción PlayComun Pro activa para generar códigos QR dinámicos.")
   }
 
   // 1. Generate unique group code
@@ -192,15 +227,21 @@ export async function updateQrDestination(id: string, destinationUrl: string) {
     throw new Error("No autenticado")
   }
 
-  // Ensure it's a valid url
+  const isPro = await isProUser(user.id)
+  if (!isPro) {
+    throw new Error("Se requiere suscripción PlayComun Pro activa para configurar destinos de QR.")
+  }
+
+  // Ensure it's a valid url with http/https protocol
+  let parsedUrl: URL
   try {
-    new URL(destinationUrl)
-  } catch (e) {
+    parsedUrl = new URL(destinationUrl)
+  } catch {
     throw new Error("URL inválida")
   }
   
-  if (destinationUrl.startsWith("javascript:") || destinationUrl.startsWith("data:") || destinationUrl.startsWith("vbscript:")) {
-    throw new Error("Esquema de URL no permitido")
+  if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+    throw new Error("Protocolo no permitido (solo http y https)")
   }
 
   const { data, error } = await supabase
@@ -230,6 +271,11 @@ export async function updateQrStatus(id: string, status: QrCodeStatus) {
 
   if (!user) {
     throw new Error("No autenticado")
+  }
+
+  const isPro = await isProUser(user.id)
+  if (!isPro) {
+    throw new Error("Se requiere suscripción PlayComun Pro activa para modificar el estado de códigos QR.")
   }
 
   const { data, error } = await supabase

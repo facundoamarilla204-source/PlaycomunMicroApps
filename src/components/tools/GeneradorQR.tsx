@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { QRCodeSVG } from "qrcode.react"
 import { Download, Plus, QrCode, Link as LinkIcon, Settings, List, Lock, ChevronLeft, Search } from "lucide-react"
 import { createClient } from "@/utils/supabase/client"
-import { generateQrCodes, getGroupQrs, getUserQrGroups, QrCode as QrCodeType, QrGroup, updateQrDestination, updateQrStatus } from "@/app/actions/qr"
+import { generateQrCodes, getGroupQrs, getUserQrGroups, getUserQrPreservedCount, QrCode as QrCodeType, QrGroup, updateQrDestination, updateQrStatus } from "@/app/actions/qr"
 import Link from "next/link"
 
 export function GeneradorQR() {
@@ -15,6 +15,7 @@ export function GeneradorQR() {
   const [groups, setGroups] = useState<QrGroup[]>([])
   const [selectedGroup, setSelectedGroup] = useState<QrGroup | null>(null)
   const [qrs, setQrs] = useState<QrCodeType[]>([])
+  const [preservedCount, setPreservedCount] = useState<{ groupCount: number; codeCount: number }>({ groupCount: 0, codeCount: 0 })
   
   const [generateCount, setGenerateCount] = useState(50)
   const [generating, setGenerating] = useState(false)
@@ -41,6 +42,10 @@ export function GeneradorQR() {
           setIsPro(true)
           const userGroups = await getUserQrGroups()
           setGroups(userGroups)
+        } else {
+          // Usuario autenticado pero sin Pro activo: consultar recuento preservado
+          const counts = await getUserQrPreservedCount()
+          setPreservedCount(counts)
         }
       }
     } catch (error) {
@@ -337,14 +342,26 @@ export function GeneradorQR() {
               <h3 className="text-xl font-extrabold text-slate-900 mb-2">
                 Códigos QR Dinámicos Reutilizables
               </h3>
-              <p className="text-sm text-slate-600 mb-6 leading-relaxed">
-                Imprimí una tanda física de 50 o 100 stickers y cambiá el enlace de destino en tiempo real desde tu panel cuando lo necesites, sin reimprimir nunca más.
-              </p>
+              {preservedCount.groupCount > 0 ? (
+                <div className="mb-6 p-4 bg-purple-50 border border-purple-200/80 rounded-xl text-xs sm:text-sm text-purple-900 text-left space-y-1.5">
+                  <div className="font-bold flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-purple-600"></span>
+                    Tenés {preservedCount.groupCount} {preservedCount.groupCount === 1 ? 'tanda' : 'tandas'} ({preservedCount.codeCount} códigos QR) preservadas en tu cuenta
+                  </div>
+                  <p className="text-purple-700 leading-relaxed">
+                    Tus códigos impresos continúan resolviendo y funcionando con normalidad. Para generar nuevas tandas o modificar los destinos, reactivá PlayComun Pro.
+                  </p>
+                </div>
+              ) : (
+                <p className="text-sm text-slate-600 mb-6 leading-relaxed">
+                  Imprimí una tanda física de 50 o 100 stickers y cambiá el enlace de destino en tiempo real desde tu panel cuando lo necesites, sin reimprimir nunca más.
+                </p>
+              )}
               <Link 
                 href="/planes" 
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-bold text-sm shadow-sm transition-all min-h-[46px]"
               >
-                Conocer PlayComun Pro
+                {preservedCount.groupCount > 0 ? "Reactivar PlayComun Pro" : "Conocer PlayComun Pro"}
               </Link>
             </div>
           ) : (

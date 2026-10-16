@@ -54,13 +54,19 @@ const createStorageMock = () => {
 }
 
 if (typeof globalThis.localStorage === 'undefined' || !globalThis.localStorage.clear) {
-  // @ts-expect-error mock polyfill
-  globalThis.localStorage = createStorageMock()
+  Object.defineProperty(globalThis, 'localStorage', {
+    value: createStorageMock(),
+    writable: true,
+    configurable: true,
+  })
 }
 
 if (typeof globalThis.sessionStorage === 'undefined' || !globalThis.sessionStorage.clear) {
-  // @ts-expect-error mock polyfill
-  globalThis.sessionStorage = createStorageMock()
+  Object.defineProperty(globalThis, 'sessionStorage', {
+    value: createStorageMock(),
+    writable: true,
+    configurable: true,
+  })
 }
 
 describe('1. Motor Matemático y Cálculos de Documentos', () => {
@@ -123,8 +129,16 @@ describe('1. Motor Matemático y Cálculos de Documentos', () => {
   })
 })
 
+const defaultMeta = {
+  presupuestoMeta: { validityDays: 15, deliveryTime: '2 semanas', commercialTerms: '50% anticipo y 50% contra entrega' },
+  reciboMeta: { paymentConcept: '', paymentMethod: 'efectivo' as const, amountPaid: 0, totalOperationAmount: 0, pendingBalance: 0 },
+  ordenTrabajoMeta: { equipmentOrTarget: '', brandModel: '', identifierNumber: '', reportedIssue: '', technicalDiagnosis: '', targetDeliveryDate: '', warrantyTerms: '' },
+  facturaProformaMeta: { paymentConditions: '', validityUntil: '', originCountry: '' },
+}
+
 describe('2. Módulo de Validaciones Comerciales y Anti-Placeholders', () => {
   const baseDoc: CommercialDocument = {
+    ...defaultMeta,
     id: 'test-doc-1',
     type: 'presupuesto',
     number: 'PRE-0001',
@@ -312,7 +326,7 @@ describe('3. Persistencia Local Versionada y Numeración Correlativa', () => {
   it('Guarda, lista y elimina clientes en el almacenamiento local', () => {
     const client = saveStoredLocalClient({
       name: 'Pedro Gómez',
-      tax_id: '20-33445566-7',
+      taxId: '20-33445566-7',
       phone: '1144332211',
       email: 'pedro@gomez.com',
       address: 'Belgrano 100',
@@ -333,10 +347,10 @@ describe('3. Persistencia Local Versionada y Numeración Correlativa', () => {
     const product = saveStoredLocalProduct({
       name: 'Mantenimiento Mensual Servidor',
       description: 'Copias de seguridad y parches',
-      default_unit_price: 15000,
-      default_discount_percent: 5,
+      defaultUnitPrice: 15000,
+      defaultDiscountPercent: 5,
       category: 'Sistemas',
-      is_active: true,
+      isActive: true,
     })
 
     expect(product.id).toBeDefined()
@@ -350,6 +364,7 @@ describe('3. Persistencia Local Versionada y Numeración Correlativa', () => {
 
   it('Gestiona el historial local de documentos sin sobrescribir comprobantes anteriores', () => {
     const doc1: CommercialDocument = {
+      ...defaultMeta,
       id: 'doc-hist-1',
       type: 'presupuesto',
       number: 'PRE-0001',
@@ -368,6 +383,7 @@ describe('3. Persistencia Local Versionada y Numeración Correlativa', () => {
     }
 
     const doc2: CommercialDocument = {
+      ...defaultMeta,
       id: 'doc-hist-2',
       type: 'recibo',
       number: 'REC-0001',
@@ -382,7 +398,7 @@ describe('3. Persistencia Local Versionada y Numeración Correlativa', () => {
       designTemplate: 'modern',
       accentColor: '#7C3AED',
       footerNotes: '',
-      status: 'pagado',
+      status: 'cobrado',
     }
 
     saveStoredLocalDocument(doc1)
@@ -428,6 +444,7 @@ describe('4. Modalidad Gratis vs Pro (Almacenamiento Temporal y Marca de Agua)',
 
   it('Almacena el borrador temporal de la modalidad Gratis estrictamente en sessionStorage', () => {
     const freeDraft: CommercialDocument = {
+      ...defaultMeta,
       id: 'doc-free-1',
       type: 'presupuesto',
       number: 'PRE-TMP-1',
@@ -472,6 +489,7 @@ describe('4. Modalidad Gratis vs Pro (Almacenamiento Temporal y Marca de Agua)',
 
   it('Genera PDF con marca de PlayComún para Gratis y marca blanca para Pro', async () => {
     const validDoc: CommercialDocument = {
+      ...defaultMeta,
       id: 'doc-test-pdf',
       type: 'presupuesto',
       number: 'PRE-0001',

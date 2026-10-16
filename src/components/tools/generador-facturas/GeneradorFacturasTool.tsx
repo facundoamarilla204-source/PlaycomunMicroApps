@@ -237,12 +237,12 @@ export function GeneradorFacturasTool({
     }
     const res = await saveClient({
       name: doc.cliente.name,
-      tax_id: doc.cliente.taxId || null,
-      phone: doc.cliente.phone || null,
-      email: doc.cliente.email || null,
-      address: doc.cliente.address || null,
-      city: doc.cliente.city || null,
-      notes: null,
+      taxId: doc.cliente.taxId || undefined,
+      phone: doc.cliente.phone || undefined,
+      email: doc.cliente.email || undefined,
+      address: doc.cliente.address || undefined,
+      city: doc.cliente.city || undefined,
+      notes: undefined,
     })
     if (res.success) {
       showToast(`Cliente «${doc.cliente.name}» agregado a tu agenda Pro.`)
@@ -267,11 +267,11 @@ export function GeneradorFacturasTool({
     }
     const res = await saveProduct({
       name: item.description,
-      description: null,
-      default_unit_price: item.unitPrice,
-      default_discount_percent: item.discountPercent,
-      category: null,
-      is_active: true,
+      description: undefined,
+      defaultUnitPrice: item.unitPrice,
+      defaultDiscountPercent: item.discountPercent,
+      category: undefined,
+      isActive: true,
     })
     if (res.success) {
       showToast(`«${item.description}» guardado en tu catálogo de productos Pro.`)

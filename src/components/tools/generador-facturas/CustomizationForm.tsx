@@ -1,14 +1,14 @@
 'use client'
 
 import React from 'react'
-import { DesignTemplate } from './types'
+import { DesignTemplate, CommercialDocument } from './types'
 import { Palette, LayoutTemplate, MessageSquare, Check } from 'lucide-react'
 
 interface Props {
   designTemplate: DesignTemplate
   accentColor: string
   footerNotes: string
-  onUpdateGeneral: (field: string, value: unknown) => void
+  onUpdateGeneral: (field: keyof CommercialDocument, value: unknown) => void
 }
 
 const TEMPLATES: { id: DesignTemplate; label: string; desc: string }[] = [

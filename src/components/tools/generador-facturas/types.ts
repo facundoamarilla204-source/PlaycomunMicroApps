@@ -148,6 +148,7 @@ export interface CommercialProduct {
   name: string
   description?: string
   defaultUnitPrice: number
+  defaultDiscountPercent?: number
   defaultDiscount?: number
   category?: string
   isActive: boolean

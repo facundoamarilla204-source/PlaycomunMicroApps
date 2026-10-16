@@ -1,8 +1,10 @@
 import { createClient } from '@/utils/supabase/server'
+import { createClient as createAdminClient } from '@supabase/supabase-js'
 import { redirect } from 'next/navigation'
 import { SuscripcionClient } from './SuscripcionClient'
-import { cancelSubscription } from './actions'
 import { buildMetadata } from '@/lib/metadata'
+import { isProUser } from '@/lib/pro'
+import { syncUserSubscriptions } from '@/lib/subscription-sync'
 
 export const metadata = buildMetadata({
   title: 'Mi suscripción',
@@ -13,18 +15,14 @@ export const metadata = buildMetadata({
 /**
  * /cuenta/suscripcion
  *
- * Cuando el usuario llega con ?success=true (retorno desde MP o después de pagar
- * con tarjeta), llamamos al endpoint de sincronización para asegurarnos de que
- * Supabase refleje el estado real de MP, sin depender de que el webhook haya
- * llegado.
- *
- * La sincronización es idempotente: si la suscripción ya está en Supabase,
- * solo actualiza los datos sin crear duplicados.
+ * Panel central de gestión de la suscripción Pro y métodos de pago.
+ * Cuando el usuario regresa con ?success=true (retorno desde MP o tras abonar con tarjeta),
+ * se ejecuta la sincronización autoritativa directamente con Mercado Pago.
  */
 export default async function SuscripcionPage({
   searchParams
 }: {
-  searchParams: Promise<{ success?: string, preapproval_id?: string }>
+  searchParams: Promise<{ success?: string; preapproval_id?: string }>
 }) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -37,36 +35,29 @@ export default async function SuscripcionPage({
   const isSuccess = params.success === 'true'
   const incomingPreapprovalId = params.preapproval_id
 
-  // Si el usuario regresa con ?success=true, sincronizar con MP antes de leer Supabase
+  // Si regresa de un flujo de pago, sincronizar con MP directamente antes de renderizar
   if (isSuccess) {
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.playcomun.com'
-      const body: Record<string, string> = {}
-      if (incomingPreapprovalId) {
-        body.preapproval_id = incomingPreapprovalId
-      }
-      await fetch(`${baseUrl}/api/subscriptions/sync`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          // Pasamos el cookie de sesión para que el endpoint pueda autenticar al usuario
-          Cookie: (await import('next/headers')).cookies().toString(),
-        },
-        body: JSON.stringify(body),
-        cache: 'no-store',
-      })
+      const adminSupabase = createAdminClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!
+      )
+      await syncUserSubscriptions(adminSupabase, user.id, incomingPreapprovalId)
     } catch (e) {
-      console.error('[suscripcion/page] sync error:', e)
-      // No bloqueamos la carga de la página si sync falla
+      console.error('[suscripcion/page] error en sincronización directa:', e)
     }
   }
 
-  // Obtener la suscripción más reciente (activa, cancelada o expirada)
+  // Evaluar estado Pro central
+  const isPro = await isProUser(user.id)
+
+  // Obtener la suscripción más reciente del usuario
   const { data: subscription } = await supabase
     .from('subscriptions')
     .select(`
       id,
       status,
+      provider_status,
       current_period_start,
       current_period_end,
       trial_start_at,
@@ -102,6 +93,17 @@ export default async function SuscripcionPage({
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
 
+  // Obtener precios vigentes de la tabla plans
+  const { data: plans } = await supabase.from('plans').select('code, price')
+  let priceMensual = 5900
+  let priceAnual = 59000
+  if (plans) {
+    const monthlyPlan = plans.find(p => p.code === 'pro_monthly')
+    const yearlyPlan = plans.find(p => p.code === 'pro_yearly')
+    if (monthlyPlan) priceMensual = Number(monthlyPlan.price)
+    if (yearlyPlan) priceAnual = Number(yearlyPlan.price)
+  }
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 w-full space-y-6">
       <div className="flex flex-col gap-2 pb-5 border-b border-slate-200/80">
@@ -116,7 +118,7 @@ export default async function SuscripcionPage({
             Suscripción y Pagos
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Administrá tu plan activo, métodos de pago e historial de comprobantes.
+            Administrá tu plan activo, renovación automática, medios de pago e historial de transacciones.
           </p>
         </div>
       </div>
@@ -126,7 +128,11 @@ export default async function SuscripcionPage({
         paymentMethods={paymentMethods || []}
         payments={payments || []}
         userEmail={user.email || ''}
+        isPro={isPro}
         showSuccessBanner={isSuccess}
+        incomingPreapprovalId={incomingPreapprovalId}
+        priceMensual={priceMensual}
+        priceAnual={priceAnual}
       />
     </div>
   )

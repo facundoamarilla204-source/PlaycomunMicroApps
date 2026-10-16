@@ -12,6 +12,20 @@ export async function isProUser(userId: string): Promise<boolean> {
   return !!data
 }
 
+export async function getCurrentUserProStatusServer(): Promise<{
+  isAuthenticated: boolean
+  isPro: boolean
+  userId: string | null
+}> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
+    return { isAuthenticated: false, isPro: false, userId: null }
+  }
+  const isPro = await isProUser(user.id)
+  return { isAuthenticated: true, isPro, userId: user.id }
+}
+
 export async function isFeaturePremium(toolSlug: string, featureCode: string): Promise<boolean> {
   const supabase = await createClient()
   const { data, error } = await supabase.rpc('is_feature_premium', { 

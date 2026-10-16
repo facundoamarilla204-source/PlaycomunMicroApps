@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import crypto from "crypto";
 
 export function getVoterHash(req: NextRequest) {
-  const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || req.ip || "127.0.0.1";
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || req.headers.get("x-real-ip") || "127.0.0.1";
   const cookie = req.cookies.get("voter_id")?.value;
   
   const hash = crypto.createHash("sha256");

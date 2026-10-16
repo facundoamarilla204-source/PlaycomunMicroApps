@@ -27,7 +27,14 @@ export default async function QrPublicResolver({ params }: { params: Promise<{ t
   }
 
   if (qr.status === "active" && qr.destination_url) {
-    redirect(qr.destination_url)
+    try {
+      const parsed = new URL(qr.destination_url)
+      if (['http:', 'https:'].includes(parsed.protocol)) {
+        redirect(qr.destination_url)
+      }
+    } catch {
+      // Si la URL es inválida o peligrosa, no se redirige
+    }
   }
 
   if (qr.status === "paused") {
