@@ -8,6 +8,7 @@ import {
   ConvertedResultItem,
   GlobalConversionConfig,
   WorkerHealthState,
+  ConversionQuotaState,
 } from "@/lib/converter/types"
 import {
   CONVERSION_CATEGORIES,
@@ -30,6 +31,9 @@ import {
 import {
   checkWorkerHealth,
   convertOfficeDocumentWithWorker,
+  fetchCurrentQuota,
+  QuotaExceededError,
+  FileTooLargeError,
 } from "@/lib/converter/worker-client"
 
 import { CategoryTabs } from "./CategoryTabs"
@@ -39,17 +43,15 @@ import { OptionsPanel } from "./OptionsPanel"
 import { FileList } from "./FileList"
 import { ResultsPanel } from "./ResultsPanel"
 import { WorkerStatusNotice } from "./WorkerStatusNotice"
+import { QuotaNotice } from "./QuotaNotice"
 
 import {
   Play,
-  Trash2,
   AlertTriangle,
   Info,
   Lock,
-  Cpu,
-  Layers,
-  ArrowRight,
   Loader2,
+  Sparkles,
 } from "lucide-react"
 
 const DEFAULT_CONFIG: GlobalConversionConfig = {
@@ -86,6 +88,9 @@ export function ConvertidorArchivos() {
   const [allResults, setAllResults] = useState<ConvertedResultItem[]>([])
   const [globalError, setGlobalError] = useState<string | null>(null)
 
+  // Quota state for server worker operations (5 Free, 100 Pro)
+  const [quotaState, setQuotaState] = useState<ConversionQuotaState | null>(null)
+
   // Worker health status
   const [workerState, setWorkerState] = useState<WorkerHealthState | null>(null)
   const [isCheckingWorker, setIsCheckingWorker] = useState(false)
@@ -100,6 +105,16 @@ export function ConvertidorArchivos() {
     [activeCategory]
   )
 
+  // Fetch quota on mount and after conversions
+  const refreshQuota = useCallback(async () => {
+    try {
+      const q = await fetchCurrentQuota()
+      if (q) setQuotaState(q)
+    } catch {
+      // Ignore network errors
+    }
+  }, [])
+
   // Check worker health on mount and when selecting a worker-based operation
   const refreshWorkerHealth = useCallback(async () => {
     setIsCheckingWorker(true)
@@ -113,7 +128,8 @@ export function ConvertidorArchivos() {
 
   useEffect(() => {
     refreshWorkerHealth()
-  }, [refreshWorkerHealth])
+    refreshQuota()
+  }, [refreshWorkerHealth, refreshQuota])
 
   // When changing category, switch selected operation to the first of that category
   const handleSelectCategory = (cat: ConversionCategory) => {
@@ -135,13 +151,14 @@ export function ConvertidorArchivos() {
     setGlobalError(null)
   }
 
-  // Inspect and add files
+  // Inspect and add files with plan-aware validation
   const handleFilesSelected = async (newRawFiles: File[]) => {
     setGlobalError(null)
     const addedItems: FileItem[] = []
+    const isPro = quotaState?.is_pro || false
 
     for (const file of newRawFiles) {
-      const validation = validateFileForOperation(file, currentOperation)
+      const validation = validateFileForOperation(file, currentOperation, isPro)
       if (!validation.valid) {
         setGlobalError(validation.error || "Archivo no compatible.")
         continue
@@ -215,14 +232,24 @@ export function ConvertidorArchivos() {
     return undefined
   }, [files])
 
-  // Convert Process execution
+  // Convert Process execution with reservation, options and receipt confirmation
   const handleStartConversion = async () => {
     if (files.length === 0) return
     setGlobalError(null)
     setIsProcessing(true)
 
-    // Check worker requirement
+    // Check worker requirement and quota if worker operation
     if (currentOperation.environment === "worker") {
+      if (quotaState && quotaState.remaining <= 0) {
+        setIsProcessing(false)
+        setGlobalError(
+          quotaState.is_pro
+            ? "Has alcanzado el límite diario de 100 conversiones Pro para documentos de oficina. Tu cuota se reinicia a las 00:00 (hora argentina)."
+            : "Has alcanzado el límite de 5 conversiones gratuitas de oficina de hoy. Tu cupo se reinicia a las 00:00 (hora argentina). Podés actualizar a Pro para obtener 100 conversiones diarias."
+        )
+        return
+      }
+
       if (!workerState?.online || !workerState?.sofficeAvailable) {
         setIsProcessing(false)
         setGlobalError(
@@ -236,7 +263,7 @@ export function ConvertidorArchivos() {
 
     try {
       if (currentOperation.id === "images-to-pdf") {
-        // Multi-image to single PDF
+        // Multi-image to single PDF (Local client-side)
         setFiles((prev) =>
           prev.map((f) => ({ ...f, status: "processing", progress: 30 }))
         )
@@ -330,13 +357,24 @@ export function ConvertidorArchivos() {
               resultName = `${base}_pdfa.pdf`
               formatTag = "pdf"
             } else {
-              // Office document to PDF via worker
-              resultBlob = await convertOfficeDocumentWithWorker(
+              // Office document to PDF via worker with options and atomic reservation
+              const workerRes = await convertOfficeDocumentWithWorker(
                 item.file,
-                updateProgress
+                updateProgress,
+                {
+                  operationId: currentOperation.id,
+                  excelToPdf: config.excelToPdf,
+                }
               )
+              resultBlob = workerRes.blob
               resultName = `${base}.pdf`
               formatTag = "pdf"
+
+              if (workerRes.quota) {
+                setQuotaState(workerRes.quota)
+              } else {
+                refreshQuota()
+              }
             }
 
             generatedResults.push({
@@ -354,10 +392,15 @@ export function ConvertidorArchivos() {
               )
             )
           } catch (fileErr: unknown) {
-            const errorMsg =
-              fileErr instanceof Error
-                ? fileErr.message
-                : "Error durante la conversión."
+            let errorMsg = "Error durante la conversión."
+            if (fileErr instanceof QuotaExceededError) {
+              errorMsg = fileErr.message
+              if (fileErr.quota) setQuotaState(fileErr.quota)
+            } else if (fileErr instanceof FileTooLargeError) {
+              errorMsg = fileErr.message
+            } else if (fileErr instanceof Error) {
+              errorMsg = fileErr.message
+            }
 
             setFiles((prev) =>
               prev.map((f) =>
@@ -390,7 +433,7 @@ export function ConvertidorArchivos() {
 
   return (
     <div className="w-full max-w-5xl mx-auto space-y-8 font-sans">
-      {/* 1. Selector de Categoría */}
+      {/* 1. Selector de Categoría (Scrollable en 320px) */}
       <section className="space-y-3">
         <CategoryTabs
           activeCategory={activeCategory}
@@ -418,7 +461,16 @@ export function ConvertidorArchivos() {
         />
       </section>
 
-      {/* 3. Aviso de Worker si aplica */}
+      {/* 3. Panel de Cuota Gratis/Pro e Información de Límites */}
+      <section>
+        <QuotaNotice
+          quota={quotaState}
+          environment={currentOperation.environment}
+          onSwitchToLocal={() => handleSelectCategory("to-images")}
+        />
+      </section>
+
+      {/* 4. Aviso de Worker si aplica */}
       {currentOperation.environment === "worker" && (
         <WorkerStatusNotice
           workerState={workerState}
@@ -427,7 +479,7 @@ export function ConvertidorArchivos() {
         />
       )}
 
-      {/* 4. Aviso de limitaciones de la operación si existe */}
+      {/* 5. Aviso de limitaciones de la operación si existe */}
       {currentOperation.limitationsNotice && (
         <div className="p-3.5 rounded-xl bg-violet-50/60 border border-violet-100 flex items-start gap-2.5 text-xs text-violet-900">
           <Info className="h-4 w-4 text-violet-600 shrink-0 mt-0.5" />
@@ -438,12 +490,13 @@ export function ConvertidorArchivos() {
         </div>
       )}
 
-      {/* 5. Carga de Archivos */}
+      {/* 6. Carga de Archivos */}
       <section className="space-y-4">
         <DropzoneConverter
           operation={currentOperation}
           onFilesSelected={handleFilesSelected}
           disabled={isProcessing}
+          isPro={quotaState?.is_pro || false}
         />
 
         {/* Lista de archivos en cola */}
@@ -457,7 +510,7 @@ export function ConvertidorArchivos() {
         />
       </section>
 
-      {/* 6. Panel de Opciones */}
+      {/* 7. Panel de Opciones */}
       {files.length > 0 && (
         <OptionsPanel
           operationId={selectedOperationId}
@@ -478,13 +531,13 @@ export function ConvertidorArchivos() {
         </div>
       )}
 
-      {/* 7. Botón de Acción Principal */}
+      {/* 8. Botón de Acción Principal */}
       {files.length > 0 && allResults.length === 0 && (
         <div className="flex justify-end pt-2">
           <button
             type="button"
             onClick={handleStartConversion}
-            disabled={isProcessing}
+            disabled={isProcessing || (currentOperation.environment === "worker" && quotaState?.remaining === 0)}
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-bold text-sm sm:text-base shadow-sm transition-all duration-150 cursor-pointer disabled:opacity-50"
           >
             {isProcessing ? (
@@ -502,7 +555,7 @@ export function ConvertidorArchivos() {
         </div>
       )}
 
-      {/* 8. Panel de Resultados */}
+      {/* 9. Panel de Resultados */}
       {allResults.length > 0 && (
         <ResultsPanel
           results={allResults}
@@ -516,10 +569,10 @@ export function ConvertidorArchivos() {
         <div className="flex items-center gap-2">
           <Lock className="h-4 w-4 text-emerald-600 shrink-0" />
           <span>
-            <strong>Privacidad garantizada:</strong> Las conversiones de PDF e imágenes se procesan de forma 100% local en tu navegador. Tus documentos nunca se almacenan ni se transfieren a terceros.
+            <strong>Privacidad garantizada:</strong> Las conversiones de PDF e imágenes se procesan de forma 100% local en tu navegador. Tus documentos de oficina se procesan en memoria efímera y se eliminan inmediatamente tras la descarga.
           </span>
         </div>
-        <span className="text-gray-400 font-mono shrink-0">v1.0 · PlayComun</span>
+        <span className="text-gray-400 font-mono shrink-0">v1.1 · PlayComun</span>
       </div>
     </div>
   )

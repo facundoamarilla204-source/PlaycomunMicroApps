@@ -78,25 +78,44 @@ export function downloadBlob(blob: Blob, filename: string): void {
 
 export function validateFileForOperation(
   file: File,
-  op: ConversionOperation
-): { valid: boolean; error?: string } {
+  op: ConversionOperation,
+  isPro: boolean = false
+): { valid: boolean; error?: string; code?: string } {
   const ext = `.${file.name.split(".").pop()?.toLowerCase()}`
-  
+
   if (!op.acceptedExtensions.includes(ext)) {
     return {
       valid: false,
       error: `El archivo "${file.name}" tiene una extensión no admitida (${ext}). Se requiere: ${op.acceptedExtensions.join(", ")}.`,
+      code: "INVALID_EXTENSION",
     }
   }
 
-  // Max size limits: 25 MB for worker office docs, 50 MB for client local processing
-  const maxBytes = op.environment === "worker" ? 25 * 1024 * 1024 : 50 * 1024 * 1024
+  // Max size limits:
+  // - Worker (Office): 10 MB for Free, 50 MB for Pro
+  // - Client (Images/PDFs): 50 MB local
+  const maxBytes =
+    op.environment === "worker"
+      ? isPro
+        ? 50 * 1024 * 1024
+        : 10 * 1024 * 1024
+      : 50 * 1024 * 1024
+
   if (file.size > maxBytes) {
+    if (op.environment === "worker" && !isPro) {
+      return {
+        valid: false,
+        error: `El archivo supera el límite de 10 MB del plan Gratuito. Pasate a Pro para convertir archivos de hasta 50 MB.`,
+        code: "FILE_TOO_LARGE_FREE",
+      }
+    }
     return {
       valid: false,
-      error: `El archivo supera el tamaño máximo permitido de ${op.environment === "worker" ? "25 MB" : "50 MB"}.`,
+      error: `El archivo supera el tamaño máximo permitido de 50 MB.`,
+      code: "FILE_TOO_LARGE_PRO",
     }
   }
 
   return { valid: true }
 }
+

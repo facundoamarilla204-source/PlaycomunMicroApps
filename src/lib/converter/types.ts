@@ -108,3 +108,24 @@ export interface WorkerHealthState {
   message?: string
   checkedAt: number
 }
+
+export interface ConversionQuotaState {
+  is_pro: boolean
+  limit: number
+  used: number
+  remaining: number
+  quota_date: string
+  resets_at: string
+  max_file_size_mb: number
+}
+
+export interface ConversionTokenResponse {
+  token: string
+  timestamp: number
+  reservationId: string
+  workerUrl: string
+  configured: boolean
+  expiresIn: number
+  quota: ConversionQuotaState
+}
+

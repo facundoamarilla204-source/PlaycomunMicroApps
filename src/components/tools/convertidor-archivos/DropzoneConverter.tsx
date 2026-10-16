@@ -2,18 +2,20 @@
 
 import React, { useState, useRef } from "react"
 import { ConversionOperation } from "@/lib/converter/types"
-import { UploadCloud, File, AlertCircle } from "lucide-react"
+import { UploadCloud, AlertCircle } from "lucide-react"
 
 interface DropzoneConverterProps {
   operation: ConversionOperation
   onFilesSelected: (files: File[]) => void
   disabled?: boolean
+  isPro?: boolean
 }
 
 export function DropzoneConverter({
   operation,
   onFilesSelected,
   disabled = false,
+  isPro = false,
 }: DropzoneConverterProps) {
   const [isDragOver, setIsDragOver] = useState(false)
   const [dragError, setDragError] = useState<string | null>(null)
@@ -60,6 +62,13 @@ export function DropzoneConverter({
   }
 
   const acceptedExtensionsString = operation.acceptedExtensions.join(",")
+
+  const maxSizeText =
+    operation.environment === "worker"
+      ? isPro
+        ? "50 MB (Plan Pro)"
+        : "10 MB (Gratis · Hasta 50 MB en Pro)"
+      : "50 MB (Procesamiento local)"
 
   return (
     <div className="w-full">
@@ -108,7 +117,7 @@ export function DropzoneConverter({
               <span className="font-semibold text-gray-700 font-mono">
                 {operation.acceptedExtensions.join(", ").replace(/\./g, "")}
               </span>
-              {" "}· Tamaño máximo: {operation.environment === "worker" ? "25 MB" : "50 MB"}
+              {" "}· Tamaño máximo: <span className="font-medium text-gray-700">{maxSizeText}</span>
             </p>
           </div>
 

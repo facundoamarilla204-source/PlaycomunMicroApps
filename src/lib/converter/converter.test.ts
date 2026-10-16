@@ -115,7 +115,7 @@ describe("Convertidor de Archivos - Motor PDF y PDF/A", () => {
     const page = basePdf.addPage([400, 400])
     page.drawText("Test PDF/A Document")
     const baseBytes = await basePdf.save()
-    const baseFile = new File([baseBytes], "test.pdf", { type: "application/pdf" })
+    const baseFile = new File([baseBytes as BlobPart], "test.pdf", { type: "application/pdf" })
 
     const pdfaBlob = await convertPdfToPdfA(baseFile, { conformance: "PDF/A-1b" })
     expect(pdfaBlob).toBeInstanceOf(Blob)

@@ -11,12 +11,15 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 8080;
 const WORKER_SECRET = process.env.WORKER_SECRET || 'playcomun-dev-secret-change-in-prod';
-const MAX_FILE_SIZE_MB = parseInt(process.env.MAX_FILE_SIZE_MB || '25', 10);
+// Default to 50 MB to allow Pro conversions (Free is strictly capped at 10 MB in token gate)
+const MAX_FILE_SIZE_MB = parseInt(process.env.MAX_FILE_SIZE_MB || '50', 10);
 const MAX_CONCURRENT_CONVERSIONS = parseInt(process.env.MAX_CONCURRENT_CONVERSIONS || '3', 10);
 
 let activeConversions = 0;
+let totalProcessed = 0;
+let totalErrors = 0;
 
-// CORS setup
+// CORS setup with exposed custom headers
 const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(',').map((o) => o.trim())
   : ['*'];
@@ -29,6 +32,13 @@ app.use(
       }
       return callback(new Error('Origen no permitido por CORS'));
     },
+    exposedHeaders: [
+      'x-conversion-receipt',
+      'x-conversion-reservation-id',
+      'x-conversion-file-size',
+      'Content-Disposition',
+      'Content-Length',
+    ],
   })
 );
 
@@ -45,19 +55,6 @@ const ALLOWED_EXTENSIONS = new Set([
   '.odt',
   '.ods',
   '.odp',
-]);
-
-const ALLOWED_MIME_TYPES = new Set([
-  'application/msword',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'application/vnd.ms-excel',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  'application/vnd.ms-powerpoint',
-  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-  'application/vnd.oasis.opendocument.text',
-  'application/vnd.oasis.opendocument.spreadsheet',
-  'application/vnd.oasis.opendocument.presentation',
-  'application/octet-stream', // Fallback for some browsers on Windows
 ]);
 
 // Helper to find soffice executable
@@ -115,7 +112,6 @@ const upload = multer({
 
 // Middleware to verify short-lived HMAC authorization
 function verifyAuth(req, res, next) {
-  // If no secret configured or bypass in explicit dev flag
   if (process.env.NODE_ENV === 'development' && process.env.DISABLE_AUTH === 'true') {
     return next();
   }
@@ -123,6 +119,7 @@ function verifyAuth(req, res, next) {
   const authHeader = req.headers['authorization'] || '';
   const signature = authHeader.replace(/^Bearer\s+/i, '') || req.headers['x-conversion-signature'];
   const timestamp = req.headers['x-conversion-timestamp'];
+  const reservationId = req.headers['x-conversion-reservation-id'] || '';
 
   if (!signature || !timestamp) {
     return res.status(401).json({
@@ -139,22 +136,43 @@ function verifyAuth(req, res, next) {
     });
   }
 
-  // Calculate expected HMAC
-  const expectedHmac = crypto
+  const sigBuf = Buffer.from(signature);
+
+  // 1. Check reservation claims HMAC signature (primary security method)
+  if (reservationId) {
+    const operationId = req.headers['x-conversion-operation'] || 'word-to-pdf';
+    const isPro = req.headers['x-conversion-pro'] === 'true';
+    const maxBytes = parseInt(req.headers['x-conversion-max-bytes'] || '0', 10);
+
+    const payload = `${reservationId}:${operationId}:${isPro}:${maxBytes}:${timestamp}`;
+    const expectedWithClaims = crypto
+      .createHmac('sha256', WORKER_SECRET)
+      .update(payload)
+      .digest('hex');
+
+    const expBuf1 = Buffer.from(expectedWithClaims);
+    if (sigBuf.length === expBuf1.length && crypto.timingSafeEqual(sigBuf, expBuf1)) {
+      req.reservationId = reservationId;
+      req.maxAllowedBytes = maxBytes;
+      return next();
+    }
+  }
+
+  // 2. Fallback check for basic convert:timestamp token (backward compatibility)
+  const expectedBasic = crypto
     .createHmac('sha256', WORKER_SECRET)
     .update(`convert:${timestamp}`)
     .digest('hex');
 
-  const sigBuf = Buffer.from(signature);
-  const expBuf = Buffer.from(expectedHmac);
-
-  if (sigBuf.length !== expBuf.length || !crypto.timingSafeEqual(sigBuf, expBuf)) {
-    return res.status(403).json({
-      error: 'Firma de autorizacion invalida.',
-    });
+  const expBuf2 = Buffer.from(expectedBasic);
+  if (sigBuf.length === expBuf2.length && crypto.timingSafeEqual(sigBuf, expBuf2)) {
+    req.reservationId = reservationId || crypto.randomUUID();
+    return next();
   }
 
-  next();
+  return res.status(403).json({
+    error: 'Firma de autorizacion invalida.',
+  });
 }
 
 // Health check endpoint
@@ -172,6 +190,8 @@ app.get('/health', (req, res) => {
       sofficeVersion: versionString,
       activeConversions,
       maxConcurrent: MAX_CONCURRENT_CONVERSIONS,
+      totalProcessed,
+      totalErrors,
       timestamp: Date.now(),
     });
   });
@@ -202,16 +222,52 @@ app.post('/convert', verifyAuth, (req, res) => {
       return res.status(400).json({ error: 'No se recibio ningun archivo para convertir.' });
     }
 
+    // Verify file size against token claim if provided
+    if (req.maxAllowedBytes && req.file.size > req.maxAllowedBytes) {
+      if (req.conversionTempDir && fs.existsSync(req.conversionTempDir)) {
+        fs.rmSync(req.conversionTempDir, { recursive: true, force: true });
+      }
+      return res.status(400).json({
+        error: `El archivo supera el tamaño máximo autorizado de ${(req.maxAllowedBytes / (1024 * 1024)).toFixed(0)} MB.`,
+      });
+    }
+
     activeConversions++;
     const tempDir = req.conversionTempDir;
     const inputFilePath = req.file.path;
     const originalExt = path.extname(req.file.originalname).toLowerCase();
     const originalBasename = path.basename(req.file.originalname, originalExt);
 
-    // Filter/Print options if passed (e.g. for Excel)
-    // LibreOffice Calc supports filter options like pdf:calc_pdf_Export
+    // Parse options from header if sent (e.g. for Excel)
+    let conversionOptions = {};
+    try {
+      if (req.headers['x-conversion-options']) {
+        conversionOptions = JSON.parse(req.headers['x-conversion-options']);
+      }
+    } catch {
+      // Ignore parse error
+    }
+
+    // LibreOffice Calc Filter and configuration
     const isSpreadsheet = ['.xls', '.xlsx', '.ods'].includes(originalExt);
-    const filterOption = isSpreadsheet ? 'pdf:calc_pdf_Export' : 'pdf';
+    let filterOption = 'pdf';
+
+    if (isSpreadsheet) {
+      // Build calc filter string
+      const calcFilterOpts = {};
+      if (conversionOptions.orientation === 'landscape') {
+        calcFilterOpts.IsLandscape = { type: 'boolean', value: 'true' };
+      }
+      if (conversionOptions.fitToPage) {
+        calcFilterOpts.SinglePageSheets = { type: 'boolean', value: 'true' };
+      }
+
+      if (Object.keys(calcFilterOpts).length > 0) {
+        filterOption = `pdf:calc_pdf_Export:${JSON.stringify(calcFilterOpts)}`;
+      } else {
+        filterOption = 'pdf:calc_pdf_Export';
+      }
+    }
 
     const sofficeCmd = getSofficeCommand();
     const args = [
@@ -223,20 +279,20 @@ app.post('/convert', verifyAuth, (req, res) => {
       inputFilePath,
     ];
 
-    const conversionTimeoutMs = 45000;
+    const conversionTimeoutMs = 60000;
 
-    const child = execFile(
+    execFile(
       sofficeCmd,
       args,
       {
         timeout: conversionTimeoutMs,
-        maxBuffer: 10 * 1024 * 1024,
+        maxBuffer: 15 * 1024 * 1024,
       },
       (convErr, stdout, stderr) => {
         activeConversions--;
 
         if (convErr) {
-          // Cleanup on error
+          totalErrors++;
           if (fs.existsSync(tempDir)) {
             fs.rmSync(tempDir, { recursive: true, force: true });
           }
@@ -250,7 +306,6 @@ app.post('/convert', verifyAuth, (req, res) => {
           console.error('Error de ejecucion LibreOffice:', stderr || convErr.message);
           return res.status(500).json({
             error: 'No se pudo convertir el documento. El archivo puede estar protegido con contraseña o dañado.',
-            detail: process.env.NODE_ENV === 'development' ? convErr.message : undefined,
           });
         }
 
@@ -259,6 +314,7 @@ app.post('/convert', verifyAuth, (req, res) => {
         const expectedPdfPath = path.join(tempDir, `${generatedBase}.pdf`);
 
         if (!fs.existsSync(expectedPdfPath)) {
+          totalErrors++;
           if (fs.existsSync(tempDir)) {
             fs.rmSync(tempDir, { recursive: true, force: true });
           }
@@ -267,13 +323,28 @@ app.post('/convert', verifyAuth, (req, res) => {
           });
         }
 
-        const safeDownloadName = `${originalBasename || 'documento'}.pdf`;
+        totalProcessed++;
+        const stat = fs.statSync(expectedPdfPath);
+        const outFileSize = stat.size;
+        const reservationId = req.reservationId || 'anon-res';
+
+        // Generate cryptographic completion receipt
+        const receipt = crypto
+          .createHmac('sha256', WORKER_SECRET)
+          .update(`receipt:${reservationId}:${outFileSize}`)
+          .digest('hex');
+
+        const safeDownloadName = `${originalBasename.replace(/[^a-zA-Z0-9_\u00C0-\u017F.-]/g, '_') || 'documento'}.pdf`;
 
         res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Length', String(outFileSize));
         res.setHeader(
           'Content-Disposition',
           `attachment; filename="${encodeURIComponent(safeDownloadName)}"`
         );
+        res.setHeader('x-conversion-receipt', receipt);
+        res.setHeader('x-conversion-reservation-id', reservationId);
+        res.setHeader('x-conversion-file-size', String(outFileSize));
 
         const readStream = fs.createReadStream(expectedPdfPath);
 
@@ -297,7 +368,55 @@ app.post('/convert', verifyAuth, (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
+// Periodic reaper for orphan temporary directories older than 15 minutes
+function cleanupOrphanTempDirs() {
+  try {
+    const tmpBase = os.tmpdir();
+    const entries = fs.readdirSync(tmpBase, { withFileTypes: true });
+    const now = Date.now();
+    const MAX_AGE_MS = 15 * 60 * 1000;
+    let cleaned = 0;
+
+    for (const entry of entries) {
+      if (entry.isDirectory() && entry.name.startsWith('pc-conv-')) {
+        const fullPath = path.join(tmpBase, entry.name);
+        try {
+          const stats = fs.statSync(fullPath);
+          if (now - stats.mtimeMs > MAX_AGE_MS) {
+            fs.rmSync(fullPath, { recursive: true, force: true });
+            cleaned++;
+          }
+        } catch {
+          // File may be in use
+        }
+      }
+    }
+    if (cleaned > 0) {
+      console.log(`[reaper] Limpieza completada: se eliminaron ${cleaned} directorios temporales huérfanos.`);
+    }
+  } catch (err) {
+    console.error('[reaper] Error al limpiar temporales:', err.message);
+  }
+}
+
+cleanupOrphanTempDirs();
+const reaperInterval = setInterval(cleanupOrphanTempDirs, 5 * 60 * 1000);
+
+const server = app.listen(PORT, () => {
   console.log(`[playcomun-conversion-worker] Servidor iniciado en puerto ${PORT}`);
   console.log(`[playcomun-conversion-worker] Comando LibreOffice configurado: ${getSofficeCommand()}`);
 });
+
+function gracefulShutdown(signal) {
+  console.log(`[worker] Recibida señal ${signal}. Limpiando y cerrando servidor...`);
+  clearInterval(reaperInterval);
+  cleanupOrphanTempDirs();
+  server.close(() => {
+    console.log('[worker] Servidor cerrado correctamente.');
+    process.exit(0);
+  });
+  setTimeout(() => process.exit(1), 10000);
+}
+
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
