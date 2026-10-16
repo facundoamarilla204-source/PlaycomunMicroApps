@@ -14,9 +14,9 @@ export interface PriceListProduct {
   price: number
   code?: string
   description?: string
-  duration?: string // For services
-  variant?: string // For clothing
-  unit?: string // For wholesale
+  duration?: string // Servicios
+  variant?: string // Talles / Colores
+  unit?: string // Kilos / Bultos / Horas
   sort_order: number
 }
 
@@ -28,7 +28,9 @@ export interface PriceList {
   business_name?: string
   contact_info?: string
   description?: string
-  logo_url?: string // Pro feature or general
+  currency: string // ARS, USD, EUR, etc.
+  logo_url?: string
+  accent_color?: string
   updated_date?: string
   created_at?: string
   updated_at?: string
@@ -38,3 +40,10 @@ export interface PriceList {
 
 export type MassUpdateType = "increase" | "decrease"
 export type RoundingRule = "none" | "decimals" | "integer" | "tens" | "fifties" | "hundreds"
+
+export interface PriceListUserStatus {
+  isAuthenticated: boolean
+  isPro: boolean
+  userId: string | null
+  preservedCount: number
+}

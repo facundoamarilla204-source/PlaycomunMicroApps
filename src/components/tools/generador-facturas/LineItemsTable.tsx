@@ -3,7 +3,7 @@
 import React from 'react'
 import { CurrencyCode, DocumentLineItem, DocumentType } from './types'
 import { formatCurrencyAmount } from './math'
-import { Plus, Copy, Trash2, Layers } from 'lucide-react'
+import { Plus, Copy, Trash2, Layers, Package, BookmarkPlus } from 'lucide-react'
 
 interface Props {
   items: DocumentLineItem[]
@@ -13,6 +13,8 @@ interface Props {
   onDuplicateItem: (id: string) => void
   onRemoveItem: (id: string) => void
   onUpdateItem: (id: string, field: keyof DocumentLineItem, value: string | number) => void
+  onOpenProductModal?: () => void
+  onSaveProductQuick?: (item: DocumentLineItem) => void
 }
 
 export function LineItemsTable({
@@ -23,6 +25,8 @@ export function LineItemsTable({
   onDuplicateItem,
   onRemoveItem,
   onUpdateItem,
+  onOpenProductModal,
+  onSaveProductQuick,
 }: Props) {
   const getSectionTitle = () => {
     switch (docType) {
@@ -55,14 +59,27 @@ export function LineItemsTable({
             Agregá, duplicá o modificá las líneas con cálculo automático en tiempo real
           </p>
         </div>
-        <button
-          type="button"
-          onClick={onAddItem}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-purple-600 hover:bg-purple-700 active:bg-purple-800 rounded-lg shadow-xs transition-all cursor-pointer self-start sm:self-auto"
-        >
-          <Plus className="w-3.5 h-3.5" />
-          Agregar línea
-        </button>
+        <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+          {onOpenProductModal && (
+            <button
+              type="button"
+              onClick={onOpenProductModal}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-lg border border-emerald-200 transition-colors cursor-pointer"
+              title="Insertar ítem guardado del catálogo"
+            >
+              <Package className="w-3.5 h-3.5" />
+              Elegir del catálogo
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={onAddItem}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-purple-600 hover:bg-purple-700 active:bg-purple-800 rounded-lg shadow-xs transition-all cursor-pointer"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            Agregar línea
+          </button>
+        </div>
       </div>
 
       {/* DESKTOP TABLE VIEW (md+) */}
@@ -131,6 +148,16 @@ export function LineItemsTable({
                 </td>
                 <td className="py-2.5 px-3">
                   <div className="flex items-center justify-center gap-1">
+                    {onSaveProductQuick && item.description.trim() && (
+                      <button
+                        type="button"
+                        onClick={() => onSaveProductQuick(item)}
+                        title="Guardar este concepto en el catálogo de productos"
+                        className="p-1.5 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded transition-colors"
+                      >
+                        <BookmarkPlus className="w-3.5 h-3.5" />
+                      </button>
+                    )}
                     <button
                       type="button"
                       onClick={() => onDuplicateItem(item.id)}
@@ -168,6 +195,16 @@ export function LineItemsTable({
                 Ítem #{index + 1}
               </span>
               <div className="flex items-center gap-1">
+                {onSaveProductQuick && item.description.trim() && (
+                  <button
+                    type="button"
+                    onClick={() => onSaveProductQuick(item)}
+                    title="Guardar en catálogo"
+                    className="p-1 text-slate-500 hover:text-emerald-600 rounded"
+                  >
+                    <BookmarkPlus className="w-4 h-4" />
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={() => onDuplicateItem(item.id)}

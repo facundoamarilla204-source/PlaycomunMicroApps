@@ -24,6 +24,7 @@ export type Database = {
           id: string
           notes: string | null
           payment_method: string | null
+          type: "income" | "expense"
           updated_at: string
           user_id: string
         }
@@ -36,6 +37,7 @@ export type Database = {
           id?: string
           notes?: string | null
           payment_method?: string | null
+          type?: "income" | "expense"
           updated_at?: string
           user_id: string
         }
@@ -48,6 +50,40 @@ export type Database = {
           id?: string
           notes?: string | null
           payment_method?: string | null
+          type?: "income" | "expense"
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      expense_categories: {
+        Row: {
+          color: string | null
+          created_at: string
+          icon: string | null
+          id: string
+          name: string
+          type: "income" | "expense"
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          icon?: string | null
+          id?: string
+          name: string
+          type: "income" | "expense"
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          icon?: string | null
+          id?: string
+          name?: string
+          type?: "income" | "expense"
           updated_at?: string
           user_id?: string
         }
@@ -383,6 +419,8 @@ export type Database = {
         Returns: boolean
       }
       is_pro_user: { Args: { check_user_id: string }; Returns: boolean }
+      get_user_recipe_count: { Args: Record<string, never>; Returns: number }
+      user_recipe_exists: { Args: { p_recipe_id: string }; Returns: boolean }
     }
     Enums: {
       payment_status:

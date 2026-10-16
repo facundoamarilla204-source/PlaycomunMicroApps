@@ -20,11 +20,12 @@ export interface PartyInfo {
   email?: string
   address?: string
   city?: string
-  logo?: string // Data URL base64
+  logo?: string // Data URL base64 o URL remota
 }
 
 export interface DocumentLineItem {
   id: string
+  productId?: string
   description: string
   quantity: number
   unitPrice: number
@@ -69,6 +70,14 @@ export interface FacturaProformaMeta {
 
 export type DesignTemplate = 'modern' | 'classic' | 'minimal'
 
+export type DocumentStatus =
+  | 'borrador'
+  | 'enviado'
+  | 'aceptado'
+  | 'cobrado'
+  | 'vencido'
+  | 'cancelado'
+
 export interface CommercialDocument {
   id: string
   type: DocumentType
@@ -76,6 +85,7 @@ export interface CommercialDocument {
   issueDate: string // YYYY-MM-DD
   currency: CurrencyCode
   
+  clientId?: string
   emisor: PartyInfo
   cliente: PartyInfo
   
@@ -96,4 +106,57 @@ export interface CommercialDocument {
   designTemplate: DesignTemplate
   accentColor: string
   footerNotes: string
+
+  // Estado del documento y trazabilidad
+  status?: DocumentStatus
+  createdAt?: string
+  updatedAt?: string
+}
+
+// Entidades de negocio y catálogos persistentes
+export interface BusinessProfile {
+  id?: string
+  name: string
+  taxId?: string
+  phone?: string
+  email?: string
+  address?: string
+  city?: string
+  logo?: string
+  defaultCurrency: CurrencyCode
+  defaultTemplate: DesignTemplate
+  defaultAccentColor: string
+  defaultNotes?: string
+  updatedAt?: string
+}
+
+export interface CommercialClient {
+  id: string
+  name: string
+  taxId?: string
+  phone?: string
+  email?: string
+  address?: string
+  city?: string
+  notes?: string
+  createdAt?: string
+  updatedAt?: string
+}
+
+export interface CommercialProduct {
+  id: string
+  name: string
+  description?: string
+  defaultUnitPrice: number
+  defaultDiscount?: number
+  category?: string
+  isActive: boolean
+  createdAt?: string
+  updatedAt?: string
+}
+
+export interface DocumentSequence {
+  type: DocumentType
+  prefix: string
+  currentNumber: number
 }

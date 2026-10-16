@@ -33,6 +33,15 @@ export type Recipe = {
   updated_at?: string
 }
 
+export const PRO_REQUIRED_RECIPE_ERROR = 'Esta función de recetas requiere una suscripción Pro activa.'
+
+export interface RecipeUserStatus {
+  isAuthenticated: boolean
+  isPro: boolean
+  userId: string | null
+  preservedCount: number
+}
+
 export interface RecipeFinancials {
   totalIngredients: number
   totalAdditional: number

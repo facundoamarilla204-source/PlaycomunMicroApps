@@ -1,5 +1,6 @@
 import { CommercialDocument } from './types'
 import { calculateDocumentTotals, formatCurrencyAmount } from './math'
+import { validateCommercialDocument } from './validation'
 
 // Helpers de color hexadecimal a RGB
 function hexToRgb(hex: string): [number, number, number] {
@@ -26,10 +27,20 @@ function sanitizeFilename(text: string): string {
     .slice(0, 60)
 }
 
+export interface GeneratePdfOptions {
+  isPro?: boolean
+}
+
 export async function generateDocumentPdf(
   docData: CommercialDocument,
-  action: 'download' | 'blob' = 'download'
+  action: 'download' | 'blob' = 'download',
+  options: GeneratePdfOptions = {}
 ): Promise<string | Blob | void> {
+  const validation = validateCommercialDocument(docData)
+  if (!validation.isValid) {
+    throw new Error(validation.errors[0])
+  }
+
   const { jsPDF } = await import('jspdf')
   const { default: autoTable } = await import('jspdf-autotable')
 
@@ -86,7 +97,8 @@ export async function generateDocumentPdf(
   let emisorX = margin
   if (docData.emisor.logo) {
     try {
-      doc.addImage(docData.emisor.logo, 'PNG', margin, currentY, 26, 26, undefined, 'FAST')
+      const format = docData.emisor.logo.startsWith('data:image/jpeg') ? 'JPEG' : 'PNG'
+      doc.addImage(docData.emisor.logo, format, margin, currentY, 26, 26, undefined, 'FAST')
       emisorX += 30
     } catch {
       // Si falla la imagen por formato, continuar sin romper el PDF
@@ -546,11 +558,22 @@ export async function generateDocumentPdf(
     doc.setFontSize(7)
     doc.setTextColor(156, 163, 175)
 
-    const footerText = docData.type === 'factura-proforma'
-      ? 'Documento comercial proforma sin validez fiscal ni contable • PlayComun Herramientas (playcomun.online)'
-      : 'Documento comercial de gestión interna • Generado con PlayComun Herramientas (playcomun.online)'
+    let footerText = ''
+    if (options.isPro) {
+      // PRO: Marca blanca 100% limpia sin mención de PlayComún
+      footerText = docData.type === 'factura-proforma'
+        ? 'Documento proforma emitido para fines informativos y presupuestarios. Sin validez fiscal ni contable.'
+        : (docData.emisor.name ? `Documento comercial emitido por ${docData.emisor.name}` : '')
+    } else {
+      // GRATIS: Mención distintiva de PlayComún Online
+      footerText = docData.type === 'factura-proforma'
+        ? 'Documento proforma sin validez fiscal ni contable • Generado gratis con PlayComún Online (playcomun.com)'
+        : 'Documento comercial • Generado gratis con PlayComún Online (playcomun.com)'
+    }
 
-    doc.text(footerText, margin, pageHeight - 8)
+    if (footerText) {
+      doc.text(footerText, margin, pageHeight - 8)
+    }
     doc.text(`Página ${i} de ${totalPages}`, pageWidth - margin, pageHeight - 8, { align: 'right' })
   }
 

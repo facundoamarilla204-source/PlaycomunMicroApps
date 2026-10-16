@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Save, RefreshCw, FileDown, HelpCircle, CheckCircle2 } from 'lucide-react'
+import { Save, RefreshCw, FileDown, HelpCircle, CheckCircle2, Crown } from 'lucide-react'
 import { Recipe, RecipeFinancials, formatCurrency } from '@/lib/costo-receta'
 import { exportSingleRecipePdf } from '@/lib/recipePdf'
 
@@ -10,6 +10,7 @@ interface RecipeSummarySidebarProps {
   setRecipe: React.Dispatch<React.SetStateAction<Recipe>>
   financials: RecipeFinancials
   loading: boolean
+  isPro?: boolean
   onSave: () => void
 }
 
@@ -18,6 +19,7 @@ export function RecipeSummarySidebar({
   setRecipe,
   financials,
   loading,
+  isPro = false,
   onSave,
 }: RecipeSummarySidebarProps) {
   const [downloadingPdf, setDownloadingPdf] = useState(false)
@@ -206,6 +208,12 @@ export function RecipeSummarySidebar({
                 <Save className="h-4 w-4" />
               )}
               <span>{recipe.id ? 'Guardar Cambios' : 'Guardar Receta'}</span>
+              {!isPro && (
+                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-black uppercase bg-amber-400 text-slate-900 ml-1">
+                  <Crown className="w-3 h-3" />
+                  Pro
+                </span>
+              )}
             </button>
 
             <button

@@ -2,13 +2,16 @@
 
 import React, { useRef } from 'react'
 import { PartyInfo } from './types'
-import { Building2, User, Upload, Trash2, Image as ImageIcon } from 'lucide-react'
+import { Building2, User, Upload, Trash2, Image as ImageIcon, Users, Settings, BookmarkPlus } from 'lucide-react'
 
 interface Props {
   emisor: PartyInfo
   cliente: PartyInfo
   onUpdateEmisor: (field: keyof PartyInfo, value: string) => void
   onUpdateCliente: (field: keyof PartyInfo, value: string) => void
+  onOpenProfileModal?: () => void
+  onOpenClientModal?: () => void
+  onSaveClientQuick?: () => void
 }
 
 export function PartyDetailsForm({
@@ -16,6 +19,9 @@ export function PartyDetailsForm({
   cliente,
   onUpdateEmisor,
   onUpdateCliente,
+  onOpenProfileModal,
+  onOpenClientModal,
+  onSaveClientQuick,
 }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -69,6 +75,17 @@ export function PartyDetailsForm({
                 <p className="text-[11px] text-slate-500">Datos comerciales de tu negocio o actividad</p>
               </div>
             </div>
+            {onOpenProfileModal && (
+              <button
+                type="button"
+                onClick={onOpenProfileModal}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold text-purple-700 bg-purple-50 hover:bg-purple-100 rounded-lg border border-purple-200 transition-colors cursor-pointer"
+                title="Configurar y guardar datos de mi negocio"
+              >
+                <Settings className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Configurar</span> negocio
+              </button>
+            )}
           </div>
 
         {/* LOGO UPLOAD */}
@@ -205,6 +222,31 @@ export function PartyDetailsForm({
               <h3 className="text-sm font-bold text-slate-900">Cliente (Destinatario)</h3>
               <p className="text-[11px] text-slate-500">A quién va dirigido el documento</p>
             </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            {onOpenClientModal && (
+              <button
+                type="button"
+                onClick={onOpenClientModal}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-lg border border-indigo-200 transition-colors cursor-pointer"
+                title="Elegir cliente de la agenda guardada"
+              >
+                <Users className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Elegir de</span> agenda
+              </button>
+            )}
+            {onSaveClientQuick && cliente.name.trim() && (
+              <button
+                type="button"
+                onClick={onSaveClientQuick}
+                className="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-medium text-slate-600 hover:text-indigo-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+                title="Guardar este cliente en la agenda"
+              >
+                <BookmarkPlus className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Guardar</span>
+              </button>
+            )}
           </div>
         </div>
 

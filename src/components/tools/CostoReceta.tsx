@@ -1,21 +1,24 @@
 'use client'
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react'
-import { Calculator, List, Plus } from 'lucide-react'
+import { Calculator, List, Plus, Crown, Lock } from 'lucide-react'
 import { User } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/utils/supabase/client'
 import {
   Recipe,
-  Unit,
   emptyRecipe,
   calculateRecipeFinancials,
-  unitConversion,
 } from '@/lib/costo-receta'
+import {
+  getRecipeUserStatusServer,
+  getUserRecipesServer,
+  saveRecipeServer,
+  deleteRecipeServer,
+} from '@/app/actions/recipes'
 import { RecipeForm } from './costo-receta/RecipeForm'
 import { RecipeSummarySidebar } from './costo-receta/RecipeSummarySidebar'
 import { RecipeList } from './costo-receta/RecipeList'
-import { AuthModal, DeleteConfirmModal } from './costo-receta/Modals'
+import { AuthModal, DeleteConfirmModal, ProUpgradeModal } from './costo-receta/Modals'
 
 export function CostoReceta({ user }: { user: User | null }) {
   const [activeTab, setActiveTab] = useState<'create' | 'list'>('create')
@@ -23,78 +26,70 @@ export function CostoReceta({ user }: { user: User | null }) {
   const [myRecipes, setMyRecipes] = useState<Recipe[]>([])
   const [loading, setLoading] = useState(false)
   const [fetching, setFetching] = useState(false)
+  const [isPro, setIsPro] = useState(false)
+  const [preservedCount, setPreservedCount] = useState(0)
+
+  // Modals state
   const [showAuthDialog, setShowAuthDialog] = useState(false)
+  const [showProModal, setShowProModal] = useState(false)
+  const [proModalFeature, setProModalFeature] = useState<'save' | 'library' | 'duplicate' | 'edit'>('save')
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null)
 
-  const supabase = createClient()
   const router = useRouter()
 
-  const fetchRecipes = useCallback(async () => {
+  // 1. Cargar estado de suscripción Pro y recetas desde el servidor
+  const refreshUserAndRecipes = useCallback(async () => {
     if (!user) {
+      setIsPro(false)
+      setPreservedCount(0)
       setMyRecipes([])
       return
     }
+
     setFetching(true)
     try {
-      const { data: recipesData, error: recipesError } = await supabase
-        .from('recipes')
-        .select('*, recipe_ingredients(*), recipe_additional_costs(*)')
-        .order('updated_at', { ascending: false })
+      const status = await getRecipeUserStatusServer()
+      setIsPro(status.isPro)
+      setPreservedCount(status.preservedCount)
 
-      if (recipesError) {
-        console.error('Error cargando recetas:', recipesError)
-        return
-      }
-
-      if (recipesData) {
-        setMyRecipes(
-          recipesData.map((r: any) => ({
-            id: r.id,
-            name: r.name,
-            category: r.category || '',
-            description: r.description || '',
-            yield_quantity: Number(r.yield_quantity) || 1,
-            yield_unit: (r.yield_unit || 'unidades') as Unit,
-            target_margin: Number(r.target_margin) || 0,
-            target_markup: Number(r.target_markup || 0),
-            pricing_mode: (r.pricing_mode || 'margin') as 'margin' | 'markup',
-            created_at: r.created_at,
-            updated_at: r.updated_at,
-            ingredients: (r.recipe_ingredients || []).map((i: any) => ({
-              id: i.id,
-              name: i.name,
-              quantity: Number(i.quantity) || 0,
-              unit: (i.unit || 'g') as Unit,
-              reference_quantity: Number(i.reference_quantity) || 1,
-              reference_unit: (i.reference_unit || 'kg') as Unit,
-              reference_price: Number(i.reference_price) || 0,
-            })),
-            additional_costs: (r.recipe_additional_costs || []).map((c: any) => ({
-              id: c.id,
-              name: c.name,
-              amount: Number(c.amount) || 0,
-            })),
-          }))
-        )
+      if (status.isPro) {
+        const recipesRes = await getUserRecipesServer()
+        if (recipesRes.data) {
+          setMyRecipes(recipesRes.data)
+        } else if (recipesRes.error) {
+          console.error('Error al obtener recetas del servidor:', recipesRes.error)
+        }
+      } else {
+        // Usuario autenticado sin Pro activo: no se cargan filas pero se preserva el recuento
+        setMyRecipes([])
       }
     } catch (err) {
-      console.error('Error fetching recipes:', err)
+      console.error('Error al consultar estado de usuario:', err)
     } finally {
       setFetching(false)
     }
-  }, [user, supabase])
+  }, [user])
 
   useEffect(() => {
-    fetchRecipes()
-  }, [fetchRecipes])
+    refreshUserAndRecipes()
+  }, [refreshUserAndRecipes])
 
   const financials = useMemo(() => {
     return calculateRecipeFinancials(recipe)
   }, [recipe])
 
+  // 2. Guardar o actualizar receta
   const handleSave = async () => {
+    // Si no está autenticado, invitar a iniciar sesión
     if (!user) {
       setShowAuthDialog(true)
+      return
+    }
+
+    // Si no tiene suscripción Pro activa, abrir modal explicativo Pro con conservación de datos
+    if (!isPro) {
+      setProModalFeature('save')
+      setShowProModal(true)
       return
     }
 
@@ -108,86 +103,14 @@ export function CostoReceta({ user }: { user: User | null }) {
       return
     }
 
-    const validIngredients = recipe.ingredients.filter((i) => i.name.trim() !== '')
-    const validCosts = recipe.additional_costs.filter((c) => c.name.trim() !== '')
-
     setLoading(true)
-    const isEditing = !!recipe.id
-
-    const recipeData = {
-      user_id: user.id,
-      name: recipe.name.trim(),
-      category: recipe.category.trim(),
-      description: recipe.description.trim(),
-      yield_quantity: recipe.yield_quantity,
-      yield_unit: recipe.yield_unit,
-      target_margin: recipe.target_margin,
-      target_markup: recipe.target_markup,
-      pricing_mode: recipe.pricing_mode,
-      updated_at: new Date().toISOString(),
-    }
-
-    let savedRecipeId = recipe.id
-
     try {
-      if (isEditing) {
-        const { error } = await supabase
-          .from('recipes')
-          .update(recipeData)
-          .eq('id', recipe.id)
-        if (error) throw error
-      } else {
-        const { data, error } = await supabase
-          .from('recipes')
-          .insert(recipeData)
-          .select('id')
-          .single()
-        if (error) throw error
-        if (data) savedRecipeId = data.id
+      const res = await saveRecipeServer(recipe)
+      if (res.error) {
+        throw new Error(res.error)
       }
 
-      if (savedRecipeId) {
-        if (isEditing) {
-          await supabase.from('recipe_ingredients').delete().eq('recipe_id', savedRecipeId)
-          await supabase.from('recipe_additional_costs').delete().eq('recipe_id', savedRecipeId)
-        }
-
-        if (validIngredients.length > 0) {
-          const ingredientsData = validIngredients.map((i) => {
-            const refQtyConverted = unitConversion(i.reference_unit, i.unit, i.reference_quantity)
-            const cost =
-              refQtyConverted > 0 ? (i.reference_price / refQtyConverted) * i.quantity : 0
-            return {
-              recipe_id: savedRecipeId,
-              name: i.name.trim(),
-              quantity: i.quantity,
-              unit: i.unit,
-              reference_quantity: i.reference_quantity,
-              reference_unit: i.reference_unit,
-              reference_price: i.reference_price,
-              calculated_cost: cost,
-            }
-          })
-          const { error: ingError } = await supabase
-            .from('recipe_ingredients')
-            .insert(ingredientsData)
-          if (ingError) throw ingError
-        }
-
-        if (validCosts.length > 0) {
-          const costsData = validCosts.map((c) => ({
-            recipe_id: savedRecipeId,
-            name: c.name.trim(),
-            amount: c.amount,
-          }))
-          const { error: costsError } = await supabase
-            .from('recipe_additional_costs')
-            .insert(costsData)
-          if (costsError) throw costsError
-        }
-      }
-
-      await fetchRecipes()
+      await refreshUserAndRecipes()
       setActiveTab('list')
       setRecipe(emptyRecipe)
     } catch (error: any) {
@@ -198,12 +121,21 @@ export function CostoReceta({ user }: { user: User | null }) {
     }
   }
 
+  // 3. Eliminar receta (solo Pro)
   const handleDelete = async (id: string) => {
+    if (!isPro) {
+      setProModalFeature('library')
+      setShowProModal(true)
+      return
+    }
+
     try {
       setLoading(true)
-      const { error } = await supabase.from('recipes').delete().eq('id', id)
-      if (error) throw error
-      await fetchRecipes()
+      const res = await deleteRecipeServer(id)
+      if (!res.success) {
+        throw new Error(res.error || 'Error al eliminar receta.')
+      }
+      await refreshUserAndRecipes()
       setDeleteConfirmId(null)
     } catch (error: any) {
       console.error('Error al eliminar la receta:', error)
@@ -213,12 +145,25 @@ export function CostoReceta({ user }: { user: User | null }) {
     }
   }
 
+  // 4. Editar receta guardada (solo Pro)
   const handleEdit = (r: Recipe) => {
+    if (!isPro) {
+      setProModalFeature('edit')
+      setShowProModal(true)
+      return
+    }
     setRecipe(r)
     setActiveTab('create')
   }
 
+  // 5. Duplicar receta guardada (solo Pro)
   const handleDuplicate = (r: Recipe) => {
+    if (!isPro) {
+      setProModalFeature('duplicate')
+      setShowProModal(true)
+      return
+    }
+
     const copy: Recipe = {
       ...r,
       id: undefined,
@@ -235,14 +180,19 @@ export function CostoReceta({ user }: { user: User | null }) {
     setActiveTab('create')
   }
 
+  const handleOpenProModalForFeature = (feature: 'save' | 'library' | 'duplicate' | 'edit') => {
+    setProModalFeature(feature)
+    setShowProModal(true)
+  }
+
   return (
     <div className="w-full max-w-6xl mx-auto space-y-6">
-      {/* Navigation tabs */}
+      {/* Selector de pestañas */}
       <div className="flex bg-slate-100 p-1 rounded-xl w-fit mx-auto md:mx-0 border border-slate-200/80">
         <button
           type="button"
           onClick={() => setActiveTab('create')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
             activeTab === 'create'
               ? 'bg-white shadow-sm text-purple-700'
               : 'text-slate-600 hover:text-slate-900'
@@ -258,7 +208,7 @@ export function CostoReceta({ user }: { user: User | null }) {
             setActiveTab('list')
             setRecipe(emptyRecipe)
           }}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
             activeTab === 'list'
               ? 'bg-white shadow-sm text-purple-700'
               : 'text-slate-600 hover:text-slate-900'
@@ -266,21 +216,41 @@ export function CostoReceta({ user }: { user: User | null }) {
         >
           <List className="h-4 w-4" />
           <span>Mis recetas</span>
-          {myRecipes.length > 0 && (
+
+          {/* Badge según estado Pro y conteo */}
+          {isPro ? (
+            myRecipes.length > 0 && (
+              <span
+                className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
+                  activeTab === 'list'
+                    ? 'bg-purple-100 text-purple-800'
+                    : 'bg-slate-200 text-slate-700'
+                }`}
+              >
+                {myRecipes.length}
+              </span>
+            )
+          ) : preservedCount > 0 ? (
             <span
-              className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
-                activeTab === 'list'
-                  ? 'bg-purple-100 text-purple-800'
-                  : 'bg-slate-200 text-slate-700'
-              }`}
+              title={`${preservedCount} recetas guardadas y conservadas`}
+              className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full font-bold bg-amber-100 text-amber-900 border border-amber-300"
             >
-              {myRecipes.length}
+              <Lock className="w-2.5 h-2.5" />
+              {preservedCount}
+            </span>
+          ) : (
+            <span
+              title="Función PlayComún Pro"
+              className="inline-flex items-center gap-0.5 text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-800"
+            >
+              <Crown className="w-2.5 h-2.5 text-amber-600" />
+              Pro
             </span>
           )}
         </button>
       </div>
 
-      {/* Tab: Form / Creator */}
+      {/* Pestaña: Creador / Calculadora (100% Gratis para calcular) */}
       {activeTab === 'create' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
           <div className="lg:col-span-2">
@@ -296,16 +266,19 @@ export function CostoReceta({ user }: { user: User | null }) {
               setRecipe={setRecipe}
               financials={financials}
               loading={loading}
+              isPro={isPro}
               onSave={handleSave}
             />
           </div>
         </div>
       )}
 
-      {/* Tab: My Recipes List */}
+      {/* Pestaña: Mis Recetas (Pro o estado bloqueado) */}
       {activeTab === 'list' && (
         <RecipeList
           user={user}
+          isPro={isPro}
+          preservedCount={preservedCount}
           recipes={myRecipes}
           fetching={fetching}
           onNewRecipe={handleNewRecipe}
@@ -313,13 +286,23 @@ export function CostoReceta({ user }: { user: User | null }) {
           onDuplicateRecipe={handleDuplicate}
           onDeleteRecipeRequest={(id) => setDeleteConfirmId(id)}
           onGoToAuth={() => router.push('/ingresar')}
+          onOpenProModal={handleOpenProModalForFeature}
         />
       )}
 
-      {/* Modals */}
+      {/* Modales */}
       <AuthModal
         isOpen={showAuthDialog}
         onClose={() => setShowAuthDialog(false)}
+        onLogin={() => router.push('/ingresar')}
+      />
+
+      <ProUpgradeModal
+        isOpen={showProModal}
+        feature={proModalFeature}
+        preservedCount={preservedCount}
+        isAuthenticated={!!user}
+        onClose={() => setShowProModal(false)}
         onLogin={() => router.push('/ingresar')}
       />
 

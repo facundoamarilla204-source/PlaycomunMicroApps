@@ -12,7 +12,6 @@ import { CalculadoraAguinaldo } from "@/components/tools/CalculadoraAguinaldo"
 import { AguinaldoContent } from "@/components/tools/content/AguinaldoContent"
 import { CalculadoraPrecios } from "@/components/tools/CalculadoraPrecios"
 import { PrecioVentaContent } from "@/components/tools/content/PrecioVentaContent"
-import { GeneradorPresupuestos } from "@/components/tools/GeneradorPresupuestos"
 import { GeneradorPresupuestosContent } from "@/components/tools/content/GeneradorPresupuestosContent"
 import { GeneradorFacturasTool } from "@/components/tools/generador-facturas/GeneradorFacturasTool"
 import { GeneradorFacturasContent } from "@/components/tools/content/GeneradorFacturasContent"
@@ -45,7 +44,9 @@ import { OrdenarPdfContent } from "@/components/tools/content/OrdenarPdfContent"
 import { CortadorAudio } from "@/components/tools/cortador-audio/CortadorAudio"
 import { CortadorAudioContent } from "@/components/tools/content/CortadorAudioContent"
 
-function getToolComponent(slug: string, user: User | null): React.ReactNode {
+import { isProUser } from "@/lib/pro"
+
+function getToolComponent(slug: string, user: User | null, isPro: boolean = false): React.ReactNode {
   switch (slug) {
     case "calculadora-aguinaldo":
       return (
@@ -68,7 +69,7 @@ function getToolComponent(slug: string, user: User | null): React.ReactNode {
     case "generador-presupuestos":
       return (
         <>
-          <GeneradorPresupuestos />
+          <GeneradorFacturasTool initialType="presupuesto" lockType={true} />
           <div className="mt-16 flex justify-center">
             <GeneradorPresupuestosContent />
           </div>
@@ -150,7 +151,7 @@ function getToolComponent(slug: string, user: User | null): React.ReactNode {
     case "control-gastos":
       return (
         <>
-          <ControlGastos user={user} />
+          <ControlGastos user={user} initialIsPro={isPro} />
           <div className="mt-16 flex justify-center">
             <ControlGastosContent />
           </div>
@@ -243,9 +244,10 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
 
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
+  const isPro = user ? await isProUser(user.id) : false
 
   const isSoon = tool.status === "soon"
-  const toolContent = getToolComponent(tool.slug, user)
+  const toolContent = getToolComponent(tool.slug, user, isPro)
 
   const applicationCategory =
     tool.category === "salud-fitness"
