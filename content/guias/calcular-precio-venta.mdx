@@ -1,14 +1,248 @@
 ---
-title: "Cómo calcular el precio de venta de un producto"
-description: "Aprendé a calcular el precio correcto para tus productos incluyendo costos, margen y comisiones."
-updatedAt: "2026-10-08"
-relatedTool: "/herramientas"
+title: "Cómo calcular el precio de venta de un producto (Fórmulas y Guía 2026)"
+description: "Aprendé cómo calcular el precio de venta paso a paso: fórmulas reales de margen vs markup, costos de reposición, comisiones de cobro e impacto del IVA en Argentina."
+updatedAt: "2026-10-17"
+relatedTool: "/herramientas/calculadora-precios"
+relatedToolTitle: "Calculá el precio de venta en segundos"
+relatedToolDescription: "Ingresá tus costos, comisiones de cobro y margen objetivo en la Calculadora de Precios de PlayComun Online y obtené el precio final exacto sin registrarte."
+relatedToolButton: "Abrir calculadora de precios gratis"
+faqs:
+  - question: "¿Cuál es la diferencia exacta entre margen de ganancia y markup?"
+    answer: "El markup (recargo) es el porcentaje que le sumás al costo de compra o fabricación para llegar al precio. El margen de ganancia es el porcentaje del precio de venta final que te queda limpio en el bolsillo. Un recargo del 50% sobre el costo equivale únicamente a un margen del 33.3% sobre la venta."
+  - question: "¿Por qué en Argentina es fundamental calcular con el costo de reposición?"
+    answer: "Porque si calculás tu ganancia sobre la factura de compra histórica de hace semanas o meses, cuando vayas a comprar nuevo stock el insumo habrá aumentado. Si vendés sin contemplar lo que te costará reponer la mercadería hoy, vas a descapitalizar tu negocio aunque creas que estás ganando dinero en los papeles."
+  - question: "¿Cómo se incluyen las comisiones de Mercado Pago y tarjetas en el precio?"
+    answer: "Las pasarelas de pago descuentan su comisión sobre el total cobrado al cliente (precio final con IVA incluido). Por eso no podés simplemente sumarle un porcentaje fijo al costo: debés incorporar la comisión en el denominador de la fórmula de fijación de precios para que no absorba tu ganancia neta."
+  - question: "¿Cómo influye el IVA si soy Monotributista frente a Responsable Inscripto?"
+    answer: "El Monotributista emite Factura C y no discrimina IVA en la venta; el IVA pagado en sus compras forma parte de su costo directo. El Responsable Inscripto calcula primero su precio neto sin impuestos y luego adiciona el débito fiscal de IVA (generalmente 21% o 10.5%), el cual ingresa al fisco tras compensar su crédito fiscal de compras."
+  - question: "¿Qué margen de ganancia promedio es recomendable para un comercio o emprendimiento?"
+    answer: "Depende de la rotación y el rubro: en reventa masiva de alta rotación (alimentos o artículos de consumo masivo) los márgenes netos suelen oscilar entre el 15% y el 25%. En productos artesanales, indumentaria, nichos de diseño o servicios profesionales, los márgenes netos saludables suelen rondar entre el 35% y el 60%."
 ---
 
-# Cómo calcular el precio de venta de un producto
+Saber **cómo calcular el precio de venta** de un producto o servicio es una de las decisiones más determinantes para la supervivencia y rentabilidad de cualquier negocio.
 
-*Este es un contenido provisional. Próximamente publicaremos la guía completa.*
+Muchos emprendedores y dueños de pymes en Argentina cometen el error habitual de recurrir a «reglas caseras», como multiplicar el costo por dos o sumarle un 30% al valor de la factura de compra. Sin embargo, cuando llegan los resúmenes de comisiones de las plataformas de cobro, los impuestos locales y el costo de reponer la mercadería vendida, descubren con frustración que **no queda dinero en la cuenta bancaria**.
 
-Para que tu negocio sea rentable, el precio no puede calcularse simplemente sumando un porcentaje al costo de compra.
+En esta guía vas a aprender el procedimiento matemático exacto para fijar precios con seguridad, distinguiendo con claridad el **margen de ganancia** del **markup**, incorporando el **costo de reposición**, las comisiones de pasarelas de pago y el impacto impositivo del IVA y de Ingresos Brutos en Argentina.
 
-Tenés que considerar los costos fijos, el costo variable del producto, el margen de ganancia que deseás obtener y las comisiones de los medios de cobro.
+---
+
+## 1. Identificar el costo real: directos, fijos y el costo de reposición
+
+Antes de aplicar cualquier porcentaje de beneficio, es indispensable conocer cuánto cuesta realmente poner una unidad de tu producto en manos del comprador.
+
+El costo total unitario se compone de tres variables:
+
+1. **Costos directos de materiales e insumos:** Es el valor de la materia prima, piezas o mercadería adquirida para reventa, sumado al packaging unitario (caja, bolsa, etiqueta, cinta de embalar) y elementos descartables. Si elaborás productos con múltiples ingredientes o insumos fraccionados, podés organizarlos previamente con nuestra [Calculadora de Costo de Receta](/herramientas/costo-receta).
+2. **Mano de obra directa o tiempo dedicado:** El valor del tiempo invertido en la confección, ensamblado o prestación del servicio. El tiempo del emprendedor o del equipo técnico nunca debe computarse como «gratis»: debe ser un costo tangible por hora.
+3. **Prorrateo de costos fijos mensuales:** Alquiler del local o taller, servicios de luz, internet, abonos de software, mantenimiento y amortización de herramientas. Para imputarlos a cada unidad, se divide el gasto fijo mensual estimado por el volumen proyectado de unidades vendidas en el mes:
+   
+$$\text{Costo Fijo Unitario} = \frac{\text{Costos Fijos del Mes}}{\text{Unidades Proyectadas en el Mes}}$$
+
+### El costo de reposición en Argentina: la clave para no descapitalizarse
+
+En economías con variación constante de precios, **nunca debés fijar tus precios utilizando el costo histórico** (lo que pagaste en la factura de compra hace uno o dos meses). 
+
+> **Ejemplo de descapitalización:**  
+> Compraste un insumo a $10.000 hace 45 días. Pensás que si lo vendés a $14.000 ganás $4.000. Pero hoy tu proveedor actualizó la lista y volver a comprar ese mismo insumo cuesta $15.000.  
+> Al cobrar $14.000, no solo no ganaste nada: **perdiste $1.000 de tu capital de trabajo** y ahora no podés reponer el producto vendido.
+
+Cotizá siempre sobre el **costo de reposición actual**: lo que costará comprar el insumo hoy por la mañana cuando salgas a reponerlo.
+
+---
+
+## 2. Diferencia entre Margen de Ganancia y Markup (Recargo sobre el costo)
+
+La confusión entre estos dos conceptos es el error financiero número uno al poner precios:
+
+* **Markup (Recargo sobre el costo):** Es el porcentaje que le sumás a lo que te costó producir o adquirir el producto. Se calcula tomando como base el **costo**.
+* **Margen de Ganancia (Margen sobre ventas):** Es el porcentaje del dinero cobrado que te queda como ganancia neta. Se calcula tomando como base el **precio de venta**.
+
+### Fórmulas conceptuales
+
+$$\text{Markup (\%)} = \left(\frac{\text{Ganancia}}{\text{Costo Total}}\right) \times 100$$
+
+$$\text{Margen (\%)} = \left(\frac{\text{Ganancia}}{\text{Precio de Venta}}\right) \times 100$$
+
+### Tabla comparativa de equivalencias
+
+| Costo Total Unitario | Recargo sobre Costo (Markup) | Precio de Venta resultante | Ganancia Neta en Pesos | Margen Real sobre la Venta |
+| :--- | :--- | :--- | :--- | :--- |
+| **$ 10.000** | + 20% | $ 12.000 | $ 2.000 | **16.7%** |
+| **$ 10.000** | + 25% | $ 12.500 | $ 2.500 | **20.0%** |
+| **$ 10.000** | + 33.3% | $ 13.333 | $ 3.333 | **25.0%** |
+| **$ 10.000** | + 50% | $ 15.000 | $ 5.000 | **33.3%** |
+| **$ 10.000** | + 100% (el famoso «x2») | $ 20.000 | $ 10.000 | **50.0%** |
+| **$ 10.000** | + 150% | $ 25.000 | $ 15.000 | **60.0%** |
+| **$ 10.000** | + 200% (el famoso «x3») | $ 30.000 | $ 20.000 | **66.7%** |
+
+Como podés comprobar en la tabla, **un recargo del 50% NO es un margen del 50%**. Si multiplicás tu costo por 2 (+100% de markup), tu margen sobre ventas es del 50%. Y es matemáticamente imposible tener un margen del 100%, ya que requeriría que el costo sea exactamente cero o que el precio tienda a infinito.
+
+Si querés evaluar la rentabilidad general de tu negocio y comparar retornos de inversión entre diferentes líneas de productos, podés utilizar nuestra [Calculadora de Rentabilidad](/herramientas/calculadora-rentabilidad).
+
+---
+
+## 3. Fórmulas matemáticas para calcular el precio de venta
+
+Dependiendo de si tu objetivo comercial está definido como un recargo sobre el costo o como un margen neto sobre el precio de venta, las fórmulas a emplear son diferentes.
+
+### Opción A: Cálculo con Markup (Recargo sobre el costo)
+
+Si sabés que a cada producto querés sumarle un porcentaje fijo sobre su costo total ($C$):
+
+$$\text{Precio Neto} = C \times (1 + k)$$
+
+*Donde $C$ es el costo unitario total y $k$ es el recargo en decimales (ejemplo: 40% = 0.40).*
+
+### Opción B: Cálculo con Margen objetivo (Margen comercial sobre ventas)
+
+Si tu meta es que el $30\%$ de lo que pague el cliente quede como ganancia neta ($m = 0.30$), la fórmula exige **dividir**, no multiplicar:
+
+$$\text{Precio Neto} = \frac{C}{1 - m}$$
+
+### La Fórmula Integral de Venta Real (Comisiones de cobro e impuestos)
+
+En la práctica, ningún negocio vende en un vacío. Cuando un cliente te abona con tarjeta de débito, crédito o dinero en cuenta a través de un link de pago o posnet (por ejemplo, Mercado Pago, Payway, Ualá Bis, etc.):
+
+1. **La pasarela te descuenta su comisión sobre el precio total cobrado** (con IVA incluido).
+2. **Se aplican impuestos sobre la facturación bruta**, como el Impuesto sobre los Ingresos Brutos (IIBB) provincial.
+
+Para no perder dinero, la fórmula profesional que vincula todas las variables es:
+
+$$\text{Precio Neto} = \frac{C}{1 - t - p - c \times (1 + i) - m}$$
+
+Donde:
+* $C$: Costo total unitario (reposición + insumos + fijos).
+* $t$: Alícuota de Ingresos Brutos provincial (expresada en decimal, ej. 3.5% = 0.035).
+* $p$: Otros cargos o percepciones aplicables sobre ventas.
+* $c$: Comisión de la plataforma o pasarela de cobro (ej. 6% = 0.06).
+* $i$: Tasa de IVA sobre el producto (0% si es Monotributo / exento, 0.21 para 21%, o 0.105 para 10.5%).
+* $m$: Margen de ganancia neta pretendido sobre el precio neto.
+
+Para ahorrarte el despeje manual de esta ecuación cada vez que cambia un costo, podés cargar directamente los valores en la [Calculadora de Precios de Venta](/herramientas/calculadora-precios).
+
+---
+
+## 4. El tratamiento del IVA y situación fiscal en Argentina
+
+La forma en que se trata el IVA varía radicalmente según la condición del contribuyente ante la Agencia de Recaudación y Control Aduanero (ARCA / AFIP):
+
+### Caso 1: Monotributistas
+* Emiten **Factura C** hacia cualquier cliente (consumidores finales o empresas).
+* El monotributista **no discrimina IVA** en sus facturas de venta.
+* El IVA que abonó al comprar insumos a sus proveedores no genera crédito fiscal: es simplemente un **costo directo más**.
+* **En la fórmula:** la tasa de IVA de venta es $i = 0$. El precio resultante es directamente el precio final al público.
+
+### Caso 2: Responsables Inscriptos
+* Emiten **Factura A** (a otros Responsables Inscriptos) o **Factura B** (a consumidores finales y monotributistas).
+* Trabajan con precios netos: calculan el precio neto ($N$) para cubrir costos y margen, y luego adicionan el débito fiscal de IVA:
+  
+$$\text{Precio Final al Consumidor (Factura B)} = N \times (1 + i)$$
+
+Las alícuotas más usuales según la Ley de IVA en Argentina son del **21%** (tasa general), **10.5%** (bienes de capital, determinados alimentos y electrónica de producción nacional) o **27%** (servicios de telecomunicaciones y energía). Si necesitás discriminar o sumar el impuesto sobre importes brutos, podés calcularlo al instante con nuestra [Calculadora de IVA Argentina](/herramientas/calculadora-iva).
+
+*Aclaración legal e impositiva:* Las alícuotas impositivas, regímenes de retención y percepciones provinciales (convenio multilateral o regímenes simplificados) varían según la jurisdicción y la actividad comercial. Esta guía tiene fines puramente educativos e informativos y no constituye asesoramiento tributario o contable individualizado.
+
+---
+
+## 5. Ejemplo numérico completo paso a paso en Pesos Argentinos ($ ARS)
+
+Veamos un ejemplo real para un emprendedor o comercio inscripto en el Monotributo que comercializa un producto manufacturado en Argentina (por ejemplo, una lámpara de diseño o un bolso artesanal).
+
+### Hipótesis de partida del producto
+* **Insumos y materiales (a costo de reposición actual):** $ 18.000
+* **Packaging, etiquetas y embalaje protector:** $ 2.000
+* **Costo fijo asignado prorrateado (luz, alquiler, taller):** $ 5.000
+* **Costo total por unidad ($C$):** $ 25.000
+* **Margen de ganancia neta deseado ($m$):** 30% (0.30)
+* **Comisión por cobro con tarjeta / link de pago ($c$):** 6.0% (0.06)
+* **Ingresos Brutos estimado ($t$):** 3.5% (0.035)
+* **Tasa de IVA en factura de venta ($i$):** 0% (Monotributo)
+
+### Paso 1: Cálculo del denominador
+Reemplazamos en el denominador de la fórmula integral:
+
+$$\text{Denominador} = 1 - 0.035 - (0.06 \times 1.00) - 0.30 = 1 - 0.395 = 0.605$$
+
+### Paso 2: Obtención del precio de venta final
+Dividimos el costo total por el denominador resultante:
+
+$$\text{Precio de Venta} = \frac{\$ 25.000}{0.605} = \mathbf{\$ 41.322,31}$$
+
+### Paso 3: Desglose y verificación de a dónde va cada peso cobrado
+Comprobemos qué ocurre cuando el cliente abona los **$ 41.322,31**:
+
+| Concepto | Cálculo | Monto en $ ARS | \% sobre el Precio Final |
+| :--- | :--- | :--- | :--- |
+| **Costo Total Unitario** | Costo directo + fijos | $ 25.000,00 | 60.50% |
+| **Ingresos Brutos (IIBB)** | $ 41.322,31 × 3.5% | $ 1.446,28 | 3.50% |
+| **Comisión pasarela de cobro** | $ 41.322,31 × 6.0% | $ 2.479,34 | 6.00% |
+| **Ganancia Neta en el bolsillo** | Precio cobrado menos costos y deducciones | **$ 12.396,69** | **30.00%** |
+
+¡El cálculo es matemáticamente exacto! La ganancia neta obtenida ($ 12.396,69) representa **con total precisión el 30%** del precio de venta que el cliente pagó.
+
+### ¿Qué hubiera pasado con la «cuenta tradicional» de sumar el 30% al costo?
+Si el comerciante hubiera calculado: $\$ 25.000 \times 1.30 = \$ 32.500$:
+* Habría cobrado $ 32.500.
+* Comisión de cobro (6%): $ 1.950.
+* Ingresos Brutos (3.5%): $ 1.137,50.
+* Costo de insumos a reponer: $ 25.000.
+* **Ganancia real de bolsillo:** $\$ 32.500 - \$ 1.950 - \$ 1.137,50 - \$ 25.000 = \$ 4.412,50$.
+
+En lugar del 30% esperado, **habría ganado solo el 13.5%** ($ 4.412,50 sobre $ 32.500). Menos de la mitad de lo planificado, poniendo en riesgo la continuidad de su negocio.
+
+---
+
+## 6. Procedimiento paso a paso para fijar tus precios
+
+Para estandarizar la fijación de precios en tu catálogo, seguí este orden lógico:
+
+1. **Relevá el costo de reposición de tus insumos:** Consultá las listas de precios actuales de tus proveedores para saber cuánto cuesta recomprar los materiales hoy.
+2. **Calculá tus costos variables de embalaje y envío:** Considerá bolsas, cintas, envoltorios y si ofrecés envíos bonificados.
+3. **Prorrateá tus costos fijos mensuales:** Dividí los gastos generales del negocio entre la cantidad esperada de ventas del mes.
+4. **Determiná la comisión del medio de cobro:** Analizá si la venta se concretará en efectivo, transferencia bancaria, débito o pasarela con cuotas.
+5. **Elegí tu margen comercial objetivo:** Tomá como referencia el valor percibido del producto, el posicionamiento de marca y los precios de la competencia.
+6. **Aplicá la fórmula de fijación de precio:** Obtené el precio sugerido y validalo frente al mercado.
+7. **Documentá tu catálogo:** Mantené una lista ordenada de precios para evitar errores al pasar cotizaciones a clientes o mayoristas. Podés crearla en minutos con el [Generador de Listas de Precios en PDF](/herramientas/generador-listas-precios).
+
+---
+
+## 7. Errores frecuentes al fijar precios
+
+Evitá estos cinco tropiezos habituales que perjudican a la mayoría de los comercios y prestadores de servicios:
+
+* **1. Confundir recargo con margen:** Creer que un recargo del 50% sobre el costo equivale a un margen del 50% sobre el precio de venta.
+* **2. Olvidar las comisiones bancarias y de plataformas:** No prever los descuentos de pasarelas de pago, retenciones impositivas y cargos por transferencias.
+* **3. Cotizar con costos de compra pasados:** Descapitalizarse al no reponer la mercadería al precio del día.
+* **4. No asignarse un sueldo:** Considerar que «la ganancia del negocio» es tu sueldo. La mano de obra del dueño es un costo operativo que debe estar incluido antes de calcular la ganancia empresarial.
+* **5. Competir exclusivamente por precio:** Intentar ser el más barato del mercado suele derivar en una espiral descendente sin margen para absorber imprevistos, roturas o garantías.
+
+---
+
+## 8. ¿Cuándo conviene actualizar los precios de venta?
+
+En un entorno comercial dinámico, los precios no deben permanecer estáticos durante meses. Conviene revisarlos ante las siguientes situaciones:
+
+* **Modificación de listas de proveedores:** Cada vez que el costo de reposición de materias primas sufra un ajuste.
+* **Cambios en los términos de las pasarelas de pago:** Si las plataformas de cobro o entidades financieras modifican sus comisiones o tasas de financiamiento.
+* **Aumento de costos fijos:** Variaciones en alquileres comerciales, servicios de energía, logística o salarios.
+* **Cambio de temporada o ciclo de vida:** Para liquidar remanentes de stock o relanzar líneas exclusivas de mayor valor agregado.
+
+---
+
+## Preguntas Frecuentes (FAQ)
+
+### ¿Cuál es la diferencia exacta entre margen de ganancia y markup?
+El markup (recargo) es el porcentaje que le sumás al costo de compra o fabricación para llegar al precio. El margen de ganancia es el porcentaje del precio de venta final que te queda limpio en el bolsillo. Un recargo del 50% sobre el costo equivale únicamente a un margen del 33.3% sobre la venta.
+
+### ¿Por qué en Argentina es fundamental calcular con el costo de reposición?
+Porque si calculás tu ganancia sobre la factura de compra histórica de hace semanas o meses, cuando vayas a comprar nuevo stock el insumo habrá aumentado. Si vendés sin contemplar lo que te costará reponer la mercadería hoy, vas a descapitalizar tu negocio aunque creas que estás ganando dinero en los papeles.
+
+### ¿Cómo se incluyen las comisiones de Mercado Pago y tarjetas en el precio?
+Las pasarelas de pago descuentan su comisión sobre el total cobrado al cliente (precio final con IVA incluido). Por eso no podés simplemente sumarle un porcentaje fijo al costo: debés incorporar la comisión en el denominador de la fórmula de fijación de precios para que no absorba tu ganancia neta.
+
+### ¿Cómo influye el IVA si soy Monotributista frente a Responsable Inscripto?
+El Monotributista emite Factura C y no discrimina IVA en la venta; el IVA pagado en sus compras forma parte de su costo directo. El Responsable Inscripto calcula primero su precio neto sin impuestos y luego adiciona el débito fiscal de IVA (generalmente 21% o 10.5%), el cual ingresa al fisco tras compensar su crédito fiscal de compras.
+
+### ¿Qué margen de ganancia promedio es recomendable para un comercio o emprendimiento?
+Depende de la rotación y el rubro: en reventa masiva de alta rotación (alimentos o artículos de consumo masivo) los márgenes netos suelen oscilar entre el 15% y el 25%. En productos artesanales, indumentaria, nichos de diseño o servicios profesionales, los márgenes netos saludables suelen rondar entre el 35% y el 60%.

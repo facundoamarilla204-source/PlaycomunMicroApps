@@ -7,7 +7,7 @@ import { Metadata } from "next";
 import { siteConfig } from "@/config/site";
 import Link from "next/link";
 import { JsonLd } from "@/components/seo/JsonLd";
-
+import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { buildMetadata } from "@/lib/metadata";
 
 const guiasDir = path.join(process.cwd(), "content", "guias");
@@ -58,57 +58,140 @@ export default async function GuiaPage({ params }: { params: Promise<{ slug: str
   }
 
   const { frontmatter, content } = guide;
+  const guideUrl = `${siteConfig.url}/guias/${resolvedParams.slug}`;
+
+  const graphItems: any[] = [
+    {
+      "@type": "Article",
+      headline: frontmatter.title,
+      description: frontmatter.description,
+      datePublished: new Date(frontmatter.updatedAt).toISOString(),
+      dateModified: new Date(frontmatter.updatedAt).toISOString(),
+      mainEntityOfPage: {
+        "@type": "WebPage",
+        "@id": guideUrl,
+      },
+      author: {
+        "@type": "Organization",
+        name: siteConfig.name,
+        url: siteConfig.url,
+      },
+      publisher: {
+        "@type": "Organization",
+        name: siteConfig.organization?.name || siteConfig.name,
+        logo: {
+          "@type": "ImageObject",
+          url: `${siteConfig.url}/icon.png`,
+        },
+      },
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Inicio",
+          item: siteConfig.url,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Herramientas",
+          item: `${siteConfig.url}/herramientas`,
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: frontmatter.title,
+          item: guideUrl,
+        },
+      ],
+    },
+  ];
+
+  if (Array.isArray(frontmatter.faqs) && frontmatter.faqs.length > 0) {
+    graphItems.push({
+      "@type": "FAQPage",
+      mainEntity: frontmatter.faqs.map((faq: { question: string; answer: string }) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer,
+        },
+      })),
+    });
+  }
 
   const jsonLdData = {
     "@context": "https://schema.org",
-    "@type": "Article",
-    headline: frontmatter.title,
-    description: frontmatter.description,
-    dateModified: new Date(frontmatter.updatedAt).toISOString(),
-    author: {
-      "@type": "Organization",
-      name: siteConfig.name,
-      url: siteConfig.url,
-    },
-    publisher: {
-      "@type": "Organization",
-      name: siteConfig.organization?.name || siteConfig.name,
-      logo: {
-        "@type": "ImageObject",
-        url: `${siteConfig.url}/icon.png`,
-      },
+    "@graph": graphItems,
+  };
+
+  const mdxComponents = {
+    a: ({ href, children, ...props }: any) => {
+      if (href && href.startsWith("/")) {
+        return (
+          <Link href={href} {...props}>
+            {children}
+          </Link>
+        );
+      }
+      return (
+        <a href={href} target="_blank" rel="noopener noreferrer" {...props}>
+          {children}
+        </a>
+      );
     },
   };
 
   return (
     <>
       <JsonLd data={jsonLdData} />
-      <article className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+      <article className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-10 md:py-16">
+        <Breadcrumbs
+          items={[
+            { label: "Herramientas", href: "/herramientas" },
+            { label: frontmatter.title },
+          ]}
+        />
+
         <header className="mb-10 border-b border-border pb-8">
-          <h1 className="text-4xl font-extrabold text-foreground tracking-tight mb-4">{frontmatter.title}</h1>
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight mb-4">
+            {frontmatter.title}
+          </h1>
           <p className="text-sm text-foreground-muted">
-            Actualizado el {new Date(frontmatter.updatedAt).toLocaleDateString("es-AR", { year: 'numeric', month: 'long', day: 'numeric' })}
+            Actualizado el{" "}
+            {new Date(frontmatter.updatedAt).toLocaleDateString("es-AR", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
           </p>
         </header>
 
-        <div className="prose prose-brand max-w-none prose-headings:font-bold prose-a:text-brand prose-a:no-underline hover:prose-a:underline">
-          <MDXRemote source={content} />
+        <div className="prose prose-brand max-w-none prose-headings:font-bold prose-headings:text-foreground prose-p:text-foreground-muted prose-p:leading-relaxed prose-a:text-brand prose-a:font-semibold prose-a:no-underline hover:prose-a:underline prose-strong:text-foreground prose-table:border prose-table:border-border prose-th:bg-surface-subtle prose-th:p-3 prose-td:p-3 prose-td:border-b prose-td:border-border">
+          <MDXRemote source={content} components={mdxComponents} />
         </div>
 
         {frontmatter.relatedTool && (
           <div className="mt-16 pt-8 border-t border-border">
-            <div className="bg-brand/5 border border-brand/20 rounded-2xl p-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div className="bg-brand-light border border-brand-border rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6">
               <div>
-                <h3 className="text-xl font-bold text-foreground mb-2">Poné en práctica esta guía</h3>
-                <p className="text-foreground-muted text-sm">
-                  Tenemos una herramienta específica para que no tengas que calcular todo a mano.
+                <h3 className="text-xl font-bold text-foreground mb-2">
+                  {frontmatter.relatedToolTitle || "Poné en práctica esta guía"}
+                </h3>
+                <p className="text-foreground-muted text-sm leading-relaxed">
+                  {frontmatter.relatedToolDescription ||
+                    "Tenemos una herramienta específica para que no tengas que calcular todo a mano."}
                 </p>
               </div>
-              <Link 
+              <Link
                 href={frontmatter.relatedTool}
-                className="shrink-0 rounded-xl bg-brand px-6 py-3 font-semibold text-white shadow-sm transition-all hover:bg-brand-hover hover:-translate-y-0.5 active:translate-y-0"
+                className="shrink-0 rounded-xl bg-brand px-6 py-3 font-semibold text-white shadow-sm transition-all hover:bg-brand-hover hover:-translate-y-0.5 active:translate-y-0 text-center"
               >
-                Ver herramienta
+                {frontmatter.relatedToolButton || "Ver herramienta"}
               </Link>
             </div>
           </div>
