@@ -21,7 +21,7 @@ faqs:
 
 Saber **cómo calcular el precio de venta** de un producto o servicio es una de las decisiones más determinantes para la supervivencia y rentabilidad de cualquier negocio.
 
-Muchos emprendedores y dueños de pymes en Argentina cometen el error habitual de recurrir a «reglas caseras», como multiplicar el costo por dos o sumarle un 30% al valor de la factura de compra. Sin embargo, cuando llegan los resúmenes de comisiones de las plataformas de cobro, los impuestos locales y el costo de reponer la mercadería vendida, descubren con frustración que **no queda dinero en la cuenta bancaria**.
+Muchos emprendedores y dueños de pymes en Argentina cometen el error habitual de recurrir a atajos empíricos, como multiplicar el costo por dos o sumarle un 30% al valor de la factura de compra. Sin embargo, cuando llegan los resúmenes de comisiones de las plataformas de cobro, los impuestos locales y el costo de reponer la mercadería vendida, descubren con frustración que **no queda dinero en la cuenta bancaria**.
 
 En esta guía vas a aprender el procedimiento matemático exacto para fijar precios con seguridad, distinguiendo con claridad el **margen de ganancia** del **markup**, incorporando el **costo de reposición**, las comisiones de pasarelas de pago y el impacto impositivo del IVA y de Ingresos Brutos en Argentina.
 
@@ -34,10 +34,11 @@ Antes de aplicar cualquier porcentaje de beneficio, es indispensable conocer cu�
 El costo total unitario se compone de tres variables:
 
 1. **Costos directos de materiales e insumos:** Es el valor de la materia prima, piezas o mercadería adquirida para reventa, sumado al packaging unitario (caja, bolsa, etiqueta, cinta de embalar) y elementos descartables. Si elaborás productos con múltiples ingredientes o insumos fraccionados, podés organizarlos previamente con nuestra [Calculadora de Costo de Receta](/herramientas/costo-receta).
-2. **Mano de obra directa o tiempo dedicado:** El valor del tiempo invertido en la confección, ensamblado o prestación del servicio. El tiempo del emprendedor o del equipo técnico nunca debe computarse como «gratis»: debe ser un costo tangible por hora.
+2. **Mano de obra directa o tiempo dedicado:** El valor del tiempo invertido en la confección, ensamblado o prestación del servicio. El tiempo del emprendedor o del equipo técnico nunca debe computarse como cero: debe ser un costo tangible por hora de dedicación.
 3. **Prorrateo de costos fijos mensuales:** Alquiler del local o taller, servicios de luz, internet, abonos de software, mantenimiento y amortización de herramientas. Para imputarlos a cada unidad, se divide el gasto fijo mensual estimado por el volumen proyectado de unidades vendidas en el mes:
-   
-$$\text{Costo Fijo Unitario} = \frac{\text{Costos Fijos del Mes}}{\text{Unidades Proyectadas en el Mes}}$$
+
+> **Fórmula de Costo Fijo Unitario:**  
+> `Costo Fijo Unitario = Costos Fijos Totales del Mes ÷ Unidades Proyectadas a Vender`
 
 ### El costo de reposición en Argentina: la clave para no descapitalizarse
 
@@ -60,9 +61,11 @@ La confusión entre estos dos conceptos es el error financiero número uno al po
 
 ### Fórmulas conceptuales
 
-$$\text{Markup (\%)} = \left(\frac{\text{Ganancia}}{\text{Costo Total}}\right) \times 100$$
+> **Markup sobre costo:**  
+> `Markup (%) = (Ganancia Neta ÷ Costo Total Unitario) × 100`
 
-$$\text{Margen (\%)} = \left(\frac{\text{Ganancia}}{\text{Precio de Venta}}\right) \times 100$$
+> **Margen sobre ventas:**  
+> `Margen (%) = (Ganancia Neta ÷ Precio de Venta) × 100`
 
 ### Tabla comparativa de equivalencias
 
@@ -88,17 +91,17 @@ Dependiendo de si tu objetivo comercial está definido como un recargo sobre el 
 
 ### Opción A: Cálculo con Markup (Recargo sobre el costo)
 
-Si sabés que a cada producto querés sumarle un porcentaje fijo sobre su costo total ($C$):
+Si sabés que a cada producto querés sumarle un porcentaje fijo sobre su costo total unitario:
 
-$$\text{Precio Neto} = C \times (1 + k)$$
-
-*Donde $C$ es el costo unitario total y $k$ es el recargo en decimales (ejemplo: 40% = 0.40).*
+> `Precio Neto = Costo Total × (1 + Recargo Decimal)`  
+> *Ejemplo: para un costo de $10.000 con markup del 40%: $10.000 × 1.40 = $14.000.*
 
 ### Opción B: Cálculo con Margen objetivo (Margen comercial sobre ventas)
 
-Si tu meta es que el $30\%$ de lo que pague el cliente quede como ganancia neta ($m = 0.30$), la fórmula exige **dividir**, no multiplicar:
+Si tu meta es que el 30% de lo que pague el cliente quede como ganancia neta, la fórmula exige **dividir**, no multiplicar:
 
-$$\text{Precio Neto} = \frac{C}{1 - m}$$
+> `Precio Neto = Costo Total ÷ (1 - Margen Deseado Decimal)`  
+> *Ejemplo: para un costo de $10.000 con margen del 30%: $10.000 ÷ (1 - 0.30) = $10.000 ÷ 0.70 = $14.285,71.*
 
 ### La Fórmula Integral de Venta Real (Comisiones de cobro e impuestos)
 
@@ -109,15 +112,15 @@ En la práctica, ningún negocio vende en un vacío. Cuando un cliente te abona 
 
 Para no perder dinero, la fórmula profesional que vincula todas las variables es:
 
-$$\text{Precio Neto} = \frac{C}{1 - t - p - c \times (1 + i) - m}$$
+> **Fórmula Integral de Venta:**  
+> `Precio Neto = Costo Total ÷ [1 - Impuestos - (Comisión Cobro × (1 + Tasa IVA)) - Margen Deseado]`
 
 Donde:
-* $C$: Costo total unitario (reposición + insumos + fijos).
-* $t$: Alícuota de Ingresos Brutos provincial (expresada en decimal, ej. 3.5% = 0.035).
-* $p$: Otros cargos o percepciones aplicables sobre ventas.
-* $c$: Comisión de la plataforma o pasarela de cobro (ej. 6% = 0.06).
-* $i$: Tasa de IVA sobre el producto (0% si es Monotributo / exento, 0.21 para 21%, o 0.105 para 10.5%).
-* $m$: Margen de ganancia neta pretendido sobre el precio neto.
+* **Costo Total:** Costo unitario total (reposición + insumos + fijos prorrateados).
+* **Impuestos:** Alícuota de Ingresos Brutos provincial (ej. 3.5% = 0.035) y otros cargos directos.
+* **Comisión Cobro:** Comisión de la plataforma o pasarela de cobro (ej. 6% = 0.06).
+* **Tasa IVA:** Tasa de IVA sobre el producto (0 si es Monotributo / exento, 0.21 para 21%, o 0.105 para 10.5%).
+* **Margen Deseado:** Margen de ganancia neta pretendido sobre el precio neto (ej. 30% = 0.30).
 
 Para ahorrarte el despeje manual de esta ecuación cada vez que cambia un costo, podés cargar directamente los valores en la [Calculadora de Precios de Venta](/herramientas/calculadora-precios).
 
@@ -131,13 +134,13 @@ La forma en que se trata el IVA varía radicalmente según la condición del con
 * Emiten **Factura C** hacia cualquier cliente (consumidores finales o empresas).
 * El monotributista **no discrimina IVA** en sus facturas de venta.
 * El IVA que abonó al comprar insumos a sus proveedores no genera crédito fiscal: es simplemente un **costo directo más**.
-* **En la fórmula:** la tasa de IVA de venta es $i = 0$. El precio resultante es directamente el precio final al público.
+* **En la fórmula:** la tasa de IVA de venta es 0. El precio resultante es directamente el precio final al público.
 
 ### Caso 2: Responsables Inscriptos
 * Emiten **Factura A** (a otros Responsables Inscriptos) o **Factura B** (a consumidores finales y monotributistas).
-* Trabajan con precios netos: calculan el precio neto ($N$) para cubrir costos y margen, y luego adicionan el débito fiscal de IVA:
-  
-$$\text{Precio Final al Consumidor (Factura B)} = N \times (1 + i)$$
+* Trabajan con precios netos: calculan el precio neto para cubrir costos y margen, y luego adicionan el débito fiscal de IVA:
+
+> `Precio Final al Consumidor (Factura B) = Precio Neto × (1 + Tasa IVA)`
 
 Las alícuotas más usuales según la Ley de IVA en Argentina son del **21%** (tasa general), **10.5%** (bienes de capital, determinados alimentos y electrónica de producción nacional) o **27%** (servicios de telecomunicaciones y energía). Si necesitás discriminar o sumar el impuesto sobre importes brutos, podés calcularlo al instante con nuestra [Calculadora de IVA Argentina](/herramientas/calculadora-iva).
 
@@ -153,26 +156,26 @@ Veamos un ejemplo real para un emprendedor o comercio inscripto en el Monotribut
 * **Insumos y materiales (a costo de reposición actual):** $ 18.000
 * **Packaging, etiquetas y embalaje protector:** $ 2.000
 * **Costo fijo asignado prorrateado (luz, alquiler, taller):** $ 5.000
-* **Costo total por unidad ($C$):** $ 25.000
-* **Margen de ganancia neta deseado ($m$):** 30% (0.30)
-* **Comisión por cobro con tarjeta / link de pago ($c$):** 6.0% (0.06)
-* **Ingresos Brutos estimado ($t$):** 3.5% (0.035)
-* **Tasa de IVA en factura de venta ($i$):** 0% (Monotributo)
+* **Costo total por unidad:** $ 25.000
+* **Margen de ganancia neta deseado:** 30% (0.30)
+* **Comisión por cobro con tarjeta / link de pago:** 6.0% (0.06)
+* **Ingresos Brutos estimado:** 3.5% (0.035)
+* **Tasa de IVA en factura de venta:** 0% (Monotributo)
 
 ### Paso 1: Cálculo del denominador
 Reemplazamos en el denominador de la fórmula integral:
 
-$$\text{Denominador} = 1 - 0.035 - (0.06 \times 1.00) - 0.30 = 1 - 0.395 = 0.605$$
+> `Denominador = 1 - 0.035 - (0.06 × 1.00) - 0.30 = 1 - 0.395 = 0.605`
 
 ### Paso 2: Obtención del precio de venta final
 Dividimos el costo total por el denominador resultante:
 
-$$\text{Precio de Venta} = \frac{\$ 25.000}{0.605} = \mathbf{\$ 41.322,31}$$
+> `Precio de Venta = $ 25.000 ÷ 0.605 = $ 41.322,31`
 
 ### Paso 3: Desglose y verificación de a dónde va cada peso cobrado
 Comprobemos qué ocurre cuando el cliente abona los **$ 41.322,31**:
 
-| Concepto | Cálculo | Monto en $ ARS | \% sobre el Precio Final |
+| Concepto | Cálculo | Monto en $ ARS | % sobre el Precio Final |
 | :--- | :--- | :--- | :--- |
 | **Costo Total Unitario** | Costo directo + fijos | $ 25.000,00 | 60.50% |
 | **Ingresos Brutos (IIBB)** | $ 41.322,31 × 3.5% | $ 1.446,28 | 3.50% |
@@ -181,13 +184,13 @@ Comprobemos qué ocurre cuando el cliente abona los **$ 41.322,31**:
 
 ¡El cálculo es matemáticamente exacto! La ganancia neta obtenida ($ 12.396,69) representa **con total precisión el 30%** del precio de venta que el cliente pagó.
 
-### ¿Qué hubiera pasado con la «cuenta tradicional» de sumar el 30% al costo?
-Si el comerciante hubiera calculado: $\$ 25.000 \times 1.30 = \$ 32.500$:
+### ¿Qué hubiera pasado con la cuenta tradicional de sumar el 30% al costo?
+Si el comerciante hubiera calculado `$ 25.000 × 1.30 = $ 32.500`:
 * Habría cobrado $ 32.500.
 * Comisión de cobro (6%): $ 1.950.
 * Ingresos Brutos (3.5%): $ 1.137,50.
 * Costo de insumos a reponer: $ 25.000.
-* **Ganancia real de bolsillo:** $\$ 32.500 - \$ 1.950 - \$ 1.137,50 - \$ 25.000 = \$ 4.412,50$.
+* **Ganancia real de bolsillo:** `$ 32.500 - $ 1.950 - $ 1.137,50 - $ 25.000 = $ 4.412,50`.
 
 En lugar del 30% esperado, **habría ganado solo el 13.5%** ($ 4.412,50 sobre $ 32.500). Menos de la mitad de lo planificado, poniendo en riesgo la continuidad de su negocio.
 
