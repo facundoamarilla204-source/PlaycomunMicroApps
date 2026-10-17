@@ -90,13 +90,6 @@ const mappings = [
     example: 'exampleResult: "3 cuotas de $4.500"'
   },
   {
-    slug: 'control-stock',
-    oldCat: 'category: "utilidades"',
-    newType: 'type: "utilidad"',
-    newCat: 'category: "gestion-negocio"',
-    example: 'exampleResult: "50 items gestionados"'
-  },
-  {
     slug: 'calculadora-calorias',
     oldCat: 'category: "calculadoras"',
     newType: 'type: "calculadora"',

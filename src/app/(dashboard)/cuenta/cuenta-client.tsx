@@ -2,12 +2,17 @@
 
 import { motion } from "motion/react"
 import Link from "next/link"
-import { CheckCircle2, Calculator, QrCode, Banknote, LogOut, ChevronRight, User, ShieldCheck, CreditCard, Settings, LayoutDashboard } from "lucide-react"
+import { CheckCircle2, Calculator, QrCode, Banknote, LogOut, ChevronRight, User, ShieldCheck, CreditCard, Settings, LayoutDashboard, Trash2, AlertTriangle, X, Loader2 } from "lucide-react"
 import { useActionState, useState } from "react"
 import { useSearchParams } from "next/navigation"
+import { deleteUserAccount } from "./actions"
 
 export default function CuentaClient({ email, name, initial, logoutAction, updateAction, favorites = [], isPro = false }: { email: string, name: string, initial: string, logoutAction: any, updateAction: any, favorites?: any[], isPro?: boolean }) {
   const [isHoveringPlan, setIsHoveringPlan] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [confirmInput, setConfirmInput] = useState("")
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
   const searchParams = useSearchParams()
   const errorMsg = searchParams.get("error")
   const successMsg = searchParams.get("success")
@@ -234,21 +239,129 @@ export default function CuentaClient({ email, name, initial, logoutAction, updat
                 </Link>
                 
                 <form action={logoutAction}>
-                  <button className="flex items-center gap-4 w-full p-4 rounded-2xl hover:bg-red-50/50 transition-colors group/btn">
-                    <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-red-500 group-hover/btn:bg-red-100 transition-colors">
+                  <button className="flex items-center gap-4 w-full p-4 rounded-2xl hover:bg-slate-50 transition-colors group/btn">
+                    <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 group-hover/btn:bg-slate-200 transition-colors">
                       <LogOut className="w-5 h-5" />
                     </div>
                     <div className="flex-1 text-left">
-                      <div className="font-bold text-red-600">Cerrar sesión</div>
+                      <div className="font-bold text-slate-700">Cerrar sesión</div>
                     </div>
                   </button>
                 </form>
+
+                <div className="pt-2 border-t border-slate-100">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setConfirmInput("")
+                      setDeleteError(null)
+                      setShowDeleteModal(true)
+                    }}
+                    className="flex items-center gap-4 w-full p-4 rounded-2xl hover:bg-red-50/60 transition-colors group/btn text-left"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-red-500 group-hover/btn:bg-red-100 transition-colors">
+                      <Trash2 className="w-5 h-5" />
+                    </div>
+                    <div className="flex-1 text-left">
+                      <div className="font-bold text-red-600 text-sm">Eliminar cuenta</div>
+                      <div className="text-[11px] text-slate-400">Supresión definitiva de usuario</div>
+                    </div>
+                  </button>
+                </div>
               </div>
             </motion.div>
 
           </div>
         </div>
       </motion.div>
+
+      {/* Modal de confirmación para Eliminación de Cuenta */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-xl border border-slate-200 relative animate-in fade-in zoom-in-95 duration-200">
+            <button
+              onClick={() => setShowDeleteModal(false)}
+              className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+              aria-label="Cerrar modal"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="w-12 h-12 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center mb-5">
+              <AlertTriangle className="w-6 h-6" />
+            </div>
+
+            <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 mb-2">
+              ¿Eliminar tu cuenta definitivamente?
+            </h3>
+
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-4">
+              Esta acción es irreversible conforme a tu derecho de supresión (Ley 25.326). Se eliminarán tus credenciales de inicio de sesión, perfil y herramientas guardadas.
+            </p>
+
+            <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-xs text-amber-900 space-y-1.5 mb-6">
+              <p className="font-bold text-amber-950">Consecuencias de la eliminación:</p>
+              <p>• Si tenés una suscripción Pro activa, se cancelará la renovación automática en Mercado Pago para evitar nuevos cobros.</p>
+              <p>• Los comprobantes de pago de períodos pasados se conservan disociados para dar cumplimiento a exigencias fiscales y contables obligatorias.</p>
+            </div>
+
+            <div className="space-y-2 mb-6">
+              <label htmlFor="confirmInput" className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                Para confirmar, escribí <span className="text-red-600 font-mono">ELIMINAR</span> a continuación:
+              </label>
+              <input
+                id="confirmInput"
+                type="text"
+                value={confirmInput}
+                onChange={(e) => setConfirmInput(e.target.value)}
+                placeholder="ELIMINAR"
+                className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 text-sm font-bold tracking-wider"
+              />
+            </div>
+
+            {deleteError && (
+              <div className="p-3 mb-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold">
+                {deleteError}
+              </div>
+            )}
+
+            <div className="flex flex-col sm:flex-row items-center justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setShowDeleteModal(false)}
+                disabled={isDeleting}
+                className="w-full sm:w-auto px-5 py-2.5 rounded-xl text-slate-700 hover:bg-slate-100 font-semibold text-xs sm:text-sm transition-colors min-h-[44px]"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  if (confirmInput !== "ELIMINAR") return
+                  setIsDeleting(true)
+                  setDeleteError(null)
+                  const res = await deleteUserAccount(confirmInput)
+                  if (res?.error) {
+                    setDeleteError(res.error)
+                    setIsDeleting(false)
+                  }
+                }}
+                disabled={confirmInput !== "ELIMINAR" || isDeleting}
+                className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 active:bg-red-800 disabled:opacity-50 text-white font-bold text-xs sm:text-sm transition-all shadow-sm flex items-center justify-center gap-2 min-h-[44px]"
+              >
+                {isDeleting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Eliminando...</span>
+                  </>
+                ) : (
+                  <span>Confirmar y eliminar mi cuenta</span>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

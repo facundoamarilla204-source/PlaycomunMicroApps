@@ -15,7 +15,7 @@
 | **A. Completamente Gratis** | **12** | Calculadora de 1RM, Calculadora de aguinaldo, Calculadora de calorías, Calculadora de cuotas, Calculadora de IVA, Calculadora de precios, Calculadora de rentabilidad, Conversor de unidades, Link de reseñas de Google, Compresor de imágenes, Ordenar PDF, Cortador de audio online. |
 | **B. Gratis + Pro (Híbridas)** | **6** | Calculadora de costo de receta, Control de gastos, Generador de documentos comerciales, Generador de presupuestos, Generador de listas de precios, Convertidor de archivos. |
 | **C. Solo Pro** | **0** | Ninguna herramienta del catálogo bloquea el acceso inicial completo tras un muro de pago obligatorio. |
-| **D. Próximamente o Incompleta** | **1** | Control de stock (`/herramientas/control-stock`). |
+| **D. Próximamente o Incompleta** | **0** | Control de stock fue retirado del catálogo para reemplazo por una nueva herramienta a definir. |
 | **E. Estado Indeterminado / Falla de Seguridad** | **1** | Generador de QR (`/herramientas/generador-qr`). |
 | **Rutas y aliases complementarios detectados** | **2** | `/q/[token]` (resolución pública de QR) y `/herramientas/generador-facturas` (alias de documentos comerciales). |
 
@@ -43,8 +43,7 @@
 | **10** | **Conversor de unidades** | `/herramientas/conversor-unidades` | Producción | **A. Completamente Gratis** | No aplica | Ninguna | [`ConversorUnidades.tsx`](file:///j:/PROYECTOS/PlaycomunMicroApps/src/components/tools/ConversorUnidades.tsx) |
 | **11** | **Calculadora de aguinaldo** | `/herramientas/calculadora-aguinaldo` | Producción | **A. Completamente Gratis** | No aplica | Ninguna | [`CalculadoraAguinaldo.tsx`](file:///j:/PROYECTOS/PlaycomunMicroApps/src/components/tools/CalculadoraAguinaldo.tsx) |
 | **12** | **Calculadora de cuotas** | `/herramientas/calculadora-cuotas` | Producción | **A. Completamente Gratis** | No aplica | Ninguna | [`CalculadoraCuotas.tsx`](file:///j:/PROYECTOS/PlaycomunMicroApps/src/components/tools/CalculadoraCuotas.tsx) |
-| **13** | **Control de stock** | `/herramientas/control-stock` | Incompleto / Maqueta | **D. Próximamente** | No implementada | No implementada | [`tools.ts`](file:///j:/PROYECTOS/PlaycomunMicroApps/src/data/tools.ts#L540-L553), sin componente en `src/components/tools` |
-| **14** | **Calculadora de calorías** | `/herramientas/calculadora-calorias` | Producción | **A. Completamente Gratis** | No aplica | Ninguna | [`CalculadoraCalorias.tsx`](file:///j:/PROYECTOS/PlaycomunMicroApps/src/components/tools/CalculadoraCalorias.tsx) |
+| **13** | **Calculadora de calorías** | `/herramientas/calculadora-calorias` | Producción | **A. Completamente Gratis** | No aplica | Ninguna | [`CalculadoraCalorias.tsx`](file:///j:/PROYECTOS/PlaycomunMicroApps/src/components/tools/CalculadoraCalorias.tsx) |
 | **15** | **Link de reseñas de Google** | `/herramientas/link-resenas-google` | Producción | **A. Completamente Gratis** | No aplica | Ninguna (API Google Places) | [`LinkResenasGoogle.tsx`](file:///j:/PROYECTOS/PlaycomunMicroApps/src/components/tools/LinkResenasGoogle.tsx), [`google-reviews/search`](file:///j:/PROYECTOS/PlaycomunMicroApps/src/app/api/google-reviews/search/route.ts) |
 | **16** | **Generador de listas de precios** | `/herramientas/generador-listas-precios` | Producción | **B. Gratis + Pro** | `localStorage` (`playcomun_price_list_current_v2`) | Tablas `price_lists`, `price_list_categories`, `price_list_products` | [`page.tsx`](file:///j:/PROYECTOS/PlaycomunMicroApps/src/app/(main)/herramientas/generador-listas-precios/page.tsx), [`price-lists.ts`](file:///j:/PROYECTOS/PlaycomunMicroApps/src/app/actions/price-lists.ts) |
 | **17** | **Compresor de imágenes** | `/herramientas/compresor-imagenes` | Producción | **A. Completamente Gratis** | No aplica (Motor Canvas en navegador) | Ninguna | [`CompresorImagenes.tsx`](file:///j:/PROYECTOS/PlaycomunMicroApps/src/components/tools/compresor-imagenes/CompresorImagenes.tsx) |
@@ -226,8 +225,8 @@ La ejecución de `tsc --noEmit` reveló los siguientes errores en archivos activ
 ### Prioridad 3: Limpieza y Experiencia de Usuario (Medio Plazo)
 1. **Depurar componentes huérfanos:**
    - Eliminar [`src/components/tools/GeneradorPresupuestos.tsx`](file:///j:/PROYECTOS/PlaycomunMicroApps/src/components/tools/GeneradorPresupuestos.tsx) ya que ambas herramientas comerciales convergen de forma limpia en `GeneradorFacturasTool`.
-2. **Definir futuro comercial de Control de Stock:**
-   - Mantener el estado `soon` en el catálogo o avanzar en su diseño técnico modular.
+2. **Reemplazo de Control de Stock:**
+   - Control de stock fue retirado del catálogo para dar lugar a una nueva herramienta solicitada por el dueño.
 
 ---
 
@@ -259,8 +258,6 @@ La ejecución de `tsc --noEmit` reveló los siguientes errores en archivos activ
 |                           | • Generador de QR                      | marca blanca y sincronización|
 |                           | • Convertidor de archivos              | nube con retención perpetua. |
 +---------------------------+----------------------------------------+------------------------------+
-| 3. PRÓXIMAMENTE           | • Control de stock                     | Inventario con base de datos.|
-+---------------------------------------------------------------------------------------------------+
 ```
 
 ---

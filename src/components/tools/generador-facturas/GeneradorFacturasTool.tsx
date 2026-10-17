@@ -51,6 +51,7 @@ export function GeneradorFacturasTool({
 }: GeneradorFacturasToolProps) {
   const {
     doc,
+    setDoc,
     profile,
     clients,
     products,
@@ -314,7 +315,7 @@ export function GeneradorFacturasTool({
             documents={historyDocs}
             isAuthenticated={isAuthenticated}
             onLoadDocument={(docToLoad) => {
-              useDocumentState().setDoc?.(docToLoad)
+              setDoc(docToLoad)
               showToast(`Cargado ${docToLoad.type.toUpperCase()} N° ${docToLoad.number}`)
             }}
             onDuplicateDocument={async (docToDup) => {

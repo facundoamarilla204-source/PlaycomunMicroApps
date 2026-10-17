@@ -92,11 +92,19 @@ export default function SiteFooter() {
           </div>
         </div>
         
-        <div className="mt-10 pt-6 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-3">
-          <p className="text-xs text-slate-500">
-            &copy; {currentYear} PlayComun Herramientas. Todos los derechos reservados.
-          </p>
-          <p className="text-xs text-slate-400">
+        <div className="mt-10 pt-6 border-t border-slate-200 flex flex-col md:flex-row justify-between items-center gap-3">
+          <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-3 gap-y-1 text-xs text-slate-500">
+            <p>&copy; {currentYear} PlayComun Herramientas. Todos los derechos reservados.</p>
+            <span className="hidden sm:inline text-slate-300">•</span>
+            <Link href="/arrepentimiento" className="text-slate-400 hover:text-slate-600 transition-colors">
+              Botón de arrepentimiento
+            </Link>
+            <span className="text-slate-300">•</span>
+            <Link href="/baja-servicio" className="text-slate-400 hover:text-slate-600 transition-colors">
+              Botón de baja de servicio
+            </Link>
+          </div>
+          <p className="text-xs text-slate-400 text-center md:text-right">
             Desarrollado para simplificar tareas cotidianas de negocios y creadores.
           </p>
         </div>

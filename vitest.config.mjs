@@ -5,6 +5,8 @@ export default defineConfig({
   test: {
     environment: 'node',
     globals: true,
+    include: ['src/**/*.test.{ts,tsx}'],
+    exclude: ['node_modules/**', 'scratch/**', '.next/**'],
   },
   resolve: {
     alias: {

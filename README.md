@@ -13,6 +13,27 @@ npm run dev
 
 Abrí [http://localhost:3000](http://localhost:3000) en el navegador para ver el resultado.
 
+## Verificación y Calidad Obligatoria Antes de Publicar
+
+Para garantizar la estabilidad del hub y prevenir errores de tipado o regresiones en producción, es **estrictamente obligatorio** ejecutar y superar sin errores los siguientes scripts antes de publicar o desplegar cambios:
+
+```bash
+# 1. Verificación estricta de tipos TypeScript
+npm run typecheck
+
+# 2. Análisis estático y reglas de código
+npm run lint
+
+# 3. Batería completa de pruebas unitarias e integrales
+npm run vitest
+
+# 4. Compilación del bundle de producción
+npm run build
+```
+
+> **Nota:** Todos los comandos deben terminar con código de salida `0` (sin errores).
+
+
 ## Estructura de carpetas
 
 ```text

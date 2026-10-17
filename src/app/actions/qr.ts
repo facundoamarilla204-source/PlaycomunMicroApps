@@ -5,6 +5,7 @@ import { createClient as createSupabaseClient } from "@supabase/supabase-js"
 import { revalidatePath } from "next/cache"
 import crypto from "crypto"
 import { isProUser } from "@/lib/pro"
+import { validateDestinationUrl } from "@/lib/safe-url"
 
 export type QrCodeStatus = "unconfigured" | "active" | "paused" | "archived"
 
@@ -232,16 +233,9 @@ export async function updateQrDestination(id: string, destinationUrl: string) {
     throw new Error("Se requiere suscripción PlayComun Pro activa para configurar destinos de QR.")
   }
 
-  // Ensure it's a valid url with http/https protocol
-  let parsedUrl: URL
-  try {
-    parsedUrl = new URL(destinationUrl)
-  } catch {
-    throw new Error("URL inválida")
-  }
-  
-  if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
-    throw new Error("Protocolo no permitido (solo http y https)")
+  const validation = validateDestinationUrl(destinationUrl)
+  if (!validation.isValid) {
+    throw new Error(validation.error || "URL de destino no permitida")
   }
 
   const { data, error } = await supabase

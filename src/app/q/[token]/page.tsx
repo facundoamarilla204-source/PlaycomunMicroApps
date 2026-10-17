@@ -2,6 +2,7 @@ import { getQrByTokenPublic } from "@/app/actions/qr"
 import { redirect } from "next/navigation"
 import Link from "next/link"
 import { buildMetadata } from "@/lib/metadata"
+import { validateDestinationUrl } from "@/lib/safe-url"
 
 export const metadata = buildMetadata({
   title: "Acceso QR",
@@ -27,14 +28,27 @@ export default async function QrPublicResolver({ params }: { params: Promise<{ t
   }
 
   if (qr.status === "active" && qr.destination_url) {
-    try {
-      const parsed = new URL(qr.destination_url)
-      if (['http:', 'https:'].includes(parsed.protocol)) {
-        redirect(qr.destination_url)
-      }
-    } catch {
-      // Si la URL es inválida o peligrosa, no se redirige
+    const safeCheck = validateDestinationUrl(qr.destination_url)
+    if (safeCheck.isValid) {
+      redirect(qr.destination_url)
     }
+
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4 text-center">
+        <div className="max-w-md bg-white p-6 rounded-2xl shadow-sm border border-red-100 space-y-4">
+          <div className="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <h1 className="text-xl font-bold text-slate-900">Destino bloqueado por seguridad</h1>
+          <p className="text-sm text-slate-600 leading-relaxed">
+            El enlace configurado en este código QR no cumple con las políticas de seguridad y protección contra abuso de PlayComun.
+          </p>
+          <Link href="/" className="inline-flex justify-center items-center px-4 py-2 bg-[#7C3AED] text-white rounded-lg hover:bg-purple-700 w-full font-medium text-sm">
+            Ir al inicio
+          </Link>
+        </div>
+      </div>
+    )
   }
 
   if (qr.status === "paused") {

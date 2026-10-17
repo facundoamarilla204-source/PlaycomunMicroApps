@@ -40,8 +40,8 @@ export async function POST(req: NextRequest) {
     }
 
     if (resend) {
-      const fromEmail = process.env.RESEND_FROM_EMAIL || "PlayComun Online <contacto@playcomun.com>";
-      const toEmail = process.env.RESEND_TO_EMAIL || "soporte@playcomun.com";
+      const fromEmail = process.env.RESEND_FROM_EMAIL || "PlayComun Online <playcomun.ok@gmail.com>";
+      const toEmail = process.env.RESEND_TO_EMAIL || "playcomun.ok@gmail.com";
 
       const htmlTemplate = `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
         from: fromEmail,
         to: [toEmail],
         replyTo: email,
-        subject: `Contacto de ${nombre} — PlayComun Online`,
+        subject: `Contacto de ${nombre}: PlayComun Online`,
         html: htmlTemplate,
       });
 

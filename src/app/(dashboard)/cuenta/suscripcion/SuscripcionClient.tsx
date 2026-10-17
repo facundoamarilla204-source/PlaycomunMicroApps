@@ -457,9 +457,9 @@ export function SuscripcionClient({
                 <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-2xl text-sm text-red-900">
                   <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5 text-red-600" />
                   <div>
-                    <p className="font-bold mb-1">Cobro pendiente de confirmación</p>
+                    <p className="font-bold mb-1">Cobro pendiente de regularización (Período de gracia activo)</p>
                     <p className="text-xs md:text-sm text-red-800 leading-relaxed">
-                      Mercado Pago no pudo procesar el cobro automático de tu última cuota. El sistema reintentará el cobro automáticamente. Podés verificar el estado con el botón de actualización o regularizar tu suscripción en Mercado Pago.
+                      Mercado Pago no pudo procesar el cobro automático de tu última cuota. El sistema te otorga un <strong>período de gracia de 3 días</strong> con tus herramientas Pro plenamente activas mientras reintenta el débito. Podés verificar el estado con el botón de actualización o revisar tu medio de pago en Mercado Pago.
                     </p>
                   </div>
                 </div>

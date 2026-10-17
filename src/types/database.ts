@@ -392,6 +392,72 @@ export type Database = {
         }
         Relationships: []
       }
+      consumer_requests: {
+        Row: {
+          created_at: string
+          details: string | null
+          email: string
+          full_name: string
+          id: string
+          ip_address: string | null
+          notification_error: string | null
+          notification_sent_at: string | null
+          notification_status: "pending" | "sent" | "failed" | "not_configured"
+          payment_reference: string | null
+          phone: string | null
+          request_type: "arrepentimiento" | "baja_servicio" | "eliminacion_cuenta" | "consulta_legal"
+          resolution_notes: string | null
+          resolved_at: string | null
+          status: "received" | "in_review" | "resolved" | "rejected"
+          tracking_code: string
+          updated_at: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          details?: string | null
+          email: string
+          full_name: string
+          id?: string
+          ip_address?: string | null
+          notification_error?: string | null
+          notification_sent_at?: string | null
+          notification_status?: "pending" | "sent" | "failed" | "not_configured"
+          payment_reference?: string | null
+          phone?: string | null
+          request_type: "arrepentimiento" | "baja_servicio" | "eliminacion_cuenta" | "consulta_legal"
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          status?: "received" | "in_review" | "resolved" | "rejected"
+          tracking_code: string
+          updated_at?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          details?: string | null
+          email?: string
+          full_name?: string
+          id?: string
+          ip_address?: string | null
+          notification_error?: string | null
+          notification_sent_at?: string | null
+          notification_status?: "pending" | "sent" | "failed" | "not_configured"
+          payment_reference?: string | null
+          phone?: string | null
+          request_type?: "arrepentimiento" | "baja_servicio" | "eliminacion_cuenta" | "consulta_legal"
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          status?: "received" | "in_review" | "resolved" | "rejected"
+          tracking_code?: string
+          updated_at?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

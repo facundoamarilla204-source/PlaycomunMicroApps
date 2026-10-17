@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+import { SUBSCRIPTION_CONFIG } from '@/config/subscription'
 
 /**
  * Función que replica la lógica estricta de la función SQL is_pro_user y del frontend:
@@ -8,19 +9,33 @@ import { describe, it, expect } from 'vitest'
  *   JOIN public.plans p ON p.id = s.plan_id
  *   WHERE s.user_id = check_user_id
  *     AND p.code IN ('pro_monthly', 'pro_yearly')
+ *     AND (s.provider_status IS NULL OR s.provider_status NOT IN ('refunded', 'charged_back'))
  *     AND (
  *       (s.status IN ('active', 'trialing') AND (s.current_period_end IS NULL OR s.current_period_end > now()))
  *       OR
  *       (s.status = 'cancelled' AND s.current_period_end IS NOT NULL AND s.current_period_end > now())
+ *       OR
+ *       (s.status = 'past_due' AND (COALESCE(s.current_period_end, s.updated_at, s.created_at) + interval '3 days') > now())
  *     )
  * );
  */
-export function evaluateProAccess(subscription: {
-  status: string
-  current_period_end: string | null
-  plan_code?: string
-} | null, now: Date = new Date()): boolean {
+export function evaluateProAccess(
+  subscription: {
+    status: string
+    current_period_end: string | null
+    plan_code?: string
+    provider_status?: string | null
+    updated_at?: string | null
+  } | null,
+  now: Date = new Date(),
+  gracePeriodDays: number = SUBSCRIPTION_CONFIG.gracePeriodDays
+): boolean {
   if (!subscription) return false
+
+  // Revocaciones inmediatas por fraude o devolución
+  if (subscription.provider_status === 'refunded' || subscription.provider_status === 'charged_back') {
+    return false
+  }
 
   const validPlan = !subscription.plan_code || ['pro_monthly', 'pro_yearly'].includes(subscription.plan_code)
   if (!validPlan) return false
@@ -38,7 +53,15 @@ export function evaluateProAccess(subscription: {
     return !!periodEndDate && periodEndDate.getTime() > now.getTime()
   }
 
-  // Cualquier otro estado (refunded, charged_back, paused, past_due, etc.) revoca inmediatamente
+  // Caso C: Pago fallido (past_due) con período de gracia configurable
+  if (subscription.status === 'past_due') {
+    const baseDate = periodEndDate || (subscription.updated_at ? new Date(subscription.updated_at) : null)
+    if (!baseDate) return false
+    const graceExpiry = new Date(baseDate.getTime() + gracePeriodDays * 24 * 60 * 60 * 1000)
+    return graceExpiry.getTime() > now.getTime()
+  }
+
+  // Cualquier otro estado (paused, expired) revoca inmediatamente
   return false
 }
 
@@ -142,9 +165,30 @@ describe('Suscripciones: Período de Gracia y Cancelación de Renovación', () =
       expect(evaluateProAccess(sub, referenceNow)).toBe(false)
     })
 
-    it('deniega Pro si la suscripción está en mora o impaga (past_due)', () => {
+    it('concede Pro temporalmente si está en past_due pero DENTRO del período de gracia (3 días)', () => {
+      const recentFailureDate = '2026-10-15T12:00:00.000Z' // 1 día atrás vs referenceNow (2026-10-16)
       const sub = {
         status: 'past_due',
+        current_period_end: recentFailureDate,
+        plan_code: 'pro_monthly',
+      }
+      // Dentro de los 3 días de gracia
+      expect(evaluateProAccess(sub, referenceNow, 3)).toBe(true)
+    })
+
+    it('deniega Pro si la suscripción está en mora o impaga (past_due) habiendo superado el período de gracia', () => {
+      const sub = {
+        status: 'past_due',
+        current_period_end: pastDate, // 6 días atrás (2026-10-10)
+        plan_code: 'pro_monthly',
+      }
+      // Superó los 3 días de gracia
+      expect(evaluateProAccess(sub, referenceNow, 3)).toBe(false)
+    })
+
+    it('deniega Pro si la suscripción está marcada como expirada (expired)', () => {
+      const sub = {
+        status: 'expired',
         current_period_end: pastDate,
         plan_code: 'pro_monthly',
       }

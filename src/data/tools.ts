@@ -538,20 +538,6 @@ export const tools: Tool[] = [
     related: ["calculadora-iva", "calculadora-rentabilidad", "calculadora-precios"]
   },
   {
-    slug: "control-stock",
-    name: "Control de stock",
-    type: "utilidad",
-    category: "gestion-negocio",
-    exampleResult: "50 items gestionados",
-    tier: "pro",
-    description: "Gestioná tu inventario de forma simple y rápida.",
-    icon: "Boxes",
-    status: "soon",
-    featured: true,
-    keywords: ["stock", "inventario", "productos", "gestion", "deposito"],
-    updatedAt: "2026-10-03T00:00:00.000Z",
-  },
-  {
     slug: "calculadora-calorias",
     name: "Calculadora de calorías",
     type: "calculadora",

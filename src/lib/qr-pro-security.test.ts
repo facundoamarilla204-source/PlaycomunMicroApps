@@ -121,7 +121,7 @@ describe('Generador QR: Blindaje de Seguridad Pro y Preservación de Datos', () 
     })
   })
 
-  describe('2. Validación Estricta de URLs de Destino', () => {
+  describe('2. Validación Estricta de URLs de Destino y Prevención de Abuso', () => {
     it('rechaza URLs con esquema javascript: (previene XSS)', async () => {
       const mockSupabase = {
         auth: {
@@ -131,7 +131,7 @@ describe('Generador QR: Blindaje de Seguridad Pro y Preservación de Datos', () 
       vi.mocked(supabaseServerModule.createClient).mockResolvedValue(mockSupabase as any)
       vi.mocked(proModule.isProUser).mockResolvedValue(true)
 
-      await expect(updateQrDestination('qr-1', 'javascript:alert(document.cookie)')).rejects.toThrow(/Protocolo no permitido/)
+      await expect(updateQrDestination('qr-1', 'javascript:alert(document.cookie)')).rejects.toThrow(/no está permitido/i)
     })
 
     it('rechaza URLs con esquema data: (previene inyección de payloads)', async () => {
@@ -143,7 +143,7 @@ describe('Generador QR: Blindaje de Seguridad Pro y Preservación de Datos', () 
       vi.mocked(supabaseServerModule.createClient).mockResolvedValue(mockSupabase as any)
       vi.mocked(proModule.isProUser).mockResolvedValue(true)
 
-      await expect(updateQrDestination('qr-1', 'data:text/html,<script>alert(1)</script>')).rejects.toThrow(/Protocolo no permitido/)
+      await expect(updateQrDestination('qr-1', 'data:text/html,<script>alert(1)</script>')).rejects.toThrow(/no está permitido/i)
     })
 
     it('rechaza URLs con esquema ftp: u otros no web', async () => {
@@ -155,11 +155,61 @@ describe('Generador QR: Blindaje de Seguridad Pro y Preservación de Datos', () 
       vi.mocked(supabaseServerModule.createClient).mockResolvedValue(mockSupabase as any)
       vi.mocked(proModule.isProUser).mockResolvedValue(true)
 
-      await expect(updateQrDestination('qr-1', 'ftp://servidor.com/archivo')).rejects.toThrow(/Protocolo no permitido/)
+      await expect(updateQrDestination('qr-1', 'ftp://servidor.com/archivo')).rejects.toThrow(/protocolo web seguro/i)
+    })
+
+    it('rechaza direcciones IP directas (evita escaneo de red interna y SSRF)', async () => {
+      const mockSupabase = {
+        auth: {
+          getUser: vi.fn().mockResolvedValue({ data: { user: mockUser } }),
+        },
+      }
+      vi.mocked(supabaseServerModule.createClient).mockResolvedValue(mockSupabase as any)
+      vi.mocked(proModule.isProUser).mockResolvedValue(true)
+
+      await expect(updateQrDestination('qr-1', 'http://192.168.1.1/admin')).rejects.toThrow(/No se permiten direcciones IP/i)
+      await expect(updateQrDestination('qr-1', 'http://127.0.0.1:8080')).rejects.toThrow(/No se permiten direcciones IP/i)
+    })
+
+    it('rechaza localhost y nombres internos', async () => {
+      const mockSupabase = {
+        auth: {
+          getUser: vi.fn().mockResolvedValue({ data: { user: mockUser } }),
+        },
+      }
+      vi.mocked(supabaseServerModule.createClient).mockResolvedValue(mockSupabase as any)
+      vi.mocked(proModule.isProUser).mockResolvedValue(true)
+
+      await expect(updateQrDestination('qr-1', 'http://localhost:3000')).rejects.toThrow(/locales o internos/i)
+    })
+
+    it('rechaza bucles de redirección que apunten a rutas /q/ del propio sitio', async () => {
+      const mockSupabase = {
+        auth: {
+          getUser: vi.fn().mockResolvedValue({ data: { user: mockUser } }),
+        },
+      }
+      vi.mocked(supabaseServerModule.createClient).mockResolvedValue(mockSupabase as any)
+      vi.mocked(proModule.isProUser).mockResolvedValue(true)
+
+      await expect(updateQrDestination('qr-1', 'https://playcomun.com/q/otro-token-publico')).rejects.toThrow(/bucles infinitos/i)
+    })
+
+    it('rechaza URLs que superen los 2048 caracteres', async () => {
+      const mockSupabase = {
+        auth: {
+          getUser: vi.fn().mockResolvedValue({ data: { user: mockUser } }),
+        },
+      }
+      vi.mocked(supabaseServerModule.createClient).mockResolvedValue(mockSupabase as any)
+      vi.mocked(proModule.isProUser).mockResolvedValue(true)
+
+      const superLong = `https://ejemplo.com/${'x'.repeat(2050)}`
+      await expect(updateQrDestination('qr-1', superLong)).rejects.toThrow(/longitud máxima/i)
     })
 
     it('permite URLs válidas con https://', async () => {
-      const updatedQr = { id: 'qr-1', destination_url: 'https://playcomun.com/menu', status: 'active' }
+      const updatedQr = { id: 'qr-1', destination_url: 'https://miempresa.com/menu', status: 'active' }
       const mockSupabase = {
         auth: {
           getUser: vi.fn().mockResolvedValue({ data: { user: mockUser } }),
@@ -179,7 +229,7 @@ describe('Generador QR: Blindaje de Seguridad Pro y Preservación de Datos', () 
       vi.mocked(supabaseServerModule.createClient).mockResolvedValue(mockSupabase as any)
       vi.mocked(proModule.isProUser).mockResolvedValue(true)
 
-      const result = await updateQrDestination('qr-1', 'https://playcomun.com/menu')
+      const result = await updateQrDestination('qr-1', 'https://miempresa.com/menu')
       expect(result).toEqual(updatedQr)
     })
   })

@@ -270,7 +270,7 @@ Estimaciones propias, conviene validarlas con Google Trends o mirando la compete
 | Divisor de gastos | Media | Medio | Bajo | No |
 | Lista de precios con aumento porcentual | Baja | Medio-bajo | Bajo | Sí |
 
-Ideas que Facundo mencionó o incluyó en su diseño: calculadoras de costos, de ganancias, de precios, de IVA, de rentabilidad, de cuotas, de 1RM y de calorías; generador de presupuestos; conversor de unidades; control de gastos y control de stock.
+Ideas que Facundo mencionó o incluyó en su diseño: calculadoras de costos, de ganancias, de precios, de IVA, de rentabilidad, de cuotas, de 1RM y de calorías; generador de presupuestos; conversor de unidades; y control de gastos.
 
 **Primeras 4 sugeridas [Propuesto]:** calculadora de costos y precio de venta, generador de presupuestos, calculadora de aguinaldo (con tráfico estacional fuerte antes de diciembre) y generador de QR (rápida y sin mantenimiento). Las de tráfico alto con mantenimiento alto (monotributo, ICL, cotizaciones) quedan para una segunda tanda, porque pierden valor si no se actualizan.
 

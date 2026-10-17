@@ -315,7 +315,7 @@ export default function TrustStrip() {
               <ul className="space-y-4 mb-8 flex-1">
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-brand shrink-0 mt-0.5" />
-                  <span className="text-foreground font-medium">Control de stock</span>
+                  <span className="text-foreground font-medium">Códigos QR dinámicos, documentos y listas de precios</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-brand shrink-0 mt-0.5" />

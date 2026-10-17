@@ -34,6 +34,36 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.8,
     },
+    {
+      url: `${siteConfig.url}/contacto`,
+      lastModified: hubLastMod,
+      changeFrequency: "monthly",
+      priority: 0.6,
+    },
+    {
+      url: `${siteConfig.url}/terminos`,
+      lastModified: hubLastMod,
+      changeFrequency: "monthly",
+      priority: 0.5,
+    },
+    {
+      url: `${siteConfig.url}/privacidad`,
+      lastModified: hubLastMod,
+      changeFrequency: "monthly",
+      priority: 0.5,
+    },
+    {
+      url: `${siteConfig.url}/arrepentimiento`,
+      lastModified: hubLastMod,
+      changeFrequency: "monthly",
+      priority: 0.5,
+    },
+    {
+      url: `${siteConfig.url}/baja-servicio`,
+      lastModified: hubLastMod,
+      changeFrequency: "monthly",
+      priority: 0.5,
+    },
   ] as MetadataRoute.Sitemap
 
   const liveTools = tools.filter((tool) => tool.status === "live")
