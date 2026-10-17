@@ -1,3 +1,5 @@
+import Link from "next/link"
+
 export function AguinaldoContent() {
   return (
     <div className="prose prose-neutral max-w-[720px] prose-headings:font-bold prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-p:text-foreground/80 prose-p:leading-relaxed prose-strong:font-semibold prose-strong:text-foreground prose-a:text-brand hover:prose-a:text-brand-dark">
@@ -58,8 +60,20 @@ export function AguinaldoContent() {
         No en su cálculo directo. La Ley de Modernización Laboral (Ley 27.802) mantuvo intacta la fórmula del aguinaldo (sigue siendo el 50% del mejor sueldo) y sus fechas de pago. El único cambio es que ahora el aguinaldo ya no se incluye en la base de cálculo para ciertas indemnizaciones por despido.
       </p>
 
+      <div className="not-prose my-8 p-6 rounded-2xl bg-purple-50/60 border border-purple-200/80">
+        <h3 className="text-base font-bold text-purple-950 mb-2">Herramientas financieras recomendadas</h3>
+        <p className="text-xs text-purple-900/80 leading-relaxed mb-3">
+          Organizá tu economía y aprovechá mejor el aguinaldo:
+        </p>
+        <ul className="text-xs text-purple-900 space-y-1.5 list-disc list-inside">
+          <li>Si vas a financiar compras o adelantar pagos con el SAC, simulá las cuotas con la <Link href="/herramientas/calculadora-cuotas" className="font-semibold underline hover:text-brand">calculadora de cuotas fijas</Link>.</li>
+          <li>Llevá el seguimiento de tus ingresos y gastos del mes con el <Link href="/herramientas/control-gastos" className="font-semibold underline hover:text-brand">control de gastos personales</Link>.</li>
+          <li>Si tenés un emprendimiento o negocio, costeá el impacto salarial en tus precios con la <Link href="/herramientas/calculadora-precios" className="font-semibold underline hover:text-brand">calculadora de precio de venta</Link>.</li>
+        </ul>
+      </div>
+
       <div className="mt-8 pt-4 border-t border-neutral-200 text-sm text-neutral-500">
-        <p>Referencias: Ley de Contrato de Trabajo (arts. 121 a 123) y Ley 27.073.</p>
+        <p>Referencias: Ley de Contrato de Trabajo (arts. 121 a 123), Ley 27.073 y Ley 27.802.</p>
       </div>
     </div>
   );

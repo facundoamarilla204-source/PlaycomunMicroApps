@@ -5,10 +5,9 @@ import fs from "fs"
 import path from "path"
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const isDev = process.env.VERCEL_ENV !== "production"
+  const isPreview = process.env.VERCEL_ENV === "preview"
   
-  if (isDev) {
-    // En desarrollo/preview no enviamos urls al sitemap
+  if (isPreview) {
     return []
   }
 
@@ -20,49 +19,49 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: siteConfig.url,
       lastModified: hubLastMod,
       changeFrequency: "weekly",
-      priority: 1,
+      priority: 1.0,
     },
     {
       url: `${siteConfig.url}/herramientas`,
       lastModified: hubLastMod,
-      changeFrequency: "weekly",
+      changeFrequency: "daily",
       priority: 0.9,
     },
     {
       url: `${siteConfig.url}/planes`,
       lastModified: hubLastMod,
       changeFrequency: "monthly",
-      priority: 0.8,
+      priority: 0.7,
     },
     {
       url: `${siteConfig.url}/contacto`,
       lastModified: hubLastMod,
       changeFrequency: "monthly",
-      priority: 0.6,
+      priority: 0.5,
     },
     {
       url: `${siteConfig.url}/terminos`,
       lastModified: hubLastMod,
       changeFrequency: "monthly",
-      priority: 0.5,
+      priority: 0.4,
     },
     {
       url: `${siteConfig.url}/privacidad`,
       lastModified: hubLastMod,
       changeFrequency: "monthly",
-      priority: 0.5,
+      priority: 0.4,
     },
     {
       url: `${siteConfig.url}/arrepentimiento`,
       lastModified: hubLastMod,
       changeFrequency: "monthly",
-      priority: 0.5,
+      priority: 0.3,
     },
     {
       url: `${siteConfig.url}/baja-servicio`,
       lastModified: hubLastMod,
       changeFrequency: "monthly",
-      priority: 0.5,
+      priority: 0.3,
     },
   ] as MetadataRoute.Sitemap
 
@@ -72,25 +71,33 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${siteConfig.url}${tool.customUrl || `/herramientas/${tool.slug}`}`,
     lastModified: new Date(tool.updatedAt),
     changeFrequency: "weekly",
-    priority: 0.8,
+    priority: tool.featured ? 0.9 : 0.8,
   })) as MetadataRoute.Sitemap
 
+  // Solo incluir guías que estén completas y no sean marcadas como provisionales
   let guideRoutes: MetadataRoute.Sitemap = []
   try {
     const guiasDir = path.join(process.cwd(), "content", "guias")
-    const files = fs.readdirSync(guiasDir)
-    guideRoutes = files.map((file) => {
-      const filePath = path.join(guiasDir, file)
-      const stat = fs.statSync(filePath)
-      return {
-        url: `${siteConfig.url}/guias/${file.replace(".mdx", "")}`,
-        lastModified: stat.mtime || hubLastMod,
-        changeFrequency: "monthly",
-        priority: 0.7,
+    if (fs.existsSync(guiasDir)) {
+      const files = fs.readdirSync(guiasDir).filter((f) => f.endsWith(".mdx"))
+      for (const file of files) {
+        const filePath = path.join(guiasDir, file)
+        const fileContent = fs.readFileSync(filePath, "utf-8")
+        // Excluir guías provisionales para proteger el índice contra thin content
+        if (fileContent.includes("contenido provisional") || fileContent.length < 500) {
+          continue
+        }
+        const stat = fs.statSync(filePath)
+        guideRoutes.push({
+          url: `${siteConfig.url}/guias/${file.replace(".mdx", "")}`,
+          lastModified: stat.mtime || hubLastMod,
+          changeFrequency: "monthly",
+          priority: 0.7,
+        })
       }
-    })
+    }
   } catch (e) {
-    // directory might not exist in some builds if not committed yet, ignore
+    // Si la carpeta no existe o falla la lectura, se ignora limpiamente
   }
 
   return [...routes, ...toolRoutes, ...guideRoutes]

@@ -40,9 +40,52 @@ export default function GeneradorDocumentosComercialesPage() {
     ],
   }
 
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Inicio',
+        item: siteConfig.url,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Herramientas',
+        item: `${siteConfig.url}/herramientas`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: tool.name,
+        item: `${siteConfig.url}/herramientas/${tool.slug}`,
+      },
+    ],
+  }
+
+  const faqJsonLd =
+    tool.faqs && tool.faqs.length > 0
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: tool.faqs.map((faq) => ({
+            '@type': 'Question',
+            name: faq.question,
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: faq.answer,
+            },
+          })),
+        }
+      : null
+
   return (
     <>
       <JsonLd data={jsonLdData} />
+      <JsonLd data={breadcrumbJsonLd} />
+      {faqJsonLd && <JsonLd data={faqJsonLd} />}
       <ToolPageLayout tool={tool} content={<GeneradorFacturasContent />}>
         <GeneradorFacturasTool />
       </ToolPageLayout>

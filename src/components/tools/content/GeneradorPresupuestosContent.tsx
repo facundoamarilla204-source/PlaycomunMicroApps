@@ -1,3 +1,5 @@
+import Link from "next/link"
+
 export function GeneradorPresupuestosContent() {
   return (
     <div className="prose prose-neutral max-w-[720px] prose-headings:font-bold prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-p:text-foreground/80 prose-p:leading-relaxed prose-strong:font-semibold prose-strong:text-foreground prose-a:text-brand hover:prose-a:text-brand-dark">
@@ -62,10 +64,25 @@ export function GeneradorPresupuestosContent() {
         </table>
       </div>
 
-      <h2>Cómo generar tu presupuesto en PDF</h2>
-      <p>
-        El <strong>Generador de Presupuestos de PlayComun</strong> está pensado para que cualquier emprendedor o freelancer argentino pueda crear documentos impecables desde su computadora o celular. Solo tenés que completar los datos del formulario, revisar la vista previa en tiempo real y hacer clic en descargar para obtener tu archivo. Funciona completamente en tu navegador y no requiere registrarte.
-      </p>
+      <h2>Paso a paso: cómo hacer un presupuesto online en PDF</h2>
+      <ol>
+        <li><strong>Completá tus datos de contacto:</strong> Ingresá tu nombre o marca, teléfono y correo electrónico para que tu cliente sepa a quién responderle.</li>
+        <li><strong>Definí al destinatario:</strong> Indicá el nombre de la persona o empresa y la fecha de validez de la propuesta.</li>
+        <li><strong>Detallá los conceptos y precios:</strong> Agregá cada servicio o producto. Si tenés dudas sobre tus costos o márgenes antes de cotizar, podés ayudarte con nuestra <Link href="/herramientas/calculadora-precios">calculadora de precio de venta</Link> para no presupuestar por debajo de tus costos.</li>
+        <li><strong>Revisá la vista previa y descargá:</strong> Hacé clic en "Descargar PDF" para obtener tu archivo listo para compartir por WhatsApp o email sin marcas de agua molestas.</li>
+      </ol>
+
+      <div className="not-prose my-8 p-6 rounded-2xl bg-purple-50/60 border border-purple-200/80">
+        <h3 className="text-base font-bold text-purple-950 mb-2">Herramientas complementarias para tu negocio</h3>
+        <p className="text-xs text-purple-900/80 leading-relaxed mb-3">
+          Optimizá tu ciclo de ventas combinando el presupuesto con otras herramientas de PlayComun:
+        </p>
+        <ul className="text-xs text-purple-900 space-y-1.5 list-disc list-inside">
+          <li>Para emitir comprobantes de cobro o señas de trabajo, usá el <Link href="/herramientas/generador-documentos-comerciales" className="font-semibold underline hover:text-brand">generador de documentos comerciales</Link>.</li>
+          <li>Para actualizar tu catálogo completo con aumentos masivos, utilizá el <Link href="/herramientas/generador-listas-precios" className="font-semibold underline hover:text-brand">generador de listas de precios en PDF</Link>.</li>
+          <li>Para calcular con exactitud el impacto impositivo de tus propuestas, consultá la <Link href="/herramientas/calculadora-iva" className="font-semibold underline hover:text-brand">calculadora de IVA Argentina</Link>.</li>
+        </ul>
+      </div>
     </div>
   )
 }

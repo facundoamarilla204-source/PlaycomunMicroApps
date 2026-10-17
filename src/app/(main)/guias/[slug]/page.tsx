@@ -39,11 +39,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 
   const { title, description } = guide.frontmatter;
+  const isProvisional = guide.content.includes("contenido provisional") || guide.content.length < 500;
 
   return buildMetadata({
     title,
     description,
     path: `/guias/${resolvedParams.slug}`,
+    noindex: isProvisional,
   });
 }
 

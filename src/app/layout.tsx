@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   },
   description: siteConfig.description,
   alternates: {
-    canonical: "/",
+    canonical: siteConfig.url,
   },
   openGraph: {
     title: siteConfig.name,

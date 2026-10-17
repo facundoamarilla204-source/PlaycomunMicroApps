@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export function CalculadoraIVAContent() {
   return (
     <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 w-full max-w-6xl items-start">
@@ -49,6 +51,15 @@ export function CalculadoraIVAContent() {
         <p>
           Para un monotributista, el concepto de "agregar" o "quitar" IVA no aplica a sus propias ventas de cara al cliente final. Tu precio neto (lo que te queda en el bolsillo antes de Ingresos Brutos) es igual a tu precio final. Sin embargo, sí te sirve esta calculadora cuando le comprás mercadería a un Responsable Inscripto y necesitás saber cuánto estás pagando realmente de impuesto.
         </p>
+
+        <div className="not-prose mt-8 p-6 rounded-2xl bg-purple-50/60 border border-purple-200/80">
+          <h3 className="text-base font-bold text-purple-950 mb-2">Herramientas impositivas y comerciales</h3>
+          <ul className="text-xs text-purple-900 space-y-1.5 list-disc list-inside">
+            <li>Calculá tus precios finales considerando IVA, comisiones y margen con la <Link href="/herramientas/calculadora-precios" className="font-semibold underline hover:text-brand">calculadora de precio de venta</Link>.</li>
+            <li>Conocé tu ganancia neta real sin distorsión impositiva con la <Link href="/herramientas/calculadora-rentabilidad" className="font-semibold underline hover:text-brand">calculadora de rentabilidad</Link>.</li>
+            <li>Creá presupuestos formales discriminando o no el IVA en el <Link href="/herramientas/generador-presupuestos" className="font-semibold underline hover:text-brand">generador de presupuestos en PDF</Link>.</li>
+          </ul>
+        </div>
       </div>
     </div>
   );

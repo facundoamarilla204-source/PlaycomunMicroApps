@@ -86,7 +86,22 @@ export const tools: Tool[] = [
       description: "Llevá un registro de tus gastos, conocé en qué se va tu dinero y organizá tus finanzas. App gratis, rápida y fácil de usar desde el celular.",
       h1: "Control de Gastos Personales",
       intro: "La forma más simple de registrar lo que gastás y cuidar tu bolsillo mes a mes."
-    }
+    },
+    faqs: [
+      {
+        question: "¿Cómo funciona el control de gastos de PlayComun?",
+        answer: "Te permite anotar cada gasto del día clasificándolo por categoría (comida, servicios, salidas, transporte) para visualizar el total acumulado del mes y entender en qué rubros se concentra tu dinero."
+      },
+      {
+        question: "¿Necesito registrarme para registrar gastos?",
+        answer: "No. Podés empezar a usarla de inmediato sin crear una cuenta. Si iniciás sesión gratuita, tus datos se sincronizan para no perderlos si cambiás de dispositivo."
+      },
+      {
+        question: "¿Mis datos financieros son privados?",
+        answer: "Sí. Tus registros no se comparten con terceros ni se utilizan con fines comerciales. Son de uso exclusivo para tu gestión personal."
+      }
+    ],
+    related: ["calculadora-cuotas", "calculadora-aguinaldo", "calculadora-rentabilidad"]
   },
   {
     slug: "calculadora-precios",
@@ -145,7 +160,7 @@ export const tools: Tool[] = [
         answer: 'Sí. Simplemente tenés que poner el costo de tus insumos o el valor de tus horas de trabajo como "Costo del producto o servicio" y calcular de la misma forma.'
       }
     ],
-    related: ["calculadora-aguinaldo", "generador-presupuestos"]
+    related: ["calculadora-iva", "calculadora-rentabilidad", "generador-presupuestos", "costo-receta"]
   },
   {
     slug: "generador-presupuestos",
@@ -192,7 +207,7 @@ export const tools: Tool[] = [
         answer: 'Sí. Un presupuesto es un documento comercial previo y no requiere firma obligatoria, aunque podés incluir tus condiciones de aceptación (como un adelanto) en el recuadro de observaciones.'
       }
     ],
-    related: ["calculadora-precios", "generador-documentos-comerciales"]
+    related: ["calculadora-precios", "generador-documentos-comerciales", "generador-listas-precios"]
   },
   {
     slug: "generador-documentos-comerciales",
@@ -361,7 +376,22 @@ export const tools: Tool[] = [
       description: "Creá códigos QR personalizados gratis para links, redes, WiFi o texto sin registro.",
       h1: "Generador de códigos QR",
       intro: "Generá códigos QR listos para descargar o imprimir en segundos."
-    }
+    },
+    faqs: [
+      {
+        question: "¿Los códigos QR generados tienen fecha de vencimiento?",
+        answer: "No. Los códigos QR estáticos no vencen nunca. Codifican directamente el texto, enlace web o datos de red WiFi que ingresaste, por lo que funcionan de forma permanente."
+      },
+      {
+        question: "¿Es gratis descargar el código QR?",
+        answer: "Sí, podés generar y descargar códigos QR en formato de imagen de alta resolución de forma 100% gratuita y sin necesidad de crear una cuenta."
+      },
+      {
+        question: "¿Qué tipos de QR puedo crear?",
+        answer: "Podés generar QR para direcciones web (URL), perfiles de redes sociales, accesos directos a redes Wi-Fi con contraseña y texto plano."
+      }
+    ],
+    related: ["link-resenas-google", "generador-documentos-comerciales", "generador-presupuestos"]
   },
   {
     slug: "calculadora-1rm",
@@ -429,7 +459,17 @@ export const tools: Tool[] = [
       h1: "Conversor de Unidades",
       intro: "Convertí rápidamente entre múltiples sistemas de medida. Seleccioná la categoría, ingresá el valor y obtené el resultado al instante."
     },
-    related: ["calculadora-1rm", "calculadora-precios", "calculadora-iva"]
+    faqs: [
+      {
+        question: "¿Qué sistemas de medida soporta el conversor?",
+        answer: "Permite convertir unidades de longitud (metros, kilómetros, millas, pulgadas), peso (gramos, kilogramos, libras, onzas), volumen (litros, mililitros, galones), temperatura (Celsius, Fahrenheit) y almacenamiento digital (MB, GB, TB)."
+      },
+      {
+        question: "¿Cómo se realizan las conversiones?",
+        answer: "Las conversiones se realizan de forma automática en tiempo real en tu navegador utilizando los factores de conversión internacionales estandarizados."
+      }
+    ],
+    related: ["calculadora-1rm", "costo-receta", "calculadora-precios"]
   },
   {
     slug: "calculadora-aguinaldo",
@@ -729,7 +769,7 @@ export const tools: Tool[] = [
         answer: "Sí. Al finalizar tu lote podés descargar cada imagen de forma individual o descargar un archivo ZIP con todos los resultados exitosos y sus extensiones correctas."
       }
     ],
-    related: ["convertidor-archivos", "generador-qr", "conversor-unidades", "calculadora-precios"]
+    related: ["convertidor-archivos", "ordenar-pdf", "generador-qr"]
   },
   {
     slug: "convertidor-archivos",

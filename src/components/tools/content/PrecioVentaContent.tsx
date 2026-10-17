@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export function PrecioVentaContent() {
   return (
     <div className="prose prose-neutral max-w-[720px] prose-headings:font-bold prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-p:text-foreground/80 prose-p:leading-relaxed prose-strong:font-semibold prose-strong:text-foreground prose-a:text-brand hover:prose-a:text-brand-dark">
@@ -71,12 +73,24 @@ export function PrecioVentaContent() {
 
       <h2>Errores comunes al ponerle precio a un producto</h2>
       <ul>
+        <li><strong>Calcular sobre costo histórico en vez de costo de reposición:</strong> En contextos inflacionarios, fijar el precio con lo que pagaste la mercadería el mes pasado te descapitaliza. Siempre calculá sobre lo que te cuesta volver a comprarla hoy a tu proveedor.</li>
         <li><strong>No contar los costos fijos:</strong> Si solo sumás el costo del producto, vas a terminar pagando el alquiler de tu bolsillo.</li>
-        <li><strong>Confundir margen con recargo:</strong> Creer que remarcando un 30% estás ganando un 30%.</li>
-        <li><strong>Olvidar las comisiones:</strong> Poner el precio y descubrir recién cuando te pagan que el medio de pago se llevó tu ganancia.</li>
-        <li><strong>No actualizar:</strong> Los costos cambian. Tenés que revisar tus números de forma periódica para no perder rentabilidad.</li>
+        <li><strong>Confundir margen con recargo:</strong> Creer que remarcando un 30% sobre el costo equivale a ganar un 30% sobre la venta. Si querés profundizar en la diferencia, podés comparar números en nuestra <Link href="/herramientas/calculadora-rentabilidad">calculadora de rentabilidad</Link>.</li>
+        <li><strong>Olvidar las comisiones del medio de cobro:</strong> Poner el precio y descubrir recién cuando te pagan por Mercado Pago o tarjeta que la comisión se comió tu ganancia.</li>
+        <li><strong>Descontar el IVA restando el porcentaje:</strong> Restar 21% a un precio bruto da un número incorrecto. Utilizá nuestra <Link href="/herramientas/calculadora-iva">calculadora de IVA Argentina</Link> para desglosar el crédito y débito fiscal con precisión.</li>
       </ul>
 
+      <div className="not-prose my-8 p-6 rounded-2xl bg-purple-50/60 border border-purple-200/80">
+        <h3 className="text-base font-bold text-purple-950 mb-2">¿Ya tenés tus precios definidos?</h3>
+        <p className="text-xs text-purple-900/80 leading-relaxed mb-3">
+          Armá tus propuestas comerciales de forma profesional:
+        </p>
+        <ul className="text-xs text-purple-900 space-y-1.5 list-disc list-inside">
+          <li>Creá cotizaciones formales para clientes con el <Link href="/herramientas/generador-presupuestos" className="font-semibold underline hover:text-brand">generador de presupuestos online</Link>.</li>
+          <li>Organizá tu lista de precios completa por categorías en el <Link href="/herramientas/generador-listas-precios" className="font-semibold underline hover:text-brand">generador de listas de precios en PDF</Link>.</li>
+          <li>Si producís alimentos o elaboraciones, costeá cada ingrediente con la <Link href="/herramientas/costo-receta" className="font-semibold underline hover:text-brand">calculadora de costo de receta</Link>.</li>
+        </ul>
+      </div>
     </div>
   );
 }

@@ -9,7 +9,9 @@ import { JsonLd } from "@/components/seo/JsonLd"
 import { siteConfig } from "@/config/site"
 
 export const metadata = buildMetadata({
-  title: "Inicio",
+  title: "PlayComun Online · Herramientas y Calculadoras Gratis para tu Negocio",
+  description:
+    "Calculá precios, costos, IVA, aguinaldo y cuotas. Generá presupuestos y listas de precios en PDF, comprimí imágenes y organizá documentos online gratis y sin registro.",
   path: "/",
 })
 

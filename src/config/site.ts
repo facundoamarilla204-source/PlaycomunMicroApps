@@ -1,7 +1,7 @@
 export const siteConfig = {
   name: "PlayComun Herramientas",
   description: "Calculá, generá y resolvé en segundos. Las básicas son gratis y sin registro.",
-  url: process.env.NEXT_PUBLIC_SITE_URL || "https://playcomun.online",
+  url: process.env.NEXT_PUBLIC_SITE_URL || "https://www.playcomun.online",
   locale: "es_AR",
   organization: {
     name: "PlayComun",

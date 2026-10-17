@@ -43,6 +43,7 @@ import { OrdenarPdf } from "@/components/tools/ordenar-pdf/OrdenarPdf"
 import { OrdenarPdfContent } from "@/components/tools/content/OrdenarPdfContent"
 import { CortadorAudio } from "@/components/tools/cortador-audio/CortadorAudio"
 import { CortadorAudioContent } from "@/components/tools/content/CortadorAudioContent"
+import GeneradorListasContent from "@/components/tools/content/GeneradorListasContent"
 
 import { isProUser } from "@/lib/pro"
 
@@ -211,6 +212,8 @@ function getToolComponent(slug: string, user: User | null, isPro: boolean = fals
           </div>
         </>
       )
+    case "generador-listas-precios":
+      return <GeneradorListasContent />
     default:
       return null
   }
@@ -297,10 +300,27 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     ],
   }
 
+  const faqJsonLd =
+    !isSoon && tool.faqs && tool.faqs.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: tool.faqs.map((faq) => ({
+            "@type": "Question",
+            name: faq.question,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: faq.answer,
+            },
+          })),
+        }
+      : null
+
   return (
     <>
       {jsonLdData && <JsonLd data={jsonLdData} />}
       <JsonLd data={breadcrumbJsonLd} />
+      {faqJsonLd && <JsonLd data={faqJsonLd} />}
 
       <ToolPageLayout tool={tool}>
         {isSoon ? (

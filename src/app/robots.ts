@@ -2,9 +2,9 @@ import { MetadataRoute } from "next"
 import { siteConfig } from "@/config/site"
 
 export default function robots(): MetadataRoute.Robots {
-  const isDev = process.env.VERCEL_ENV !== "production"
+  const isPreview = process.env.VERCEL_ENV === "preview"
 
-  if (isDev) {
+  if (isPreview) {
     return {
       rules: {
         userAgent: "*",
@@ -19,12 +19,14 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: [
         "/cuenta",
+        "/cuenta/",
         "/ingresar",
         "/registro",
         "/recuperar",
         "/verificar-email",
+        "/checkout",
+        "/favoritas",
         "/api/",
-        "/favoritas"
       ],
     },
     sitemap: `${siteConfig.url}/sitemap.xml`,

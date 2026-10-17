@@ -153,6 +153,18 @@ export function CompresorImagenesContent() {
         </h4>
         <div className="flex flex-wrap gap-3">
           <Link
+            href="/herramientas/convertidor-archivos"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-gray-200 bg-white hover:border-brand/40 text-xs font-medium text-gray-800 transition-colors shadow-2xs"
+          >
+            <span>Convertidor de Archivos (Word / Excel / PDF)</span>
+          </Link>
+          <Link
+            href="/herramientas/ordenar-pdf"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-gray-200 bg-white hover:border-brand/40 text-xs font-medium text-gray-800 transition-colors shadow-2xs"
+          >
+            <span>Organizar y Unir PDF</span>
+          </Link>
+          <Link
             href="/herramientas/generador-listas-precios"
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-gray-200 bg-white hover:border-brand/40 text-xs font-medium text-gray-800 transition-colors shadow-2xs"
           >
@@ -163,18 +175,6 @@ export function CompresorImagenesContent() {
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-gray-200 bg-white hover:border-brand/40 text-xs font-medium text-gray-800 transition-colors shadow-2xs"
           >
             <span>Generador de Códigos QR</span>
-          </Link>
-          <Link
-            href="/herramientas/conversor-unidades"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-gray-200 bg-white hover:border-brand/40 text-xs font-medium text-gray-800 transition-colors shadow-2xs"
-          >
-            <span>Conversor de Unidades</span>
-          </Link>
-          <Link
-            href="/herramientas/calculadora-precios"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-gray-200 bg-white hover:border-brand/40 text-xs font-medium text-gray-800 transition-colors shadow-2xs"
-          >
-            <span>Calculadora de Precios de Venta</span>
           </Link>
         </div>
       </section>

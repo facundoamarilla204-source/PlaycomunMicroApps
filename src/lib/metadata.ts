@@ -16,12 +16,14 @@ export function buildMetadata({
   image,
   noindex = false,
 }: MetadataProps = {}): Metadata {
-  const isDev = process.env.VERCEL_ENV !== "production"
-  const forceNoIndex = isDev || noindex
+  const isPreview = process.env.VERCEL_ENV === "preview"
+  const forceNoIndex = isPreview || noindex
 
   // Limpiar path para asegurarse de que empieza con /
   const cleanPath = path ? (path.startsWith("/") ? path : `/${path}`) : ""
-  const canonicalUrl = `${siteConfig.url}${cleanPath}`
+  // Evitar barra final en todas las rutas para coincidencia exacta con sitemap.xml
+  const normalizedPath = cleanPath === "/" ? "" : cleanPath.replace(/\/+$/, "")
+  const canonicalUrl = `${siteConfig.url}${normalizedPath}`
 
   // Límites recomendados (advertencias en desarrollo)
   if (process.env.NODE_ENV === "development") {
@@ -33,11 +35,18 @@ export function buildMetadata({
     }
   }
 
-  const finalTitle = title ? `${title} | ${siteConfig.name}` : siteConfig.name
+  const siteName = siteConfig.name
+  const finalTitle = title
+    ? title.includes(siteName)
+      ? title
+      : `${title} | ${siteName}`
+    : siteName
   const finalDescription = description || siteConfig.description
 
   return {
-    title: finalTitle,
+    title: {
+      absolute: finalTitle,
+    },
     description: finalDescription,
     alternates: {
       canonical: canonicalUrl,

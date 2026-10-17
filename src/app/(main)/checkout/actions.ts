@@ -42,7 +42,7 @@ export async function createCheckoutSession(planType: 'mensual' | 'anual') {
   }
 
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.playcomun.com'
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.playcomun.online'
     const returnUrl = `${baseUrl}/cuenta/suscripcion?success=true`
 
     const checkout = await createSubscriptionCheckout({
