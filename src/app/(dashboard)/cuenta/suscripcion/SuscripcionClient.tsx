@@ -6,58 +6,56 @@ import { cancelSubscription, syncCurrentUserSubscription } from './actions'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   CheckCircle2, 
-  Zap, 
   CreditCard, 
   Calendar, 
   AlertCircle, 
-  XCircle, 
   Clock, 
   RotateCw, 
-  ShieldCheck,
-  AlertTriangle,
-  Info
+  ShieldCheck, 
+  AlertTriangle, 
+  ChevronDown, 
+  ChevronUp, 
+  X, 
+  Loader2, 
+  ArrowRight 
 } from 'lucide-react'
 import { PlanComparison } from '@/components/subscription/PlanComparison'
 
 // ---------------------------------------------------------------------------
-// Success Banner: mostrado tras confirmar pago
+// Success Banner: confirmación tras checkout
 // ---------------------------------------------------------------------------
 function SuccessBanner({ onClose }: { onClose: () => void }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: -20, scale: 0.98 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: -20, scale: 0.98 }}
-      className="relative bg-emerald-600 rounded-2xl p-6 md:p-8 text-white shadow-lg overflow-hidden border border-emerald-500"
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      className="bg-emerald-50 border border-emerald-200/80 rounded-2xl p-5 text-emerald-900 shadow-xs flex items-start justify-between gap-4"
     >
-      <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-5">
-        <div className="w-14 h-14 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center flex-shrink-0">
-          <CheckCircle2 className="w-8 h-8 text-white" />
+      <div className="flex items-start gap-3.5">
+        <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center flex-shrink-0 mt-0.5">
+          <CheckCircle2 className="w-5 h-5" />
         </div>
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-1">
-            <Zap className="w-4 h-4 text-yellow-300 fill-yellow-300" />
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-100">¡Pago confirmado!</span>
-          </div>
-          <h2 className="text-xl md:text-2xl font-black mb-1">PlayComun Pro ya está activo</h2>
-          <p className="text-emerald-100 text-sm leading-relaxed">
-            Tu suscripción fue procesada correctamente por Mercado Pago. Todas las herramientas y funciones avanzadas ya están desbloqueadas en tu cuenta.
+        <div>
+          <h2 className="text-base font-bold text-emerald-950">Pago procesado correctamente</h2>
+          <p className="text-xs sm:text-sm text-emerald-800 mt-0.5 leading-relaxed">
+            Tu suscripción a PlayComun Pro está activa. Todas las herramientas y funciones avanzadas ya están disponibles en tu cuenta.
           </p>
         </div>
-        <button
-          onClick={onClose}
-          aria-label="Cerrar notificación"
-          className="sm:self-start text-white/70 hover:text-white transition-colors p-1"
-        >
-          <XCircle className="w-5 h-5" />
-        </button>
       </div>
+      <button
+        onClick={onClose}
+        aria-label="Cerrar notificación"
+        className="text-emerald-700/60 hover:text-emerald-900 transition-colors p-1"
+      >
+        <X className="w-4 h-4" />
+      </button>
     </motion.div>
   )
 }
 
 // ---------------------------------------------------------------------------
-// Verification Banner: sondeo activo tras retorno de MP
+// Verification Banner: sondeo tras retorno de MP
 // ---------------------------------------------------------------------------
 function VerificationBanner({ onRetry, isSyncing }: { onRetry: () => void; isSyncing: boolean }) {
   return (
@@ -65,31 +63,31 @@ function VerificationBanner({ onRetry, isSyncing }: { onRetry: () => void; isSyn
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
-      className="bg-purple-50 border border-purple-200 rounded-2xl p-5 text-purple-900 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm"
+      className="bg-purple-50 border border-purple-200/80 rounded-2xl p-5 text-purple-900 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs"
     >
       <div className="flex items-center gap-3">
-        <RotateCw className={`w-5 h-5 text-purple-600 flex-shrink-0 ${isSyncing ? 'animate-spin' : ''}`} />
+        <RotateCw className={`w-4 h-4 text-purple-700 flex-shrink-0 ${isSyncing ? 'animate-spin' : ''}`} />
         <div>
-          <p className="font-bold text-sm text-purple-950">Verificando estado con Mercado Pago</p>
+          <p className="font-bold text-sm text-purple-950">Sincronizando estado con Mercado Pago</p>
           <p className="text-xs text-purple-700 mt-0.5">
-            Estamos sincronizando la confirmación de tu pago. Esto suele tardar sólo unos instantes.
+            Aguardando la confirmación final de la transacción bancaria.
           </p>
         </div>
       </div>
       <button
         onClick={onRetry}
         disabled={isSyncing}
-        className="px-4 py-2 text-xs font-semibold bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors disabled:opacity-50 flex items-center gap-1.5 flex-shrink-0"
+        className="px-3.5 py-1.5 text-xs font-semibold bg-purple-700 hover:bg-purple-800 text-white rounded-xl transition-colors disabled:opacity-50 flex items-center gap-1.5 flex-shrink-0"
       >
         <RotateCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
-        {isSyncing ? 'Verificando...' : 'Verificar ahora'}
+        {isSyncing ? 'Verificando...' : 'Verificar estado'}
       </button>
     </motion.div>
   )
 }
 
 // ---------------------------------------------------------------------------
-// Status badge
+// Status Badge
 // ---------------------------------------------------------------------------
 function StatusBadge({ 
   status, 
@@ -104,45 +102,45 @@ function StatusBadge({
 }) {
   if (providerStatus === 'refunded' || providerStatus === 'charged_back') {
     return (
-      <div className="flex items-center gap-2 mt-2">
-        <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
-        <span className="text-sm font-semibold text-red-700">Acceso revocado ({providerStatus === 'refunded' ? 'Reembolsado' : 'Contracargo'})</span>
-      </div>
+      <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-red-50 text-red-700 border border-red-200">
+        <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
+        Acceso revocado ({providerStatus === 'refunded' ? 'Reembolso' : 'Contracargo'})
+      </span>
     )
   }
 
   if (status === 'cancelled' && isPeriodActive) {
     return (
-      <div className="flex items-center gap-2 mt-2">
-        <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" />
-        <span className="text-sm font-semibold text-amber-700">Renovación cancelada (Pro activo)</span>
-      </div>
+      <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
+        <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+        Renovación cancelada (Acceso Pro vigente)
+      </span>
     )
   }
 
   if (isPending || status === 'pending' || (status === 'trialing' && providerStatus === 'pending')) {
     return (
-      <div className="flex items-center gap-2 mt-2">
-        <span className="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse" />
-        <span className="text-sm font-semibold text-blue-700">Pendiente de confirmación</span>
-      </div>
+      <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+        <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+        Pendiente de confirmación
+      </span>
     )
   }
 
   const map: Record<string, { label: string; className: string; dot: string }> = {
-    active: { label: 'Activa con renovación automática', className: 'text-emerald-700 font-semibold', dot: 'bg-emerald-500 animate-pulse' },
-    trialing: { label: 'Período de prueba promocional', className: 'text-blue-700 font-semibold', dot: 'bg-blue-500 animate-pulse' },
-    paused: { label: 'Pausada', className: 'text-amber-700 font-semibold', dot: 'bg-amber-500' },
-    cancelled: { label: 'Suscripción finalizada', className: 'text-slate-500', dot: 'bg-slate-400' },
-    past_due: { label: 'Pago pendiente de regularización (Período de gracia)', className: 'text-red-700 font-semibold', dot: 'bg-red-500 animate-pulse' },
-    expired: { label: 'Suscripción finalizada', className: 'text-slate-500', dot: 'bg-slate-400' },
+    active: { label: 'Activa con renovación automática', className: 'bg-emerald-50 text-emerald-800 border-emerald-200', dot: 'bg-emerald-500' },
+    trialing: { label: 'Prueba promocional activa', className: 'bg-blue-50 text-blue-800 border-blue-200', dot: 'bg-blue-500' },
+    paused: { label: 'Suscripción en pausa', className: 'bg-amber-50 text-amber-800 border-amber-200', dot: 'bg-amber-500' },
+    cancelled: { label: 'Suscripción finalizada', className: 'bg-slate-100 text-slate-700 border-slate-200', dot: 'bg-slate-400' },
+    past_due: { label: 'Pago pendiente (Período de gracia)', className: 'bg-red-50 text-red-700 border-red-200', dot: 'bg-red-500' },
+    expired: { label: 'Suscripción finalizada', className: 'bg-slate-100 text-slate-700 border-slate-200', dot: 'bg-slate-400' },
   }
-  const config = map[status] || { label: status, className: 'text-slate-600', dot: 'bg-slate-400' }
+  const config = map[status] || { label: status, className: 'bg-slate-100 text-slate-700 border-slate-200', dot: 'bg-slate-400' }
   return (
-    <div className="flex items-center gap-2 mt-2">
-      <span className={`w-2.5 h-2.5 rounded-full ${config.dot}`} />
-      <span className={`text-sm ${config.className}`}>{config.label}</span>
-    </div>
+    <span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full border ${config.className}`}>
+      <span className={`w-1.5 h-1.5 rounded-full ${config.dot}`} />
+      {config.label}
+    </span>
   )
 }
 
@@ -174,8 +172,8 @@ function planDisplayName(planCode: string | undefined, planName: string | undefi
 }
 
 function billingLabel(planCode: string | undefined): string {
-  if (planCode === 'pro_yearly') return 'Facturación anual'
-  return 'Facturación mensual'
+  if (planCode === 'pro_yearly') return 'Facturación anual recurrente'
+  return 'Facturación mensual recurrente'
 }
 
 // ---------------------------------------------------------------------------
@@ -185,7 +183,6 @@ export function SuscripcionClient({
   subscription,
   paymentMethods,
   payments,
-  userEmail: _userEmail,
   isPro,
   showSuccessBanner = false,
   incomingPreapprovalId,
@@ -204,13 +201,14 @@ export function SuscripcionClient({
 }) {
   const router = useRouter()
   const [isCancelling, setIsCancelling] = useState(false)
+  const [showCancelModal, setShowCancelModal] = useState(false)
+  const [showComparison, setShowComparison] = useState(!isPro)
   const [error, setError] = useState<string | null>(null)
   const [bannerVisible, setBannerVisible] = useState(showSuccessBanner && isPro)
   const [isVerifying, setIsVerifying] = useState(showSuccessBanner && !isPro)
   const [syncAttempts, setSyncAttempts] = useState(0)
   const pollingRef = useRef<NodeJS.Timeout | null>(null)
 
-  // Limpiar parámetros de éxito de la URL sin provocar recarga de página
   useEffect(() => {
     if (showSuccessBanner) {
       const url = new URL(window.location.href)
@@ -220,7 +218,6 @@ export function SuscripcionClient({
     }
   }, [showSuccessBanner])
 
-  // Polling de verificación si regresa de pago y todavía no figura como Pro
   useEffect(() => {
     if (isVerifying && syncAttempts < 4) {
       pollingRef.current = setTimeout(async () => {
@@ -257,7 +254,7 @@ export function SuscripcionClient({
       }
       router.refresh()
     } catch (e: any) {
-      setError(e.message || 'Error al sincronizar con Mercado Pago')
+      setError(e.message || 'No fue posible sincronizar el estado con Mercado Pago.')
     } finally {
       setIsVerifying(false)
     }
@@ -288,13 +285,8 @@ export function SuscripcionClient({
 
   const mainPaymentMethod = paymentMethods?.find(pm => pm.is_default) || paymentMethods?.[0]
 
-  const handleCancel = async () => {
+  const confirmCancel = async () => {
     if (!subscription) return
-    const confirmed = window.confirm(
-      '¿Estás seguro de cancelar la renovación automática? Mantendrás tu acceso a PlayComun Pro hasta la fecha de finalización de tu período actual y no se te cobrará nuevamente.'
-    )
-    if (!confirmed) return
-
     setIsCancelling(true)
     setError(null)
     try {
@@ -302,10 +294,11 @@ export function SuscripcionClient({
       if (result.error) {
         setError(result.error)
       } else {
+        setShowCancelModal(false)
         router.refresh()
       }
     } catch (e: any) {
-      setError(e.message || 'Error al cancelar la renovación automática')
+      setError(e.message || 'Ocurrió un error al cancelar la renovación automática.')
     } finally {
       setIsCancelling(false)
     }
@@ -313,15 +306,20 @@ export function SuscripcionClient({
 
   return (
     <div className="space-y-8 max-w-4xl mx-auto w-full">
-      {/* Mensaje de error si ocurre */}
+      {/* Mensaje de error controlado */}
       <AnimatePresence>
         {error && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-            className="bg-red-50 text-red-600 p-4 rounded-2xl text-sm font-medium border border-red-100 flex items-center gap-3"
+            initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+            className="bg-red-50 text-red-700 p-4 rounded-2xl text-xs sm:text-sm font-medium border border-red-200 flex items-center justify-between gap-3"
           >
-            <AlertCircle className="w-5 h-5 flex-shrink-0" />
-            {error}
+            <div className="flex items-center gap-2.5">
+              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              <span>{error}</span>
+            </div>
+            <button onClick={() => setError(null)} className="text-red-500 hover:text-red-800">
+              <X className="w-4 h-4" />
+            </button>
           </motion.div>
         )}
       </AnimatePresence>
@@ -341,389 +339,295 @@ export function SuscripcionClient({
       </AnimatePresence>
 
       {/* Tarjeta de Detalle del Plan Actual */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-        className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-200/80 overflow-hidden relative"
-      >
-        <div className="relative z-10">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl md:text-2xl font-bold text-slate-800 tracking-tight">Estado de mi suscripción</h2>
-            {hasSubscription && (
-              <button
-                onClick={handleManualSync}
-                disabled={isVerifying}
-                title="Sincronizar con Mercado Pago"
-                className="text-xs font-semibold text-slate-500 hover:text-purple-600 transition-colors flex items-center gap-1.5 p-1.5 rounded-lg hover:bg-slate-50 disabled:opacity-50"
-              >
-                <RotateCw className={`w-3.5 h-3.5 ${isVerifying ? 'animate-spin' : ''}`} />
-                <span>Actualizar</span>
-              </button>
-            )}
-          </div>
-
-          {hasSubscription ? (
-            <div className="space-y-8">
-              {/* Encabezado del Plan */}
-              <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 pb-6 border-b border-slate-100">
-                <div className="flex items-start gap-4">
-                  <div className="w-14 h-14 rounded-2xl bg-purple-100 text-purple-800 flex items-center justify-center font-black text-2xl shadow-inner flex-shrink-0">
-                    P
-                  </div>
-                  <div>
-                    <h3 className="font-extrabold text-slate-900 text-xl tracking-tight">
-                      {planDisplayName(subscription.plans?.code, subscription.plans?.name)}
-                    </h3>
-                    <StatusBadge 
-                      status={subscription.status} 
-                      providerStatus={subscription.provider_status}
-                      isPeriodActive={isPeriodActive}
-                      isPending={isPending}
-                    />
-                  </div>
+      <section className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-xs">
+        {hasSubscription ? (
+          <div className="space-y-8">
+            {/* Encabezado: Título, estado y precio */}
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6 pb-6 border-b border-slate-100">
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <StatusBadge 
+                    status={subscription.status} 
+                    providerStatus={subscription.provider_status}
+                    isPeriodActive={isPeriodActive}
+                    isPending={isPending}
+                  />
+                  <button
+                    onClick={handleManualSync}
+                    disabled={isVerifying}
+                    title="Actualizar estado con Mercado Pago"
+                    className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors disabled:opacity-50"
+                  >
+                    <RotateCw className={`w-3.5 h-3.5 ${isVerifying ? 'animate-spin' : ''}`} />
+                  </button>
                 </div>
-
-                <div className="flex flex-col gap-1 w-full md:w-auto md:text-right bg-slate-50/80 md:bg-transparent p-4 md:p-0 rounded-xl">
-                  <div className="text-2xl md:text-3xl font-black text-slate-900">
-                    ${(Number(subscription.plans?.price) || 0).toLocaleString('es-AR')}{' '}
-                    <span className="text-sm font-semibold text-slate-500">{subscription.plans?.currency || 'ARS'}</span>
-                  </div>
-                  <div className="text-xs font-medium text-slate-500">{billingLabel(subscription.plans?.code)}</div>
-                </div>
+                <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+                  {planDisplayName(subscription.plans?.code, subscription.plans?.name)}
+                </h2>
+                <p className="text-xs text-slate-500 mt-1">
+                  {billingLabel(subscription.plans?.code)}
+                </p>
               </div>
 
-              {/* Grid de Información y Fechas */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Fechas Importantes */}
-                <div className="space-y-4">
-                  <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5 text-purple-500" /> Período y Fechas
-                  </h4>
-                  <ul className="space-y-3">
-                    <li className="flex justify-between text-sm py-1 border-b border-slate-50">
-                      <span className="text-slate-500">Fecha de inicio de la suscripción</span>
-                      <span className="font-medium text-slate-800">
-                        {subscriptionStartDate
-                          ? new Date(subscriptionStartDate).toLocaleDateString('es-AR', { year: 'numeric', month: 'long', day: 'numeric' })
-                          : 'Pendiente de inicio'}
-                      </span>
-                    </li>
-                    <li className="flex justify-between text-sm py-1 border-b border-slate-50">
-                      <span className="text-slate-500">Inicio del período actual</span>
-                      <span className="font-medium text-slate-800">
-                        {subscription.current_period_start
-                          ? new Date(subscription.current_period_start).toLocaleDateString('es-AR', { year: 'numeric', month: 'long', day: 'numeric' })
-                          : subscriptionStartDate
-                          ? new Date(subscriptionStartDate).toLocaleDateString('es-AR', { year: 'numeric', month: 'long', day: 'numeric' })
-                          : 'Pendiente de confirmación'}
-                      </span>
-                    </li>
-                    <li className="flex justify-between text-sm py-1 border-b border-slate-50">
-                      <span className="text-slate-500">Fin del período actual</span>
-                      <span className="font-medium text-slate-800">
-                        {subscription.current_period_end
-                          ? new Date(subscription.current_period_end).toLocaleDateString('es-AR', { year: 'numeric', month: 'long', day: 'numeric' })
-                          : 'Pendiente de confirmación'}
-                      </span>
-                    </li>
-                    <li className="flex justify-between text-sm py-1 border-b border-slate-50">
-                      <span className="text-slate-500">Próximo cobro previsto</span>
-                      <span className={`font-semibold ${
-                        isPastDue ? 'text-red-600' :
-                        isCancelled || isCancelledWithAccess ? 'text-slate-500' :
-                        'text-slate-900'
-                      }`}>
-                        {isCancelled || isCancelledWithAccess ? (
-                          'Sin cobro programado (cancelada)'
-                        ) : isPastDue ? (
-                          'Reintento pendiente por Mercado Pago'
-                        ) : isPending ? (
-                          'Pendiente de confirmación inicial'
-                        ) : subscription.status === 'active' && subscription.current_period_end && new Date(subscription.current_period_end).getTime() > Date.now() ? (
-                          new Date(subscription.current_period_end).toLocaleDateString('es-AR', { year: 'numeric', month: 'long', day: 'numeric' })
-                        ) : subscription.status === 'active' ? (
-                          'Confirmado por Mercado Pago'
-                        ) : (
-                          'Fecha pendiente de confirmación'
-                        )}
-                      </span>
-                    </li>
-                    <li className="flex justify-between text-sm py-1">
-                      <span className="text-slate-500">Renovación automática</span>
-                      <span className={`font-semibold text-xs px-2.5 py-0.5 rounded-full ${
-                        isCancelled || isCancelledWithAccess
-                          ? 'bg-slate-100 text-slate-600'
-                          : isPastDue
-                          ? 'bg-amber-50 text-amber-700'
-                          : subscription.status === 'active'
-                          ? 'bg-emerald-50 text-emerald-700'
-                          : 'bg-slate-100 text-slate-600'
-                      }`}>
-                        {isCancelled || isCancelledWithAccess
-                          ? 'Desactivada'
-                          : isPastDue
-                          ? 'En pausa por cobro pendiente'
-                          : subscription.status === 'active'
-                          ? 'Activa'
-                          : 'Inactiva'}
-                      </span>
-                    </li>
-                  </ul>
+              <div className="text-left sm:text-right">
+                <div className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+                  ${(Number(subscription.plans?.price) || 0).toLocaleString('es-AR')}{' '}
+                  <span className="text-xs font-semibold text-slate-500">{subscription.plans?.currency || 'ARS'}</span>
                 </div>
-
-                {/* Método de Pago */}
-                <div className="space-y-4">
-                  <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                    <CreditCard className="w-3.5 h-3.5 text-purple-500" /> Medio de pago
-                  </h4>
-                  {mainPaymentMethod ? (
-                    <div className="bg-slate-50/80 p-4 rounded-xl border border-slate-200/60 flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-6 bg-white border border-slate-200 rounded flex items-center justify-center text-[10px] font-black text-slate-700 uppercase shadow-xs">
-                          {mainPaymentMethod.brand || (mainPaymentMethod.provider === 'mercadopago' ? 'MP' : '••••')}
-                        </div>
-                        <div className="text-sm font-semibold text-slate-800">
-                          {mainPaymentMethod.last_four_digits
-                            ? `•••• ${mainPaymentMethod.last_four_digits}`
-                            : 'Tarjeta registrada'}
-                          {mainPaymentMethod.expiration_month && mainPaymentMethod.expiration_year && (
-                            <span className="text-slate-400 font-normal ml-2 text-xs">
-                              (vence {String(mainPaymentMethod.expiration_month).padStart(2, '0')}/{mainPaymentMethod.expiration_year})
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                    </div>
-                  ) : (
-                    <div className="text-sm text-slate-600 p-4 bg-slate-50 rounded-xl border border-slate-200/60 flex items-center gap-2">
-                      <CreditCard className="w-4 h-4 text-slate-400" />
-                      <span>Gestionado directamente por Mercado Pago</span>
-                    </div>
-                  )}
-
-                  <div className="flex items-start gap-2 p-3 bg-slate-50/60 rounded-xl text-xs text-slate-500 border border-slate-100">
-                    <Info className="w-4 h-4 text-slate-400 flex-shrink-0 mt-0.5" />
-                    <p>
-                      Para cambiar la tarjeta asociada a tu suscripción, podés hacerlo desde tu cuenta de Mercado Pago o reactivando el plan con tu nueva tarjeta al terminar el ciclo actual.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Aviso: Renovación cancelada pero período vigente */}
-              {isCancelledWithAccess && (
-                <div className="flex items-start gap-3 p-4 bg-amber-50/90 border border-amber-200/80 rounded-2xl text-sm text-amber-950">
-                  <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5 text-amber-600" />
-                  <div>
-                    <p className="font-bold mb-1">Renovación automática cancelada</p>
-                    <p className="text-xs md:text-sm text-amber-900 leading-relaxed">
-                      Tu acceso a PlayComun Pro se mantiene <strong>100% activo</strong> hasta el{' '}
-                      <strong>
-                        {subscription.current_period_end &&
-                          new Date(subscription.current_period_end).toLocaleDateString('es-AR', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                          })}
-                      </strong>
-                      . No se debitarán nuevas cuotas en tu tarjeta. Si deseás continuar con Pro después de esa fecha, podés reactivar la renovación en cualquier momento.
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* Aviso: Pago pendiente o en gracia */}
-              {isPastDue && (
-                <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-2xl text-sm text-red-900">
-                  <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5 text-red-600" />
-                  <div>
-                    <p className="font-bold mb-1">Cobro pendiente de regularización (Período de gracia activo)</p>
-                    <p className="text-xs md:text-sm text-red-800 leading-relaxed">
-                      Mercado Pago no pudo procesar el cobro automático de tu última cuota. El sistema te otorga un <strong>período de gracia de 3 días</strong> con tus herramientas Pro plenamente activas mientras reintenta el débito. Podés verificar el estado con el botón de actualización o revisar tu medio de pago en Mercado Pago.
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* Aviso: Acceso revocado por reembolso o contracargo */}
-              {isRevoked && (
-                <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-2xl text-sm text-red-900">
-                  <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5 text-red-600" />
-                  <div>
-                    <p className="font-bold mb-1">Acceso Pro cancelado</p>
-                    <p className="text-xs md:text-sm text-red-800 leading-relaxed">
-                      La suscripción fue revocada debido a un reembolso o contracargo confirmado por el proveedor de pagos. Podés contratar un nuevo plan Pro cuando lo desees.
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* Aviso: Suscripción vencida con datos preservados */}
-              {(isExpired || isPaused) && !isRevoked && (
-                <div className="flex items-start gap-3 p-4 bg-purple-50/80 border border-purple-200/70 rounded-2xl text-sm text-purple-950">
-                  <ShieldCheck className="w-5 h-5 flex-shrink-0 mt-0.5 text-purple-600" />
-                  <div>
-                    <p className="font-bold mb-1">Tus datos están protegidos</p>
-                    <p className="text-xs md:text-sm text-purple-900 leading-relaxed">
-                      Tu período Pro finalizó, pero todos tus documentos comerciales, recetas, listas de precios, movimientos de gastos y tandas QR continúan guardados de forma segura en tu cuenta. Al reactivar Pro, recuperarás el acceso completo e inmediato a todos ellos.
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* Botones de Acción */}
-              <div className="pt-6 flex flex-col sm:flex-row gap-3 justify-end border-t border-slate-100">
-                {['active', 'trialing'].includes(subscription.status) && !isPastDue && !isRevoked && (
-                  <>
-                    <button
-                      onClick={() => router.push('/planes')}
-                      className="px-5 py-2.5 rounded-xl text-slate-700 bg-slate-100 hover:bg-slate-200 font-semibold transition-colors text-xs sm:text-sm"
-                    >
-                      Cambiar modalidad de plan
-                    </button>
-                    <button
-                      onClick={handleCancel}
-                      disabled={isCancelling}
-                      className="px-5 py-2.5 rounded-xl text-red-600 hover:bg-red-50 font-semibold transition-colors disabled:opacity-50 text-xs sm:text-sm border border-red-100"
-                    >
-                      {isCancelling ? 'Cancelando...' : 'Cancelar renovación automática'}
-                    </button>
-                  </>
-                )}
-                {isCancelledWithAccess && (
-                  <button
-                    onClick={() => router.push('/planes')}
-                    className="px-6 py-2.5 rounded-xl text-white bg-purple-600 hover:bg-purple-700 font-bold transition-all shadow-sm text-xs sm:text-sm"
-                  >
-                    Reactivar renovación automática
-                  </button>
-                )}
-                {(isExpired || isPaused || isPastDue || isRevoked) && (
-                  <button
-                    onClick={() => router.push('/planes')}
-                    className="px-6 py-2.5 rounded-xl text-white bg-slate-900 hover:bg-slate-800 font-bold transition-all shadow-md text-xs sm:text-sm"
-                  >
-                    Reactivar suscripción Pro
-                  </button>
-                )}
+                <div className="text-xs text-slate-400 font-medium mt-0.5">Precio confirmado</div>
               </div>
             </div>
-          ) : (
-            /* Usuario en plan gratuito: Estado claro sin datos Pro ficticios */
-            <div className="space-y-6">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-2xl bg-purple-50 text-purple-700 border border-purple-100 flex items-center justify-center font-black text-2xl shadow-inner flex-shrink-0">
-                    B
+
+            {/* Grid informativo: Fechas del ciclo y Medio de pago */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              
+              {/* Bloque 1: Período y Fechas */}
+              <div className="space-y-3">
+                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <Calendar className="w-3.5 h-3.5 text-slate-600" />
+                  <span>Ciclo de facturación</span>
+                </h3>
+
+                <dl className="space-y-2.5 text-xs sm:text-sm">
+                  <div className="flex justify-between py-1 border-b border-slate-50">
+                    <dt className="text-slate-500">Inicio de suscripción</dt>
+                    <dd className="font-semibold text-slate-800">
+                      {subscriptionStartDate
+                        ? new Date(subscriptionStartDate).toLocaleDateString('es-AR', { year: 'numeric', month: 'short', day: 'numeric' })
+                        : 'Pendiente de inicio'}
+                    </dd>
                   </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                      <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Plan actual</span>
+
+                  <div className="flex justify-between py-1 border-b border-slate-50">
+                    <dt className="text-slate-500">Período actual</dt>
+                    <dd className="font-semibold text-slate-800">
+                      {subscription.current_period_start && subscription.current_period_end
+                        ? `${new Date(subscription.current_period_start).toLocaleDateString('es-AR', { day: 'numeric', month: 'short' })} — ${new Date(subscription.current_period_end).toLocaleDateString('es-AR', { day: 'numeric', month: 'short', year: 'numeric' })}`
+                        : 'En curso'}
+                    </dd>
+                  </div>
+
+                  <div className="flex justify-between py-1 border-b border-slate-50">
+                    <dt className="text-slate-500">Próximo cobro previsto</dt>
+                    <dd className={`font-semibold ${
+                      isPastDue ? 'text-red-600' :
+                      isCancelled || isCancelledWithAccess ? 'text-slate-500' :
+                      'text-slate-900'
+                    }`}>
+                      {isCancelled || isCancelledWithAccess ? (
+                        'Sin cobro programado'
+                      ) : isPastDue ? (
+                        'Reintento pendiente por Mercado Pago'
+                      ) : isPending ? (
+                        'Pendiente de confirmación inicial'
+                      ) : subscription.status === 'active' && subscription.current_period_end && new Date(subscription.current_period_end).getTime() > Date.now() ? (
+                        new Date(subscription.current_period_end).toLocaleDateString('es-AR', { year: 'numeric', month: 'long', day: 'numeric' })
+                      ) : (
+                        'Fecha en confirmación'
+                      )}
+                    </dd>
+                  </div>
+
+                  <div className="flex justify-between py-1">
+                    <dt className="text-slate-500">Renovación automática</dt>
+                    <dd className="font-semibold text-slate-800">
+                      {isCancelled || isCancelledWithAccess ? 'Desactivada' : isPastDue ? 'Pausada' : 'Activa'}
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+
+              {/* Bloque 2: Medio de pago */}
+              <div className="space-y-3">
+                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <CreditCard className="w-3.5 h-3.5 text-slate-600" />
+                  <span>Medio de pago</span>
+                </h3>
+
+                {mainPaymentMethod ? (
+                  <div className="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-6 bg-white border border-slate-200 rounded flex items-center justify-center text-[10px] font-bold text-slate-700 uppercase shadow-2xs">
+                        {mainPaymentMethod.brand || 'Tarjeta'}
+                      </div>
+                      <div className="text-xs sm:text-sm font-semibold text-slate-800">
+                        {mainPaymentMethod.last_four_digits
+                          ? `•••• ${mainPaymentMethod.last_four_digits}`
+                          : 'Tarjeta de crédito / débito'}
+                        {mainPaymentMethod.expiration_month && mainPaymentMethod.expiration_year && (
+                          <span className="text-slate-400 font-normal ml-2 text-xs">
+                            ({String(mainPaymentMethod.expiration_month).padStart(2, '0')}/{mainPaymentMethod.expiration_year})
+                          </span>
+                        )}
+                      </div>
                     </div>
-                    <h3 className="font-extrabold text-slate-900 text-xl tracking-tight mt-0.5">
-                      Plan Gratuito
-                    </h3>
+                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
                   </div>
-                </div>
+                ) : (
+                  <div className="text-xs sm:text-sm text-slate-600 p-3.5 bg-slate-50 rounded-xl border border-slate-200/60 flex items-center gap-2">
+                    <CreditCard className="w-4 h-4 text-slate-400" />
+                    <span>Débito recurrente gestionado en Mercado Pago</span>
+                  </div>
+                )}
 
-                <div className="flex flex-col gap-1 w-full sm:w-auto sm:text-right bg-slate-50 p-4 sm:p-0 rounded-xl">
-                  <div className="text-2xl sm:text-3xl font-black text-slate-900">
-                    $0 <span className="text-sm font-semibold text-slate-500">ARS</span>
-                  </div>
-                  <div className="text-xs font-medium text-slate-500">Sin costo de suscripción</div>
+                <div className="p-3 bg-slate-50/60 rounded-xl text-xs text-slate-500 border border-slate-100 leading-relaxed">
+                  Podés modificar la tarjeta asociada ingresando a tu cuenta de Mercado Pago o reactivando el plan con tu nueva tarjeta al finalizar el período actual.
                 </div>
               </div>
 
-              <div className="bg-slate-50/80 p-5 rounded-2xl border border-slate-200/60 text-xs sm:text-sm text-slate-600 leading-relaxed space-y-1.5">
-                <p className="font-bold text-slate-800">
-                  Actualmente estás usando el plan gratuito
-                </p>
-                <p>
-                  Tu cuenta tiene acceso libre a todas las herramientas estándar, calculadoras laborales y comerciales, códigos QR estáticos y generación de documentos en PDF. Para acceder a herramientas avanzadas, sincronización en la nube y exportación a Excel, podés contratar PlayComun Pro.
-                </p>
-              </div>
+            </div>
 
-              <div className="pt-2 flex justify-end">
+            {/* Aviso: Cancelada pero con período vigente */}
+            {isCancelledWithAccess && (
+              <div className="p-4 bg-amber-50/80 border border-amber-200/80 rounded-xl text-xs sm:text-sm text-amber-950 flex items-start gap-3">
+                <AlertCircle className="w-4 h-4 flex-shrink-0 text-amber-700 mt-0.5" />
+                <div>
+                  <p className="font-bold mb-0.5">Tu acceso Pro continúa vigente</p>
+                  <p className="text-xs text-amber-900 leading-relaxed">
+                    Mantendrás acceso completo a las funciones Pro hasta el{' '}
+                    <strong>
+                      {subscription.current_period_end &&
+                        new Date(subscription.current_period_end).toLocaleDateString('es-AR', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })}
+                    </strong>
+                    . No se debitarán nuevos períodos en tu medio de pago.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Aviso: Período de gracia */}
+            {isPastDue && (
+              <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-xs sm:text-sm text-red-950 flex items-start gap-3">
+                <AlertTriangle className="w-4 h-4 flex-shrink-0 text-red-600 mt-0.5" />
+                <div>
+                  <p className="font-bold mb-0.5">Cobro pendiente (Período de gracia)</p>
+                  <p className="text-xs text-red-900 leading-relaxed">
+                    Mercado Pago no pudo realizar el débito automático. Tenés un período de gracia de 3 días con acceso Pro completo mientras el sistema reintenta el cobro.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Botones de acción */}
+            <div className="pt-4 flex flex-col sm:flex-row gap-3 justify-end border-t border-slate-100">
+              {['active', 'trialing'].includes(subscription.status) && !isPastDue && !isRevoked && (
+                <>
+                  <button
+                    onClick={() => router.push('/planes')}
+                    className="px-4 py-2 rounded-xl text-slate-700 bg-slate-100 hover:bg-slate-200 font-semibold transition-colors text-xs"
+                  >
+                    Cambiar modalidad de plan
+                  </button>
+                  <button
+                    onClick={() => setShowCancelModal(true)}
+                    className="px-4 py-2 rounded-xl text-red-600 hover:bg-red-50 font-semibold transition-colors text-xs border border-red-200"
+                  >
+                    Cancelar renovación automática
+                  </button>
+                </>
+              )}
+              {isCancelledWithAccess && (
                 <button
                   onClick={() => router.push('/planes')}
-                  className="px-6 py-2.5 rounded-xl text-white bg-purple-600 hover:bg-purple-700 font-bold transition-all shadow-sm text-xs sm:text-sm flex items-center gap-2"
+                  className="px-5 py-2.5 rounded-xl text-white bg-slate-900 hover:bg-slate-800 font-semibold transition-colors text-xs sm:text-sm"
                 >
-                  <Zap className="w-4 h-4 fill-white" />
-                  <span>Conocer planes Pro</span>
+                  Reactivar renovación automática
                 </button>
+              )}
+              {(isExpired || isPaused || isPastDue || isRevoked) && (
+                <button
+                  onClick={() => router.push('/planes')}
+                  className="px-5 py-2.5 rounded-xl text-white bg-slate-900 hover:bg-slate-800 font-semibold transition-colors text-xs sm:text-sm"
+                >
+                  Reactivar suscripción Pro
+                </button>
+              )}
+            </div>
+          </div>
+        ) : (
+          /* Estado Gratuito Claro y Auténtico */
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
+              <div>
+                <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200 mb-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                  Plan actual
+                </span>
+                <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+                  Plan Gratuito
+                </h2>
+                <p className="text-xs text-slate-500 mt-1">Acceso libre sin costo mensual</p>
+              </div>
+
+              <div className="text-left sm:text-right">
+                <div className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+                  $0 <span className="text-xs font-semibold text-slate-500">ARS</span>
+                </div>
+                <div className="text-xs text-slate-400 font-medium mt-0.5">Sin vencimientos</div>
               </div>
             </div>
-          )}
-        </div>
-      </motion.div>
 
-      {/* Sección Comparativa de Planes */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.05 }}
-        className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-200/80"
-      >
-        <PlanComparison
-          isPro={isPro}
-          priceMensual={priceMensual}
-          priceAnual={priceAnual}
-          currentPeriodEnd={subscription?.current_period_end}
-          isAuthenticated={true}
-          mode="dashboard"
-          title={hasSubscription ? "Beneficios y funciones de los planes" : "Comparativa de planes"}
-          subtitle={
-            hasSubscription
-              ? "Revisá las funciones incluidas en tu plan Pro y la comparativa con el plan Básico."
-              : "Conocé en detalle qué incluye tu plan Básico y las herramientas adicionales de PlayComun Pro."
-          }
-        />
-      </motion.div>
+            <div className="bg-slate-50/80 p-4 sm:p-5 rounded-xl border border-slate-200/60 text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Estás usando el plan gratuito de PlayComun. Podés usar todas las calculadoras laborales y comerciales, generar códigos QR estándar y descargar documentos en PDF. Para acceder al guardado ilimitado en la nube y exportación a Excel, podés pasar a Pro.
+            </div>
+
+            <div className="pt-2 flex justify-end">
+              <button
+                onClick={() => router.push('/planes')}
+                className="px-5 py-2.5 rounded-xl text-white bg-purple-700 hover:bg-purple-800 font-semibold transition-colors text-xs sm:text-sm flex items-center gap-2 shadow-xs"
+              >
+                <span>Conocer planes Pro</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+      </section>
 
       {/* Historial de Pagos y Comprobantes */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-        className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-200/80"
-      >
-        <div className="flex items-center justify-between mb-6">
+      <section className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-xs">
+        <div className="flex items-center justify-between mb-5">
           <div>
-            <h2 className="text-lg md:text-xl font-bold text-slate-900 tracking-tight">Historial de pagos</h2>
-            <p className="text-xs text-slate-500 mt-0.5">Registro de cobros recurrentes y comprobantes de tu cuenta.</p>
+            <h2 className="text-base sm:text-lg font-bold text-slate-900">Historial de pagos</h2>
+            <p className="text-xs text-slate-500 mt-0.5">Comprobantes y registros de transacciones de tu cuenta.</p>
           </div>
         </div>
 
         {sortedPayments.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-slate-600">
-              <thead className="text-xs text-slate-400 uppercase bg-slate-50 border-b border-slate-100">
+          <div className="overflow-x-auto -mx-6 sm:mx-0">
+            <table className="w-full text-left text-xs sm:text-sm text-slate-600">
+              <thead className="text-[11px] font-semibold text-slate-400 uppercase bg-slate-50/80 border-y border-slate-100">
                 <tr>
-                  <th scope="col" className="px-4 py-3 rounded-l-xl font-semibold">Fecha</th>
-                  <th scope="col" className="px-4 py-3 font-semibold">Importe</th>
-                  <th scope="col" className="px-4 py-3 font-semibold">Estado</th>
-                  <th scope="col" className="px-4 py-3 font-semibold">Método</th>
-                  <th scope="col" className="px-4 py-3 rounded-r-xl font-semibold text-right">Comprobante ID</th>
+                  <th scope="col" className="px-4 py-3">Fecha</th>
+                  <th scope="col" className="px-4 py-3">Importe</th>
+                  <th scope="col" className="px-4 py-3">Estado</th>
+                  <th scope="col" className="px-4 py-3">Medio</th>
+                  <th scope="col" className="px-4 py-3 text-right">Comprobante ID</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {sortedPayments.map((payment) => (
                   <tr key={payment.id} className="hover:bg-slate-50/60 transition-colors">
-                    <td className="px-4 py-3.5 font-medium text-slate-800 text-xs sm:text-sm">
+                    <td className="px-4 py-3 font-medium text-slate-800">
                       {new Date(payment.paid_at || payment.created_at).toLocaleDateString('es-AR', {
                         year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
                       })}
                     </td>
-                    <td className="px-4 py-3.5 font-bold text-slate-900 text-xs sm:text-sm">
+                    <td className="px-4 py-3 font-bold text-slate-900">
                       ${(Number(payment.amount) || 0).toLocaleString('es-AR')}{' '}
                       <span className="text-[11px] text-slate-400 font-semibold">{payment.currency || 'ARS'}</span>
                     </td>
-                    <td className="px-4 py-3.5">
-                      <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${
-                        payment.status === 'approved' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
-                        payment.status === 'pending' || payment.status === 'in_process' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
-                        payment.status === 'rejected' ? 'bg-red-50 text-red-700 border border-red-200' :
-                        payment.status === 'refunded' ? 'bg-slate-100 text-slate-600 border border-slate-200' :
-                        'bg-slate-100 text-slate-700'
+                    <td className="px-4 py-3">
+                      <span className={`px-2 py-0.5 rounded-full text-[11px] font-semibold border ${
+                        payment.status === 'approved' ? 'bg-emerald-50 text-emerald-800 border-emerald-200' :
+                        payment.status === 'pending' || payment.status === 'in_process' ? 'bg-amber-50 text-amber-800 border-amber-200' :
+                        payment.status === 'rejected' ? 'bg-red-50 text-red-700 border-red-200' :
+                        payment.status === 'refunded' ? 'bg-slate-100 text-slate-700 border-slate-200' :
+                        'bg-slate-100 text-slate-700 border-slate-200'
                       }`}>
                         {payment.status === 'approved' ? 'Aprobado' :
                          payment.status === 'pending' ? 'Pendiente' :
@@ -733,10 +637,10 @@ export function SuscripcionClient({
                          payment.status}
                       </span>
                     </td>
-                    <td className="px-4 py-3.5 text-xs text-slate-600 capitalize">
+                    <td className="px-4 py-3 text-xs text-slate-600 capitalize">
                       {payment.payment_method || 'Mercado Pago'}
                     </td>
-                    <td className="px-4 py-3.5 text-right">
+                    <td className="px-4 py-3 text-right">
                       {renderComprobanteId(payment.provider_payment_id)}
                     </td>
                   </tr>
@@ -745,12 +649,110 @@ export function SuscripcionClient({
             </table>
           </div>
         ) : (
-          <div className="text-center py-10 border border-dashed border-slate-200 rounded-2xl bg-slate-50/50">
-            <Clock className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-            <p className="text-slate-500 font-medium text-xs sm:text-sm">Todavía no hay comprobantes de pago registrados.</p>
+          <div className="text-center py-8 border border-dashed border-slate-200 rounded-xl bg-slate-50/50">
+            <Clock className="w-6 h-6 text-slate-400 mx-auto mb-1.5" />
+            <p className="text-slate-500 font-medium text-xs">No se registran comprobantes de pago en esta cuenta.</p>
           </div>
         )}
-      </motion.div>
+      </section>
+
+      {/* Sección Comparativa de Planes (Desplegable si ya es Pro, abierta si es Free) */}
+      <section className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-xs">
+        <button
+          onClick={() => setShowComparison(!showComparison)}
+          className="w-full flex items-center justify-between text-left group"
+        >
+          <div>
+            <h2 className="text-base sm:text-lg font-bold text-slate-900 group-hover:text-purple-700 transition-colors">
+              Comparativa de funciones y planes
+            </h2>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Revisá en detalle las herramientas disponibles en el plan gratuito y en PlayComun Pro.
+            </p>
+          </div>
+          <div className="p-1.5 rounded-lg text-slate-400 group-hover:text-slate-700 group-hover:bg-slate-100 transition-colors">
+            {showComparison ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          </div>
+        </button>
+
+        {showComparison && (
+          <div className="pt-6 mt-6 border-t border-slate-100">
+            <PlanComparison
+              isPro={isPro}
+              priceMensual={priceMensual}
+              priceAnual={priceAnual}
+              currentPeriodEnd={subscription?.current_period_end}
+              isAuthenticated={true}
+              mode="dashboard"
+            />
+          </div>
+        )}
+      </section>
+
+      {/* Modal de Confirmación para Cancelar Renovación Automática */}
+      {showCancelModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-200 relative animate-in fade-in zoom-in-95 duration-150">
+            <button
+              onClick={() => setShowCancelModal(false)}
+              className="absolute top-4 right-4 p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+              aria-label="Cerrar modal"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center mb-4">
+              <AlertCircle className="w-5 h-5" />
+            </div>
+
+            <h3 className="text-lg font-bold text-slate-900 mb-1.5">
+              ¿Cancelar la renovación automática?
+            </h3>
+
+            <p className="text-xs text-slate-600 leading-relaxed mb-4">
+              Si cancelás la renovación, mantendrás tu acceso a PlayComun Pro hasta el final de tu período actual y no se te cobrará ningún período nuevo.
+            </p>
+
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-xs text-slate-600 space-y-1 mb-5">
+              <p className="font-semibold text-slate-800">Detalles de la cancelación:</p>
+              <p>• Conservás acceso completo hasta:{' '}
+                <strong className="text-slate-900">
+                  {subscription?.current_period_end
+                    ? new Date(subscription.current_period_end).toLocaleDateString('es-AR', { year: 'numeric', month: 'long', day: 'numeric' })
+                    : 'el fin del ciclo'}
+                </strong>
+              </p>
+              <p>• Podés volver a activar la renovación en cualquier momento.</p>
+            </div>
+
+            <div className="flex items-center justify-end gap-2.5">
+              <button
+                type="button"
+                onClick={() => setShowCancelModal(false)}
+                disabled={isCancelling}
+                className="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold text-xs transition-colors"
+              >
+                Mantener mi plan Pro
+              </button>
+              <button
+                type="button"
+                onClick={confirmCancel}
+                disabled={isCancelling}
+                className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white font-semibold text-xs transition-all flex items-center justify-center gap-1.5"
+              >
+                {isCancelling ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    <span>Cancelando...</span>
+                  </>
+                ) : (
+                  <span>Confirmar cancelación</span>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -5,6 +5,7 @@ import { SuscripcionClient } from './SuscripcionClient'
 import { buildMetadata } from '@/lib/metadata'
 import { isProUser, getUserEffectiveSubscription } from '@/lib/pro'
 import { syncUserSubscriptions } from '@/lib/subscription-sync'
+import { AccountNav } from '@/components/account/AccountNav'
 
 export const metadata = buildMetadata({
   title: 'Mi suscripción',
@@ -96,23 +97,19 @@ export default async function SuscripcionPage({
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 w-full space-y-6">
-      <div className="flex flex-col gap-2 pb-5 border-b border-slate-200/80">
-        <a 
-          href="/cuenta" 
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-purple-600 transition-colors w-fit py-1"
-        >
-          <span>← Volver a mi cuenta</span>
-        </a>
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 w-full pb-16 pt-2">
+      <AccountNav isPro={isPro} />
+
+      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-8 mb-8 border-b border-slate-200/80">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
             Suscripción y Pagos
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Administrá tu plan activo, renovación automática, medios de pago e historial de transacciones.
+            Administrá tu plan activo, ciclo de facturación y comprobantes emitidos.
           </p>
         </div>
-      </div>
+      </header>
 
       <SuscripcionClient
         subscription={subscription}
