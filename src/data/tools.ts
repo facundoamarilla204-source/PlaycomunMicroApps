@@ -169,42 +169,59 @@ export const tools: Tool[] = [
     category: "gestion-negocio",
     exampleResult: "PDF generado en 5 seg",
     tier: "free",
-    description: "Creá presupuestos profesionales y descargalos en PDF",
+    description: "Creá presupuestos comerciales y descargalos en PDF gratis sin registro",
     icon: "FileText",
     status: "live",
     featured: true,
-    keywords: ["generador de presupuestos", "hacer presupuesto online", "presupuesto en PDF", "generador de presupuestos gratis", "crear cotización"],
-    updatedAt: "2026-10-03T00:00:00.000Z",
+    keywords: [
+      "generador de presupuestos",
+      "generador de presupuestos online gratis",
+      "hacer presupuesto online",
+      "crear presupuesto en PDF",
+      "presupuesto comercial",
+      "presupuesto para clientes",
+      "plantilla de presupuesto",
+      "cotización online"
+    ],
+    updatedAt: "2026-10-19T00:00:00.000Z",
     seo: {
       title: "Generador de presupuestos online gratis en PDF",
-      description: "Creá, editá y descargá presupuestos profesionales en PDF de forma rápida, gratis y sin registrarte. Especial para emprendedores y freelancers en Argentina.",
-      h1: "Generador de presupuestos",
-      intro: "Creá tu presupuesto en segundos. Completá los datos, agregá tus conceptos y obtené un PDF con diseño profesional al instante."
+      description: "Creá presupuestos comerciales para tus clientes y descargalos en PDF gratis sin registrarte. Calculá subtotales, IVA y descuentos con diseño profesional.",
+      h1: "Generador de presupuestos online gratis",
+      intro: "Completá los datos de tu cliente, detallá los productos o servicios con precios y descuentos, y generá al instante tu presupuesto comercial en PDF listo para enviar por WhatsApp o email."
     },
     faqs: [
       {
-        question: '¿Qué es un presupuesto?',
-        answer: 'Un presupuesto es una propuesta comercial donde se detallan los productos o servicios que vas a ofrecer a un cliente, junto con sus precios, condiciones y fechas de validez. No tiene valor fiscal como una factura.'
+        question: "¿Qué datos debe llevar obligatoriamente un presupuesto comercial?",
+        answer: "Un presupuesto profesional debe incluir: datos del emisor (nombre/fantasía, CUIT o DNI, contacto), datos del cliente, número correlativo de presupuesto, fecha de emisión y fecha de validez (plazo de vigencia), detalle claro de cada ítem con cantidad y precio unitario, descuentos aplicados, subtotal, impuestos (o aclaración de precio final) y total definitivo, además de condiciones de pago y plazos de entrega."
       },
       {
-        question: '¿Puedo generar el presupuesto en formato PDF?',
-        answer: 'Sí. Una vez que hayas completado todos los datos en el formulario, al hacer click en el botón "Descargar PDF", se generará automáticamente un archivo con diseño profesional listo para enviar a tu cliente.'
+        question: "¿Cómo se calculan los subtotales, descuentos y el total final en la herramienta?",
+        answer: "Para cada concepto, la herramienta multiplica la cantidad por el precio unitario y deduce automáticamente el porcentaje de descuento asignado a esa línea. Luego suma los subtotales netos, permite aplicar un descuento global adicional o recargo, y adiciona el porcentaje de IVA si seleccionás discriminarlo, calculando con exactitud matemática el total final a cobrar."
       },
       {
-        question: '¿El servicio es realmente gratuito?',
-        answer: 'Sí, la generación básica de presupuestos en PDF es completamente gratuita, sin necesidad de crear una cuenta ni de introducir tarjetas de crédito.'
+        question: "¿Se puede descargar en PDF y compartir por WhatsApp sin costo?",
+        answer: "Sí. Una vez completados los datos, hacés clic en 'Descargar PDF' y se genera de inmediato un archivo con diagramación profesional sin marcas de agua de terceros. También podés utilizar el botón 'Compartir' para copiar un enlace directo o enviarlo por WhatsApp a tu cliente."
       },
       {
-        question: '¿Quedan guardados mis datos en la nube?',
-        answer: 'En esta versión gratuita, los datos que ingresás en el formulario solo se guardan temporalmente en tu navegador. Si cerrás la pestaña sin descargar, se perderán. Para guardar el historial deberás acceder a una cuenta Pro en el futuro.'
+        question: "¿Es necesario registrarse o ingresar tarjetas para usar el generador?",
+        answer: "No. La herramienta es 100% gratuita y funciona directamente en tu navegador sin requerir creación de cuenta, contraseñas ni datos bancarios. Los datos cargados se conservan de forma privada en el almacenamiento local de tu dispositivo."
       },
       {
-        question: '¿Cómo agrego un descuento a un producto o servicio?',
-        answer: 'Al agregar un concepto a tu presupuesto, podés especificar un porcentaje de descuento exclusivo para ese ítem. El generador calculará automáticamente los importes.'
+        question: "¿Cuál es la diferencia legal entre un presupuesto y una factura fiscal autorizada por ARCA?",
+        answer: "Un presupuesto es una cotización comercial previa: sirve para acordar alcances, precios y condiciones con el cliente antes de concretar la operación. No posee validez fiscal ni cancelatoria. La factura fiscal, en cambio, es el comprobante tributario definitivo y obligatorio emitido según las normas de ARCA (Agencia de Recaudación y Control Aduanero, ex AFIP) una vez realizada la venta o cobrado el servicio."
       },
       {
-        question: '¿Es válido un presupuesto sin firma?',
-        answer: 'Sí. Un presupuesto es un documento comercial previo y no requiere firma obligatoria, aunque podés incluir tus condiciones de aceptación (como un adelanto) en el recuadro de observaciones.'
+        question: "¿Qué funciones incluye la versión gratuita y qué beneficios agrega el Plan Pro?",
+        answer: "La versión gratuita ofrece generación ilimitada de presupuestos en PDF, personalización de colores, carga de logo y firma/sello, cálculos automáticos de IVA y descuentos, y guardado local en el navegador. El Plan Pro añade historial en la nube multi-dispositivo, agenda de clientes guardados con autocompletado en un clic, catálogo de productos/servicios con precios predefinidos, perfil comercial automático y opción de marca blanca."
+      },
+      {
+        question: "¿Cómo se debe reflejar el IVA si soy Monotributista o Responsable Inscripto?",
+        answer: "Si sos Monotributista, emitís cotizaciones con precio final (sin discriminar IVA), ya que tus ventas no generan débito fiscal. Si sos Responsable Inscripto y tu cliente es otra empresa o comerciante, podés desglosar el precio neto más la alícuota de IVA correspondiente (generalmente 21% o 10.5%). El generador te permite alternar entre precio final o discriminar impuestos según tu régimen."
+      },
+      {
+        question: "¿Puedo personalizar el presupuesto con mi logo, firma y colores de marca?",
+        answer: "Sí. Podés cargar el logotipo de tu emprendimiento o empresa desde tu computadora o teléfono, ajustar el color de acento de la plantilla a la identidad de tu marca, incorporar tu firma digitalizada o sello en imagen, y configurar notas comerciales personalizadas en el pie del documento."
       }
     ],
     related: ["calculadora-precios", "generador-documentos-comerciales", "generador-listas-precios"]
