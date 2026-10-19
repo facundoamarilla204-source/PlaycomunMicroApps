@@ -3,7 +3,7 @@ import { createClient as createAdminClient } from '@supabase/supabase-js'
 import { redirect } from 'next/navigation'
 import { SuscripcionClient } from './SuscripcionClient'
 import { buildMetadata } from '@/lib/metadata'
-import { isProUser } from '@/lib/pro'
+import { isProUser, getUserEffectiveSubscription } from '@/lib/pro'
 import { syncUserSubscriptions } from '@/lib/subscription-sync'
 
 export const metadata = buildMetadata({
@@ -51,46 +51,37 @@ export default async function SuscripcionPage({
   // Evaluar estado Pro central
   const isPro = await isProUser(user.id)
 
-  // Obtener la suscripción más reciente del usuario
-  const { data: subscription } = await supabase
-    .from('subscriptions')
-    .select(`
-      id,
-      status,
-      provider_status,
-      current_period_start,
-      current_period_end,
-      trial_start_at,
-      trial_end_at,
-      cancelled_at,
-      created_at,
-      provider_subscription_id,
-      plans(
-        id,
-        name,
-        code,
-        price,
-        currency,
-        billing_interval
-      )
-    `)
-    .eq('user_id', user.id)
-    .order('created_at', { ascending: false })
-    .limit(1)
-    .maybeSingle()
+  // Obtener la suscripción efectiva real del usuario (filtra archivadas, foráneas y obsoletas)
+  const subscription = await getUserEffectiveSubscription(supabase, user.id)
 
-  // Obtener métodos de pago
-  const { data: paymentMethods } = await supabase
-    .from('payment_methods')
-    .select('*')
-    .eq('user_id', user.id)
-    .order('created_at', { ascending: false })
+  // Obtener métodos de pago solo si el usuario tiene una suscripción Pro o activa
+  let paymentMethods: any[] = []
+  if (subscription || isPro) {
+    const { data: pmData } = await supabase
+      .from('payment_methods')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+    paymentMethods = pmData || []
+  }
 
-  // Obtener historial de pagos
+  // Obtener historial de pagos auténticos del usuario (excluyendo archivados/duplicados/foráneos)
+  // Ordenados cronológicamente por fecha de cobro real (paid_at), más reciente primero
   const { data: payments } = await supabase
     .from('payments')
-    .select('*')
+    .select(`
+      id,
+      amount,
+      currency,
+      status,
+      payment_method,
+      provider_payment_id,
+      paid_at,
+      created_at
+    `)
     .eq('user_id', user.id)
+    .eq('is_archived', false)
+    .order('paid_at', { ascending: false, nullsFirst: false })
     .order('created_at', { ascending: false })
 
   // Obtener precios vigentes de la tabla plans

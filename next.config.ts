@@ -1,9 +1,36 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-
+  compress: true,
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production" ? { exclude: ["error", "warn"] } : false,
+  },
+  images: {
+    formats: ["image/avif", "image/webp"],
+    minimumCacheTTL: 2592000,
+  },
+  experimental: {
+    optimizePackageImports: [
+      "lucide-react",
+      "motion",
+      "@mercadopago/sdk-react",
+    ],
+  },
   typescript: {
     ignoreBuildErrors: true, // we already know the src/ is fine, .agents has TS errors
+  },
+  async headers() {
+    return [
+      {
+        source: "/:all*(svg|jpg|png|webp|avif|ico|woff|woff2)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+    ];
   },
   async redirects() {
     return [

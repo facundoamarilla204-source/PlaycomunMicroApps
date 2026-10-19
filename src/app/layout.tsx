@@ -7,7 +7,6 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const sora = Sora({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
   variable: "--font-sora",
   display: "swap",
 })

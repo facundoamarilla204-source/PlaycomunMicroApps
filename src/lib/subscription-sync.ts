@@ -99,9 +99,26 @@ export async function syncSubscriptionFromMp(
     return { success: false }
   }
 
+  // 1. Validar que la suscripción no pertenezca a otro producto foráneo (ej: FitAdmi en la misma cuenta MP)
+  const reasonLower = (subDetails.reason || '').toLowerCase()
+  const isForeignProduct = reasonLower.includes('fitadmi')
+  if (isForeignProduct) {
+    console.warn(`[syncSubscriptionFromMp] Ignorando preapproval ${mpSubId} de otro producto (${subDetails.reason})`)
+    return { success: false }
+  }
+
+  // 2. Validar pertenencia estricta de usuario (evitar asignación cruzada)
   const userId = subDetails.external_reference || options?.fallbackUserId
   if (!userId) {
     console.warn(`[syncSubscriptionFromMp] No se encontró user_id para sub ${mpSubId}`)
+    return { success: false }
+  }
+  if (
+    subDetails.external_reference &&
+    options?.fallbackUserId &&
+    subDetails.external_reference !== options.fallbackUserId
+  ) {
+    console.warn(`[syncSubscriptionFromMp] Conflicto de usuario para sub ${mpSubId}: ${subDetails.external_reference} !== ${options.fallbackUserId}`)
     return { success: false }
   }
 
@@ -119,7 +136,8 @@ export async function syncSubscriptionFromMp(
       newStatus = 'cancelled'
       break
     case 'pending':
-      newStatus = 'trialing'
+      // Checkout pendiente que nunca se autorizó o abonó. No es trialing.
+      newStatus = subDetails.auto_recurring?.free_trial ? 'trialing' : 'expired'
       break
     default:
       newStatus = 'active'
@@ -141,13 +159,14 @@ export async function syncSubscriptionFromMp(
     return { success: false }
   }
 
-  const periodStart = subDetails.summarized?.last_charged_date || subDetails.date_created
+  const startedAt = subDetails.auto_recurring?.start_date || subDetails.date_created || null
+  const periodStart = subDetails.summarized?.last_charged_date || subDetails.auto_recurring?.start_date || subDetails.date_created
   const periodEnd = subDetails.next_payment_date
 
   // Buscar suscripción existente por ID de proveedor
   const { data: existingSub } = await adminSupabase
     .from('subscriptions')
-    .select('id, current_period_end, cancelled_at, status')
+    .select('id, current_period_end, cancelled_at, status, started_at')
     .eq('provider_subscription_id', mpSubId)
     .maybeSingle()
 
@@ -157,6 +176,7 @@ export async function syncSubscriptionFromMp(
   const resolvedCancelledAt = subDetails.status === 'cancelled'
     ? (existingSub?.cancelled_at || new Date().toISOString())
     : null
+  const resolvedStartedAt = existingSub?.started_at || startedAt
 
   let localSubId: string
 
@@ -166,9 +186,11 @@ export async function syncSubscriptionFromMp(
       .update({
         provider_status: subDetails.status,
         status: newStatus,
+        started_at: resolvedStartedAt,
         current_period_start: periodStart || undefined,
         current_period_end: resolvedPeriodEnd || undefined,
         cancelled_at: resolvedCancelledAt,
+        is_archived: false,
       })
       .eq('id', existingSub.id)
     localSubId = existingSub.id
@@ -183,9 +205,11 @@ export async function syncSubscriptionFromMp(
         provider_plan_id: mpPlanId || null,
         provider_status: subDetails.status,
         status: newStatus,
+        started_at: resolvedStartedAt,
         current_period_start: periodStart || null,
         current_period_end: resolvedPeriodEnd,
         cancelled_at: resolvedCancelledAt,
+        is_archived: false,
       })
       .select('id')
       .single()
@@ -197,33 +221,62 @@ export async function syncSubscriptionFromMp(
     localSubId = newSub.id
   }
 
-  // Si hubo cobros efectivos registrados en MP, registrar el pago de forma idempotente
-  if (
-    subDetails.summarized?.charged_quantity > 0 &&
-    subDetails.summarized?.last_charged_amount > 0
-  ) {
-    const paymentKey = `sub_${mpSubId}_${subDetails.summarized.charged_quantity}`
-    const { data: existingPayment } = await adminSupabase
-      .from('payments')
-      .select('id')
-      .eq('provider_payment_id', paymentKey)
-      .maybeSingle()
+  // Consultar cobros legítimos autorizados en MP para esta preapproval (sin inventar IDs sintéticos)
+  try {
+    const authPaymentsSearch = await mpFetch(`/authorized_payments/search?preapproval_id=${mpSubId}&limit=12`)
+    if (authPaymentsSearch?.results && Array.isArray(authPaymentsSearch.results)) {
+      for (const authPay of authPaymentsSearch.results) {
+        const payId = String(authPay.payment?.id || authPay.id)
+        if (!payId) continue
 
-    if (!existingPayment) {
-      await adminSupabase
-        .from('payments')
-        .insert({
-          user_id: userId,
-          subscription_id: localSubId,
-          provider: 'mercadopago',
-          provider_payment_id: paymentKey,
-          amount: subDetails.summarized.last_charged_amount,
-          currency: subDetails.auto_recurring?.currency_id || 'ARS',
-          status: 'approved',
-          payment_method: subDetails.payment_method_id || null,
-          paid_at: subDetails.summarized.last_charged_date || new Date().toISOString(),
-        })
+        let payStatus: 'pending' | 'approved' | 'rejected' | 'refunded' | 'cancelled' | 'in_process' = 'pending'
+        const rawStatus = authPay.payment?.status || authPay.status
+        if (rawStatus === 'approved' || rawStatus === 'processed') payStatus = 'approved'
+        else if (rawStatus === 'rejected') payStatus = 'rejected'
+        else if (rawStatus === 'refunded' || rawStatus === 'charged_back') payStatus = 'refunded'
+        else if (rawStatus === 'cancelled') payStatus = 'cancelled'
+        else if (rawStatus === 'in_process') payStatus = 'in_process'
+
+        const { data: existingPay } = await adminSupabase
+          .from('payments')
+          .select('id')
+          .eq('provider_payment_id', payId)
+          .maybeSingle()
+
+        const paidAtDate = authPay.debit_date || authPay.date_created || new Date().toISOString()
+        const amount = Number(authPay.transaction_amount || authPay.payment?.transaction_amount || plan.price)
+
+        if (existingPay) {
+          await adminSupabase
+            .from('payments')
+            .update({
+              status: payStatus,
+              paid_at: paidAtDate,
+              amount,
+              payment_method: authPay.payment_method_id || 'card',
+              is_archived: false,
+            })
+            .eq('id', existingPay.id)
+        } else {
+          await adminSupabase
+            .from('payments')
+            .insert({
+              user_id: userId,
+              subscription_id: localSubId,
+              provider: 'mercadopago',
+              provider_payment_id: payId,
+              amount,
+              currency: authPay.currency_id || 'ARS',
+              status: payStatus,
+              payment_method: authPay.payment_method_id || 'card',
+              paid_at: paidAtDate,
+              is_archived: false,
+            })
+        }
+      }
     }
+  } catch (err) {
+    console.error(`[syncSubscriptionFromMp] Error buscando authorized_payments para ${mpSubId}:`, err)
   }
 
   return { success: true, subscriptionId: localSubId, status: newStatus }
@@ -264,7 +317,8 @@ export async function syncPaymentFromMp(
       .from('subscriptions')
       .select('id, user_id, provider_subscription_id')
       .eq('user_id', paymentDetails.external_reference)
-      .order('created_at', { ascending: false })
+      .eq('is_archived', false)
+      .order('current_period_end', { ascending: false, nullsFirst: false })
       .limit(1)
       .maybeSingle()
 
@@ -312,10 +366,16 @@ export async function syncPaymentFromMp(
     .eq('provider_payment_id', providerPaymentId)
     .maybeSingle()
 
+  const paidAtTimestamp = paymentDetails.date_approved || paymentDetails.date_created || new Date().toISOString()
+
   if (existingPayment) {
     await adminSupabase
       .from('payments')
-      .update({ status: payStatus })
+      .update({
+        status: payStatus,
+        paid_at: paidAtTimestamp,
+        is_archived: false,
+      })
       .eq('id', existingPayment.id)
   } else {
     await adminSupabase
@@ -329,7 +389,8 @@ export async function syncPaymentFromMp(
         currency: paymentDetails.currency_id || 'ARS',
         status: payStatus,
         payment_method: paymentDetails.payment_method_id || null,
-        paid_at: paymentDetails.date_approved || new Date().toISOString(),
+        paid_at: paidAtTimestamp,
+        is_archived: false,
       })
   }
 
@@ -403,17 +464,49 @@ export async function syncUserSubscriptions(
 }> {
   let mpSubscriptions: any[] = []
 
+  // Obtener email del usuario para búsqueda precisa en MP
+  let userEmail: string | undefined
+  try {
+    if (adminSupabase?.auth?.admin?.getUserById) {
+      const { data: userData } = await adminSupabase.auth.admin.getUserById(userId)
+      userEmail = userData?.user?.email
+    }
+  } catch (err) {
+    console.warn('[syncUserSubscriptions] No se pudo obtener email del usuario:', err)
+  }
+
   if (preapprovalId) {
     const sub = await mpFetch(`/preapproval/${preapprovalId}`)
-    if (sub && sub.external_reference === userId) {
-      mpSubscriptions = [sub]
+    if (sub) {
+      const reasonLower = (sub.reason || '').toLowerCase()
+      const isForeign = reasonLower.includes('fitadmi')
+      const matchesUser =
+        sub.external_reference === userId ||
+        (userEmail && sub.payer_email?.toLowerCase() === userEmail.toLowerCase())
+      if (!isForeign && matchesUser) {
+        mpSubscriptions = [sub]
+      }
     }
   } else {
-    const searchData = await mpFetch(`/preapproval/search?external_reference=${userId}&limit=10`)
+    // Si tenemos el email del usuario, buscar por payer_email para no volcar preapprovals de otras aplicaciones
+    let searchUrl = `/preapproval/search?limit=20`
+    if (userEmail) {
+      searchUrl += `&payer_email=${encodeURIComponent(userEmail)}`
+    } else {
+      searchUrl += `&external_reference=${userId}`
+    }
+
+    const searchData = await mpFetch(searchUrl)
     if (searchData?.results?.length) {
-      mpSubscriptions = searchData.results.filter(
-        (s: any) => ['authorized', 'active', 'cancelled', 'paused', 'pending'].includes(s.status)
-      )
+      mpSubscriptions = searchData.results.filter((s: any) => {
+        const reasonLower = (s.reason || '').toLowerCase()
+        const isForeign = reasonLower.includes('fitadmi')
+        const matchesUser =
+          s.external_reference === userId ||
+          (userEmail && s.payer_email?.toLowerCase() === userEmail.toLowerCase())
+        const validStatus = ['authorized', 'active', 'cancelled', 'paused', 'pending'].includes(s.status)
+        return !isForeign && matchesUser && validStatus
+      })
     }
   }
 

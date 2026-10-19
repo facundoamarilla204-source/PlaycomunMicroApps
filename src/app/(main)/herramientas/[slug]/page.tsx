@@ -8,40 +8,110 @@ import { siteConfig } from "@/config/site"
 import { createClient } from "@/utils/supabase/server"
 import { User } from "@supabase/supabase-js"
 
-import { CalculadoraAguinaldo } from "@/components/tools/CalculadoraAguinaldo"
+import dynamic from "next/dynamic"
+
+function ToolSkeleton() {
+  return (
+    <div className="w-full max-w-4xl mx-auto p-6 md:p-8 bg-white rounded-2xl border border-slate-200/80 animate-pulse space-y-6">
+      <div className="h-8 bg-slate-100 rounded-lg w-1/3" />
+      <div className="h-4 bg-slate-100 rounded w-2/3" />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+        <div className="h-24 bg-slate-50 rounded-xl" />
+        <div className="h-24 bg-slate-50 rounded-xl" />
+      </div>
+      <div className="h-40 bg-slate-50 rounded-xl" />
+    </div>
+  )
+}
+
+// Herramientas interactivas cargadas bajo demanda por ruta (code-splitting dinámico)
+const CalculadoraAguinaldo = dynamic(
+  () => import("@/components/tools/CalculadoraAguinaldo").then((m) => m.CalculadoraAguinaldo),
+  { loading: () => <ToolSkeleton /> }
+)
+const CalculadoraPrecios = dynamic(
+  () => import("@/components/tools/CalculadoraPrecios").then((m) => m.CalculadoraPrecios),
+  { loading: () => <ToolSkeleton /> }
+)
+const GeneradorFacturasTool = dynamic(
+  () => import("@/components/tools/generador-facturas/GeneradorFacturasTool").then((m) => m.GeneradorFacturasTool),
+  { loading: () => <ToolSkeleton /> }
+)
+const GeneradorQR = dynamic(
+  () => import("@/components/tools/GeneradorQR").then((m) => m.GeneradorQR),
+  { loading: () => <ToolSkeleton /> }
+)
+const CalculadoraIVA = dynamic(
+  () => import("@/components/tools/CalculadoraIVA").then((m) => m.CalculadoraIVA),
+  { loading: () => <ToolSkeleton /> }
+)
+const CalculadoraRentabilidad = dynamic(
+  () => import("@/components/tools/CalculadoraRentabilidad").then((m) => m.CalculadoraRentabilidad),
+  { loading: () => <ToolSkeleton /> }
+)
+const Calculadora1RM = dynamic(
+  () => import("@/components/tools/Calculadora1RM").then((m) => m.Calculadora1RM),
+  { loading: () => <ToolSkeleton /> }
+)
+const CalculadoraCuotas = dynamic(
+  () => import("@/components/tools/CalculadoraCuotas").then((m) => m.CalculadoraCuotas),
+  { loading: () => <ToolSkeleton /> }
+)
+const CalculadoraCalorias = dynamic(
+  () => import("@/components/tools/CalculadoraCalorias").then((m) => m.CalculadoraCalorias),
+  { loading: () => <ToolSkeleton /> }
+)
+const LinkResenasGoogle = dynamic(
+  () => import("@/components/tools/LinkResenasGoogle").then((m) => m.LinkResenasGoogle),
+  { loading: () => <ToolSkeleton /> }
+)
+const ControlGastos = dynamic(
+  () => import("@/components/tools/ControlGastos").then((m) => m.ControlGastos),
+  { loading: () => <ToolSkeleton /> }
+)
+const CostoReceta = dynamic(
+  () => import("@/components/tools/CostoReceta").then((m) => m.CostoReceta),
+  { loading: () => <ToolSkeleton /> }
+)
+const ConversorUnidades = dynamic(
+  () => import("@/components/tools/ConversorUnidades").then((m) => m.ConversorUnidades),
+  { loading: () => <ToolSkeleton /> }
+)
+const CompresorImagenes = dynamic(
+  () => import("@/components/tools/compresor-imagenes/CompresorImagenes").then((m) => m.CompresorImagenes),
+  { loading: () => <ToolSkeleton /> }
+)
+const ConvertidorArchivos = dynamic(
+  () => import("@/components/tools/convertidor-archivos/ConvertidorArchivos").then((m) => m.ConvertidorArchivos),
+  { loading: () => <ToolSkeleton /> }
+)
+const OrdenarPdf = dynamic(
+  () => import("@/components/tools/ordenar-pdf/OrdenarPdf").then((m) => m.OrdenarPdf),
+  { loading: () => <ToolSkeleton /> }
+)
+const CortadorAudio = dynamic(
+  () => import("@/components/tools/cortador-audio/CortadorAudio").then((m) => m.CortadorAudio),
+  { loading: () => <ToolSkeleton /> }
+)
+
+// Contenido SEO estático renderizado en servidor (SSR nativo)
 import { AguinaldoContent } from "@/components/tools/content/AguinaldoContent"
-import { CalculadoraPrecios } from "@/components/tools/CalculadoraPrecios"
 import { PrecioVentaContent } from "@/components/tools/content/PrecioVentaContent"
 import { GeneradorPresupuestosContent } from "@/components/tools/content/GeneradorPresupuestosContent"
-import { GeneradorFacturasTool } from "@/components/tools/generador-facturas/GeneradorFacturasTool"
 import { GeneradorFacturasContent } from "@/components/tools/content/GeneradorFacturasContent"
-import { GeneradorQR } from "@/components/tools/GeneradorQR"
 import { GeneradorQRContent } from "@/components/tools/content/GeneradorQRContent"
-import { CalculadoraIVA } from "@/components/tools/CalculadoraIVA"
 import { CalculadoraIVAContent } from "@/components/tools/content/CalculadoraIVAContent"
-import { CalculadoraRentabilidad } from "@/components/tools/CalculadoraRentabilidad"
 import { CalculadoraRentabilidadContent } from "@/components/tools/content/CalculadoraRentabilidadContent"
-import { Calculadora1RM } from "@/components/tools/Calculadora1RM"
 import { Calculadora1RMContent } from "@/components/tools/content/Calculadora1RMContent"
-import { CalculadoraCuotas } from "@/components/tools/CalculadoraCuotas"
 import { CalculadoraCuotasContent } from "@/components/tools/content/CalculadoraCuotasContent"
-import { CalculadoraCalorias } from "@/components/tools/CalculadoraCalorias"
 import { CalculadoraCaloriasContent } from "@/components/tools/content/CalculadoraCaloriasContent"
-import { LinkResenasGoogle } from "@/components/tools/LinkResenasGoogle"
 import { LinkResenasGoogleContent } from "@/components/tools/content/LinkResenasGoogleContent"
-import { ControlGastos } from "@/components/tools/ControlGastos"
 import { ControlGastosContent } from "@/components/tools/content/ControlGastosContent"
-import { CostoReceta } from "@/components/tools/CostoReceta"
 import { CostoRecetaContent } from "@/components/tools/content/CostoRecetaContent"
-import { ConversorUnidades } from "@/components/tools/ConversorUnidades"
 import { ConversorUnidadesContent } from "@/components/tools/content/ConversorUnidadesContent"
-import { CompresorImagenes } from "@/components/tools/compresor-imagenes/CompresorImagenes"
 import { CompresorImagenesContent } from "@/components/tools/content/CompresorImagenesContent"
-import { ConvertidorArchivos } from "@/components/tools/convertidor-archivos/ConvertidorArchivos"
 import { ConvertidorArchivosContent } from "@/components/tools/content/ConvertidorArchivosContent"
-import { OrdenarPdf } from "@/components/tools/ordenar-pdf/OrdenarPdf"
 import { OrdenarPdfContent } from "@/components/tools/content/OrdenarPdfContent"
-import { CortadorAudio } from "@/components/tools/cortador-audio/CortadorAudio"
 import { CortadorAudioContent } from "@/components/tools/content/CortadorAudioContent"
 import GeneradorListasContent from "@/components/tools/content/GeneradorListasContent"
 

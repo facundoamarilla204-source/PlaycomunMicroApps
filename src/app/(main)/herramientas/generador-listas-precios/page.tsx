@@ -4,7 +4,20 @@ import { ToolPageLayout } from "@/components/layout/ToolPageLayout"
 import { JsonLd } from "@/components/seo/JsonLd"
 import { siteConfig } from "@/config/site"
 import { buildMetadata } from "@/lib/metadata"
-import GeneradorListasContent from "@/components/tools/content/GeneradorListasContent"
+import dynamic from "next/dynamic"
+
+const GeneradorListasContent = dynamic(
+  () => import("@/components/tools/content/GeneradorListasContent"),
+  {
+    loading: () => (
+      <div className="w-full max-w-4xl mx-auto p-6 md:p-8 bg-white rounded-2xl border border-slate-200/80 animate-pulse space-y-6">
+        <div className="h-8 bg-slate-100 rounded-lg w-1/3" />
+        <div className="h-4 bg-slate-100 rounded w-2/3" />
+        <div className="h-64 bg-slate-50 rounded-xl" />
+      </div>
+    ),
+  }
+)
 import { GeneradorListasSeo } from "@/components/tools/content/GeneradorListasSeo"
 
 export const metadata = buildMetadata({

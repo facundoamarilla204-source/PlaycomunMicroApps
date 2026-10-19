@@ -2,8 +2,21 @@ import { notFound } from 'next/navigation'
 import { tools } from '@/data/tools'
 import { ToolPageLayout } from '@/components/layout/ToolPageLayout'
 import { JsonLd } from '@/components/seo/JsonLd'
-import { GeneradorFacturasTool } from '@/components/tools/generador-facturas/GeneradorFacturasTool'
+import dynamic from 'next/dynamic'
 import { GeneradorFacturasContent } from '@/components/tools/content/GeneradorFacturasContent'
+
+const GeneradorFacturasTool = dynamic(
+  () => import('@/components/tools/generador-facturas/GeneradorFacturasTool').then((m) => m.GeneradorFacturasTool),
+  {
+    loading: () => (
+      <div className="w-full max-w-4xl mx-auto p-6 md:p-8 bg-white rounded-2xl border border-slate-200/80 animate-pulse space-y-6">
+        <div className="h-8 bg-slate-100 rounded-lg w-1/3" />
+        <div className="h-4 bg-slate-100 rounded w-2/3" />
+        <div className="h-64 bg-slate-50 rounded-xl" />
+      </div>
+    ),
+  }
+)
 import { siteConfig } from '@/config/site'
 import { buildMetadata } from '@/lib/metadata'
 
