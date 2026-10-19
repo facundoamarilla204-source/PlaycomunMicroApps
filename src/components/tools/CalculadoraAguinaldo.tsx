@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { calculateAguinaldo, estimateNet } from '@/lib/aguinaldo';
-import { AGUINALDO_CONFIG } from '@/lib/aguinaldo.config';
+import { AGUINALDO_CONFIG, getSemesterDays } from '@/lib/aguinaldo.config';
 
 export function CalculadoraAguinaldo() {
   const [semester, setSemester] = useState<'1' | '2'>('1');
@@ -18,15 +18,18 @@ export function CalculadoraAguinaldo() {
 
   const bestSalary = parseFloat(bestSalaryStr.replace(/\./g, '').replace(',', '.'));
   const daysWorked = parseInt(daysWorkedStr, 10);
+  const totalSemesterDays = getSemesterDays(semester, AGUINALDO_CONFIG.YEAR);
 
   const result = useMemo(() => {
     if (Number.isNaN(bestSalary) || bestSalary <= 0) return null;
-    if (!workedAllSemester && (Number.isNaN(daysWorked) || daysWorked <= 0 || daysWorked > AGUINALDO_CONFIG.SEMESTER_DAYS)) return null;
+    if (!workedAllSemester && (Number.isNaN(daysWorked) || daysWorked <= 0 || daysWorked > totalSemesterDays)) return null;
 
     const res = calculateAguinaldo({
       bestSalary,
       workedAllSemester,
       daysWorked: !workedAllSemester ? daysWorked : undefined,
+      semester,
+      year: AGUINALDO_CONFIG.YEAR,
     });
 
     if (!res.success) return null;
@@ -37,17 +40,17 @@ export function CalculadoraAguinaldo() {
     }
 
     return { ...res.data, netEstimate };
-  }, [bestSalary, workedAllSemester, daysWorked, showNet]);
+  }, [bestSalary, workedAllSemester, daysWorked, semester, totalSemesterDays, showNet]);
 
   const errorMsg = useMemo(() => {
     if (bestSalaryStr && (Number.isNaN(bestSalary) || bestSalary <= 0)) {
       return 'Ingresá un sueldo mayor a cero.';
     }
-    if (!workedAllSemester && daysWorkedStr && (Number.isNaN(daysWorked) || daysWorked <= 0 || daysWorked > AGUINALDO_CONFIG.SEMESTER_DAYS)) {
-      return 'Ingresá una cantidad de días entre 1 y 180.';
+    if (!workedAllSemester && daysWorkedStr && (Number.isNaN(daysWorked) || daysWorked <= 0 || daysWorked > totalSemesterDays)) {
+      return `Ingresá una cantidad de días entre 1 y ${totalSemesterDays}.`;
     }
     return null;
-  }, [bestSalaryStr, bestSalary, workedAllSemester, daysWorkedStr, daysWorked]);
+  }, [bestSalaryStr, bestSalary, workedAllSemester, daysWorkedStr, daysWorked, totalSemesterDays]);
 
   const handleSalaryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let val = e.target.value.replace(/[^0-9,]/g, '');
@@ -162,14 +165,14 @@ export function CalculadoraAguinaldo() {
             <label htmlFor="daysWorked" className="block text-xs font-semibold text-slate-700 mb-1">
               Días trabajados en el semestre
             </label>
-            <p className="text-xs text-slate-500 mb-1.5">Contá 30 días por cada mes completo trabajado (máximo 180 días).</p>
+            <p className="text-xs text-slate-500 mb-1.5">Ingresá los días corridos trabajados en el semestre (máximo {totalSemesterDays} días).</p>
             <input
               type="number"
               id="daysWorked"
               min="1"
-              max={AGUINALDO_CONFIG.SEMESTER_DAYS}
-              className={`block w-full px-3 py-2.5 rounded-lg border ${errorMsg && daysWorkedStr && (!daysWorked || daysWorked <= 0 || daysWorked > AGUINALDO_CONFIG.SEMESTER_DAYS) ? 'border-red-300' : 'border-slate-300'} text-sm text-slate-900 focus:border-brand focus:ring-2 focus:ring-brand/20 transition-colors`}
-              placeholder="90"
+              max={totalSemesterDays}
+              className={`block w-full px-3 py-2.5 rounded-lg border ${errorMsg && daysWorkedStr && (!daysWorked || daysWorked <= 0 || daysWorked > totalSemesterDays) ? 'border-red-300' : 'border-slate-300'} text-sm text-slate-900 focus:border-brand focus:ring-2 focus:ring-brand/20 transition-colors`}
+              placeholder={semester === '1' ? '90' : '90'}
               value={daysWorkedStr}
               onChange={(e) => setDaysWorkedStr(e.target.value)}
             />
@@ -240,9 +243,9 @@ export function CalculadoraAguinaldo() {
             </div>
             
             <div className="pt-2 border-t border-slate-800">
-              <p className="font-bold text-white mb-0.5">Fecha límite legal de cobro:</p>
+              <p className="font-bold text-white mb-0.5">Vencimiento legal de pago:</p>
               <p className="text-slate-300">
-                Hasta el <strong>{deadline.LEGAL_DEADLINE}</strong> {deadline.MARGIN_TEXT}.
+                Hasta el <strong>{deadline.LEGAL_DEADLINE}</strong> (Ley 27.073).
               </p>
             </div>
           </div>

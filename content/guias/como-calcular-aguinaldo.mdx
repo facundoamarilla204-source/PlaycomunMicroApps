@@ -10,7 +10,7 @@ faqs:
   - question: "¿Qué sueldo se toma como base para calcular el aguinaldo?"
     answer: "Según la Ley 23.041, se toma el 50% de la mayor remuneración mensual bruta devengada por todo concepto dentro del semestre correspondiente (enero a junio para la primera cuota, y julio a diciembre para la segunda). No se hace un promedio de los seis meses: se toma el valor mensual más alto devengado."
   - question: "¿Cómo se calcula el aguinaldo si trabajé menos de seis meses en el semestre?"
-    answer: "Se liquida de manera proporcional a los días o meses trabajados. La fórmula legal consiste en tomar la mitad del mejor sueldo del período trabajado, multiplicarlo por la cantidad de días trabajados en el semestre y dividirlo por 180 (o dividir por 6 y multiplicar por los meses trabajados)."
+    answer: "Se liquida de manera proporcional al tiempo trabajado según la Ley 23.041 y el Decreto 1078/1984. La fórmula por días toma la mitad del mejor sueldo, la multiplica por los días corridos trabajados y la divide por los días reales del semestre (181 días en el primer semestre de 2026 y 184 en el segundo). Si se ingresó a inicio de mes, también puede calcularse como un doceavo por cada mes completo trabajado."
   - question: "¿Cuándo se paga el aguinaldo de junio y de diciembre?"
     answer: "Por el artículo 122 de la Ley de Contrato de Trabajo (modificado por la Ley 27.073), las fechas legales de vencimiento del aguinaldo son el 30 de junio para la primera cuota y el 18 de diciembre para la segunda cuota. Esas son las fechas límites estipuladas por la legislación laboral nacional para que el empleador abone cada período."
   - question: "¿Las horas extras, comisiones y feriados entran en el aguinaldo?"
@@ -113,33 +113,59 @@ Esto ocurre habitualmente en tres circunstancias:
 
 ### Fórmulas del SAC Proporcional
 
-En el ámbito laboral argentino y en la práctica de liquidación de sueldos, el aguinaldo proporcional se devenga en función del **tiempo de vigencia de la relación laboral durante el semestre** (tiempo de servicio), no por días de asistencia física efectiva al establecimiento (es decir, no se restan los fines de semana, feriados ni licencias pagas por enfermedad o vacaciones). Solo se descuentan las ausencias injustificadas o los períodos de licencia sin goce de haberes.
+En el ámbito laboral argentino y en la práctica de liquidación de sueldos, el aguinaldo proporcional se devenga en función del **tiempo de vigencia de la relación laboral durante el semestre** (tiempo de servicio), computando días corridos de contrato (no se descuentan fines de semana, feriados ni licencias pagas por enfermedad o vacaciones). Solo se descuentan las ausencias injustificadas o los períodos de licencia sin goce de haberes.
 
 Existen dos modalidades habituales para liquidar la fracción proporcional:
 
-**Método por días trabajados (Criterio técnico de liquidación y el empleado por nuestra calculadora):**  
-Se toma un divisor convencional de **180 días comerciales** para el semestre (computando 30 días por cada mes completo de vigencia de la relación laboral):
+**1. Método por días corridos trabajados (Criterio técnico de máxima precisión y el empleado por nuestra calculadora):**  
+Conforme a la Ley 23.041 y al Decreto Reglamentario 1078/1984 (art. 1), la proporción debe reflejar el tiempo efectivamente devengado en cada semestre. En el calendario oficial ningún semestre tiene 180 días exactos:
+* El **primer semestre** (enero a junio) tiene **181 días corridos** en años comunes como 2026 (y 182 días en años bisiestos): 31 (ene) + 28 (feb) + 31 (mar) + 30 (abr) + 31 (may) + 30 (jun) = 181 días.
+* El **segundo semestre** (julio a diciembre) tiene **184 días corridos**: 31 (jul) + 31 (ago) + 30 (sep) + 31 (oct) + 30 (nov) + 31 (dic) = 184 días.
 
-> `Aguinaldo Proporcional = (Mejor Sueldo ÷ 2) × (Días de Contrato en el Semestre ÷ 180)`
+La fórmula técnica por días reales es:
+> `Aguinaldo Proporcional = (Mejor Sueldo ÷ 2) × (Días Corridos Trabajados ÷ Días Reales del Semestre)`
 
-**Método por meses completos:**  
-> `Aguinaldo Proporcional = (Mejor Sueldo ÷ 2) × (Meses Trabajados en el Semestre ÷ 6)`
+**2. Método por meses completos trabajados (Criterio de la orientación oficial nacional):**  
+Previsto para quienes comenzaron a trabajar el primer día de un mes calendario:
+> `Aguinaldo Proporcional = (Mejor Sueldo ÷ 12) × Meses Trabajados = (Mejor Sueldo ÷ 2) × (Meses Trabajados ÷ 6)`
 
-### Ejemplo numérico de aguinaldo proporcional
+### Ejemplo numérico auditado de aguinaldo proporcional
 
-Imaginemos que una persona ingresó a trabajar en una empresa el **1 de marzo**:
-* Durante el primer semestre (enero a junio), la relación laboral estuvo vigente durante 4 meses completos: marzo, abril, mayo y junio.
-* Computando 30 días por cada mes completo (según la convención habitual de 180 días semestrales que utiliza la calculadora), el tiempo computable equivale a **120 días**.
-* Su mejor remuneración mensual bruta devengada en ese lapso fue de **$ 900.000** (en mayo).
+Analicemos el caso de una persona que ingresó a trabajar el **16 de marzo** y prestó servicios de forma continua hasta el **30 de junio** (cierre del primer semestre de 2026), habiendo alcanzado una remuneración máxima bruta de **$ 800.000** en el período (mes de mayo).
 
-Aplicamos la fórmula paso a paso:
-1. **Base del 50%:** `$ 900.000 ÷ 2 = $ 450.000`.
-2. **Factor proporcional:** `120 ÷ 180 = 2/3 ≈ 0.6667` (que equivale exactamente a `4 meses ÷ 6 meses`).
-3. **Aguinaldo bruto proporcional:** `$ 450.000 × (120 ÷ 180) = $ 300.000,00`.
+#### Paso 1: Cómputo exacto de días calendario trabajados
+Para determinar el tiempo devengado, sumamos los días corridos de contrato en cada mes:
+* **Marzo (del 16 al 31 inclusive):** `31 - 16 + 1 =` **16 días**.
+* **Abril (mes completo):** **30 días**.
+* **Mayo (mes completo):** **31 días**.
+* **Junio (mes completo):** **30 días**.
+* **Total de días trabajados en el semestre:** `16 + 30 + 31 + 30 =` **107 días corridos**.
 
-*Nota sobre ingresos a mitad de mes:* Si el ingreso se produjo a mediados de un mes (por ejemplo, el 16 de marzo), la práctica de liquidación suma los días corridos de contrato devengados en ese mes fraccionado más los meses completos restantes (a razón de 30 días), introduciendo el número total de días en el campo correspondiente de la calculadora.
+*(Nota de auditoría: un error muy frecuente en cálculos informales consiste en contabilizar 105 días al restar erróneamente 30 - 15 en marzo y asumir meses uniformes de 30 días, lo que omite los días 31 de marzo y 31 de mayo perjudicando el importe final).*
 
-Podés calcular tus días y montos proporcionales de forma automática ingresando a la [Calculadora de Aguinaldo](/herramientas/calculadora-aguinaldo).
+#### Paso 2: Determinar el divisor real del semestre
+Para el primer semestre del año 2026 (año no bisiesto), el total de días corridos es de **181 días** (no 180).
+
+#### Paso 3: Aplicar la fórmula legal
+1. **Base del 50%:** `$ 800.000 ÷ 2 = $ 400.000,00`.
+2. **Factor proporcional:** `107 ÷ 181 ≈ 0,59116022` (59,12% del semestre).
+3. **Aguinaldo bruto proporcional:**  
+   `$ 400.000 × (107 ÷ 181) =` **$ 236.464,09**.
+
+#### Paso 4: Estimación del neto en mano (descuentos del 17% LCT)
+* (-) Jubilación SIPA (11%): `$ 26.011,05`
+* (-) Obra Social (3%): `$ 7.093,92`
+* (-) PAMI Ley 19.032 (3%): `$ 7.093,92`
+* **Total de deducciones:** `$ 40.198,89`
+* **Aguinaldo neto estimado («de bolsillo»):** `$ 236.464,09 - $ 40.198,89 =` **$ 196.265,20**.
+
+### Comparativa: Semestre completo vs. Ingreso a inicio de mes
+* **Semestre completo (181 días de 181):** A quien trabajó todo el período le corresponde la mitad entera: `$ 800.000 ÷ 2 = $ 400.000,00` bruto (`$ 332.000,00` neto est.).
+* **Ingreso el 1 de marzo (4 meses completos de 6):**  
+  * Por meses completos: `$ 400.000 × (4 ÷ 6) = $ 266.666,67` bruto.
+  * Por días corridos (122 días de 181): `$ 400.000 × (122 ÷ 181) = $ 269.613,26` bruto.
+
+Podés calcular tus días y montos proporcionales de forma inmediata ingresando a la [Calculadora de Aguinaldo](/herramientas/calculadora-aguinaldo), seleccionando el semestre correspondiente.
 
 ---
 
@@ -215,7 +241,7 @@ Recibir un ingreso semestral extraordinario es una gran oportunidad para consoli
 Según la Ley 23.041, se toma el 50% de la mayor remuneración mensual bruta devengada por todo concepto dentro del semestre correspondiente (enero a junio para la primera cuota, y julio a diciembre para la segunda). No se hace un promedio de los seis meses: se toma el valor mensual más alto devengado.
 
 ### ¿Cómo se calcula el aguinaldo si trabajé menos de seis meses en el semestre?
-Se liquida de manera proporcional a los días o meses trabajados. La fórmula legal consiste en tomar la mitad del mejor sueldo del período trabajado, multiplicarlo por la cantidad de días trabajados en el semestre y dividirlo por 180 (o dividir por 6 y multiplicar por los meses trabajados).
+Se liquida de manera proporcional al tiempo trabajado según la Ley 23.041 y el Decreto 1078/1984. La fórmula por días toma la mitad del mejor sueldo, la multiplica por los días corridos trabajados y la divide por los días reales del semestre (181 días en el primer semestre de 2026 y 184 en el segundo). Si se ingresó a inicio de mes, también puede calcularse como un doceavo por cada mes completo trabajado (o dividir por 6 y multiplicar por los meses enteros).
 
 ### ¿Cuándo se paga el aguinaldo de junio y de diciembre?
 Por el artículo 122 de la Ley de Contrato de Trabajo (modificado por la Ley 27.073), las fechas legales de vencimiento del aguinaldo son el 30 de junio para la primera cuota y el 18 de diciembre para la segunda cuota. Esas son las fechas límites estipuladas por la legislación laboral nacional para que el empleador abone cada período.

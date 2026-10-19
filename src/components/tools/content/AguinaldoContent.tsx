@@ -13,23 +13,26 @@ export function AguinaldoContent() {
 
       <h2>Aguinaldo proporcional: si no trabajaste todo el semestre</h2>
       <p>
-        Si ingresaste a trabajar o te fuiste de tu empleo en la mitad del semestre, vas a cobrar un aguinaldo proporcional a los días que trabajaste.
+        Si ingresaste a trabajar o finalizó la relación laboral durante el semestre, vas a cobrar un aguinaldo proporcional al tiempo trabajado (artículo 1 del Decreto 1078/1984 y artículo 123 de la LCT).
       </p>
       <p>
-        La fórmula es: <code>(Mitad de tu mejor sueldo) × Días trabajados ÷ 180</code>.
+        La fórmula por días es: <code>(Mitad de tu mejor sueldo) × Días corridos trabajados ÷ Días reales del semestre</code>.
       </p>
       <p>
-        Por ejemplo, si tu mejor sueldo fue de $1.200.000 y trabajaste 90 días (3 meses), tu aguinaldo proporcional se calcula así: el 50% de tu sueldo ($600.000) multiplicado por 90 días, y dividido por 180. Eso da un aguinaldo bruto proporcional de $300.000.
+        Los semestres no tienen 180 días de calendario: el primer semestre tiene <strong>181 días corridos</strong> (182 en años bisiestos) y el segundo semestre cuenta con <strong>184 días</strong>. Por ejemplo, si en el primer semestre de 2026 tu mejor sueldo fue de $800.000 y trabajaste 107 días corridos (ingresando el 16 de marzo hasta el 30 de junio), el cálculo es: el 50% de tu sueldo ($400.000) multiplicado por 107 días y dividido por 181 días. Eso arroja un aguinaldo bruto proporcional de <strong>$236.464,09</strong>.
       </p>
 
       <h2>¿Cuándo se paga el aguinaldo en 2026?</h2>
       <p>
-        La Ley de Contrato de Trabajo establece fechas límite precisas, con un margen legal de hasta 4 días hábiles de demora:
+        El artículo 122 de la Ley de Contrato de Trabajo (sustituido por la Ley 27.073) establece fechas de vencimiento legal precisas para cada cuota del SAC:
       </p>
       <ul>
-        <li><strong>Primera cuota (junio):</strong> El empleador tiene tiempo hasta el 30 de junio. En 2026, con el margen de días hábiles, se puede depositar hasta el lunes 6 de julio inclusive.</li>
-        <li><strong>Segunda cuota (diciembre):</strong> La fecha de pago es el 18 de diciembre. En 2026, considerando los 4 días hábiles de margen, te lo pueden depositar hasta el jueves 24 de diciembre, aproximadamente, según el cómputo habitual de días hábiles.</li>
+        <li><strong>Primera cuota (junio):</strong> Vencimiento legal el <strong>30 de junio</strong>.</li>
+        <li><strong>Segunda cuota (diciembre):</strong> Vencimiento legal el <strong>18 de diciembre</strong>.</li>
       </ul>
+      <p>
+        Es importante notar que el plazo de cuatro días hábiles previsto en el artículo 128 de la LCT corresponde a las remuneraciones mensuales o quincenales habituales vencidas, mientras que para el aguinaldo la ley fijó fechas de vencimiento expresas y no contempla una prórroga legal general.
+      </p>
 
       <h2>¿Qué conceptos entran en el cálculo?</h2>
       <p>

@@ -493,7 +493,7 @@ export const tools: Tool[] = [
     faqs: [
       {
         question: '¿Cuándo se cobra el aguinaldo de diciembre de 2026?',
-        answer: 'La fecha límite legal para depositar la segunda cuota es el viernes 18 de diciembre. Sin embargo, con el margen de 4 días hábiles, los empleadores tienen tiempo hasta el jueves 24 de diciembre.'
+        answer: 'La fecha de vencimiento legal fijada por el artículo 122 de la Ley de Contrato de Trabajo (modificado por la Ley 27.073) es el 18 de diciembre. La ley no contempla una prórroga general para el SAC; el margen de cuatro días hábiles del art. 128 rige para remuneraciones mensuales o quincenales.'
       },
       {
         question: '¿El aguinaldo se calcula sobre el último sueldo o sobre un promedio?',
@@ -505,7 +505,7 @@ export const tools: Tool[] = [
       },
       {
         question: '¿Qué pasa si entré a trabajar a mitad del semestre?',
-        answer: 'En ese caso cobrás un aguinaldo proporcional. Se calcula la mitad de tu mejor sueldo, se lo multiplica por los días que trabajaste y se lo divide por 180 (los días convencionales del semestre).'
+        answer: 'En ese caso cobrás un aguinaldo proporcional. Se calcula el 50% de tu mejor sueldo, se lo multiplica por los días corridos que trabajaste y se lo divide por los días reales del semestre (181 días en el primer semestre de 2026 y 184 días en el segundo semestre).'
       },
       {
         question: '¿Cuánto me corresponde si mi mejor sueldo es de $1.000.000?',
@@ -525,7 +525,7 @@ export const tools: Tool[] = [
       },
       {
         question: '¿Qué hago si mi empleador no me pagó el aguinaldo?',
-        answer: 'Una vez pasada la fecha límite y el margen de 4 días hábiles, tenés derecho a intimar por escrito para que se te pague. Lo ideal en esos casos es consultar a tu sindicato o a un abogado laboralista.'
+        answer: 'Una vez vencida la fecha legal (30 de junio para la primera cuota o 18 de diciembre para la segunda), el empleador queda en mora y tenés derecho a intimar por escrito para que se te pague. Lo aconsejable es asesorarte con tu sindicato o un abogado laboralista.'
       }
     ],
     related: ["calculadora-precios", "generador-presupuestos"]
