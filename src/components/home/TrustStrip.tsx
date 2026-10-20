@@ -381,79 +381,145 @@ export default function TrustStrip() {
 
         {/* Bloque C: Gratis vs Pro */}
         <div className="w-full">
-          <div className="mb-6 text-center md:text-left">
-            <h3 className="text-2xl font-bold text-slate-900 tracking-tight">Gratis vs Pro</h3>
-            <p className="text-xs sm:text-sm text-slate-600 mt-1">
-              Todas las calculadoras son libres. Pasate a Pro solo si necesitás funciones avanzadas de gestión y marca propia.
+          <div className="mb-8 text-center md:text-left">
+            <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              Calculadoras libres para todos, gestión avanzada para tu negocio
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-600 mt-2 max-w-2xl leading-relaxed">
+              Todas las calculadoras son 100% gratuitas y sin registro obligatorio. Pasate a PlayComun Pro únicamente si necesitás comprobantes con tu logo, historial guardado en la nube y funciones comerciales avanzadas.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
             
-            {/* Pro Column (Aparece primero en mobile) */}
+            {/* Pro Column (Priorizada en valor y en mobile) */}
             <div className="order-1 md:order-2 bg-purple-50/40 border-2 border-brand rounded-2xl p-6 sm:p-8 flex flex-col relative overflow-hidden shadow-xs">
               <div className="absolute top-0 right-0 bg-brand text-white text-xs font-bold px-3 py-1 rounded-bl-lg shadow-2xs">
                 RECOMENDADO
               </div>
-              <h4 className="text-2xl font-bold text-slate-900 mb-2">PlayComun Pro</h4>
+              <h4 className="text-2xl font-bold text-slate-900 mb-1">PlayComun Pro</h4>
+              <p className="text-xs text-slate-500 mb-4">
+                Para negocios, emprendedores y profesionales que emiten comprobantes y gestionan clientes.
+              </p>
               
               {/* Indicador de precio real verificado */}
-              <div className="mb-5 inline-flex items-center gap-1.5 rounded-lg bg-brand-light px-2.5 py-1.5 border border-brand-border/60 self-start">
+              <div className="mb-6 inline-flex items-center gap-1.5 rounded-lg bg-brand-light px-2.5 py-1.5 border border-brand-border/60 self-start">
                 <span className="text-xs font-bold text-brand">Desde $5.900/mes</span>
                 <span className="text-[11px] text-slate-600 font-medium">· Facturación en pesos argentinos</span>
               </div>
 
-              <ul className="space-y-3.5 mb-8 flex-1 text-sm">
+              {/* Lista ordenada por prioridad de impacto de negocio */}
+              <ul className="space-y-4 mb-8 flex-1 text-xs sm:text-sm">
                 <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-brand shrink-0 mt-0.5" />
-                  <span className="text-slate-800 font-medium">Códigos QR dinámicos, documentos y listas de precios</span>
+                  <Check className="w-4.5 h-4.5 text-brand shrink-0 mt-0.5" />
+                  <div className="flex flex-col">
+                    <strong className="text-slate-900 font-semibold">Tu logo y marca en cada comprobante</strong>
+                    <span className="text-slate-600 text-xs mt-0.5 leading-relaxed">
+                      Presupuestos, facturas y remitos con la identidad de tu negocio y sin marcas de agua de PlayComun.
+                    </span>
+                  </div>
                 </li>
                 <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-brand shrink-0 mt-0.5" />
-                  <span className="text-slate-700">Logo e identidad propia en comprobantes</span>
+                  <Check className="w-4.5 h-4.5 text-brand shrink-0 mt-0.5" />
+                  <div className="flex flex-col">
+                    <strong className="text-slate-900 font-semibold">Historial y guardado en la nube</strong>
+                    <span className="text-slate-600 text-xs mt-0.5 leading-relaxed">
+                      Revisá, editá o duplicá presupuestos previos, recetas de costos y listas de precios desde cualquier dispositivo.
+                    </span>
+                  </div>
                 </li>
                 <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-brand shrink-0 mt-0.5" />
-                  <span className="text-slate-700">Guardado y sincronización de datos en la nube</span>
+                  <Check className="w-4.5 h-4.5 text-brand shrink-0 mt-0.5" />
+                  <div className="flex flex-col">
+                    <strong className="text-slate-900 font-semibold">Clientes y catálogo de productos en un clic</strong>
+                    <span className="text-slate-600 text-xs mt-0.5 leading-relaxed">
+                      Guardá tus contactos y artículos frecuentes para autocompletar documentos sin volver a tipear.
+                    </span>
+                  </div>
                 </li>
                 <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-brand shrink-0 mt-0.5" />
-                  <span className="text-slate-700">Exportación de comprobantes y planillas sin marcas de agua</span>
+                  <Check className="w-4.5 h-4.5 text-brand shrink-0 mt-0.5" />
+                  <div className="flex flex-col">
+                    <strong className="text-slate-900 font-semibold">Exportación de gastos a Excel (.xlsx)</strong>
+                    <span className="text-slate-600 text-xs mt-0.5 leading-relaxed">
+                      Descargá tus ingresos y egresos ordenados en planillas listas para tu contabilidad o administración.
+                    </span>
+                  </div>
                 </li>
                 <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-brand shrink-0 mt-0.5" />
-                  <span className="text-slate-700">100 conversiones diarias en servidor (archivos 50 MB)</span>
+                  <Check className="w-4.5 h-4.5 text-brand shrink-0 mt-0.5" />
+                  <div className="flex flex-col">
+                    <strong className="text-slate-900 font-semibold">Códigos QR dinámicos editables</strong>
+                    <span className="text-slate-600 text-xs mt-0.5 leading-relaxed">
+                      Cambiá el enlace de destino cuando quieras sin tener que reimprimir folletos, cartas ni cartelería.
+                    </span>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-4.5 h-4.5 text-brand shrink-0 mt-0.5" />
+                  <div className="flex flex-col">
+                    <strong className="text-slate-900 font-semibold">100 conversiones diarias en servidor (hasta 50 MB)</strong>
+                    <span className="text-slate-600 text-xs mt-0.5 leading-relaxed">
+                      Procesamiento prioritario para documentos pesados de Word, Excel y PowerPoint a PDF.
+                    </span>
+                  </div>
                 </li>
               </ul>
+
               <Link 
                 href="/planes" 
                 className="block text-center w-full min-h-[44px] rounded-xl bg-brand px-6 py-3 font-semibold text-white transition-colors hover:bg-brand-hover active:bg-brand-active shadow-xs cursor-pointer text-sm"
               >
-                Ver planes Pro
+                Ver todos los planes Pro
               </Link>
             </div>
 
-            {/* Gratis Column - Unificado a "Plan Gratuito" */}
+            {/* Gratis Column - Transparente y respetuoso */}
             <div className="order-2 md:order-1 bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 flex flex-col shadow-xs">
-              <h4 className="text-2xl font-bold text-slate-900 mb-2">Plan Gratuito</h4>
-              <p className="text-xs text-slate-500 mb-5">
-                Ideal para uso cotidiano sin registro obligatorio.
+              <h4 className="text-2xl font-bold text-slate-900 mb-1">Plan Gratuito</h4>
+              <p className="text-xs text-slate-500 mb-6">
+                Para uso cotidiano y personal sin necesidad de tarjetas ni registros obligatorios.
               </p>
 
-              <ul className="space-y-3.5 mb-8 flex-1 text-sm">
+              <ul className="space-y-4 mb-8 flex-1 text-xs sm:text-sm">
                 <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
-                  <span className="text-slate-700">Calculadoras y utilidades libres sin registro</span>
+                  <Check className="w-4.5 h-4.5 text-emerald-600 shrink-0 mt-0.5" />
+                  <div className="flex flex-col">
+                    <strong className="text-slate-900 font-semibold">21 calculadoras y utilidades 100% libres</strong>
+                    <span className="text-slate-600 text-xs mt-0.5 leading-relaxed">
+                      Calculá precios, costos, IVA, cuotas, aguinaldo y márgenes sin límites de tiempo.
+                    </span>
+                  </div>
                 </li>
                 <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
-                  <span className="text-slate-700">Iniciá sesión gratis para guardar favoritos</span>
+                  <Check className="w-4.5 h-4.5 text-emerald-600 shrink-0 mt-0.5" />
+                  <div className="flex flex-col">
+                    <strong className="text-slate-900 font-semibold">Procesamiento directo en tu navegador</strong>
+                    <span className="text-slate-600 text-xs mt-0.5 leading-relaxed">
+                      Comprimí imágenes, firmá PDFs y generá enlaces de WhatsApp de forma privada en tu equipo.
+                    </span>
+                  </div>
                 </li>
                 <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
-                  <span className="text-slate-700">5 conversiones diarias en servidor (archivos 10 MB)</span>
+                  <Check className="w-4.5 h-4.5 text-emerald-600 shrink-0 mt-0.5" />
+                  <div className="flex flex-col">
+                    <strong className="text-slate-900 font-semibold">Cuenta opcional para favoritos</strong>
+                    <span className="text-slate-600 text-xs mt-0.5 leading-relaxed">
+                      Iniciá sesión gratis cuando quieras para tener a mano tus herramientas frecuentes.
+                    </span>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-4.5 h-4.5 text-emerald-600 shrink-0 mt-0.5" />
+                  <div className="flex flex-col">
+                    <strong className="text-slate-900 font-semibold">5 conversiones diarias en servidor (hasta 10 MB)</strong>
+                    <span className="text-slate-600 text-xs mt-0.5 leading-relaxed">
+                      Conversiones estándar de documentos a PDF para tareas puntuales.
+                    </span>
+                  </div>
                 </li>
               </ul>
+
               <Link 
                 href="/herramientas" 
                 className="block text-center w-full min-h-[44px] rounded-xl bg-slate-100 px-6 py-3 font-semibold text-slate-800 transition-colors hover:bg-slate-200 cursor-pointer text-sm"
