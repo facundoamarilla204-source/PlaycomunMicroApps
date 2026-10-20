@@ -114,6 +114,11 @@ export default function SiteFooter() {
                 </Link>
               </li>
               <li>
+                <Link href="/herramientas/firmar-pdf" className="text-xs text-slate-600 hover:text-brand transition-colors">
+                  Firmar PDF online
+                </Link>
+              </li>
+              <li>
                 <Link href="/herramientas/generador-qr" className="text-xs text-slate-600 hover:text-brand transition-colors">
                   Generador de códigos QR
                 </Link>

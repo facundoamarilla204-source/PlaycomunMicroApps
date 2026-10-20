@@ -21,6 +21,7 @@ import {
   Scale,
   Scissors,
   Palette,
+  PenTool,
   ArrowUpRight,
   LucideIcon
 } from "lucide-react"
@@ -46,7 +47,8 @@ const iconMap: Record<string, LucideIcon> = {
   ChefHat,
   Scale,
   Scissors,
-  Palette
+  Palette,
+  PenTool,
 }
 
 const CATEGORY_LABELS: Record<string, string> = {

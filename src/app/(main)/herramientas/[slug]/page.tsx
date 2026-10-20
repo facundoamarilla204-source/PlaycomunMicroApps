@@ -97,6 +97,10 @@ const GeneradorPaletasTool = dynamic(
   () => import("@/components/tools/generador-paletas/GeneradorPaletasTool").then((m) => m.GeneradorPaletasTool),
   { loading: () => <ToolSkeleton /> }
 )
+const FirmarPdfTool = dynamic(
+  () => import("@/components/tools/firmar-pdf/FirmarPdfTool").then((m) => m.FirmarPdfTool),
+  { loading: () => <ToolSkeleton /> }
+)
 
 // Contenido SEO estático renderizado en servidor (SSR nativo)
 import { AguinaldoContent } from "@/components/tools/content/AguinaldoContent"
@@ -119,6 +123,7 @@ import { OrdenarPdfContent } from "@/components/tools/content/OrdenarPdfContent"
 import { CortadorAudioContent } from "@/components/tools/content/CortadorAudioContent"
 import GeneradorListasContent from "@/components/tools/content/GeneradorListasContent"
 import { GeneradorPaletasContent } from "@/components/tools/content/GeneradorPaletasContent"
+import { FirmarPdfContent } from "@/components/tools/content/FirmarPdfContent"
 
 import { isProUser } from "@/lib/pro"
 
@@ -293,6 +298,15 @@ function getToolComponent(slug: string, user: User | null, isPro: boolean = fals
           <GeneradorPaletasTool />
           <div className="mt-16 flex justify-center">
             <GeneradorPaletasContent />
+          </div>
+        </>
+      )
+    case "firmar-pdf":
+      return (
+        <>
+          <FirmarPdfTool />
+          <div className="mt-16 flex justify-center">
+            <FirmarPdfContent />
           </div>
         </>
       )

@@ -898,7 +898,66 @@ export const tools: Tool[] = [
         answer: "No. Tus archivos originales en tu computadora o celular nunca se modifican ni se sobrescriben. La herramienta genera siempre una copia nueva con las modificaciones elegidas cuando pulsás el botón de descarga."
       }
     ],
-    related: ["convertidor-archivos", "compresor-imagenes", "generador-presupuestos", "generador-qr"]
+    related: ["convertidor-archivos", "compresor-imagenes", "generador-presupuestos", "generador-qr", "firmar-pdf"]
+  },
+  {
+    slug: "firmar-pdf",
+    name: "Firmar PDF online",
+    type: "utilidad",
+    category: "clientes-utilidades",
+    exampleResult: "Firma manuscrita, iniciales, QR móvil y logo",
+    tier: "free",
+    description: "Firmá documentos PDF online gratis: dibujá tu firma, escribí con estilos manuscritos, firmá desde el celular con QR o subí tu firma y logo empresarial.",
+    icon: "PenTool",
+    status: "live",
+    featured: true,
+    keywords: [
+      "firmar pdf online",
+      "firmar pdf gratis",
+      "agregar firma a un pdf",
+      "dibujar firma en pdf",
+      "insertar firma en pdf",
+      "firmar pdf desde el celular",
+      "añadir logo a un pdf",
+      "firmar documento pdf gratis",
+      "firma manuscrita online",
+      "estampar firma en pdf",
+      "rubricar pdf gratis"
+    ],
+    updatedAt: "2026-10-20T00:00:00.000Z",
+    seo: {
+      title: "Firmar PDF online gratis: Dibujar, escribir y QR celular",
+      description: "Firmá tus documentos PDF online gratis y sin registro. Escribí tu nombre con tipografías manuscritas, dibujá tu firma, usá el celular con QR y descargá el PDF final.",
+      h1: "Firmar PDF Online Gratis",
+      intro: "La herramienta más rápida, privada y completa para insertar firmas, iniciales y logos en documentos PDF directamente en tu navegador."
+    },
+    faqs: [
+      {
+        question: "¿Cómo funciona la privacidad al firmar documentos PDF en PlayComun?",
+        answer: "El procesamiento del documento y la incrustación de las firmas se realizan íntegramente en la memoria de tu dispositivo mediante tu navegador. Tu archivo PDF original nunca se envía a servidores remotos ni se guarda en bases de datos."
+      },
+      {
+        question: "¿Cómo funciona la firma desde el celular mediante código QR?",
+        answer: "La computadora genera un código QR asociado a una sesión temporal protegida con tokens criptográficos aleatorios. Al escanearlo con la cámara del celular, se abre una pizarra táctil para que dibujes tu firma con el dedo. Al confirmar, la firma se transfiere a tu PC de forma inmediata y los datos temporales se eliminan."
+      },
+      {
+        question: "¿Qué diferencia existe entre esta firma visual y una firma digital con certificado?",
+        answer: "Esta herramienta incorpora una representación gráfica de firma electrónica en las páginas del PDF. Es válida y admitida para contratos privados, presupuestos y autorizaciones bajo el principio de libertad de formas, pero no equivale a una firma digital criptográfica con certificado emitido por autoridad licenciada requerida en actos notariales o judiciales específicos."
+      },
+      {
+        question: "¿Puedo colocar mis iniciales en varias páginas a la vez?",
+        answer: "Sí. Podés crear iniciales independientes de tu firma completa y utilizar la opción de aplicar en otras páginas para duplicarlas en todas las hojas o en las páginas que elijas manteniendo la misma posición."
+      },
+      {
+        question: "¿Qué formatos de imagen se admiten para subir firmas o logos?",
+        answer: "Admite imágenes en formato PNG, JPG/JPEG y WebP. Para firmas escaneadas, la herramienta incluye un filtro local para remover el fondo blanco del papel de forma automática."
+      },
+      {
+        question: "¿Es completamente gratis y requiere registrarse?",
+        answer: "Es 100% gratuita y de acceso libre para cualquier visitante sin necesidad de registrarse ni ingresar tarjetas de crédito."
+      }
+    ],
+    related: ["ordenar-pdf", "generador-documentos-comerciales", "generador-qr", "compresor-imagenes"]
   },
   {
     slug: "cortar-audio",
