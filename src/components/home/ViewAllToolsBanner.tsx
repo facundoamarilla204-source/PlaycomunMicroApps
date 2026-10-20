@@ -1,8 +1,9 @@
 "use client"
 
+import { useState } from "react"
 import Link from "next/link"
-import { ArrowRight, LayoutGrid, Tag } from "lucide-react"
-import { motion } from "motion/react"
+import { useRouter } from "next/navigation"
+import { Search, SlidersHorizontal } from "lucide-react"
 import { getCategories } from "@/data/categories"
 
 interface ViewAllToolsBannerProps {
@@ -10,62 +11,86 @@ interface ViewAllToolsBannerProps {
   displayedCount?: number
 }
 
-export default function ViewAllToolsBanner({ totalTools, displayedCount = 20 }: ViewAllToolsBannerProps) {
+export default function ViewAllToolsBanner({ totalTools }: ViewAllToolsBannerProps) {
+  const router = useRouter()
+  const [searchTerm, setSearchTerm] = useState("")
   const categories = getCategories().filter((c) => c.id !== "todas")
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    const query = searchTerm.trim()
+    if (query) {
+      router.push(`/herramientas?q=${encodeURIComponent(query)}`)
+    } else {
+      router.push("/herramientas")
+    }
+  }
+
   return (
-    <div className="mt-12 sm:mt-16 mx-auto max-w-4xl">
-      <div className="rounded-2xl border border-slate-200 bg-slate-50/90 p-6 sm:p-10 shadow-xs text-center">
-        {/* Simple clean badge */}
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white border border-slate-200 text-slate-700 mb-4 shadow-2xs">
-          <LayoutGrid className="h-3.5 w-3.5 text-brand" />
-          <span>Catálogo completo de PlayComun</span>
-        </div>
+    <div className="mt-12 sm:mt-16 mx-auto max-w-5xl">
+      <div className="rounded-2xl border border-slate-200/90 bg-slate-50/70 p-6 sm:p-8 shadow-2xs">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+          
+          {/* Columna izquierda: Información clara y filtros por especialidad */}
+          <div className="lg:col-span-7">
+            <h3 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+              ¿Buscás una calculadora o utilidad en particular?
+            </h3>
+            <p className="mt-1.5 text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Explorá las {totalTools} herramientas gratuitas disponibles con búsqueda rápida por palabra clave o navegando por área de negocio.
+            </p>
 
-        {/* Heading & description */}
-        <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-3">
-          ¿Buscás más herramientas o utilidades?
-        </h3>
-        <p className="text-sm sm:text-base text-slate-600 max-w-xl mx-auto mb-7 leading-relaxed">
-          En portada mostramos hasta {displayedCount} herramientas destacadas. En el catálogo completo tenés acceso libre a todas las calculadoras comerciales, utilidades financieras y generadores.
-        </p>
-
-        {/* High-priority CTA Button */}
-        <div className="flex justify-center mb-7">
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="w-full sm:w-auto"
-          >
-            <Link
-              href="/herramientas"
-              className="group flex sm:inline-flex items-center justify-center gap-2.5 rounded-xl bg-brand px-7 py-3.5 text-sm sm:text-base font-bold text-white shadow-xs hover:bg-brand-hover transition-colors w-full cursor-pointer"
-            >
-              <LayoutGrid className="h-4.5 w-4.5" />
-              <span>Ver todas las herramientas ({totalTools})</span>
-              <ArrowRight className="h-4.5 w-4.5 transition-transform duration-200 group-hover:translate-x-1" />
-            </Link>
-          </motion.div>
-        </div>
-
-        {/* Category shortcuts */}
-        <div className="pt-6 border-t border-slate-200/90">
-          <p className="text-xs font-semibold text-slate-500 mb-3 flex items-center justify-center gap-1.5">
-            <Tag className="h-3.5 w-3.5 text-slate-400" />
-            <span>Explorá por categoría:</span>
-          </p>
-          <div className="flex flex-wrap justify-center gap-2">
-            {categories.map((cat) => (
-              <Link
-                key={cat.id}
-                href={`/herramientas?categoria=${cat.id}`}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:border-brand/40 hover:text-brand transition-colors shadow-2xs"
-              >
-                <span>{cat.name}</span>
-                <span className="font-mono text-[10px] text-slate-400">({cat.count})</span>
-              </Link>
-            ))}
+            {/* Categorías directas */}
+            <div className="mt-4 flex flex-wrap gap-1.5 sm:gap-2 items-center">
+              <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mr-1">
+                Especialidad:
+              </span>
+              {categories.map((cat) => (
+                <Link
+                  key={cat.id}
+                  href={`/herramientas?categoria=${cat.id}`}
+                  className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:border-slate-300 hover:text-brand transition-colors shadow-2xs"
+                >
+                  <span>{cat.name}</span>
+                  <span className="font-mono text-[10px] text-slate-400">({cat.count})</span>
+                </Link>
+              ))}
+            </div>
           </div>
+
+          {/* Columna derecha: Buscador directo y acceso al catálogo */}
+          <div className="lg:col-span-5 flex flex-col gap-3">
+            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2">
+              <div className="relative flex-1">
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+                <input
+                  type="text"
+                  placeholder="Ej: aguinaldo, iva, cuotas, pdf..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full min-h-[44px] rounded-xl border border-slate-300 bg-white pl-10 pr-3 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-colors shadow-2xs"
+                />
+              </div>
+              <button
+                type="submit"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs sm:text-sm px-5 py-2.5 min-h-[44px] transition-colors shadow-2xs cursor-pointer shrink-0"
+              >
+                <span>Buscar</span>
+              </button>
+            </form>
+
+            <div className="flex items-center justify-between pt-1 text-xs">
+              <Link
+                href="/herramientas"
+                className="inline-flex items-center gap-1.5 font-semibold text-brand hover:text-brand-hover transition-colors"
+              >
+                <SlidersHorizontal className="h-3.5 w-3.5" />
+                <span>Abrir catálogo completo ({totalTools})</span>
+              </Link>
+              <span className="text-slate-400 text-[11px]">Acceso libre sin registro</span>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>

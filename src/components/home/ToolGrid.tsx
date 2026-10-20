@@ -298,27 +298,22 @@ export default function ToolGrid({
           {hasMore && (
             <div className="mt-8 sm:mt-10 flex flex-col items-center justify-center gap-2">
               {!isExpanded ? (
-                <motion.button
+                <button
                   type="button"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
                   onClick={() => setIsExpanded(true)}
                   aria-expanded={false}
                   aria-controls="tools-grid"
-                  className="group inline-flex items-center justify-center gap-2.5 rounded-xl border-2 border-brand/20 bg-white hover:bg-brand-light/30 hover:border-brand px-6 py-3 min-h-[48px] text-xs sm:text-sm font-bold text-brand shadow-2xs hover:shadow-xs transition-all cursor-pointer"
+                  className="group inline-flex items-center justify-center gap-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 hover:border-slate-400 px-6 py-2.5 min-h-[44px] text-xs sm:text-sm font-semibold text-slate-800 shadow-2xs hover:shadow-xs transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
                 >
-                  <Sparkles className="h-4 w-4 text-brand" />
                   <span>Ver más herramientas</span>
-                  <span className="inline-flex items-center justify-center rounded-md bg-brand/10 text-brand px-2 py-0.5 text-xs font-mono font-bold">
+                  <span className="inline-flex items-center justify-center rounded-md bg-slate-100 text-slate-700 px-2 py-0.5 text-xs font-mono font-medium border border-slate-200">
                     +{remainingCount}
                   </span>
-                  <ChevronDown className="h-4 w-4 text-brand transition-transform duration-200 group-hover:translate-y-0.5" />
-                </motion.button>
+                  <ChevronDown className="h-4 w-4 text-slate-500 transition-transform duration-200 group-hover:translate-y-0.5" />
+                </button>
               ) : (
-                <motion.button
+                <button
                   type="button"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
                   onClick={() => {
                     setIsExpanded(false)
                     const el = document.getElementById("tools-grid")
@@ -331,11 +326,11 @@ export default function ToolGrid({
                   }}
                   aria-expanded={true}
                   aria-controls="tools-grid"
-                  className="group inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 px-5 py-2.5 min-h-[44px] text-xs sm:text-sm font-semibold text-slate-700 shadow-2xs transition-colors cursor-pointer"
+                  className="group inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 hover:border-slate-400 px-5 py-2.5 min-h-[44px] text-xs sm:text-sm font-semibold text-slate-700 shadow-2xs transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
                 >
                   <span>Ver menos herramientas</span>
-                  <ChevronUp className="h-4 w-4 text-slate-400 group-hover:text-slate-600 transition-transform duration-200 group-hover:-translate-y-0.5" />
-                </motion.button>
+                  <ChevronUp className="h-4 w-4 text-slate-500 transition-transform duration-200 group-hover:-translate-y-0.5" />
+                </button>
               )}
             </div>
           )}
