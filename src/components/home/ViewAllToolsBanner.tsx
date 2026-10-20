@@ -1,9 +1,15 @@
 "use client"
 
-import { useState } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { Search, SlidersHorizontal } from "lucide-react"
+import { 
+  SlidersHorizontal, 
+  Tag, 
+  Wallet, 
+  Briefcase, 
+  Users, 
+  Heart,
+  ArrowRight
+} from "lucide-react"
 import { getCategories } from "@/data/categories"
 
 interface ViewAllToolsBannerProps {
@@ -11,88 +17,136 @@ interface ViewAllToolsBannerProps {
   displayedCount?: number
 }
 
+const CATEGORY_META: Record<
+  string, 
+  { summary: string; icon: React.ComponentType<{ className?: string }> }
+> = {
+  "precios-costos": {
+    summary: "Precios de venta, costo de receta y margen",
+    icon: Tag,
+  },
+  "plata-finanzas": {
+    summary: "Cuotas, gastos mensuales y aguinaldo (SAC)",
+    icon: Wallet,
+  },
+  "gestion-negocio": {
+    summary: "Presupuestos y listas de precios en PDF",
+    icon: Briefcase,
+  },
+  "clientes-utilidades": {
+    summary: "IVA, enlaces de WhatsApp, QR y documentos PDF",
+    icon: Users,
+  },
+  "salud-fitness": {
+    summary: "Cálculo de masa corporal y calorías diarias",
+    icon: Heart,
+  },
+}
+
 export default function ViewAllToolsBanner({ totalTools }: ViewAllToolsBannerProps) {
-  const router = useRouter()
-  const [searchTerm, setSearchTerm] = useState("")
   const categories = getCategories().filter((c) => c.id !== "todas")
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    const query = searchTerm.trim()
-    if (query) {
-      router.push(`/herramientas?q=${encodeURIComponent(query)}`)
-    } else {
-      router.push("/herramientas")
-    }
-  }
-
   return (
-    <div className="mt-12 sm:mt-16 mx-auto max-w-5xl">
+    <section aria-labelledby="catalog-directory-title" className="mt-12 sm:mt-16 mx-auto max-w-5xl">
       <div className="rounded-2xl border border-slate-200/90 bg-slate-50/70 p-6 sm:p-8 shadow-2xs">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
-          
-          {/* Columna izquierda: Información clara y filtros por especialidad */}
-          <div className="lg:col-span-7">
-            <h3 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
-              ¿Buscás una calculadora o utilidad en particular?
-            </h3>
-            <p className="mt-1.5 text-xs sm:text-sm text-slate-600 leading-relaxed">
-              Explorá las {totalTools} herramientas gratuitas disponibles con búsqueda rápida por palabra clave o navegando por área de negocio.
-            </p>
-
-            {/* Categorías directas */}
-            <div className="mt-4 flex flex-wrap gap-1.5 sm:gap-2 items-center">
-              <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mr-1">
-                Especialidad:
-              </span>
-              {categories.map((cat) => (
-                <Link
-                  key={cat.id}
-                  href={`/herramientas?categoria=${cat.id}`}
-                  className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:border-slate-300 hover:text-brand transition-colors shadow-2xs"
-                >
-                  <span>{cat.name}</span>
-                  <span className="font-mono text-[10px] text-slate-400">({cat.count})</span>
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          {/* Columna derecha: Buscador directo y acceso al catálogo */}
-          <div className="lg:col-span-5 flex flex-col gap-3">
-            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2">
-              <div className="relative flex-1">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
-                <input
-                  type="text"
-                  placeholder="Ej: aguinaldo, iva, cuotas, pdf..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full min-h-[44px] rounded-xl border border-slate-300 bg-white pl-10 pr-3 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-colors shadow-2xs"
-                />
-              </div>
-              <button
-                type="submit"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs sm:text-sm px-5 py-2.5 min-h-[44px] transition-colors shadow-2xs cursor-pointer shrink-0"
-              >
-                <span>Buscar</span>
-              </button>
-            </form>
-
-            <div className="flex items-center justify-between pt-1 text-xs">
-              <Link
-                href="/herramientas"
-                className="inline-flex items-center gap-1.5 font-semibold text-brand hover:text-brand-hover transition-colors"
-              >
-                <SlidersHorizontal className="h-3.5 w-3.5" />
-                <span>Abrir catálogo completo ({totalTools})</span>
-              </Link>
-              <span className="text-slate-400 text-[11px]">Acceso libre sin registro</span>
-            </div>
-          </div>
-
+        
+        {/* Cabecera directa: qué es y para qué sirve sin preguntas retóricas */}
+        <div className="max-w-2xl">
+          <h3 
+            id="catalog-directory-title" 
+            className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight"
+          >
+            Todas las herramientas, organizadas por lo que hacés
+          </h3>
+          <p className="mt-2 text-xs sm:text-sm text-slate-600 leading-relaxed">
+            {totalTools} utilidades gratuitas para resolver números, cobros y archivos en el navegador, sin necesidad de crear una cuenta.
+          </p>
         </div>
+
+        {/* Directorio de categorías estructurado en 6 fichas simétricas */}
+        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {categories.map((cat) => {
+            const meta = CATEGORY_META[cat.id] || { summary: "Herramientas especializadas", icon: Tag }
+            const Icon = meta.icon
+
+            return (
+              <Link
+                key={cat.id}
+                href={`/herramientas?categoria=${cat.id}`}
+                className="group relative flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white p-4 shadow-2xs transition-all hover:border-brand/40 hover:shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+              >
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <div className="flex items-center gap-2">
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-700 transition-colors group-hover:bg-brand/10 group-hover:text-brand">
+                        <Icon className="h-4 w-4" />
+                      </div>
+                      <span className="font-semibold text-xs sm:text-sm text-slate-900 group-hover:text-brand transition-colors">
+                        {cat.name}
+                      </span>
+                    </div>
+                    <span className="font-mono text-[11px] font-semibold text-slate-600 rounded-md bg-slate-100 px-2 py-0.5">
+                      {cat.count}
+                    </span>
+                  </div>
+                  <p className="text-[11px] sm:text-xs text-slate-500 leading-relaxed">
+                    {meta.summary}
+                  </p>
+                </div>
+
+                <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] font-semibold text-slate-600 group-hover:text-brand transition-colors">
+                  <span>Ver categoría</span>
+                  <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+                </div>
+              </Link>
+            )
+          })}
+
+          {/* Tarjeta de acceso al catálogo completo como sexta ficha simétrica */}
+          <Link
+            href="/herramientas"
+            className="group flex flex-col justify-between rounded-xl border border-slate-900 bg-slate-900 p-4 text-white shadow-2xs transition-all hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+          >
+            <div>
+              <div className="flex items-center justify-between gap-2 mb-2">
+                <div className="flex items-center gap-2">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/10 text-white">
+                    <SlidersHorizontal className="h-4 w-4" />
+                  </div>
+                  <span className="font-semibold text-xs sm:text-sm text-white">
+                    Catálogo completo
+                  </span>
+                </div>
+                <span className="font-mono text-[11px] font-semibold text-white/90 rounded-md bg-white/10 px-2 py-0.5">
+                  {totalTools}
+                </span>
+              </div>
+              <p className="text-[11px] sm:text-xs text-slate-300 leading-relaxed">
+                Buscador en tiempo real, filtros por tipo y ordenamiento alfabético.
+              </p>
+            </div>
+
+            <div className="mt-3 pt-2 border-t border-white/10 flex items-center justify-between text-[11px] font-semibold text-white/90 group-hover:text-white">
+              <span>Abrir todas</span>
+              <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+            </div>
+          </Link>
+        </div>
+
+        {/* Puente honesto a PlayComun Pro */}
+        <div className="mt-5 pt-4 border-t border-slate-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs text-slate-500">
+          <span>
+            ¿Querés emitir comprobantes con tu logo y guardar historial en la nube?
+          </span>
+          <Link
+            href="/planes"
+            className="font-semibold text-brand hover:underline inline-flex items-center gap-1 shrink-0"
+          >
+            Conocé las funciones de PlayComun Pro
+          </Link>
+        </div>
+
       </div>
-    </div>
+    </section>
   )
 }

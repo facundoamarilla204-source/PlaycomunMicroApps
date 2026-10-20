@@ -43,7 +43,7 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
             </Link>
 
             {/* Desktop Nav */}
-            <nav className="hidden md:flex items-center gap-6 lg:gap-8">
+            <nav className="hidden md:flex items-center gap-6 lg:gap-8" aria-label="Navegación principal">
               {[
                 { id: 'calculadora', name: 'Calculadoras' },
                 { id: 'generador', name: 'Generadores' },
@@ -54,18 +54,25 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
                   <div key={type.id} className="relative group">
                     <Link
                       href={`/herramientas?tipo=${type.id}`}
-                      className="flex items-center gap-1.5 text-sm font-semibold text-slate-700 transition-colors hover:text-brand py-2"
+                      className="flex items-center gap-1.5 text-sm font-semibold text-slate-700 transition-colors hover:text-brand group-hover:text-brand group-focus-within:text-brand py-2 px-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-md"
+                      aria-haspopup={typeTools.length > 0 ? "true" : undefined}
                     >
-                      {type.name} <ChevronDown className="h-3.5 w-3.5 text-slate-400 transition-transform group-hover:rotate-180" />
+                      <span>{type.name}</span>
+                      <ChevronDown className="h-3.5 w-3.5 text-slate-400 transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180" />
                     </Link>
                     {typeTools.length > 0 && (
-                      <div className="absolute left-0 top-[100%] hidden w-64 flex-col rounded-xl border border-slate-200 bg-white shadow-md group-hover:flex z-50 animate-in fade-in slide-in-from-top-1 duration-150">
-                        <div className="p-1.5 max-h-80 overflow-y-auto scrollbar-thin">
+                      <div 
+                        className="absolute left-0 top-full pt-1 hidden w-64 flex-col group-hover:flex group-focus-within:flex z-50 animate-in fade-in slide-in-from-top-1 duration-150"
+                        role="menu"
+                        aria-label={`Herramientas de ${type.name}`}
+                      >
+                        <div className="rounded-xl border border-slate-200 bg-white shadow-md p-1.5 max-h-80 overflow-y-auto scrollbar-thin">
                           {typeTools.map((tool) => (
                             <Link
                               key={tool.slug}
                               href={`${tool.customUrl || `/herramientas/${tool.slug}`}`}
-                              className="block rounded-lg px-3 py-2 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50 hover:text-brand"
+                              role="menuitem"
+                              className="block rounded-lg px-3 py-2 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50 hover:text-brand focus-visible:outline-none focus-visible:bg-slate-100 focus-visible:text-brand focus-visible:ring-1 focus-visible:ring-brand"
                             >
                               {tool.name}
                             </Link>
@@ -78,7 +85,7 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
               })}
               <Link
                 href="/#servicios"
-                className="text-sm font-semibold text-slate-700 transition-colors hover:text-brand py-2"
+                className="text-sm font-semibold text-slate-700 transition-colors hover:text-brand py-2 px-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-md"
               >
                 Servicios
               </Link>

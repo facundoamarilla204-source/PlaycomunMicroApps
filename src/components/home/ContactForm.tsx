@@ -105,7 +105,7 @@ export default function ContactForm({
                   id="nombre"
                   name="nombre"
                   required
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-600 transition-all placeholder:text-slate-400 text-sm font-medium"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all placeholder:text-slate-400 text-sm font-medium"
                   placeholder="Tu nombre y apellido"
                 />
               </div>
@@ -119,7 +119,7 @@ export default function ContactForm({
                   id="email"
                   name="email"
                   required
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-600 transition-all placeholder:text-slate-400 text-sm font-medium"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all placeholder:text-slate-400 text-sm font-medium"
                   placeholder="nombre@ejemplo.com"
                 />
               </div>
@@ -136,7 +136,7 @@ export default function ContactForm({
                 rows={5}
                 minLength={10}
                 maxLength={2000}
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-600 transition-all placeholder:text-slate-400 resize-none text-sm font-medium"
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all placeholder:text-slate-400 resize-none text-sm font-medium"
                 placeholder="Describí tu consulta técnica, comercial o de soporte..."
               />
             </div>
@@ -159,7 +159,7 @@ export default function ContactForm({
                 También podés escribir directamente a{" "}
                 <a
                   href="mailto:playcomun.ok@gmail.com"
-                  className="text-purple-600 font-semibold hover:underline"
+                  className="text-brand font-semibold hover:underline"
                 >
                   playcomun.ok@gmail.com
                 </a>
@@ -167,7 +167,7 @@ export default function ContactForm({
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full sm:w-auto px-7 py-3 bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-white font-bold rounded-xl transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm min-h-[44px] text-sm"
+                className="w-full sm:w-auto px-7 py-3 bg-brand hover:bg-brand-hover active:bg-brand-active text-white font-bold rounded-xl transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm min-h-[44px] text-sm cursor-pointer"
               >
                 {loading ? (
                   <>
@@ -193,7 +193,7 @@ export default function ContactForm({
   }
 
   return (
-    <section className="py-20 bg-white border-t border-slate-200/80 relative overflow-hidden">
+    <section id="contacto" className="py-20 bg-white border-t border-slate-200/80 relative overflow-hidden">
       {content}
     </section>
   )

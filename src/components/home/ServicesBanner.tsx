@@ -16,16 +16,25 @@ export default function ServicesBanner() {
               <p className="mb-8 text-lg text-foreground-muted leading-relaxed max-w-md text-balance">
                 Creamos herramientas específicas para tu operación diaria. Sistemas de gestión, automatización de procesos y plataformas SaaS.
               </p>
-              <a
-                href={siteConfig.organization.url}
-                target="_blank"
-                rel="noreferrer"
-                className="group inline-flex items-center gap-2 rounded-xl bg-brand px-7 py-3.5 font-semibold text-white shadow-sm transition-all duration-300 hover:bg-brand-hover hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-95"
-              >
-                Ver más proyectos
-                <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-              </a>
-              <p className="mt-8 text-sm font-medium text-foreground-subtle">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6">
+                <a
+                  href="#contacto"
+                  className="group inline-flex items-center gap-2 rounded-xl bg-brand px-6 py-3.5 font-semibold text-white shadow-xs transition-colors hover:bg-brand-hover active:bg-brand-active min-h-[44px]"
+                >
+                  Consultar por un proyecto a medida
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </a>
+                <a
+                  href={siteConfig.organization.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 hover:text-brand transition-colors py-2"
+                >
+                  <span>Ver más en PlayComun.com</span>
+                  <ExternalLink className="h-3.5 w-3.5 text-slate-400" />
+                </a>
+              </div>
+              <p className="text-xs font-medium text-slate-500">
                 Hecho en Argentina por <a href={siteConfig.organization.url} target="_blank" rel="noreferrer" className="text-brand hover:underline">PlayComun</a>.
               </p>
             </div>

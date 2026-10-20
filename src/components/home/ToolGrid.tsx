@@ -3,7 +3,7 @@
 import { useState, useTransition, useEffect } from "react"
 import Link from "next/link"
 import { useRouter, usePathname, useSearchParams } from "next/navigation"
-import { ArrowRight, Calculator, FileText, Receipt, TrendingUp, QrCode, Wallet, Dumbbell, ArrowRightLeft, Banknote, CreditCard, Boxes, Flame, Sparkles, Wrench, Palette, LucideIcon, Search, Filter, ChevronDown, ChevronUp } from "lucide-react"
+import { ArrowRight, Calculator, FileText, Receipt, TrendingUp, QrCode, Wallet, Dumbbell, ArrowRightLeft, Banknote, CreditCard, Boxes, Flame, Sparkles, Wrench, Palette, LucideIcon, Search, Filter, ChevronDown, ChevronUp, X } from "lucide-react"
 import { motion } from "motion/react"
 import { tools } from "@/data/tools"
 import { getCategories } from "@/data/categories"
@@ -234,7 +234,7 @@ export default function ToolGrid({
       {/* Main Grid Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <div className="flex items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-2.5">
             <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
               {query 
                 ? `Resultados para "${query}"` 
@@ -246,6 +246,17 @@ export default function ToolGrid({
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200 shadow-2xs">
                 {isExpanded ? `Todas (${displayedTools.length})` : `Destacadas (${displayedTools.length})`}
               </span>
+            )}
+            {activeCategory !== "todas" && (
+              <button
+                type="button"
+                onClick={() => handleCategoryChange("todas")}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-brand-border/60 bg-brand-light px-2.5 py-1 text-xs font-semibold text-brand hover:bg-purple-100 transition-colors cursor-pointer"
+                title="Quitar filtro de categoría"
+              >
+                <span>Filtro: {activeCategoryName}</span>
+                <X className="h-3 w-3" />
+              </button>
             )}
           </div>
           <p className="text-xs sm:text-sm text-slate-600 mt-1">

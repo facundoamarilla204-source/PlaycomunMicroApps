@@ -67,14 +67,14 @@ interface ToolCardProps {
 export default function ToolCard({ tool, isFavorite = false }: ToolCardProps) {
   const Icon = iconMap[tool.icon] || Calculator
   const categoryLabel = CATEGORY_LABELS[tool.category] || "Herramienta"
+  const toolUrl = tool.customUrl || `/herramientas/${tool.slug}`
 
   return (
-    <Link 
-      href={`${tool.customUrl || `/herramientas/${tool.slug}`}`}
-      className="group relative flex flex-col h-full rounded-xl border border-slate-200/90 bg-white p-5 shadow-xs transition-all duration-200 hover:border-brand/40 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+    <div 
+      className="group relative flex flex-col h-full rounded-xl border border-slate-200/90 bg-white p-5 shadow-xs transition-all duration-200 hover:border-brand/40 hover:shadow-sm"
     >
-      {/* Header row: Icon & Status / Favorite */}
-      <div className="flex items-center justify-between gap-3 mb-3.5">
+      {/* Header row: Icon & Status / Favorite (Outside the main link to avoid nested interactive elements) */}
+      <div className="flex items-center justify-between gap-3 mb-3.5 relative z-10">
         <div className="flex items-center gap-2.5">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-light text-brand transition-colors group-hover:bg-brand group-hover:text-white">
             <Icon className="h-4.5 w-4.5" />
@@ -84,7 +84,7 @@ export default function ToolCard({ tool, isFavorite = false }: ToolCardProps) {
           </span>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           {tool.tier === "pro" && (
             <span className="inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-700 border border-slate-200">
               Pro
@@ -94,10 +94,14 @@ export default function ToolCard({ tool, isFavorite = false }: ToolCardProps) {
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col justify-between">
+      {/* Main Content with Stretched Link covering the rest of the card */}
+      <Link 
+        href={toolUrl}
+        className="flex-1 flex flex-col justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 rounded-lg after:absolute after:inset-0 after:rounded-xl after:content-['']"
+      >
         <div>
-          <h3 className="text-base font-bold text-slate-900 group-hover:text-brand transition-colors line-clamp-1 mb-1.5">
+          {/* Título permitiendo hasta 2 líneas con altura uniforme para evitar saltos en la grilla */}
+          <h3 className="text-base font-bold text-slate-900 group-hover:text-brand transition-colors line-clamp-2 min-h-[2.75rem] mb-1.5 leading-snug">
             {tool.name}
           </h3>
           <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
@@ -112,9 +116,7 @@ export default function ToolCard({ tool, isFavorite = false }: ToolCardProps) {
           </span>
           <ArrowUpRight className="h-3.5 w-3.5 text-slate-400 group-hover:text-brand transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
         </div>
-      </div>
-    </Link>
+      </Link>
+    </div>
   )
 }
-
-
