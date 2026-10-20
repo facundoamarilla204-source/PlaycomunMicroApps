@@ -3,7 +3,8 @@
 import { useState, useTransition, useEffect } from "react"
 import Link from "next/link"
 import { useRouter, usePathname, useSearchParams } from "next/navigation"
-import { ArrowRight, Calculator, FileText, Receipt, TrendingUp, QrCode, Wallet, Dumbbell, ArrowRightLeft, Banknote, CreditCard, Boxes, Flame, Sparkles, Wrench, Palette, LucideIcon, Search, Filter } from "lucide-react"
+import { ArrowRight, Calculator, FileText, Receipt, TrendingUp, QrCode, Wallet, Dumbbell, ArrowRightLeft, Banknote, CreditCard, Boxes, Flame, Sparkles, Wrench, Palette, LucideIcon, Search, Filter, ChevronDown, ChevronUp } from "lucide-react"
+import { motion } from "motion/react"
 import { tools } from "@/data/tools"
 import { getCategories } from "@/data/categories"
 import ToolCard from "@/components/tools/ToolCard"
@@ -44,7 +45,7 @@ export default function ToolGrid({
   showSearch = false,
   showTypeFilter = false,
   isHome = false,
-  limit = 20
+  limit = 12
 }: ToolGridProps) {
   const router = useRouter()
   const pathname = usePathname()
@@ -59,8 +60,14 @@ export default function ToolGrid({
   const [activeCategory, setActiveCategory] = useState(catParam)
   const [activeType, setActiveType] = useState(typeParam)
   const [query, setQuery] = useState(qParam)
+  const [isExpanded, setIsExpanded] = useState(false)
 
   const categories = getCategories()
+
+  // Reset isExpanded when user changes category, type or query
+  useEffect(() => {
+    setIsExpanded(false)
+  }, [activeCategory, activeType, query])
 
   // Sync state when URL changes externally (back button, etc)
   useEffect(() => {
@@ -124,8 +131,12 @@ export default function ToolGrid({
     filteredTools = filteredTools.filter((tool) => tool.type === activeType)
   }
 
-  const shouldLimit = isHome && typeof limit === "number" && limit > 0
-  const displayedTools = shouldLimit ? filteredTools.slice(0, limit) : filteredTools
+  const effectiveLimit = limit > 0 ? limit : 12
+  const hasMore = isHome && filteredTools.length > effectiveLimit
+  const displayedTools = isHome && !isExpanded && hasMore
+    ? filteredTools.slice(0, effectiveLimit)
+    : filteredTools
+  const remainingCount = Math.max(0, filteredTools.length - effectiveLimit)
 
   const favoriteTools = userFavorites.length > 0 
     ? tools.filter(t => userFavorites.includes(t.slug))
@@ -233,13 +244,13 @@ export default function ToolGrid({
             </h2>
             {isHome && !query && (
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200 shadow-2xs">
-                Destacadas ({displayedTools.length})
+                {isExpanded ? `Todas (${displayedTools.length})` : `Destacadas (${displayedTools.length})`}
               </span>
             )}
           </div>
           <p className="text-xs sm:text-sm text-slate-600 mt-1">
-            {isHome && filteredTools.length > displayedTools.length ? (
-              <span>Mostrando las {displayedTools.length} principales de {filteredTools.length} disponibles</span>
+            {isHome && hasMore && !isExpanded ? (
+              <span>Mostrando {displayedTools.length} de {filteredTools.length} disponibles</span>
             ) : (
               <span>{displayedTools.length} {displayedTools.length === 1 ? "herramienta disponible" : "herramientas disponibles"}</span>
             )}
@@ -262,11 +273,72 @@ export default function ToolGrid({
 
       {displayedTools.length > 0 ? (
         <>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {displayedTools.map((tool) => {
-              return <ToolCard key={tool.slug} tool={tool} isFavorite={userFavorites.includes(tool.slug)} />
+          <div id="tools-grid" className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {displayedTools.map((tool, index) => {
+              const isNewlyRevealed = isExpanded && index >= effectiveLimit
+              return (
+                <motion.div
+                  key={tool.slug}
+                  initial={isNewlyRevealed ? { opacity: 0, y: 16 } : false}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.28,
+                    delay: isNewlyRevealed ? Math.min((index - effectiveLimit) * 0.035, 0.3) : 0,
+                    ease: "easeOut"
+                  }}
+                  className="h-full"
+                >
+                  <ToolCard tool={tool} isFavorite={userFavorites.includes(tool.slug)} />
+                </motion.div>
+              )
             })}
           </div>
+
+          {/* Boton para expandir o contraer las herramientas restantes en el Home */}
+          {hasMore && (
+            <div className="mt-8 sm:mt-10 flex flex-col items-center justify-center gap-2">
+              {!isExpanded ? (
+                <motion.button
+                  type="button"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setIsExpanded(true)}
+                  aria-expanded={false}
+                  aria-controls="tools-grid"
+                  className="group inline-flex items-center justify-center gap-2.5 rounded-xl border-2 border-brand/20 bg-white hover:bg-brand-light/30 hover:border-brand px-6 py-3 min-h-[48px] text-xs sm:text-sm font-bold text-brand shadow-2xs hover:shadow-xs transition-all cursor-pointer"
+                >
+                  <Sparkles className="h-4 w-4 text-brand" />
+                  <span>Ver más herramientas</span>
+                  <span className="inline-flex items-center justify-center rounded-md bg-brand/10 text-brand px-2 py-0.5 text-xs font-mono font-bold">
+                    +{remainingCount}
+                  </span>
+                  <ChevronDown className="h-4 w-4 text-brand transition-transform duration-200 group-hover:translate-y-0.5" />
+                </motion.button>
+              ) : (
+                <motion.button
+                  type="button"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => {
+                    setIsExpanded(false)
+                    const el = document.getElementById("tools-grid")
+                    if (el) {
+                      const rect = el.getBoundingClientRect()
+                      if (rect.top < 0) {
+                        el.scrollIntoView({ behavior: "smooth", block: "start" })
+                      }
+                    }
+                  }}
+                  aria-expanded={true}
+                  aria-controls="tools-grid"
+                  className="group inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 px-5 py-2.5 min-h-[44px] text-xs sm:text-sm font-semibold text-slate-700 shadow-2xs transition-colors cursor-pointer"
+                >
+                  <span>Ver menos herramientas</span>
+                  <ChevronUp className="h-4 w-4 text-slate-400 group-hover:text-slate-600 transition-transform duration-200 group-hover:-translate-y-0.5" />
+                </motion.button>
+              )}
+            </div>
+          )}
 
           {/* Bottom Callout Banner on Home */}
           {isHome && (

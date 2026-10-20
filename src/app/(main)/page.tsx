@@ -49,7 +49,7 @@ export default async function Home() {
     <>
       <JsonLd data={jsonLdData} />
       <Hero />
-      <ToolGrid userFavorites={userFavorites} isHome={true} limit={20} />
+      <ToolGrid userFavorites={userFavorites} isHome={true} limit={12} />
       <TrustStrip />
       <ServicesBanner />
       <ContactForm />
