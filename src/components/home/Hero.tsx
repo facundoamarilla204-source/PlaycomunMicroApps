@@ -2,10 +2,8 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import Link from "next/link"
-import { Search, Lock, LayoutGrid, ArrowRight } from "lucide-react"
+import { Search } from "lucide-react"
 import Image from "next/image"
-import { tools } from "@/data/tools"
 
 export default function Hero() {
   const [query, setQuery] = useState("")
@@ -33,7 +31,7 @@ export default function Hero() {
             </p>
 
             {/* Search form */}
-            <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-2.5 max-w-lg mb-4">
+            <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-2.5 max-w-lg">
               <div className="relative flex-1">
                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4.5 w-4.5 text-slate-400" />
                 <input
@@ -48,29 +46,12 @@ export default function Hero() {
               </div>
               <button
                 type="submit"
-                className="inline-flex items-center justify-center rounded-xl bg-brand px-6 py-3 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-brand-hover active:bg-brand-active cursor-pointer min-h-[44px]"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-6 py-3 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-brand-hover active:bg-brand-active cursor-pointer min-h-[44px]"
               >
-                Buscar
+                <Search className="h-4 w-4" />
+                <span>Buscar</span>
               </button>
             </form>
-
-            {/* Quick action / View all tools */}
-            <div className="flex flex-wrap items-center gap-2 mb-4">
-              <Link
-                href="/herramientas"
-                className="group inline-flex items-center gap-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 px-3.5 py-2 text-xs sm:text-sm font-semibold text-slate-800 shadow-2xs hover:shadow-xs transition-all min-h-[40px]"
-              >
-                <LayoutGrid className="h-4 w-4 text-brand" />
-                <span>Explorar catálogo completo ({tools.length} herramientas)</span>
-                <ArrowRight className="h-3.5 w-3.5 text-slate-500 transition-transform group-hover:translate-x-1 group-hover:text-slate-700" />
-              </Link>
-            </div>
-
-            {/* Privacy note */}
-            <div className="flex items-center gap-2 text-xs text-slate-600">
-              <Lock className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-              <span>Procesamiento seguro y privado. Las calculadoras funcionan en tu navegador y tus archivos no se almacenan.</span>
-            </div>
           </div>
 
           <div className="lg:col-span-5 flex justify-center lg:justify-end">
