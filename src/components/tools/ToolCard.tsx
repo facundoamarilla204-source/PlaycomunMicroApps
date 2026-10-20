@@ -17,11 +17,12 @@ import {
   Wrench, 
   FileImage, 
   Files, 
-  ChefHat, 
-  Scale, 
+  ChefHat,
+  Scale,
   Scissors,
+  Palette,
   ArrowUpRight,
-  LucideIcon 
+  LucideIcon
 } from "lucide-react"
 import FavoriteButton from "./FavoriteButton"
 
@@ -44,7 +45,8 @@ const iconMap: Record<string, LucideIcon> = {
   Files,
   ChefHat,
   Scale,
-  Scissors
+  Scissors,
+  Palette
 }
 
 const CATEGORY_LABELS: Record<string, string> = {

@@ -952,6 +952,58 @@ export const tools: Tool[] = [
       }
     ],
     related: ["compresor-imagenes", "convertidor-archivos", "ordenar-pdf", "generador-qr"]
+  },
+  {
+    slug: "generador-paletas-colores",
+    name: "Generador de paletas de colores",
+    type: "generador",
+    category: "clientes-utilidades",
+    exampleResult: "Paleta armónica #7C3AED / Extracción de imagen",
+    tier: "free",
+    description: "Creá paletas de colores armónicas, extraé colores dominantes de imágenes, comprobá contraste WCAG y exportá a CSS, JSON, Tailwind o imagen PNG.",
+    icon: "Palette",
+    status: "live",
+    featured: true,
+    keywords: [
+      "generador de paletas de colores",
+      "crear paletas de colores",
+      "paletas de colores online",
+      "extraer colores de una imagen",
+      "paleta de colores de una imagen",
+      "colores dominantes de una imagen",
+      "generador de paletas gratis",
+      "códigos HEX de colores",
+      "comprobar contraste de colores",
+      "paleta de colores",
+      "armonía de colores",
+      "contraste WCAG"
+    ],
+    updatedAt: "2026-10-19T00:00:00.000Z",
+    seo: {
+      title: "Generador de paletas de colores online gratis",
+      description: "Creá paletas de colores armónicas, extraé colores dominantes de imágenes, comprobá contraste WCAG 2.2 y exportá a CSS, JSON, Tailwind o PNG gratis y sin registro.",
+      h1: "Generador de paletas de colores",
+      intro: "Creá combinaciones armónicas a partir de un color base, extraé los colores dominantes de cualquier foto y evaluá el contraste de accesibilidad en segundos."
+    },
+    faqs: [
+      {
+        question: "¿Cómo funciona la generación de paletas armónicas?",
+        answer: "El algoritmo se basa en el círculo cromático y el modelo de color HSL. A partir de un tono base seleccionado, calcula relaciones geométricas precisas (180° para complementarios, 120° para triádicos, o saltos adyacentes para análogos) asegurando que las combinaciones resulten agradables y equilibradas."
+      },
+      {
+        question: "¿Las fotos que cargo para extraer colores se suben a algún servidor?",
+        answer: "No. El análisis se ejecuta 100% en tu navegador mediante Canvas y la API ImageData. Las imágenes no se transmiten por internet, no se almacenan en servidores remotos y se eliminan de la memoria de tu dispositivo en cuanto cerrás o limpiás la pestaña."
+      },
+      {
+        question: "¿Qué significa que una combinación cumpla con WCAG 2.2 nivel AA?",
+        answer: "Significa que la diferencia de luminancia relativa entre el texto y el fondo es de al menos 4.5 a 1 para texto estándar o 3 a 1 para texto grande (18pt o 14pt en negrita). Esto garantiza que personas con baja visión, daltonismo o usuarios en pantallas con reflejos puedan leer el contenido con comodidad."
+      },
+      {
+        question: "¿En qué formatos puedo exportar los colores?",
+        answer: "Disponés de variables CSS estándar (:root), configuración lista para Tailwind CSS (v4 @theme y v3 extend.colors), archivo estructurado JSON para desarrolladores y una imagen gráfica PNG de 1200x630 píxeles con muestras y códigos HEX."
+      }
+    ],
+    related: ["compresor-imagenes", "convertidor-archivos", "generador-qr", "generador-listas-precios"]
   }
 ]
 

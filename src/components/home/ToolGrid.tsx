@@ -3,7 +3,7 @@
 import { useState, useTransition, useEffect } from "react"
 import Link from "next/link"
 import { useRouter, usePathname, useSearchParams } from "next/navigation"
-import { ArrowRight, Calculator, FileText, Receipt, TrendingUp, QrCode, Wallet, Dumbbell, ArrowRightLeft, Banknote, CreditCard, Boxes, Flame, Sparkles, Wrench, LucideIcon, Search, Filter } from "lucide-react"
+import { ArrowRight, Calculator, FileText, Receipt, TrendingUp, QrCode, Wallet, Dumbbell, ArrowRightLeft, Banknote, CreditCard, Boxes, Flame, Sparkles, Wrench, Palette, LucideIcon, Search, Filter } from "lucide-react"
 import { tools } from "@/data/tools"
 import { getCategories } from "@/data/categories"
 import ToolCard from "@/components/tools/ToolCard"
@@ -23,7 +23,8 @@ const iconMap: Record<string, LucideIcon> = {
   Boxes,
   Flame,
   Sparkles,
-  Wrench
+  Wrench,
+  Palette
 }
 
 interface ToolGridProps {

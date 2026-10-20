@@ -93,6 +93,10 @@ const CortadorAudio = dynamic(
   () => import("@/components/tools/cortador-audio/CortadorAudio").then((m) => m.CortadorAudio),
   { loading: () => <ToolSkeleton /> }
 )
+const GeneradorPaletasTool = dynamic(
+  () => import("@/components/tools/generador-paletas/GeneradorPaletasTool").then((m) => m.GeneradorPaletasTool),
+  { loading: () => <ToolSkeleton /> }
+)
 
 // Contenido SEO estático renderizado en servidor (SSR nativo)
 import { AguinaldoContent } from "@/components/tools/content/AguinaldoContent"
@@ -114,6 +118,7 @@ import { ConvertidorArchivosContent } from "@/components/tools/content/Convertid
 import { OrdenarPdfContent } from "@/components/tools/content/OrdenarPdfContent"
 import { CortadorAudioContent } from "@/components/tools/content/CortadorAudioContent"
 import GeneradorListasContent from "@/components/tools/content/GeneradorListasContent"
+import { GeneradorPaletasContent } from "@/components/tools/content/GeneradorPaletasContent"
 
 import { isProUser } from "@/lib/pro"
 
@@ -279,6 +284,15 @@ function getToolComponent(slug: string, user: User | null, isPro: boolean = fals
           <CortadorAudio />
           <div className="mt-16 flex justify-center">
             <CortadorAudioContent />
+          </div>
+        </>
+      )
+    case "generador-paletas-colores":
+      return (
+        <>
+          <GeneradorPaletasTool />
+          <div className="mt-16 flex justify-center">
+            <GeneradorPaletasContent />
           </div>
         </>
       )

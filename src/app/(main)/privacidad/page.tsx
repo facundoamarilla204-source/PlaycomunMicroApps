@@ -1,6 +1,9 @@
 import { buildMetadata } from "@/lib/metadata"
-import { Shield, Lock, Database, Eye, RefreshCw, FileText, Mail } from "lucide-react"
+import { Shield, Lock, Laptop, Cloud, FileCode } from "lucide-react"
 import Link from "next/link"
+import { LegalHeader } from "@/components/legal/LegalHeader"
+import { LegalTableOfContents, TocItem } from "@/components/legal/LegalTableOfContents"
+import { LegalSection } from "@/components/legal/LegalSection"
 
 export const metadata = buildMetadata({
   title: "Política de privacidad y protección de datos",
@@ -8,226 +11,209 @@ export const metadata = buildMetadata({
   path: "/privacidad",
 })
 
+const TOC_ITEMS: TocItem[] = [
+  { id: "responsable", number: 1, title: "Responsable y contacto" },
+  { id: "procesamiento", number: 2, title: "Procesamiento local vs nube" },
+  { id: "datos-recopilados", number: 3, title: "Datos recopilados" },
+  { id: "pagos", number: 4, title: "Pagos y Mercado Pago" },
+  { id: "infraestructura", number: 5, title: "Proveedores de infraestructura" },
+  { id: "conservacion", number: 6, title: "Conservación de datos Pro" },
+  { id: "derechos", number: 7, title: "Derechos bajo la Ley 25.326" },
+  { id: "seguridad-datos", number: 8, title: "Medidas de seguridad" },
+  { id: "cookies", number: 9, title: "Cookies y almacenamiento" },
+]
+
 export default function PrivacidadPage() {
   const lastUpdated = "16 de octubre de 2026"
 
   return (
-    <div className="min-h-screen bg-slate-50/50 py-12 sm:py-20">
-      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-50/60 py-10 sm:py-16">
+      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         
-        {/* Encabezado */}
-        <div className="mb-10 text-center sm:text-left">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-purple-100 text-purple-700 mb-4">
-            <Shield className="w-3.5 h-3.5" /> Transparencia y Privacidad
+        {/* Encabezado con breadcrumbs y metadatos */}
+        <LegalHeader
+          badgeLabel="Protección de datos personales"
+          badgeIcon={<Shield className="w-3.5 h-3.5" aria-hidden="true" />}
+          title="Política de Privacidad"
+          description="Explicación clara sobre el tratamiento de datos, herramientas con procesamiento en tu navegador, seguridad de pagos y derechos amparados por la Ley 25.326."
+          lastUpdated={lastUpdated}
+          breadcrumbs={[{ label: "Política de privacidad" }]}
+        />
+
+        {/* Resumen de compromiso */}
+        <div className="bg-white border border-purple-200/80 rounded-2xl p-6 sm:p-7 shadow-xs mb-8 space-y-3">
+          <div className="flex items-center gap-2">
+            <Lock className="w-5 h-5 text-purple-700 flex-shrink-0" aria-hidden="true" />
+            <h2 className="text-base sm:text-lg font-bold text-slate-900">
+              Privacidad por diseño en PlayComun Online
+            </h2>
           </div>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 mb-3">
-            Política de Privacidad
-          </h1>
-          <p className="text-sm font-medium text-slate-500">
-            Última actualización: {lastUpdated}
+          <p className="text-sm sm:text-base text-slate-700 leading-relaxed">
+            Gran parte de nuestras herramientas de cálculo y utilidades operan directamente en tu navegador, sin enviar datos a servidores remotos. Cuando iniciás sesión o contratás una suscripción Pro, los datos guardados se protegen conforme a las exigencias de la Ley 25.326 de Protección de los Datos Personales de la República Argentina.
           </p>
         </div>
 
-        {/* Resumen ejecutivo destacado */}
-        <div className="bg-white border border-purple-100 rounded-2xl p-6 sm:p-8 shadow-xs mb-10">
-          <h2 className="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
-            <Lock className="w-5 h-5 text-purple-600" />
-            Compromiso de privacidad de PlayComun Online
-          </h2>
-          <p className="text-sm text-slate-600 leading-relaxed">
-            En PlayComun Online creemos en el control y la transparencia. Gran parte de nuestras herramientas de cálculo y utilidades operan exclusivamente en tu navegador, sin enviar datos a nuestros servidores. Cuando iniciás sesión o contratás una suscripción Pro, los datos se resguardan de forma segura conforme a la Ley 25.326 de Protección de los Datos Personales de la República Argentina.
-          </p>
-        </div>
+        {/* Índice interactivo */}
+        <LegalTableOfContents items={TOC_ITEMS} />
 
         {/* Cuerpo del documento */}
-        <article className="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-12 shadow-xs space-y-10 text-slate-700 text-sm sm:text-base leading-relaxed">
+        <article className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-10 lg:p-12 shadow-xs space-y-8">
           
-          <section className="space-y-4">
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2.5">
-              <span className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 text-sm flex items-center justify-center font-black">1</span>
-              Responsable del tratamiento y contacto
-            </h2>
+          <LegalSection id="responsable" number={1} title="Responsable del tratamiento y canal oficial">
             <p>
-              El servicio <strong>PlayComun Online</strong> es operado con la finalidad de brindar microherramientas web de productividad, utilidades comerciales y cálculo para profesionales, negocios y creadores de contenido.
+              El servicio <strong>PlayComun Online</strong> brinda microherramientas web de productividad, utilidades comerciales y cálculo para profesionales, creadores y pymes.
             </p>
             <p>
-              Para cualquier consulta sobre el tratamiento de tus datos personales, ejercicio de derechos o aclaraciones sobre esta política, podés comunicarte directamente con nuestro canal de atención por correo electrónico a:{" "}
-              <a href="mailto:playcomun.ok@gmail.com" className="text-purple-600 font-bold hover:underline">
+              Para cualquier consulta sobre el tratamiento de tus datos personales, ejercicio de tus derechos legales o dudas sobre esta política, podés escribirnos al correo:{" "}
+              <a href="mailto:playcomun.ok@gmail.com" className="text-purple-700 font-bold underline hover:text-purple-900">
                 playcomun.ok@gmail.com
               </a>.
             </p>
-          </section>
+          </LegalSection>
 
-          <section className="space-y-4">
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2.5">
-              <span className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 text-sm flex items-center justify-center font-black">2</span>
-              Procesamiento en el navegador vs. procesamiento en servidores
-            </h2>
+          <LegalSection id="procesamiento" number={2} title="Procesamiento en tu navegador vs almacenamiento en la nube">
             <p>
-              Es fundamental distinguir cómo operan las diferentes funciones de nuestra plataforma:
+              Para mayor transparencia, diferenciamos con precisión cómo funciona cada tipo de herramienta:
             </p>
-            <div className="space-y-3 pl-2 sm:pl-4 border-l-2 border-purple-200">
-              <div>
-                <strong className="text-slate-900 block font-semibold">Herramientas de ejecución local en el navegador:</strong>
-                <p className="text-slate-600 text-sm">
-                  Las calculadoras (porcentajes, cuotas, descuentos, margen comercial, IVA), los códigos QR estáticos y el recortador de audio procesan la información de manera local en tu propio dispositivo mediante tecnologías como WebAssembly y Canvas. Los valores calculados y los archivos de audio seleccionados no se suben a nuestros servidores permanentes.
+
+            <div className="grid grid-cols-1 gap-4 pt-2">
+              <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/80 space-y-1.5">
+                <div className="flex items-center gap-2 font-bold text-slate-900 text-sm sm:text-base">
+                  <Laptop className="w-4 h-4 text-purple-700" aria-hidden="true" />
+                  <span>1. Herramientas con ejecución local (En tu dispositivo)</span>
+                </div>
+                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                  Las calculadoras comerciales (cuotas con interés, margen de ganancia, porcentajes, IVA), los códigos QR estáticos y el recortador de audio operan dentro de tu propio navegador mediante tecnologías web estándar. Los cálculos y los archivos de audio seleccionados no se envían a nuestros servidores permanentes.
                 </p>
               </div>
-              <div>
-                <strong className="text-slate-900 block font-semibold">Herramientas con almacenamiento y procesamiento en la nube:</strong>
-                <p className="text-slate-600 text-sm">
-                  Cuando utilizás funciones vinculadas a tu cuenta (como el guardado de recetas, control de gastos, listas de precios, tandas de códigos QR dinámicos o historial de presupuestos comerciales), la información requerida se envía de forma encriptada y se almacena en nuestra base de datos para permitir la sincronización entre tus dispositivos.
+
+              <div className="p-4 rounded-xl border border-purple-200 bg-purple-50/40 space-y-1.5">
+                <div className="flex items-center gap-2 font-bold text-purple-950 text-sm sm:text-base">
+                  <Cloud className="w-4 h-4 text-purple-700" aria-hidden="true" />
+                  <span>2. Herramientas con almacenamiento en la nube (Funciones Pro)</span>
+                </div>
+                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                  Al utilizar funciones asociadas a tu cuenta (como el guardado de recetas y costos, historial de presupuestos comerciales o tandas de códigos QR dinámicos), los datos que decidís guardar se transmiten de forma cifrada para posibilitar la sincronización entre tus dispositivos.
                 </p>
               </div>
-              <div>
-                <strong className="text-slate-900 block font-semibold">Conversión de documentos:</strong>
-                <p className="text-slate-600 text-sm">
-                  Las herramientas de conversión de formatos de oficina transmiten temporalmente los archivos a un servicio especializado para procesar la transformación de formato. Estos archivos se eliminan automáticamente tras finalizar la conversión o descarga.
+
+              <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/80 space-y-1.5">
+                <div className="flex items-center gap-2 font-bold text-slate-900 text-sm sm:text-base">
+                  <FileCode className="w-4 h-4 text-purple-700" aria-hidden="true" />
+                  <span>3. Conversión de archivos</span>
+                </div>
+                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                  Las utilidades de conversión de formatos de oficina transfieren temporalmente el archivo a un servicio de procesamiento técnico seguro. El archivo convertido se descarga a tu equipo y se suprime automáticamente del entorno de trabajo una vez concluida la tarea.
                 </p>
               </div>
             </div>
-          </section>
+          </LegalSection>
 
-          <section className="space-y-4">
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2.5">
-              <span className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 text-sm flex items-center justify-center font-black">3</span>
-              Datos recopilados según el uso de la plataforma
-            </h2>
-            <p>Recopilamos únicamente los datos necesarios para brindar los servicios solicitados:</p>
-            <ul className="list-disc pl-5 space-y-2 text-slate-600 text-sm sm:text-base">
+          <LegalSection id="datos-recopilados" number={3} title="Datos que recopilamos según tu interacción">
+            <p>
+              Recopilamos únicamente la información necesaria para el funcionamiento de los servicios solicitados:
+            </p>
+            <ul className="list-disc pl-5 space-y-2 text-slate-700 text-sm sm:text-base">
               <li>
-                <strong className="text-slate-900">Al registrarte o iniciar sesión:</strong> Correo electrónico, contraseña encriptada (mediante Supabase Auth) y, de forma opcional, tu nombre completo para personalizar tu cuenta. Si utilizás inicio de sesión con Google, recibimos tu nombre, email y avatar provisto por el proveedor de autenticación.
+                <strong className="text-slate-900">Registro e inicio de sesión:</strong> Correo electrónico y credenciales seguras mediante Supabase Auth. Si iniciás sesión con Google, recibimos tu nombre, email y avatar provisto por Google OAuth.
               </li>
               <li>
-                <strong className="text-slate-900">Al utilizar herramientas Pro:</strong> Datos que decidís guardar de forma activa, tales como ingredientes de recetas, movimientos de ingresos y gastos, productos de listas de precios, enlaces de destino para códigos QR dinámicos y datos comerciales para presupuestos.
+                <strong className="text-slate-900">Información guardada por el usuario Pro:</strong> Ingredientes, cantidades y costos de recetas, clientes y conceptos de presupuestos, o destinos web de tus códigos QR dinámicos.
               </li>
               <li>
-                <strong className="text-slate-900">Al enviar consultas de contacto o solicitudes:</strong> Nombre, email, mensaje y los detalles necesarios para responder tu inquietud o gestionar trámites de arrepentimiento o baja.
+                <strong className="text-slate-900">Consultas de soporte:</strong> Nombre, email y texto del mensaje para responder tus inquietudes o gestionar trámites de arrepentimiento o baja.
               </li>
               <li>
-                <strong className="text-slate-900">Registros técnicos mínimos:</strong> Dirección IP y agente de usuario con fines estrictos de seguridad, prevención de abuso en endpoints sensibles y cumplimiento de tasas de límite de solicitudes (rate limiting).
+                <strong className="text-slate-900">Registros técnicos de seguridad:</strong> Dirección IP y agente de usuario con fines estrictos de protección frente a abusos, prevención de fraudes y límites de solicitudes.
               </li>
             </ul>
-          </section>
+          </LegalSection>
 
-          <section className="space-y-4">
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2.5">
-              <span className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 text-sm flex items-center justify-center font-black">4</span>
-              Tratamiento de pagos y Mercado Pago
-            </h2>
+          <LegalSection id="pagos" number={4} title="Tratamiento de pagos y Mercado Pago">
             <p>
-              La contratación y cobro recurrente de la suscripción PlayComun Pro se realiza a través de la pasarela de pagos <strong>Mercado Pago</strong>.
+              El cobro de la suscripción PlayComun Pro se ejecuta a través de la pasarela de pagos <strong>Mercado Pago</strong>.
             </p>
-            <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm text-slate-600">
-              <p className="font-semibold text-slate-900 mb-1">Privacidad financiera estricta:</p>
-              PlayComun Online <strong>no recopila, no procesa ni almacena números completos de tarjetas de crédito o débito, códigos de seguridad (CVV) ni contraseñas bancarias</strong>. La transacción se procesa directamente en los servidores seguros de Mercado Pago. PlayComun únicamente recibe un identificador de suscripción, el estado del cobro, el importe pagado y, si el proveedor lo envía, los últimos cuatro dígitos de la tarjeta para que puedas identificar tu medio de pago en tu panel de cuenta.
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 sm:p-5 text-sm text-slate-700 space-y-2">
+              <p className="font-bold text-slate-900">Resguardo estricto de datos financieros:</p>
+              <p className="leading-relaxed">
+                PlayComun Online <strong>no recopila, no procesa ni almacena números completos de tarjetas de crédito o débito, códigos de seguridad (CVV) ni contraseñas bancarias</strong>. La transacción se procesa directamente en los servidores de Mercado Pago bajo estándares de seguridad PCI-DSS. PlayComun solo recibe el estado de la suscripción, identificador de operación y, si está disponible, los últimos cuatro dígitos de la tarjeta para que puedas identificar tu medio de pago en tu panel.
+              </p>
             </div>
-          </section>
+          </LegalSection>
 
-          <section className="space-y-4">
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2.5">
-              <span className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 text-sm flex items-center justify-center font-black">5</span>
-              Proveedores de infraestructura y transferencias internacionales
-            </h2>
+          <LegalSection id="infraestructura" number={5} title="Proveedores de infraestructura y transferencias">
             <p>
-              Para prestar un servicio rápido, seguro y disponible de forma continua, nos apoyamos en proveedores tecnológicos de primer nivel:
+              Para asegurar alta disponibilidad y protección técnica, trabajamos con infraestructura de primer nivel:
             </p>
-            <ul className="list-disc pl-5 space-y-2 text-slate-600 text-sm">
+            <ul className="list-disc pl-5 space-y-2 text-slate-700 text-sm sm:text-base">
               <li>
-                <strong className="text-slate-900">Vercel Inc.:</strong> Alojamiento de la aplicación web, entrega de contenido y ejecución de funciones de servidor.
+                <strong className="text-slate-900">Vercel Inc.:</strong> Alojamiento de la aplicación web, entrega global de contenido y funciones de servidor.
               </li>
               <li>
-                <strong className="text-slate-900">Supabase Inc.:</strong> Infraestructura de base de datos PostgreSQL, gestión de sesiones y almacenamiento con políticas de aislamiento de datos (Row Level Security).
+                <strong className="text-slate-900">Supabase Inc.:</strong> Base de datos PostgreSQL con aislamiento estricto de información mediante políticas de seguridad por fila (Row Level Security).
               </li>
               <li>
-                <strong className="text-slate-900">Mercado Pago:</strong> Procesamiento de pagos, suscripciones y facturación en moneda local.
+                <strong className="text-slate-900">Mercado Pago:</strong> Procesamiento de transacciones y cobros periódicos en moneda local.
               </li>
               <li>
-                <strong className="text-slate-900">Resend Inc.:</strong> Servicio para el envío de notificaciones por correo electrónico (cuando está configurado).
+                <strong className="text-slate-900">Resend Inc.:</strong> Entrega segura de correos transaccionales y notificaciones de cuenta.
               </li>
             </ul>
-            <p className="text-xs text-slate-500">
-              Estos proveedores pueden procesar información en servidores ubicados fuera de la República Argentina bajo estándares internacionales de protección y seguridad de datos.
+            <p className="text-xs sm:text-sm text-slate-600">
+              Estos proveedores pueden procesar información en centros de datos ubicados en el exterior bajo rigurosos protocolos internacionales de ciberseguridad.
             </p>
-          </section>
+          </LegalSection>
 
-          <section className="space-y-4">
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2.5">
-              <span className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 text-sm flex items-center justify-center font-black">6</span>
-              Conservación de datos al finalizar una suscripción Pro
-            </h2>
+          <LegalSection id="conservacion" number={6} title="Conservación de datos al finalizar una suscripción Pro">
             <p>
-              Una regla fundamental de PlayComun Online es que <strong>la pérdida, vencimiento o cancelación de una suscripción Pro no implica la eliminación automática de tu cuenta ni de los datos que hayas creado</strong>.
+              En PlayComun Online, <strong>la finalización o cancelación de una suscripción Pro no provoca la eliminación de tu cuenta ni el borrado de tus registros</strong>.
             </p>
             <p>
-              Tus recetas guardadas, historial de presupuestos, tandas de códigos QR y registros de control de gastos permanecen resguardados de forma segura en la base de datos asociada a tu usuario. Cuando una función premium deje de estar disponible por encontrarse vencido el plan, los datos se mantienen conservados y recuperarás el acceso completo e inmediato a ellos al reactivar tu suscripción Pro, de acuerdo con los términos y políticas razonables de mantenimiento del servicio.
+              Tus recetas, presupuestos y códigos QR guardados permanecen resguardados de forma segura en la base de datos asociada a tu perfil. Cuando una herramienta requiera plan Pro activo, tus datos se mantienen intactos y podrás volver a operar con ellos en cuanto reactives tu suscripción.
             </p>
-          </section>
+          </LegalSection>
 
-          <section className="space-y-4">
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2.5">
-              <span className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 text-sm flex items-center justify-center font-black">7</span>
-              Derechos del usuario (Ley 25.326 de la República Argentina)
-            </h2>
+          <LegalSection id="derechos" number={7} title="Derechos del titular de los datos (Ley 25.326 - Argentina)">
             <p>
-              Conforme a la Ley Nacional 25.326 de Protección de los Datos Personales, sos titular de los derechos de acceso, rectificación, actualización y supresión de tus datos personales:
+              De acuerdo con la Ley Nacional 25.326 de Protección de los Datos Personales, tenés reconocidos los derechos de acceso, rectificación, actualización y supresión de tus datos personales:
             </p>
-            <div className="space-y-2 text-sm text-slate-600">
-              <p>
-                <strong className="text-slate-900">Acceso y rectificación:</strong> Podés consultar y modificar tu nombre y datos personales directamente desde la sección de configuración de tu cuenta en <Link href="/cuenta" className="text-purple-600 font-semibold hover:underline">Mi Cuenta</Link>.
-              </p>
-              <p>
-                <strong className="text-slate-900">Supresión o eliminación de cuenta:</strong> Podés solicitar la eliminación definitiva de tu cuenta desde la sección correspondiente en tu panel de usuario o enviando un correo a <a href="mailto:playcomun.ok@gmail.com" className="text-purple-600 font-semibold hover:underline">playcomun.ok@gmail.com</a>. La supresión eliminará tus datos personales e historial operativo, salvo aquellos registros de comprobantes de pago que deban conservarse por imperio de obligaciones legales, fiscales o contables aplicables.
-              </p>
-              <p className="text-xs text-slate-500 pt-2 border-t border-slate-100">
-                La Agencia de Acceso a la Información Pública, en su carácter de Órgano de Control de la Ley N° 25.326, tiene la atribución de atender las denuncias y reclamos que interpongan quienes resulten afectados en sus derechos por incumplimiento de las normas vigentes en materia de protección de datos personales.
-              </p>
+            <div className="space-y-3 pl-3 sm:pl-4 border-l-2 border-purple-300 text-sm sm:text-base text-slate-700">
+              <div>
+                <strong className="text-slate-900 block font-semibold">Acceso y rectificación:</strong>
+                Podés verificar y actualizar tu información de perfil directamente en la sección <Link href="/cuenta" className="text-purple-700 font-bold underline hover:text-purple-900">Mi Cuenta</Link>.
+              </div>
+              <div>
+                <strong className="text-slate-900 block font-semibold">Supresión o baja de cuenta:</strong>
+                Podés solicitar la eliminación definitiva de tu usuario desde la configuración de tu cuenta o mediante correo a <a href="mailto:playcomun.ok@gmail.com" className="text-purple-700 font-bold underline hover:text-purple-900">playcomun.ok@gmail.com</a>. Esto borrará tus datos y cancelará toda renovación vinculada en Mercado Pago, conservándose únicamente los registros contables que la legislación fiscal exija mantener archivados.
+              </div>
             </div>
-          </section>
+            <p className="text-xs sm:text-sm text-slate-600 pt-2">
+              La Agencia de Acceso a la Información Pública, en su carácter de Órgano de Control de la Ley N° 25.326, tiene la atribución de atender las denuncias y reclamos que interpongan quienes resulten afectados en sus derechos por incumplimiento de las normas vigentes en materia de protección de datos personales.
+            </p>
+          </LegalSection>
 
-          <section className="space-y-4">
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2.5">
-              <span className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 text-sm flex items-center justify-center font-black">8</span>
-              Medidas de seguridad y límites
-            </h2>
+          <LegalSection id="seguridad-datos" number={8} title="Medidas de seguridad y límites">
             <p>
-              Adoptamos medidas técnicas y organizativas para resguardar la integridad y confidencialidad de la información: comunicaciones bajo protocolo seguro HTTPS/TLS, autenticación criptográfica de contraseñas, políticas estrictas de aislamiento de datos en base de datos (Row Level Security en Supabase) y controles de acceso restringidos.
+              Implementamos salvaguardas técnicas y organizativas para proteger la confidencialidad de tus datos: tráfico cifrado de extremo a extremo mediante HTTPS/TLS, autenticación criptográfica de contraseñas, políticas de aislamiento por usuario en base de datos y control de accesos restringido.
             </p>
-            <p className="text-xs text-slate-500">
-              Sin embargo, ningún método de transmisión por internet o almacenamiento electrónico es cien por ciento inexpugnable. Por ello, no es posible garantizar seguridad absoluta ante incidentes de fuerza mayor o vulneraciones globales fuera del control razonable de la plataforma.
+            <p className="text-xs sm:text-sm text-slate-600">
+              A pesar de estas previsiones, ningún sistema conectado a internet resulta completamente invulnerable frente a contingencias extremas fuera del control razonable de la plataforma.
             </p>
-          </section>
+          </LegalSection>
 
-          <section className="space-y-4">
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2.5">
-              <span className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 text-sm flex items-center justify-center font-black">9</span>
-              Cookies y almacenamiento local
-            </h2>
+          <LegalSection id="cookies" number={9} title="Cookies y almacenamiento local">
             <p>
-              Utilizamos cookies esenciales y almacenamiento local del navegador (localStorage) para permitir el funcionamiento técnico del sitio:
+              Utilizamos cookies técnicas y almacenamiento local en el navegador (localStorage) con fines estrictamente funcionales:
             </p>
-            <ul className="list-disc pl-5 space-y-1.5 text-slate-600 text-sm">
+            <ul className="list-disc pl-5 space-y-1.5 text-slate-700 text-sm sm:text-base">
               <li>Mantener activa tu sesión de usuario autenticado de forma segura.</li>
-              <li>Recordar preferencias locales en calculadoras y generadores en tu dispositivo.</li>
+              <li>Recordar preferencias y valores temporales en calculadoras dentro de tu dispositivo.</li>
               <li>Prevenir ataques de falsificación de peticiones en sitios cruzados (CSRF).</li>
             </ul>
-            <p className="text-xs text-slate-500">
-              No utilizamos cookies de rastreo invasivo de terceros con fines de comercialización de perfiles publicitarios.
+            <p className="text-xs sm:text-sm text-slate-600">
+              No empleamos cookies de rastreo publicitario invasivo ni comercializamos perfiles de navegación con redes de anuncios de terceros.
             </p>
-          </section>
-
-          <section className="space-y-4 pt-6 border-t border-slate-100">
-            <h2 className="text-lg font-bold text-slate-900">
-              Canal de consultas
-            </h2>
-            <p className="text-sm text-slate-600">
-              Para ejercer cualquiera de tus derechos o solicitar aclaraciones sobre esta política, escribinos a:{" "}
-              <a href="mailto:playcomun.ok@gmail.com" className="text-purple-600 font-bold hover:underline">
-                playcomun.ok@gmail.com
-              </a>
-              .
-            </p>
-          </section>
+          </LegalSection>
 
         </article>
 
