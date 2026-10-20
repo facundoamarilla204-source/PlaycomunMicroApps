@@ -31,7 +31,7 @@ export default function Hero() {
             </p>
 
             {/* Search form */}
-            <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-2.5 max-w-lg">
+            <form onSubmit={handleSearch} className="flex gap-2 max-w-lg">
               <div className="relative flex-1">
                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4.5 w-4.5 text-slate-400" />
                 <input
@@ -46,10 +46,11 @@ export default function Hero() {
               </div>
               <button
                 type="submit"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-6 py-3 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-brand-hover active:bg-brand-active cursor-pointer min-h-[44px]"
+                aria-label="Buscar"
+                title="Buscar"
+                className="shrink-0 inline-flex items-center justify-center rounded-xl bg-brand px-4 py-3 text-white shadow-xs transition-colors hover:bg-brand-hover active:bg-brand-active cursor-pointer min-h-[44px] min-w-[48px]"
               >
-                <Search className="h-4 w-4" />
-                <span>Buscar</span>
+                <Search className="h-5 w-5" />
               </button>
             </form>
           </div>
