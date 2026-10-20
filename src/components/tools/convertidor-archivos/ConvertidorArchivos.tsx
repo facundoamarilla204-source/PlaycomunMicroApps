@@ -131,6 +131,17 @@ export function ConvertidorArchivos() {
     refreshQuota()
   }, [refreshWorkerHealth, refreshQuota])
 
+  // Auto re-check if worker is configured but waking up
+  useEffect(() => {
+    if (!workerState?.configured || workerState.online) return
+
+    const timer = setTimeout(() => {
+      refreshWorkerHealth()
+    }, 6000)
+
+    return () => clearTimeout(timer)
+  }, [workerState, refreshWorkerHealth])
+
   // When changing category, switch selected operation to the first of that category
   const handleSelectCategory = (cat: ConversionCategory) => {
     setActiveCategory(cat)

@@ -44,7 +44,7 @@ export function CategoryTabs({
               aria-selected={isActive}
               aria-controls={`panel-${cat.id}`}
               onClick={() => onSelectCategory(cat.id)}
-              className={`shrink-0 sm:flex-1 snap-start flex items-center justify-center gap-2 py-2.5 px-3.5 sm:px-4 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-150 cursor-pointer whitespace-nowrap min-h-[42px] touch-manipulation ${
+              className={`shrink-0 sm:flex-1 snap-start flex items-center justify-center gap-2 py-2.5 px-3.5 sm:px-4 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-150 cursor-pointer whitespace-nowrap min-h-[44px] touch-manipulation ${
                 isActive
                   ? "bg-white text-gray-900 shadow-xs border border-gray-200/80 font-bold ring-1 ring-black/5"
                   : "text-gray-600 hover:text-gray-900 hover:bg-gray-200/60"

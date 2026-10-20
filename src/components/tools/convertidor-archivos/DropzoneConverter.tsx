@@ -67,7 +67,7 @@ export function DropzoneConverter({
     operation.environment === "worker"
       ? isPro
         ? "50 MB (Plan Pro)"
-        : "10 MB (Gratis · Hasta 50 MB en Pro)"
+        : "10 MB (Plan Básico · Hasta 50 MB en Pro)"
       : "50 MB (Procesamiento local)"
 
   return (
@@ -112,7 +112,7 @@ export function DropzoneConverter({
               Arrastrá tu {operation.allowMultipleFiles ? "o tus archivos" : "archivo"} aquí o{" "}
               <span className="text-violet-600 hover:underline">explorá en tu dispositivo</span>
             </p>
-            <p className="text-xs sm:text-sm text-gray-500">
+            <p className="text-xs sm:text-sm text-slate-600">
               Formatos admitidos:{" "}
               <span className="font-semibold text-gray-700 font-mono">
                 {operation.acceptedExtensions.join(", ").replace(/\./g, "")}

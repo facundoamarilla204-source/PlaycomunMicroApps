@@ -21,9 +21,9 @@ const GeneradorListasContent = dynamic(
 import { GeneradorListasSeo } from "@/components/tools/content/GeneradorListasSeo"
 
 export const metadata = buildMetadata({
-  title: "Generador de listas de precios en PDF online gratis",
+  title: "Generador de listas de precios en PDF online",
   description:
-    "Creá listas de precios profesionales en PDF. Modificá precios masivamente, organizá por categorías y compartí tu catálogo comercial gratis y sin registro.",
+    "Creá listas de precios profesionales en PDF. Modificá precios masivamente, organizá por categorías y compartí tu catálogo comercial.",
   path: "/herramientas/generador-listas-precios",
 })
 

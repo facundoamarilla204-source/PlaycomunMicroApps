@@ -20,7 +20,7 @@ export default function SiteFooter() {
             </p>
             <div className="mt-4 flex items-center gap-2">
               <span className="inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-              <span className="text-xs font-medium text-slate-600">Herramientas activas y gratuitas</span>
+              <span className="text-xs font-medium text-slate-600">Herramientas activas y listas para usar</span>
             </div>
           </div>
 
@@ -172,18 +172,18 @@ export default function SiteFooter() {
         </div>
         
         <div className="mt-10 pt-6 border-t border-slate-200 flex flex-col md:flex-row justify-between items-center gap-3">
-          <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-3 gap-y-1 text-xs text-slate-500">
+          <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-3 gap-y-1 text-xs text-slate-600">
             <p>&copy; {currentYear} PlayComun Herramientas. Todos los derechos reservados.</p>
-            <span className="hidden sm:inline text-slate-300">•</span>
-            <Link href="/arrepentimiento" className="text-slate-400 hover:text-slate-600 transition-colors">
+            <span className="hidden sm:inline text-slate-400">•</span>
+            <Link href="/arrepentimiento" className="text-slate-500 hover:text-slate-800 transition-colors">
               Botón de arrepentimiento
             </Link>
-            <span className="text-slate-300">•</span>
-            <Link href="/baja-servicio" className="text-slate-400 hover:text-slate-600 transition-colors">
+            <span className="text-slate-400">•</span>
+            <Link href="/baja-servicio" className="text-slate-500 hover:text-slate-800 transition-colors">
               Botón de baja de servicio
             </Link>
           </div>
-          <p className="text-xs text-slate-400 text-center md:text-right">
+          <p className="text-xs text-slate-500 text-center md:text-right">
             Herramientas online diseñadas para optimizar tareas cotidianas de negocios y profesionales.
           </p>
         </div>

@@ -19,26 +19,28 @@ export default function FavoriteButton({
   const [isFavorite, setIsFavorite] = useState(initialIsFavorite)
 
   const toggleFavorite = (e: React.MouseEvent) => {
-    e.preventDefault() // Prevent navigation if button is inside a Link
+    e.preventDefault()
+    e.stopPropagation() // Prevent triggering parent Link click
     
+    const nextState = !isFavorite
     // Optimistic update
-    setIsFavorite(!isFavorite)
+    setIsFavorite(nextState)
     
     startTransition(async () => {
       const result = await toggleFavoriteAction(toolSlug)
       if (result?.error) {
         // Revert on error or not authenticated
-        setIsFavorite(isFavorite)
-        alert(result.error)
+        setIsFavorite(!nextState)
       }
     })
   }
 
   return (
     <button
+      type="button"
       onClick={toggleFavorite}
       disabled={isPending}
-      className={`inline-flex h-7 w-7 items-center justify-center rounded-md transition-colors hover:bg-slate-100 ${
+      className={`inline-flex h-8 w-8 min-h-[32px] min-w-[32px] items-center justify-center rounded-lg transition-colors hover:bg-slate-100 cursor-pointer ${
         isFavorite ? "text-rose-500 hover:text-rose-600" : "text-slate-400 hover:text-slate-600"
       } disabled:opacity-50 ${className}`}
       aria-label={isFavorite ? "Quitar de favoritas" : "Agregar a favoritas"}

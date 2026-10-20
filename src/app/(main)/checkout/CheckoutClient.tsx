@@ -140,51 +140,53 @@ export function CheckoutClient({
 
           <div className="grid grid-cols-2 gap-4 mb-8">
             <button
+              type="button"
               onClick={() => setPlanType('mensual')}
-              className={`p-4 rounded-2xl border-2 text-left transition-all relative overflow-hidden ${
+              className={`p-4 rounded-2xl border-2 text-left transition-all relative overflow-hidden min-h-[44px] ${
                 planType === 'mensual'
-                  ? 'border-amber-500 bg-amber-50/50'
+                  ? 'border-purple-600 bg-purple-50/40 ring-1 ring-purple-600'
                   : 'border-slate-200 hover:border-slate-300'
               }`}
             >
-              <div className="font-bold text-slate-800">Mensual</div>
-              <div className="text-amber-600 font-black text-xl mt-1">${priceMensual.toLocaleString('es-AR')}</div>
+              <div className="font-bold text-slate-800 text-sm">Mensual</div>
+              <div className="text-purple-700 font-black text-xl mt-1">${priceMensual.toLocaleString('es-AR')}</div>
               <div className="text-xs text-slate-500 mt-1">Cobro automático mensual</div>
             </button>
 
             <button
+              type="button"
               onClick={() => setPlanType('anual')}
-              className={`p-4 rounded-2xl border-2 text-left transition-all relative overflow-hidden ${
+              className={`p-4 rounded-2xl border-2 text-left transition-all relative overflow-hidden min-h-[44px] ${
                 planType === 'anual'
-                  ? 'border-amber-500 bg-amber-50/50'
+                  ? 'border-purple-600 bg-purple-50/40 ring-1 ring-purple-600'
                   : 'border-slate-200 hover:border-slate-300'
               }`}
             >
-              <div className="absolute top-0 right-0 bg-emerald-500 text-white text-[10px] font-bold px-2 py-1 rounded-bl-lg">
-                2 MESES GRATIS
+              <div className="absolute top-0 right-0 bg-emerald-600 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-bl-lg">
+                Ahorro de 2 meses
               </div>
-              <div className="font-bold text-slate-800">Anual</div>
-              <div className="text-amber-600 font-black text-xl mt-1">${priceAnual.toLocaleString('es-AR')}</div>
+              <div className="font-bold text-slate-800 text-sm">Anual</div>
+              <div className="text-purple-700 font-black text-xl mt-1">${priceAnual.toLocaleString('es-AR')}</div>
               <div className="text-xs text-slate-500 mt-1">Cobro automático anual</div>
             </button>
           </div>
 
           <div className="border-t border-slate-100 pt-6">
-            <h3 className="text-lg font-bold mb-4 text-slate-800">Resumen de compra</h3>
-            <div className="flex justify-between items-center mb-2">
+            <h3 className="text-base font-bold mb-4 text-slate-800">Resumen de compra</h3>
+            <div className="flex justify-between items-center mb-2 text-sm">
               <span className="text-slate-600">Suscripción PlayComun Pro</span>
-              <span className="font-medium text-slate-800">${currentPrice.toLocaleString('es-AR')}</span>
+              <span className="font-semibold text-slate-900">${currentPrice.toLocaleString('es-AR')}</span>
             </div>
             <div className="flex justify-between items-center mb-4 text-sm">
-              <span className="text-slate-500">Frecuencia</span>
-              <span className="text-slate-600">{planType === 'mensual' ? 'Mensual' : 'Anual'}</span>
+              <span className="text-slate-500">Frecuencia de cobro</span>
+              <span className="text-slate-700 font-medium">{planType === 'mensual' ? 'Mensual' : 'Anual'}</span>
             </div>
             <div className="flex justify-between items-center pt-4 border-t border-slate-100">
-              <span className="font-bold text-slate-800">Total a pagar hoy</span>
-              <span className="text-2xl font-black text-amber-500">${currentPrice.toLocaleString('es-AR')} ARS</span>
+              <span className="font-bold text-slate-900">Total a pagar hoy</span>
+              <span className="text-2xl font-black text-purple-700">${currentPrice.toLocaleString('es-AR')} ARS</span>
             </div>
-            <p className="text-xs text-slate-400 mt-4 text-center">
-              Podés cancelar en cualquier momento desde tu cuenta.
+            <p className="text-xs text-slate-500 mt-4 text-center">
+              Podés cancelar en cualquier momento desde tu panel de cuenta.
             </p>
           </div>
         </div>
@@ -211,8 +213,8 @@ export function CheckoutClient({
               <div className="relative">
                 {isProcessingCard && (
                   <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center rounded-2xl gap-3">
-                    <Loader2 className="w-8 h-8 text-amber-500 animate-spin" />
-                    <p className="text-slate-600 font-medium">Procesando tu pago…</p>
+                    <Loader2 className="w-8 h-8 text-purple-600 animate-spin" />
+                    <p className="text-slate-700 font-medium text-sm">Procesando tu pago…</p>
                   </div>
                 )}
                 <CardPayment
@@ -233,19 +235,20 @@ export function CheckoutClient({
 
           <div className="relative flex py-8 items-center">
             <div className="flex-grow border-t border-slate-200" />
-            <span className="flex-shrink-0 mx-4 text-slate-400 text-sm font-medium">O podés</span>
+            <span className="flex-shrink-0 mx-4 text-slate-500 text-xs sm:text-sm font-medium">O podés pagar con</span>
             <div className="flex-grow border-t border-slate-200" />
           </div>
 
           <button
+            type="button"
             onClick={handleMercadoPagoRedirect}
             disabled={isLoadingMP}
-            className="w-full bg-[#009EE3] hover:bg-[#0089C7] text-white font-bold py-4 px-6 rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full min-h-[44px] bg-[#009EE3] hover:bg-[#0089C7] active:bg-[#007CB3] text-white font-bold py-3.5 px-6 rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm sm:text-base focus-visible:outline-2 focus-visible:outline-[#009EE3]"
           >
             {isLoadingMP ? (
               <Loader2 className="w-5 h-5 animate-spin" />
             ) : null}
-            Pagar con tu cuenta de Mercado Pago
+            <span>Pagar con tu cuenta de Mercado Pago</span>
           </button>
         </div>
       </div>

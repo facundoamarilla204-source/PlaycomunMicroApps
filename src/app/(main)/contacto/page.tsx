@@ -70,13 +70,13 @@ export default function ContactoPage() {
           <div className="flex flex-wrap items-center gap-3">
             <Link
               href="/arrepentimiento"
-              className="px-3.5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200/90 text-slate-900 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-600 min-h-[40px] inline-flex items-center"
+              className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200/90 text-slate-900 text-xs sm:text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-600 min-h-[44px] inline-flex items-center"
             >
               Botón de arrepentimiento
             </Link>
             <Link
               href="/baja-servicio"
-              className="px-3.5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200/90 text-slate-900 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-600 min-h-[40px] inline-flex items-center"
+              className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200/90 text-slate-900 text-xs sm:text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-600 min-h-[44px] inline-flex items-center"
             >
               Botón de baja
             </Link>

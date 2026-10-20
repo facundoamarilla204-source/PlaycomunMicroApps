@@ -35,8 +35,8 @@ export const CONVERSION_OPERATIONS: ConversionOperation[] = [
     outputExtension: ".pdf",
     outputMimeType: "application/pdf",
     allowMultipleFiles: false,
-    badgeText: "Servicio Documental",
-    limitationsNotice: "El procesamiento documental de alta fidelidad se ejecuta en nuestro servicio contenerizado de LibreOffice headless.",
+    badgeText: "En servidor",
+    limitationsNotice: "El documento se procesa en nuestro motor dedicado para conservar tablas, fuentes y diseño original.",
   },
   {
     id: "excel-to-pdf",
@@ -53,7 +53,7 @@ export const CONVERSION_OPERATIONS: ConversionOperation[] = [
     outputExtension: ".pdf",
     outputMimeType: "application/pdf",
     allowMultipleFiles: false,
-    badgeText: "Servicio Documental",
+    badgeText: "En servidor",
     limitationsNotice: "Podés configurar la orientación de página y el ajuste de hoja antes de procesar.",
   },
   {
@@ -71,7 +71,7 @@ export const CONVERSION_OPERATIONS: ConversionOperation[] = [
     outputExtension: ".pdf",
     outputMimeType: "application/pdf",
     allowMultipleFiles: false,
-    badgeText: "Servicio Documental",
+    badgeText: "En servidor",
     limitationsNotice: "Cada diapositiva se convertirá exactamente en una página del documento PDF generado.",
   },
   {
@@ -90,7 +90,7 @@ export const CONVERSION_OPERATIONS: ConversionOperation[] = [
     outputExtension: ".pdf",
     outputMimeType: "application/pdf",
     allowMultipleFiles: false,
-    badgeText: "Servicio Documental",
+    badgeText: "En servidor",
   },
   {
     id: "images-to-pdf",
@@ -104,7 +104,7 @@ export const CONVERSION_OPERATIONS: ConversionOperation[] = [
     outputExtension: ".pdf",
     outputMimeType: "application/pdf",
     allowMultipleFiles: true,
-    badgeText: "Procesamiento Local",
+    badgeText: "En tu navegador",
   },
 
   // 2. CONVERTIR DESDE PDF
@@ -120,7 +120,7 @@ export const CONVERSION_OPERATIONS: ConversionOperation[] = [
     outputExtension: ".docx",
     outputMimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     allowMultipleFiles: false,
-    badgeText: "Procesamiento Local",
+    badgeText: "En tu navegador",
     limitationsNotice: "Recupera texto digital y párrafos estructurados. Si el PDF fue escaneado como imagen plana, requerirá OCR para extraer texto.",
   },
   {
@@ -135,7 +135,7 @@ export const CONVERSION_OPERATIONS: ConversionOperation[] = [
     outputExtension: ".xlsx",
     outputMimeType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     allowMultipleFiles: false,
-    badgeText: "Procesamiento Local",
+    badgeText: "En tu navegador",
     limitationsNotice: "Identifica tablas con columnas y filas alineadas. Si el PDF solo contiene texto narrativo sin estructura tabular, se informará con honestidad.",
   },
   {
@@ -150,7 +150,7 @@ export const CONVERSION_OPERATIONS: ConversionOperation[] = [
     outputExtension: ".pptx",
     outputMimeType: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
     allowMultipleFiles: false,
-    badgeText: "Procesamiento Local",
+    badgeText: "En tu navegador",
     limitationsNotice: "Mantiene la apariencia visual exacta al 100% renderizando cada página en la diapositiva. El contenido no es editable como elementos vectoriales individuales.",
   },
   {
@@ -165,7 +165,7 @@ export const CONVERSION_OPERATIONS: ConversionOperation[] = [
     outputExtension: ".pdf",
     outputMimeType: "application/pdf",
     allowMultipleFiles: false,
-    badgeText: "Procesamiento Local",
+    badgeText: "En tu navegador",
     limitationsNotice: "Inserta metadatos formales XMP conforme al perfil de preservación e incrusta el diccionario OutputIntent sRGB.",
   },
 
@@ -182,7 +182,7 @@ export const CONVERSION_OPERATIONS: ConversionOperation[] = [
     outputExtension: ".zip",
     outputMimeType: "application/zip",
     allowMultipleFiles: false,
-    badgeText: "Procesamiento Local",
+    badgeText: "En tu navegador",
     limitationsNotice: "Permite seleccionar resolución (150 o 300 DPI) y convertir todas las páginas o un rango específico.",
   },
 ]

@@ -23,34 +23,34 @@ export function ProGate({ hasAccess, featureName, children, fallback, compact = 
 
   if (compact) {
     return (
-      <div className="flex items-center gap-2 p-2 text-sm text-amber-700 bg-amber-50 rounded-md border border-amber-200">
-        <Lock className="w-4 h-4" />
-        <span><span className="font-semibold">{featureName}</span> es una función Pro. <Link href="/pro" className="underline font-medium hover:text-amber-800">Mejora tu plan</Link>.</span>
+      <div className="flex items-center gap-2 p-3 text-xs sm:text-sm text-purple-900 bg-purple-50 rounded-xl border border-purple-200">
+        <Lock className="w-4 h-4 shrink-0 text-purple-700" />
+        <span><span className="font-semibold">{featureName}</span> es una función de PlayComun Pro. <Link href="/planes" className="underline font-semibold hover:text-purple-950">Ver planes disponibles</Link>.</span>
       </div>
     )
   }
 
   return (
-    <div className="relative group overflow-hidden rounded-lg border border-dashed border-gray-300 bg-gray-50/50">
+    <div className="relative group overflow-hidden rounded-2xl border border-dashed border-slate-300 bg-slate-50/60">
       <div className="opacity-20 pointer-events-none blur-sm filter transition-all duration-300 select-none">
         {children}
       </div>
       
-      <div className="absolute inset-0 z-10 flex flex-col items-center justify-center p-6 text-center bg-white/60 backdrop-blur-[2px]">
-        <div className="w-12 h-12 mb-3 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center shadow-sm">
-          <Lock className="w-6 h-6" />
+      <div className="absolute inset-0 z-10 flex flex-col items-center justify-center p-6 text-center bg-white/70 backdrop-blur-[2px]">
+        <div className="w-12 h-12 mb-3 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center shadow-xs">
+          <Lock className="w-5 h-5" />
         </div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-1">
+        <h3 className="text-base sm:text-lg font-bold text-slate-900 mb-1">
           {featureName}
         </h3>
-        <p className="text-sm text-gray-600 max-w-sm mb-4">
-          Esta funcionalidad es exclusiva para usuarios de PlayComun Pro.
+        <p className="text-xs sm:text-sm text-slate-600 max-w-sm mb-4 leading-relaxed">
+          Esta funcionalidad está disponible con la suscripción a PlayComun Pro.
         </p>
         <Link 
-          href="/pro"
-          className="inline-flex items-center justify-center h-10 px-6 rounded-md bg-amber-500 text-white font-medium shadow-sm hover:bg-amber-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+          href="/planes"
+          className="inline-flex items-center justify-center min-h-[44px] px-6 rounded-xl bg-purple-600 text-white text-xs sm:text-sm font-bold shadow-xs hover:bg-purple-700 active:bg-purple-800 transition-colors focus-visible:outline-2 focus-visible:outline-purple-600"
         >
-          Mejorar a Pro
+          Ver planes Pro
         </Link>
       </div>
     </div>

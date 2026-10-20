@@ -83,13 +83,9 @@ export default function ToolCard({ tool, isFavorite = false }: ToolCardProps) {
         </div>
 
         <div className="flex items-center gap-2">
-          {tool.tier === "pro" ? (
+          {tool.tier === "pro" && (
             <span className="inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-700 border border-slate-200">
               Pro
-            </span>
-          ) : (
-            <span className="inline-flex items-center rounded-md bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-700 border border-emerald-200/80">
-              Gratis
             </span>
           )}
           <FavoriteButton toolSlug={tool.slug} initialIsFavorite={isFavorite} />

@@ -105,10 +105,11 @@ export function CalculadoraPrecios() {
       <div className="lg:col-span-7 bg-white rounded-xl border border-slate-200/90 p-5 sm:p-7 shadow-xs space-y-6">
         
         {/* Mode Selection */}
-        <div className="flex bg-slate-100 p-1 rounded-lg border border-slate-200/60">
+        <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-200/60">
           <button
+            type="button"
             onClick={() => setMode('target')}
-            className={`flex-1 py-2 text-xs sm:text-sm font-semibold rounded-md transition-colors ${
+            className={`flex-1 min-h-[44px] py-2.5 text-xs sm:text-sm font-semibold rounded-lg transition-colors flex items-center justify-center ${
               mode === 'target' 
                 ? 'bg-white text-slate-900 shadow-2xs' 
                 : 'text-slate-600 hover:text-slate-900'
@@ -117,8 +118,9 @@ export function CalculadoraPrecios() {
             Calcular mi precio
           </button>
           <button
+            type="button"
             onClick={() => setMode('profit')}
-            className={`flex-1 py-2 text-xs sm:text-sm font-semibold rounded-md transition-colors ${
+            className={`flex-1 min-h-[44px] py-2.5 text-xs sm:text-sm font-semibold rounded-lg transition-colors flex items-center justify-center ${
               mode === 'profit' 
                 ? 'bg-white text-slate-900 shadow-2xs' 
                 : 'text-slate-600 hover:text-slate-900'
@@ -423,8 +425,9 @@ export function CalculadoraPrecios() {
             {/* Steps Toggle */}
             <div className="mb-5">
               <button 
+                type="button"
                 onClick={() => setShowSteps(!showSteps)}
-                className="text-xs font-semibold text-purple-300 hover:text-purple-200 transition-colors"
+                className="text-xs font-semibold text-purple-300 hover:text-purple-200 transition-colors min-h-[38px] inline-flex items-center"
               >
                 {showSteps ? 'Ocultar cuenta paso a paso' : 'Ver detalle del cálculo paso a paso'}
               </button>
@@ -440,15 +443,17 @@ export function CalculadoraPrecios() {
             {/* Action buttons */}
             <div className="flex items-center gap-2">
               <button
+                type="button"
                 onClick={handleCopy}
-                className="flex-1 bg-brand hover:bg-brand-hover active:bg-brand-active text-white text-xs sm:text-sm font-semibold py-2.5 px-3 rounded-lg shadow-xs transition-colors flex items-center justify-center gap-2"
+                className="flex-1 bg-brand hover:bg-brand-hover active:bg-brand-active text-white text-xs sm:text-sm font-semibold py-3 px-4 min-h-[44px] rounded-xl shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
               >
                 {copied ? <CheckCircle2 className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                 {copied ? '¡Copiado!' : 'Copiar resultado'}
               </button>
               <button
+                type="button"
                 onClick={reset}
-                className="px-3 py-2.5 border border-slate-700 hover:bg-slate-800/80 rounded-lg text-xs font-medium text-slate-300 transition-colors"
+                className="px-4 py-3 min-h-[44px] border border-slate-700 hover:bg-slate-800/80 rounded-xl text-xs sm:text-sm font-medium text-slate-300 transition-colors flex items-center justify-center cursor-pointer"
               >
                 Limpiar
               </button>

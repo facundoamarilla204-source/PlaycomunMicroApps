@@ -61,7 +61,7 @@ export function AccountNav({ isPro }: AccountNavProps) {
               isPro ? 'bg-purple-600' : 'bg-slate-400'
             }`}
           />
-          {isPro ? 'Plan Pro Activo' : 'Plan Gratuito'}
+          {isPro ? 'Plan Pro' : 'Plan Básico'}
         </span>
       </div>
     </nav>

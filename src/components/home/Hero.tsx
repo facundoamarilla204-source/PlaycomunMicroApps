@@ -37,8 +37,10 @@ export default function Hero() {
               <div className="relative flex-1">
                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4.5 w-4.5 text-slate-400" />
                 <input
+                  id="hero-search-query"
                   type="text"
                   placeholder="Buscar calculadora, PDF, precios..."
+                  aria-label="Buscar calculadora, PDF o herramienta"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   className="w-full rounded-xl border border-slate-300 bg-white py-3 pl-10 pr-4 text-sm text-slate-900 shadow-xs outline-none transition-colors placeholder:text-slate-400 focus:border-brand focus:ring-2 focus:ring-brand/20"
@@ -46,7 +48,7 @@ export default function Hero() {
               </div>
               <button
                 type="submit"
-                className="inline-flex items-center justify-center rounded-xl bg-brand px-6 py-3 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-brand-hover active:bg-brand-active cursor-pointer"
+                className="inline-flex items-center justify-center rounded-xl bg-brand px-6 py-3 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-brand-hover active:bg-brand-active cursor-pointer min-h-[44px]"
               >
                 Buscar
               </button>
@@ -56,18 +58,18 @@ export default function Hero() {
             <div className="flex flex-wrap items-center gap-2 mb-4">
               <Link
                 href="/herramientas"
-                className="group inline-flex items-center gap-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 px-3.5 py-1.5 text-xs sm:text-sm font-semibold text-slate-800 shadow-2xs hover:shadow-xs transition-all"
+                className="group inline-flex items-center gap-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 px-3.5 py-2 text-xs sm:text-sm font-semibold text-slate-800 shadow-2xs hover:shadow-xs transition-all min-h-[40px]"
               >
                 <LayoutGrid className="h-4 w-4 text-brand" />
                 <span>Explorar catálogo completo ({tools.length} herramientas)</span>
-                <ArrowRight className="h-3.5 w-3.5 text-slate-400 transition-transform group-hover:translate-x-1 group-hover:text-slate-700" />
+                <ArrowRight className="h-3.5 w-3.5 text-slate-500 transition-transform group-hover:translate-x-1 group-hover:text-slate-700" />
               </Link>
             </div>
 
             {/* Privacy note */}
-            <div className="flex items-center gap-2 text-xs text-slate-500">
+            <div className="flex items-center gap-2 text-xs text-slate-600">
               <Lock className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-              <span>Procesamiento 100% privado en tu navegador. Tus datos nunca salen de tu dispositivo.</span>
+              <span>Procesamiento seguro y privado. Las calculadoras funcionan en tu navegador y tus archivos no se almacenan.</span>
             </div>
           </div>
 

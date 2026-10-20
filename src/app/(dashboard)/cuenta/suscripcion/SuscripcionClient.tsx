@@ -558,7 +558,7 @@ export function SuscripcionClient({
                   Plan actual
                 </span>
                 <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
-                  Plan Gratuito
+                  Plan Básico
                 </h2>
                 <p className="text-xs text-slate-500 mt-1">Acceso libre sin costo mensual</p>
               </div>
@@ -572,13 +572,13 @@ export function SuscripcionClient({
             </div>
 
             <div className="bg-slate-50/80 p-4 sm:p-5 rounded-xl border border-slate-200/60 text-xs sm:text-sm text-slate-600 leading-relaxed">
-              Estás usando el plan gratuito de PlayComun. Podés usar todas las calculadoras laborales y comerciales, generar códigos QR estándar y descargar documentos en PDF. Para acceder al guardado ilimitado en la nube y exportación a Excel, podés pasar a Pro.
+              Estás usando el plan Básico de PlayComun. Podés usar todas las calculadoras laborales y comerciales, generar códigos QR estándar y descargar documentos en PDF. Para acceder al guardado ilimitado en la nube y exportación a Excel, podés pasar a Pro.
             </div>
 
             <div className="pt-2 flex justify-end">
               <button
                 onClick={() => router.push('/planes')}
-                className="px-5 py-2.5 rounded-xl text-white bg-purple-700 hover:bg-purple-800 font-semibold transition-colors text-xs sm:text-sm flex items-center gap-2 shadow-xs"
+                className="px-5 py-2.5 min-h-[44px] rounded-xl text-white bg-purple-700 hover:bg-purple-800 font-semibold transition-colors text-xs sm:text-sm flex items-center gap-2 shadow-xs cursor-pointer"
               >
                 <span>Conocer planes Pro</span>
                 <ArrowRight className="w-4 h-4" />

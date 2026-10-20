@@ -124,7 +124,7 @@ export function CalculadoraAguinaldo() {
               type="text"
               id="bestSalary"
               inputMode="decimal"
-              className={`block w-full pl-7 pr-3 py-2.5 rounded-lg border ${errorMsg && bestSalaryStr ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-slate-300 focus:border-brand focus:ring-2 focus:ring-brand/20'} text-sm text-slate-900 shadow-2xs transition-colors`}
+              className={`block w-full pl-7 pr-3 py-3 min-h-[44px] rounded-xl border ${errorMsg && bestSalaryStr ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-slate-300 focus:border-brand focus:ring-2 focus:ring-brand/20'} text-sm text-slate-900 shadow-2xs transition-colors`}
               placeholder="1000000"
               value={bestSalaryStr}
               onChange={handleSalaryChange}
@@ -136,7 +136,7 @@ export function CalculadoraAguinaldo() {
         <div>
           <label className="block text-xs font-semibold text-slate-700 mb-2">¿Trabajaste durante todo el semestre?</label>
           <div className="grid sm:grid-cols-2 gap-2.5">
-            <label className={`cursor-pointer rounded-lg border p-3 flex items-center gap-2.5 transition-colors ${workedAllSemester ? 'border-brand bg-purple-50/40 text-slate-900' : 'border-slate-200 hover:bg-slate-50 text-slate-700'}`}>
+            <label className={`cursor-pointer rounded-xl border p-3 min-h-[44px] flex items-center gap-2.5 transition-colors ${workedAllSemester ? 'border-brand bg-purple-50/40 text-slate-900' : 'border-slate-200 hover:bg-slate-50 text-slate-700'}`}>
               <input 
                 type="radio" 
                 name="workedAllSemester" 
@@ -146,7 +146,7 @@ export function CalculadoraAguinaldo() {
               />
               <span className="font-semibold text-xs">Sí, semestre completo</span>
             </label>
-            <label className={`cursor-pointer rounded-lg border p-3 flex items-center gap-2.5 transition-colors ${!workedAllSemester ? 'border-brand bg-purple-50/40 text-slate-900' : 'border-slate-200 hover:bg-slate-50 text-slate-700'}`}>
+            <label className={`cursor-pointer rounded-xl border p-3 min-h-[44px] flex items-center gap-2.5 transition-colors ${!workedAllSemester ? 'border-brand bg-purple-50/40 text-slate-900' : 'border-slate-200 hover:bg-slate-50 text-slate-700'}`}>
               <input 
                 type="radio" 
                 name="workedAllSemester" 
@@ -171,7 +171,7 @@ export function CalculadoraAguinaldo() {
               id="daysWorked"
               min="1"
               max={totalSemesterDays}
-              className={`block w-full px-3 py-2.5 rounded-lg border ${errorMsg && daysWorkedStr && (!daysWorked || daysWorked <= 0 || daysWorked > totalSemesterDays) ? 'border-red-300' : 'border-slate-300'} text-sm text-slate-900 focus:border-brand focus:ring-2 focus:ring-brand/20 transition-colors`}
+              className={`block w-full px-3 py-3 min-h-[44px] rounded-xl border ${errorMsg && daysWorkedStr && (!daysWorked || daysWorked <= 0 || daysWorked > totalSemesterDays) ? 'border-red-300' : 'border-slate-300'} text-sm text-slate-900 focus:border-brand focus:ring-2 focus:ring-brand/20 transition-colors`}
               placeholder={semester === '1' ? '90' : '90'}
               value={daysWorkedStr}
               onChange={(e) => setDaysWorkedStr(e.target.value)}
@@ -180,7 +180,7 @@ export function CalculadoraAguinaldo() {
         )}
 
         {/* Show Net Option */}
-        <div className="flex items-center gap-2.5 pt-1">
+        <div className="flex items-center gap-2.5 pt-1 min-h-[44px]">
           <input
             id="showNet"
             type="checkbox"
@@ -256,19 +256,21 @@ export function CalculadoraAguinaldo() {
 
           <div className="flex gap-2">
             <button
+              type="button"
               onClick={handleCopy}
-              className="flex-1 bg-brand hover:bg-brand-hover active:bg-brand-active text-white text-xs sm:text-sm font-semibold py-2.5 px-3 rounded-lg shadow-xs transition-colors flex items-center justify-center gap-2"
+              className="flex-1 bg-brand hover:bg-brand-hover active:bg-brand-active text-white text-xs sm:text-sm font-semibold py-3 px-4 min-h-[44px] rounded-xl shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
             >
               {copied ? '¡Copiado!' : 'Copiar resultado'}
             </button>
             <button
+              type="button"
               onClick={() => {
                 setBestSalaryStr('');
                 setDaysWorkedStr('');
                 setWorkedAllSemester(true);
                 setShowNet(false);
               }}
-              className="px-3 py-2.5 border border-slate-700 hover:bg-slate-800/80 rounded-lg text-xs font-medium text-slate-300 transition-colors"
+              className="px-4 py-3 min-h-[44px] border border-slate-700 hover:bg-slate-800/80 rounded-xl text-xs sm:text-sm font-medium text-slate-300 transition-colors flex items-center justify-center cursor-pointer"
             >
               Limpiar
             </button>

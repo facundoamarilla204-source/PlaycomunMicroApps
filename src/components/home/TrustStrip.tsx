@@ -74,53 +74,53 @@ export default function TrustStrip() {
 
   const handleVote = async (id: string) => {
     if (!navigator.onLine) {
-      alert("No hay conexión a internet");
-      return;
+      setError("No hay conexión a internet para registrar tu voto.")
+      return
     }
     
-    const isVoted = votedIds.has(id);
+    const isVoted = votedIds.has(id)
     
     // Optimistic update
     setVotedIds((prev) => {
-      const next = new Set(prev);
-      if (isVoted) next.delete(id);
-      else next.add(id);
-      localStorage.setItem("voted_candidates", JSON.stringify(Array.from(next)));
-      return next;
-    });
+      const next = new Set(prev)
+      if (isVoted) next.delete(id)
+      else next.add(id)
+      localStorage.setItem("voted_candidates", JSON.stringify(Array.from(next)))
+      return next
+    })
 
     setCandidates((prev) => 
       prev.map(c => c.id === id ? { ...c, votos: c.votos + (isVoted ? -1 : 1) } : c)
           .sort((a, b) => b.votos - a.votos)
-    );
+    )
 
     try {
       const res = await fetch("/api/participation/vote", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ candidateId: id })
-      });
+      })
 
-      const data = await res.json();
+      const data = await res.json()
       if (!res.ok) {
-        throw new Error(data.error || "Error al votar");
+        throw new Error(data.error || "Error al registrar el voto")
       }
     } catch (err: any) {
       // Revert optimistic
       setVotedIds((prev) => {
-        const next = new Set(prev);
-        if (isVoted) next.add(id);
-        else next.delete(id);
-        localStorage.setItem("voted_candidates", JSON.stringify(Array.from(next)));
-        return next;
-      });
+        const next = new Set(prev)
+        if (isVoted) next.add(id)
+        else next.delete(id)
+        localStorage.setItem("voted_candidates", JSON.stringify(Array.from(next)))
+        return next
+      })
       setCandidates((prev) => 
         prev.map(c => c.id === id ? { ...c, votos: c.votos + (isVoted ? 1 : -1) } : c)
             .sort((a, b) => b.votos - a.votos)
-      );
-      alert(err.message);
+      )
+      setError(err.message || "No se pudo registrar tu voto. Por favor reintentá.")
     }
-  };
+  }
 
   const submitSuggestion = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -160,7 +160,7 @@ export default function TrustStrip() {
   ];
 
   return (
-    <section className="bg-brand-light py-16">
+    <section className="bg-slate-50/70 border-y border-slate-200/80 py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         
         <div className="mb-12 text-center md:text-left">
@@ -303,60 +303,60 @@ export default function TrustStrip() {
 
         {/* Bloque C: Gratis vs Pro */}
         <div className="w-full">
-          <h3 className="text-2xl font-bold text-foreground mb-6 text-center md:text-left">Gratis vs Pro</h3>
+          <h3 className="text-2xl font-bold text-slate-900 mb-6 text-center md:text-left">Gratis vs Pro</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
             
             {/* Pro Column (Aparece primero en mobile) */}
-            <div className="order-1 md:order-2 bg-brand/5 border-2 border-brand rounded-2xl p-6 sm:p-8 flex flex-col relative overflow-hidden">
+            <div className="order-1 md:order-2 bg-purple-50/50 border-2 border-brand rounded-2xl p-6 sm:p-8 flex flex-col relative overflow-hidden shadow-xs">
               <div className="absolute top-0 right-0 bg-brand text-white text-xs font-bold px-3 py-1 rounded-bl-lg">
                 RECOMENDADO
               </div>
-              <h4 className="text-2xl font-bold text-foreground mb-4">PlayComun Pro</h4>
+              <h4 className="text-2xl font-bold text-slate-900 mb-4">PlayComun Pro</h4>
               <ul className="space-y-4 mb-8 flex-1">
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-brand shrink-0 mt-0.5" />
-                  <span className="text-foreground font-medium">Códigos QR dinámicos, documentos y listas de precios</span>
+                  <span className="text-slate-800 font-medium">Códigos QR dinámicos, documentos y listas de precios</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-brand shrink-0 mt-0.5" />
-                  <span className="text-foreground">Funciones avanzadas en herramientas compatibles</span>
+                  <span className="text-slate-700">Logo e identidad propia en comprobantes</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-brand shrink-0 mt-0.5" />
-                  <span className="text-foreground">Guardado y gestión de información soportada</span>
+                  <span className="text-slate-700">Guardado y sincronización de datos en la nube</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-brand shrink-0 mt-0.5" />
-                  <span className="text-foreground">Productividad y exportación en evolución</span>
+                  <span className="text-slate-700">Exportación de comprobantes y planillas sin marcas de agua</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-brand shrink-0 mt-0.5" />
-                  <span className="text-foreground">Experiencia sin publicidad en herramientas</span>
+                  <span className="text-slate-700">100 conversiones diarias en servidor (archivos 50 MB)</span>
                 </li>
               </ul>
-              <Link href="/planes" className="block text-center w-full rounded-xl bg-brand px-6 py-3 font-semibold text-white transition-all hover:bg-brand-hover hover:-translate-y-0.5 active:translate-y-0">
-                Probar Pro
+              <Link href="/planes" className="block text-center w-full min-h-[44px] rounded-xl bg-brand px-6 py-3 font-semibold text-white transition-all hover:bg-brand-hover active:bg-brand-active shadow-xs">
+                Ver planes Pro
               </Link>
             </div>
 
             {/* Gratis Column */}
-            <div className="order-2 md:order-1 bg-white border border-border rounded-2xl p-6 sm:p-8 flex flex-col">
-              <h4 className="text-2xl font-bold text-foreground mb-4">Gratis</h4>
+            <div className="order-2 md:order-1 bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 flex flex-col shadow-xs">
+              <h4 className="text-2xl font-bold text-slate-900 mb-4">Básico</h4>
               <ul className="space-y-4 mb-8 flex-1">
                 <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-neutral-400 shrink-0 mt-0.5" />
-                  <span className="text-foreground">Herramientas básicas disponibles sin registro</span>
+                  <Check className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+                  <span className="text-slate-700">Calculadoras y utilidades libres sin registro</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-neutral-400 shrink-0 mt-0.5" />
-                  <span className="text-foreground">Iniciá sesión gratis para usar favoritos</span>
+                  <Check className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+                  <span className="text-slate-700">Iniciá sesión gratis para guardar favoritos</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-neutral-400 shrink-0 mt-0.5" />
-                  <span className="text-foreground">Acceso a herramientas gratuitas del ecosistema</span>
+                  <Check className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+                  <span className="text-slate-700">5 conversiones diarias en servidor (archivos 10 MB)</span>
                 </li>
               </ul>
-              <Link href="/herramientas" className="block text-center w-full rounded-xl bg-neutral-100 px-6 py-3 font-semibold text-foreground transition-all hover:bg-neutral-200">
+              <Link href="/herramientas" className="block text-center w-full min-h-[44px] rounded-xl bg-slate-100 px-6 py-3 font-semibold text-slate-800 transition-all hover:bg-slate-200">
                 Usar herramientas
               </Link>
             </div>

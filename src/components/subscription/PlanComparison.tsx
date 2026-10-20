@@ -213,7 +213,7 @@ export function PlanComparison({
             role="radio"
             aria-checked={!isAnual}
             onClick={() => setBillingCycle('mensual')}
-            className={`relative z-10 px-5 sm:px-6 py-2 text-xs sm:text-sm font-bold rounded-lg transition-all duration-200 focus-visible:outline-2 focus-visible:outline-purple-600 ${
+            className={`relative z-10 px-5 sm:px-6 py-2.5 min-h-[44px] flex items-center justify-center text-xs sm:text-sm font-bold rounded-lg transition-all duration-200 focus-visible:outline-2 focus-visible:outline-purple-600 ${
               !isAnual 
                 ? 'bg-white text-slate-900 shadow-sm' 
                 : 'text-slate-600 hover:text-slate-900'
@@ -226,7 +226,7 @@ export function PlanComparison({
             role="radio"
             aria-checked={isAnual}
             onClick={() => setBillingCycle('anual')}
-            className={`relative z-10 px-5 sm:px-6 py-2 text-xs sm:text-sm font-bold rounded-lg transition-all duration-200 flex items-center gap-1.5 focus-visible:outline-2 focus-visible:outline-purple-600 ${
+            className={`relative z-10 px-5 sm:px-6 py-2.5 min-h-[44px] text-xs sm:text-sm font-bold rounded-lg transition-all duration-200 flex items-center justify-center gap-1.5 focus-visible:outline-2 focus-visible:outline-purple-600 ${
               isAnual 
                 ? 'bg-white text-slate-900 shadow-sm' 
                 : 'text-slate-600 hover:text-slate-900'
@@ -274,7 +274,7 @@ export function PlanComparison({
                 <span className="text-3xl sm:text-4xl font-black text-slate-900">$0</span>
                 <span className="text-xs font-semibold text-slate-500">/ para siempre</span>
               </div>
-              <p className="text-[11px] text-slate-400 mt-0.5">Sin tarjeta ni cuotas de renovación</p>
+              <p className="text-[11px] text-slate-500 mt-0.5">Sin tarjeta ni cuotas de renovación</p>
             </div>
 
             {/* Botón de acción */}
@@ -284,7 +284,7 @@ export function PlanComparison({
                   href="/registro"
                   className="w-full min-h-[44px] px-4 py-2.5 rounded-xl text-center text-xs sm:text-sm font-bold bg-slate-100 hover:bg-slate-200 text-slate-800 transition-colors flex items-center justify-center focus-visible:outline-2 focus-visible:outline-slate-900"
                 >
-                  Crear cuenta gratis
+                  Crear cuenta
                 </Link>
               ) : isPro ? (
                 <div className="w-full min-h-[44px] px-3 py-2 rounded-xl text-center text-xs font-semibold bg-slate-50 text-slate-500 border border-slate-200 flex items-center justify-center">
@@ -299,7 +299,7 @@ export function PlanComparison({
 
             {/* Lista sintetizada de características */}
             <div className="space-y-2 pt-2">
-              <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
                 Qué incluye:
               </p>
               <ul className="space-y-2 text-xs text-slate-700">
@@ -479,7 +479,7 @@ export function PlanComparison({
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs sm:text-sm">
                     <thead>
-                      <tr className="border-b border-slate-100 text-[11px] font-bold text-slate-400 uppercase">
+                      <tr className="border-b border-slate-100 text-[11px] font-bold text-slate-500 uppercase">
                         <th className="py-2 px-3 w-1/2">Función</th>
                         <th className="py-2 px-3 text-center w-1/4">Básico</th>
                         <th className="py-2 px-3 text-center w-1/4 text-purple-700">PlayComun Pro</th>
@@ -491,7 +491,7 @@ export function PlanComparison({
                           <td className="py-2.5 px-3">
                             <p className="font-semibold text-slate-800">{feat.name}</p>
                             {feat.detail && (
-                              <p className="text-[11px] text-slate-400">{feat.detail}</p>
+                              <p className="text-[11px] text-slate-500">{feat.detail}</p>
                             )}
                           </td>
                           <td className="py-2.5 px-3 text-center">

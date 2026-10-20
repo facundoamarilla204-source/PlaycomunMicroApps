@@ -66,7 +66,7 @@ export function OptionsPanel({
                   },
                 })
               }
-              className="w-full text-xs sm:text-sm bg-gray-50 border border-gray-300 rounded-lg p-2 text-gray-800 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600"
+              className="w-full min-h-[44px] text-xs sm:text-sm bg-gray-50 border border-gray-300 rounded-lg py-2.5 px-3 text-gray-800 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600"
             >
               <option value="auto">Automática (según imagen)</option>
               <option value="portrait">Vertical</option>
@@ -89,7 +89,7 @@ export function OptionsPanel({
                   },
                 })
               }
-              className="w-full text-xs sm:text-sm bg-gray-50 border border-gray-300 rounded-lg p-2 text-gray-800 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600"
+              className="w-full min-h-[44px] text-xs sm:text-sm bg-gray-50 border border-gray-300 rounded-lg py-2.5 px-3 text-gray-800 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600"
             >
               <option value="a4">A4 (Estándar)</option>
               <option value="letter">Carta (Letter)</option>
@@ -112,7 +112,7 @@ export function OptionsPanel({
                   },
                 })
               }
-              className="w-full text-xs sm:text-sm bg-gray-50 border border-gray-300 rounded-lg p-2 text-gray-800 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600"
+              className="w-full min-h-[44px] text-xs sm:text-sm bg-gray-50 border border-gray-300 rounded-lg py-2.5 px-3 text-gray-800 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600"
             >
               <option value="none">Sin margen</option>
               <option value="small">Estrecho (0.25 pulgadas)</option>
@@ -140,7 +140,7 @@ export function OptionsPanel({
                   },
                 })
               }
-              className="w-full text-xs sm:text-sm bg-gray-50 border border-gray-300 rounded-lg p-2 text-gray-800 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600"
+              className="w-full min-h-[44px] text-xs sm:text-sm bg-gray-50 border border-gray-300 rounded-lg py-2.5 px-3 text-gray-800 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600"
             >
               <option value="portrait">Vertical</option>
               <option value="landscape">Horizontal (recomendada para tablas anchas)</option>
@@ -162,7 +162,7 @@ export function OptionsPanel({
                   },
                 })
               }
-              className="w-full text-xs sm:text-sm bg-gray-50 border border-gray-300 rounded-lg p-2 text-gray-800 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600"
+              className="w-full min-h-[44px] text-xs sm:text-sm bg-gray-50 border border-gray-300 rounded-lg py-2.5 px-3 text-gray-800 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600"
             >
               <option value="a4">A4</option>
               <option value="letter">Carta</option>
@@ -210,7 +210,7 @@ export function OptionsPanel({
                     },
                   })
                 }
-                className="w-full text-xs sm:text-sm bg-gray-50 border border-gray-300 rounded-lg p-2 text-gray-800 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600"
+                className="w-full min-h-[44px] text-xs sm:text-sm bg-gray-50 border border-gray-300 rounded-lg py-2.5 px-3 text-gray-800 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600"
               >
                 <option value="jpg">JPG (peso reducido, fotos y documentos)</option>
                 <option value="png">PNG (máxima nitidez y gráficos)</option>
@@ -232,7 +232,7 @@ export function OptionsPanel({
                     },
                   })
                 }
-                className="w-full text-xs sm:text-sm bg-gray-50 border border-gray-300 rounded-lg p-2 text-gray-800 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600"
+                className="w-full min-h-[44px] text-xs sm:text-sm bg-gray-50 border border-gray-300 rounded-lg py-2.5 px-3 text-gray-800 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600"
               >
                 <option value={150}>150 DPI (Equilibrada, recomendada)</option>
                 <option value={300}>300 DPI (Alta resolución para imprimir)</option>
@@ -255,7 +255,7 @@ export function OptionsPanel({
                     },
                   })
                 }
-                className="w-full text-xs sm:text-sm bg-gray-50 border border-gray-300 rounded-lg p-2 text-gray-800 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600"
+                className="w-full min-h-[44px] text-xs sm:text-sm bg-gray-50 border border-gray-300 rounded-lg py-2.5 px-3 text-gray-800 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600"
               >
                 <option value="all">Todas las páginas</option>
                 <option value="custom">Rango personalizado</option>
@@ -281,9 +281,9 @@ export function OptionsPanel({
                   })
                 }
                 placeholder="Ejemplo: 1-3, 5"
-                className="w-full text-xs sm:text-sm bg-white border border-gray-300 rounded-lg p-2 text-gray-800 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600"
+                className="w-full min-h-[44px] text-xs sm:text-sm bg-white border border-gray-300 rounded-lg py-2.5 px-3 text-gray-800 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600"
               />
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-slate-600">
                 Separadas por comas. Usá guión para intervalos.
               </p>
             </div>
@@ -309,7 +309,7 @@ export function OptionsPanel({
                   },
                 })
               }
-              className="w-full text-xs sm:text-sm bg-gray-50 border border-gray-300 rounded-lg p-2 text-gray-800 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600"
+              className="w-full min-h-[44px] text-xs sm:text-sm bg-gray-50 border border-gray-300 rounded-lg py-2.5 px-3 text-gray-800 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600"
             >
               <option value="PDF/A-1b">PDF/A-1b (Preservación visual básica, ISO 19005-1)</option>
               <option value="PDF/A-2b">PDF/A-2b (Soporte de capas y compresión moderna, ISO 19005-2)</option>

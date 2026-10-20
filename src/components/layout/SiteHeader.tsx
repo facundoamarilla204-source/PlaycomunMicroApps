@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { Search, Menu, X, ChevronDown, Calculator, Sparkles, Wrench, LogOut, User as UserIcon, Heart } from "lucide-react"
+import { Search, Menu, X, ChevronDown, LogOut, User as UserIcon, Heart } from "lucide-react"
 import { siteConfig } from "@/config/site"
 import CommandSearch from "./CommandSearch"
 import { getCategories } from "@/data/categories"
@@ -88,7 +88,7 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSearchOpen(true)}
-              className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-slate-50/60 text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+              className="flex h-10 w-10 sm:h-9 sm:w-9 items-center justify-center rounded-lg border border-slate-200 bg-slate-50/60 text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand cursor-pointer"
               aria-label="Buscar herramientas"
               title="Buscar (Ctrl+K)"
             >
@@ -110,8 +110,9 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
                 <div className="relative">
                   <button
                     onClick={() => setUserMenuOpen(!userMenuOpen)}
-                    className="w-9 h-9 rounded-lg bg-brand-light text-brand flex items-center justify-center font-bold border border-brand-border/60 shadow-xs transition-colors hover:bg-purple-100"
+                    className="w-10 h-10 sm:w-9 sm:h-9 rounded-lg bg-brand-light text-brand flex items-center justify-center font-bold border border-brand-border/60 shadow-xs transition-colors hover:bg-purple-100 cursor-pointer"
                     title="Mi Cuenta"
+                    aria-label="Menú de cuenta"
                   >
                     <UserIcon className="h-4 w-4" />
                   </button>
@@ -139,7 +140,7 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
                           <form action={logout}>
                             <button
                               type="submit"
-                              className="w-full flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium text-red-600 transition-colors hover:bg-red-50 text-left"
+                              className="w-full flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium text-red-600 transition-colors hover:bg-red-50 text-left cursor-pointer"
                             >
                               <LogOut className="h-3.5 w-3.5" />
                               Cerrar Sesión
@@ -170,7 +171,7 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
 
             <button
               onClick={() => setMobileMenuOpen(true)}
-              className="md:hidden flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-100 transition-colors"
+              className="md:hidden flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
               aria-label="Abrir menú"
             >
               <Menu className="h-5 w-5" />
@@ -259,14 +260,14 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
                     <Link
                       href="/registro"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="w-full rounded-lg bg-brand px-4 py-2.5 text-center text-sm font-semibold text-white shadow-xs transition-colors hover:bg-brand-hover"
+                      className="w-full min-h-[44px] rounded-lg bg-brand px-4 py-2.5 text-center text-sm font-semibold text-white shadow-xs transition-colors hover:bg-brand-hover flex items-center justify-center"
                     >
-                      Crear cuenta gratis
+                      Crear cuenta
                     </Link>
                     <Link
                       href="/ingresar"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-center text-sm font-medium text-slate-800 transition-colors hover:bg-slate-50"
+                      className="w-full min-h-[44px] rounded-lg border border-slate-200 px-4 py-2.5 text-center text-sm font-medium text-slate-800 transition-colors hover:bg-slate-50 flex items-center justify-center"
                     >
                       Ingresar
                     </Link>

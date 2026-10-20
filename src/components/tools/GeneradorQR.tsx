@@ -27,6 +27,7 @@ export function GeneradorQR() {
   // Configure QR
   const [configQrId, setConfigQrId] = useState<string | null>(null)
   const [destUrl, setDestUrl] = useState("")
+  const [errorNotice, setErrorNotice] = useState<string | null>(null)
 
   useEffect(() => {
     checkProAndLoadGroups()
@@ -92,6 +93,7 @@ export function GeneradorQR() {
 
   const handleGenerateDynamic = async () => {
     setGenerating(true)
+    setErrorNotice(null)
     try {
       const res = await generateQrCodes(generateCount)
       const updatedGroups = await getUserQrGroups()
@@ -100,13 +102,14 @@ export function GeneradorQR() {
       await loadGroupQrs(res.group)
     } catch (e: any) {
       console.error(e)
-      alert("Error al generar QR dinámicos")
+      setErrorNotice(e.message || "No se pudieron generar los códigos QR dinámicos. Por favor reintentá.")
     } finally {
       setGenerating(false)
     }
   }
 
   const handleActivateQr = async (id: string) => {
+    setErrorNotice(null)
     try {
       await updateQrDestination(id, destUrl)
       if (selectedGroup) {
@@ -116,11 +119,12 @@ export function GeneradorQR() {
       setConfigQrId(null)
       setDestUrl("")
     } catch (e: any) {
-      alert(e.message || "Error al configurar QR")
+      setErrorNotice(e.message || "Error al configurar el destino del código QR")
     }
   }
 
   const handlePauseQr = async (id: string, currentStatus: string) => {
+    setErrorNotice(null)
     try {
       await updateQrStatus(id, currentStatus === "paused" ? "active" : "paused" as any)
       if (selectedGroup) {
@@ -128,7 +132,7 @@ export function GeneradorQR() {
         setQrs(updatedQrs)
       }
     } catch (e: any) {
-      alert("Error al pausar QR")
+      setErrorNotice("No se pudo cambiar el estado del código QR.")
     }
   }
 
@@ -208,7 +212,7 @@ export function GeneradorQR() {
       doc.save(`Plancha_QR_Grupo_${selectedGroup?.group_code}.pdf`)
     } catch (err) {
       console.error(err)
-      alert("Error al generar el PDF")
+      setErrorNotice("Hubo un problema al generar el archivo PDF de la plancha. Por favor probá de nuevo.")
     } finally {
       setGenerating(false)
     }
@@ -227,7 +231,7 @@ export function GeneradorQR() {
       <div className="bg-slate-100/80 p-1.5 rounded-2xl flex flex-wrap sm:flex-nowrap gap-1 border border-slate-200/60 max-w-xl mx-auto">
         <button 
           type="button"
-          className={`flex-1 min-h-[42px] px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-150 ${
+          className={`flex-1 min-h-[44px] px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-150 cursor-pointer ${
             activeTab === 'estatico' 
               ? 'bg-white shadow-sm text-slate-900 border border-slate-200/50' 
               : 'text-slate-600 hover:text-slate-900'
@@ -238,7 +242,7 @@ export function GeneradorQR() {
         </button>
         <button 
           type="button"
-          className={`flex-1 min-h-[42px] px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-150 flex items-center justify-center gap-1.5 ${
+          className={`flex-1 min-h-[44px] px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-150 flex items-center justify-center gap-1.5 cursor-pointer ${
             activeTab === 'dinamico' 
               ? 'bg-white shadow-sm text-slate-900 border border-slate-200/50' 
               : 'text-slate-600 hover:text-slate-900'
@@ -251,7 +255,7 @@ export function GeneradorQR() {
         {isPro && (
           <button 
             type="button"
-            className={`flex-1 min-h-[42px] px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-150 ${
+            className={`flex-1 min-h-[44px] px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-150 cursor-pointer ${
               activeTab === 'mis-qr' 
                 ? 'bg-white shadow-sm text-slate-900 border border-slate-200/50' 
                 : 'text-slate-600 hover:text-slate-900'
@@ -262,6 +266,19 @@ export function GeneradorQR() {
           </button>
         )}
       </div>
+
+      {errorNotice && (
+        <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 text-sm flex items-center justify-between gap-3 animate-in fade-in duration-200">
+          <span>{errorNotice}</span>
+          <button 
+            type="button" 
+            onClick={() => setErrorNotice(null)} 
+            className="text-xs font-bold text-red-600 hover:text-red-800 px-2 py-1 rounded cursor-pointer"
+          >
+            Cerrar
+          </button>
+        </div>
+      )}
 
       {/* Tab: Estático */}
       {activeTab === "estatico" && (

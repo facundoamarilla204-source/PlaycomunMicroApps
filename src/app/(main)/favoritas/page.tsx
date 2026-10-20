@@ -45,18 +45,18 @@ export default async function FavoritasPage() {
         </div>
 
         {userFavorites.length === 0 ? (
-          <div className="flex flex-col items-center justify-center bg-white border border-border/60 rounded-2xl p-12 text-center max-w-2xl mx-auto shadow-sm">
-            <img src="/otter-hero.png" alt="PlayComun Nutria" className="mb-6 h-32 w-auto object-contain opacity-90 drop-shadow-sm" />
-            <h2 className="text-2xl font-bold text-slate-900 mb-3">
-              No tenés favoritas aún
+          <div className="flex flex-col items-center justify-center bg-white border border-slate-200 rounded-2xl p-8 sm:p-12 text-center max-w-2xl mx-auto shadow-xs">
+            <img src="/otter-hero.png" alt="PlayComun Nutria" className="mb-6 h-32 w-auto object-contain opacity-90 drop-shadow-xs" />
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-2">
+              No tenés herramientas favoritas aún
             </h2>
-            <p className="text-slate-500 mb-8 max-w-md">
-              Explorá nuestro catálogo de herramientas y hacé clic en el ícono de guardado para agregarlas acá.
+            <p className="text-slate-500 mb-8 max-w-md text-xs sm:text-sm leading-relaxed">
+              Explorá el catálogo de herramientas y hacé clic en el corazón de cualquier tarjeta para guardarla acá.
             </p>
             <div className="flex gap-4">
               <Link 
                 href="/herramientas"
-                className="flex items-center gap-2 bg-brand text-white px-6 py-3 rounded-xl font-bold hover:bg-brand-hover transition-colors shadow-sm"
+                className="inline-flex items-center justify-center gap-2 bg-brand text-white px-6 py-3 min-h-[44px] rounded-xl font-semibold hover:bg-brand-hover active:bg-brand-active transition-colors shadow-xs text-sm"
               >
                 <Search className="w-4 h-4" />
                 Explorar herramientas

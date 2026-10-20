@@ -4,8 +4,8 @@ import { SubmitButton } from "../submit-button"
 import { buildMetadata } from "@/lib/metadata"
 
 export const metadata = buildMetadata({
-  title: "Crear cuenta gratis",
-  description: "Registrate gratis en PlayComun Herramientas para guardar tus aplicaciones favoritas y recetas.",
+  title: "Crear cuenta",
+  description: "Registrate en PlayComun Herramientas para guardar tus aplicaciones favoritas y recetas.",
   path: "/registro",
 })
 
@@ -16,7 +16,7 @@ export default async function RegisterPage(props: {
   return (
     <div className="max-w-sm mx-auto w-full">
       <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 mb-2">
-        Creá tu cuenta gratis
+        Creá tu cuenta
       </h1>
       <p className="text-slate-500 mb-6 text-xs sm:text-sm font-medium">
         Guardá tus herramientas favoritas y usalas desde cualquier dispositivo.
@@ -89,7 +89,7 @@ export default async function RegisterPage(props: {
         </div>
 
         <SubmitButton pendingText="Creando cuenta...">
-          Crear cuenta gratuita
+          Crear cuenta
         </SubmitButton>
       </form>
 

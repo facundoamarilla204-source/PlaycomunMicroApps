@@ -45,7 +45,7 @@ export function LegalTableOfContents({ items }: LegalTableOfContentsProps) {
           type="button"
           onClick={() => setIsOpenMobile(!isOpenMobile)}
           aria-expanded={isOpenMobile}
-          className="sm:hidden inline-flex items-center gap-1 text-xs font-semibold text-purple-700 hover:text-purple-800 p-1 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-600"
+          className="sm:hidden inline-flex items-center gap-1.5 text-xs font-semibold text-purple-700 hover:text-purple-800 px-3 py-2 min-h-[44px] rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-600 cursor-pointer"
         >
           <span>{isOpenMobile ? "Ocultar" : "Ver lista"}</span>
           <ChevronDown
@@ -71,7 +71,7 @@ export function LegalTableOfContents({ items }: LegalTableOfContentsProps) {
                   e.preventDefault()
                   handleScroll(item.id)
                 }}
-                className="flex items-center gap-2 py-1.5 px-2 rounded-lg text-slate-700 hover:text-purple-900 hover:bg-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-600 font-medium"
+                className="flex items-center gap-2.5 min-h-[40px] py-2 px-2.5 rounded-lg text-slate-700 hover:text-purple-900 hover:bg-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-600 font-medium"
               >
                 <span className="w-5 h-5 rounded bg-purple-100 text-purple-800 font-bold text-xs flex items-center justify-center flex-shrink-0">
                   {item.number}

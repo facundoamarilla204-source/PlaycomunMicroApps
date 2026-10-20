@@ -21,9 +21,9 @@ import { siteConfig } from '@/config/site'
 import { buildMetadata } from '@/lib/metadata'
 
 export const metadata = buildMetadata({
-  title: 'Generador de documentos comerciales en PDF gratis',
+  title: 'Generador de documentos comerciales en PDF',
   description:
-    'Creá recibos de pago, órdenes de trabajo y facturas proforma personalizadas en PDF. Gratis, sin registro y listo para compartir.',
+    'Creá recibos de pago, órdenes de trabajo y facturas proforma personalizadas en PDF. Listo para descargar y compartir.',
   path: '/herramientas/generador-documentos-comerciales',
 })
 

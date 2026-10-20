@@ -73,7 +73,7 @@ export function ResultsPanel({
               type="button"
               onClick={handleDownloadZip}
               disabled={isZipping}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-bold text-xs sm:text-sm shadow-xs transition-colors cursor-pointer disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-4 py-2.5 min-h-[44px] rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-bold text-xs sm:text-sm shadow-xs transition-colors cursor-pointer disabled:opacity-50"
             >
               {isZipping ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -87,7 +87,7 @@ export function ResultsPanel({
           <button
             type="button"
             onClick={onReset}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold text-xs sm:text-sm transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-4 py-2.5 min-h-[44px] rounded-xl border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold text-xs sm:text-sm transition-colors cursor-pointer"
           >
             <RefreshCw className="h-3.5 w-3.5" />
             <span>Nueva conversión</span>
@@ -110,7 +110,7 @@ export function ResultsPanel({
                 <p className="text-xs font-bold text-gray-900 truncate">
                   {item.name}
                 </p>
-                <div className="flex items-center gap-2 text-[11px] text-gray-500">
+                <div className="flex items-center gap-2 text-[11px] text-slate-600">
                   <span className="uppercase font-mono font-semibold text-gray-700">
                     {item.format}
                   </span>
@@ -126,7 +126,7 @@ export function ResultsPanel({
               type="button"
               onClick={() => handleDownloadSingle(item)}
               aria-label={`Descargar ${item.name}`}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white border border-gray-200 hover:border-violet-400 hover:text-violet-600 text-gray-700 font-semibold text-xs transition-colors shrink-0 cursor-pointer shadow-2xs"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 min-h-[40px] rounded-lg bg-white border border-gray-200 hover:border-violet-400 hover:text-violet-600 text-gray-700 font-semibold text-xs transition-colors shrink-0 cursor-pointer shadow-2xs"
             >
               <Download className="h-3.5 w-3.5" />
               <span>Descargar</span>

@@ -141,13 +141,13 @@ export default function ToolGrid({
         <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center">
           {showSearch && (
             <div className="relative flex-1">
-              <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 pointer-events-none" />
               <input
                 type="text"
                 placeholder="Filtrar por nombre o palabra clave..."
                 value={query}
                 onChange={handleQueryChange}
-                className="w-full rounded-lg border border-slate-300 bg-white py-2 pl-9 pr-4 text-xs sm:text-sm text-slate-900 shadow-2xs outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition-colors"
+                className="w-full min-h-[44px] rounded-xl border border-slate-300 bg-white py-2.5 pl-10 pr-4 text-xs sm:text-sm text-slate-900 shadow-2xs outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition-colors"
               />
             </div>
           )}
@@ -157,7 +157,7 @@ export default function ToolGrid({
               <select
                 value={activeType}
                 onChange={handleTypeChange}
-                className="appearance-none rounded-lg border border-slate-300 bg-white py-2 pl-8 pr-8 text-xs sm:text-sm font-medium text-slate-700 shadow-2xs outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition-colors"
+                className="appearance-none min-h-[44px] rounded-xl border border-slate-300 bg-white py-2.5 pl-9 pr-9 text-xs sm:text-sm font-medium text-slate-700 shadow-2xs outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition-colors"
               >
                 <option value="todos">Todos los formatos</option>
                 <option value="calculadora">Calculadoras</option>
@@ -174,8 +174,9 @@ export default function ToolGrid({
         {categories.map((cat) => (
           <button
             key={cat.id}
+            type="button"
             onClick={() => handleCategoryChange(cat.id)}
-            className={`whitespace-nowrap flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand ${
+            className={`whitespace-nowrap flex items-center gap-1.5 rounded-xl px-3.5 py-2 min-h-[40px] text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand cursor-pointer ${
               activeCategory === cat.id
                 ? "bg-slate-900 text-white shadow-2xs"
                 : "border border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"
@@ -186,7 +187,7 @@ export default function ToolGrid({
               className={`inline-flex items-center justify-center rounded-md text-[10px] px-1.5 py-0.2 font-mono ${
                 activeCategory === cat.id
                   ? "bg-white/20 text-white"
-                  : "bg-slate-100 text-slate-500"
+                  : "bg-slate-100 text-slate-600"
               }`}
             >
               {cat.count}
@@ -236,7 +237,7 @@ export default function ToolGrid({
               </span>
             )}
           </div>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+          <p className="text-xs sm:text-sm text-slate-600 mt-1">
             {isHome && filteredTools.length > displayedTools.length ? (
               <span>Mostrando las {displayedTools.length} principales de {filteredTools.length} disponibles</span>
             ) : (
@@ -248,7 +249,7 @@ export default function ToolGrid({
         {(isHome || (!query && activeCategory === "todas" && !showSearch)) && (
           <Link 
             href="/herramientas" 
-            className="group self-start sm:self-auto inline-flex items-center gap-2 rounded-xl bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 px-4 py-2 text-xs sm:text-sm font-semibold shadow-2xs hover:shadow-xs transition-colors"
+            className="group self-start sm:self-auto inline-flex items-center gap-2 rounded-xl bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 px-4 py-2.5 min-h-[44px] text-xs sm:text-sm font-semibold shadow-2xs hover:shadow-xs transition-colors"
           >
             <span>Ver todas las herramientas</span>
             <span className="inline-flex items-center justify-center rounded-md bg-slate-100 text-slate-700 px-2 py-0.5 text-xs font-mono font-medium">
@@ -276,15 +277,16 @@ export default function ToolGrid({
         <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 bg-slate-50/50 py-16 px-4 text-center">
           <img src="/otter-hero.png" alt="No encontrado" className="mb-4 h-28 w-auto object-contain opacity-80" />
           <h3 className="mb-1 text-base font-bold text-slate-900">No encontramos herramientas para esta búsqueda</h3>
-          <p className="text-xs text-slate-500 max-w-sm mb-4">Revisá la ortografía o elegí otra categoría del catálogo.</p>
+          <p className="text-xs text-slate-600 max-w-sm mb-4">Revisá la ortografía o elegí otra categoría del catálogo.</p>
           <button
+            type="button"
             onClick={() => {
               setActiveCategory("todas")
               setActiveType("todos")
               setQuery("")
               updateUrl("todas", "todos", "")
             }}
-            className="rounded-lg bg-brand px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-brand-hover transition-colors"
+            className="rounded-xl bg-brand px-5 py-2.5 min-h-[44px] text-xs sm:text-sm font-semibold text-white shadow-xs hover:bg-brand-hover transition-colors cursor-pointer"
           >
             Restablecer filtros
           </button>

@@ -57,11 +57,11 @@ export default async function CheckoutPage({
   return (
     <div className="container mx-auto px-4 pt-28 pb-12 max-w-5xl">
       <div className="text-center mb-10">
-        <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-4 text-slate-800">
-          Completá tu suscripción a <span className="text-amber-500">Pro</span>
+        <h1 className="text-3xl md:text-5xl font-black tracking-tight mb-4 text-slate-900">
+          Completá tu suscripción a <span className="text-purple-600">PlayComun Pro</span>
         </h1>
-        <p className="text-xl text-slate-500 font-medium">
-          Estás a un paso de desbloquear todo el potencial de PlayComun sin límites.
+        <p className="text-base sm:text-lg text-slate-600 font-normal max-w-xl mx-auto">
+          Gestioná tus recetas, listas de precios, historial de comprobantes y conversiones ampliadas en la nube.
         </p>
       </div>
 

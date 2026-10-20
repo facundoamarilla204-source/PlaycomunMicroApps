@@ -48,13 +48,11 @@ export function ToolPageLayout({ tool, children, content }: ToolPageLayoutProps)
             <span className="inline-flex items-center rounded-md bg-purple-50 px-2.5 py-1 text-xs font-semibold text-brand ring-1 ring-inset ring-purple-600/10">
               {categoryName}
             </span>
-            <span className={`inline-flex items-center rounded-md px-2.5 py-1 text-xs font-medium ring-1 ring-inset ${
-              tool.tier === "pro" 
-                ? "bg-purple-100/70 text-purple-800 ring-purple-600/20" 
-                : "bg-emerald-50 text-emerald-800 ring-emerald-600/10"
-            }`}>
-              {tool.tier === "pro" ? "Plan Pro" : "100% Gratis"}
-            </span>
+            {tool.tier === "pro" && (
+              <span className="inline-flex items-center rounded-md px-2.5 py-1 text-xs font-medium ring-1 ring-inset bg-purple-100/70 text-purple-800 ring-purple-600/20">
+                Plan Pro
+              </span>
+            )}
             <span className="inline-flex items-center gap-1 text-xs text-slate-500 ml-1">
               <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
               Sin registro requerido

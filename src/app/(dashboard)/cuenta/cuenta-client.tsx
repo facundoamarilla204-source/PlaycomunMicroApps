@@ -76,7 +76,7 @@ export default function CuentaClient({
                     : "bg-slate-100 text-slate-600 border-slate-200"
                 }`}
               >
-                {isPro ? "Pro" : "Gratis"}
+                {isPro ? "Pro" : "Básico"}
               </span>
             </div>
             <p className="text-xs sm:text-sm text-slate-500 flex items-center gap-1.5">

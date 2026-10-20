@@ -176,20 +176,20 @@ export default async function GuiaPage({ params }: { params: Promise<{ slug: str
         </div>
 
         {frontmatter.relatedTool && (
-          <div className="mt-16 pt-8 border-t border-border">
-            <div className="bg-brand-light border border-brand-border rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="mt-16 pt-8 border-t border-slate-200">
+            <div className="bg-purple-50/60 border border-purple-200/70 rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 shadow-xs">
               <div>
-                <h3 className="text-xl font-bold text-foreground mb-2">
+                <h3 className="text-xl font-bold text-slate-900 mb-2">
                   {frontmatter.relatedToolTitle || "Poné en práctica esta guía"}
                 </h3>
-                <p className="text-foreground-muted text-sm leading-relaxed">
+                <p className="text-slate-600 text-sm leading-relaxed">
                   {frontmatter.relatedToolDescription ||
                     "Tenemos una herramienta específica para que no tengas que calcular todo a mano."}
                 </p>
               </div>
               <Link
                 href={frontmatter.relatedTool}
-                className="shrink-0 rounded-xl bg-brand px-6 py-3 font-semibold text-white shadow-sm transition-all hover:bg-brand-hover hover:-translate-y-0.5 active:translate-y-0 text-center"
+                className="shrink-0 w-full sm:w-auto rounded-xl bg-brand px-6 py-3 min-h-[44px] font-semibold text-white shadow-xs transition-all hover:bg-brand-hover active:bg-brand-active text-center flex items-center justify-center text-sm"
               >
                 {frontmatter.relatedToolButton || "Ver herramienta"}
               </Link>

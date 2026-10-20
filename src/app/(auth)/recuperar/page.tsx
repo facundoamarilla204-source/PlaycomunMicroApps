@@ -18,42 +18,42 @@ export default async function RecoverPage(props: {
     <div className="max-w-sm mx-auto w-full">
       <Link 
         href="/ingresar" 
-        className="text-sm text-brand hover:text-brand-hover inline-flex items-center gap-2 mb-6 transition-colors font-medium"
+        className="text-xs font-semibold text-purple-700 hover:text-purple-800 inline-flex items-center gap-1.5 mb-6 transition-colors"
       >
-        <ArrowLeft className="w-4 h-4" />
-        Volver a ingresar
+        <ArrowLeft className="w-3.5 h-3.5" />
+        <span>Volver a ingresar</span>
       </Link>
 
-      <h1 className="text-3xl font-semibold tracking-tight text-foreground mb-2">
+      <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 mb-2">
         Recuperá tu contraseña
       </h1>
-      <p className="text-foreground-muted mb-8 text-sm leading-relaxed">
-        Ingresá tu email y te enviamos un enlace para crear una nueva.
+      <p className="text-slate-500 mb-6 text-xs sm:text-sm font-medium leading-relaxed">
+        Ingresá tu correo electrónico y te enviaremos un enlace seguro para restablecerla.
       </p>
 
       {searchParams?.error && (
-        <div className="bg-red-50 text-red-600 p-3 rounded-xl mb-6 text-sm">
+        <div className="bg-rose-50 border border-rose-200 text-rose-700 p-3.5 rounded-xl mb-6 text-xs sm:text-sm font-medium">
           {searchParams.error}
         </div>
       )}
 
       <form action={resetPassword} className="space-y-4">
         <div className="space-y-1.5">
-          <label htmlFor="email" className="text-sm font-medium text-foreground block">
-            Email
+          <label htmlFor="email" className="text-xs font-bold uppercase tracking-wider text-slate-700 block">
+            Correo electrónico
           </label>
           <input
             id="email"
             name="email"
             type="email"
-            placeholder="nombre@email.com"
+            placeholder="tu@email.com"
             required
-            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all placeholder:text-gray-400"
+            className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/70 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-600 transition-all placeholder:text-slate-400 text-sm font-medium text-slate-900"
           />
         </div>
 
         <SubmitButton pendingText="Enviando...">
-          Enviar enlace
+          Enviar enlace de recuperación
         </SubmitButton>
       </form>
     </div>

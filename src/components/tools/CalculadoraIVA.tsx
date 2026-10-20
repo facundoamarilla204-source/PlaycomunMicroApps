@@ -102,7 +102,7 @@ export function CalculadoraIVA() {
             <button
               type="button"
               onClick={() => setMode('add')}
-              className={`py-2.5 text-xs sm:text-sm font-semibold rounded-lg transition-all ${
+              className={`py-2.5 min-h-[44px] flex items-center justify-center text-xs sm:text-sm font-semibold rounded-lg transition-all ${
                 mode === 'add'
                   ? 'bg-white text-purple-700 shadow-sm border border-slate-200/60'
                   : 'text-slate-600 hover:text-slate-900'
@@ -113,7 +113,7 @@ export function CalculadoraIVA() {
             <button
               type="button"
               onClick={() => setMode('remove')}
-              className={`py-2.5 text-xs sm:text-sm font-semibold rounded-lg transition-all ${
+              className={`py-2.5 min-h-[44px] flex items-center justify-center text-xs sm:text-sm font-semibold rounded-lg transition-all ${
                 mode === 'remove'
                   ? 'bg-white text-purple-700 shadow-sm border border-slate-200/60'
                   : 'text-slate-600 hover:text-slate-900'
@@ -144,7 +144,7 @@ export function CalculadoraIVA() {
                 inputMode="decimal"
                 value={priceStr}
                 onChange={handleCurrencyChange(setPriceStr)}
-                className="block w-full pl-8 pr-4 py-3 rounded-xl border border-slate-300 focus:border-purple-600 focus:ring-2 focus:ring-purple-100 text-slate-900 font-medium text-base transition-colors placeholder:text-slate-400"
+                className="block w-full pl-8 pr-4 py-3 min-h-[44px] rounded-xl border border-slate-300 focus:border-purple-600 focus:ring-2 focus:ring-purple-100 text-slate-900 font-medium text-base transition-colors placeholder:text-slate-400"
                 placeholder="10.000,00"
               />
             </div>
@@ -163,7 +163,7 @@ export function CalculadoraIVA() {
                     key={rate.label}
                     type="button"
                     onClick={() => setVatRateStr(rate.value.toString())}
-                    className={`py-2 px-1 text-center rounded-lg border text-xs font-semibold transition-all ${
+                    className={`py-2 px-1 min-h-[40px] flex items-center justify-center text-center rounded-lg border text-xs font-semibold transition-all ${
                       isSelected
                         ? 'border-purple-600 bg-purple-50 text-purple-700 ring-2 ring-purple-100'
                         : 'border-slate-200 hover:border-slate-300 text-slate-700 bg-white'
@@ -239,7 +239,7 @@ export function CalculadoraIVA() {
               <button
                 type="button"
                 onClick={() => setShowSteps(!showSteps)}
-                className="text-xs font-medium text-slate-300 hover:text-white bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 rounded-lg px-3 py-1.5 transition-colors"
+                className="text-xs font-medium text-slate-300 hover:text-white bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 rounded-lg px-3.5 py-2 min-h-[38px] inline-flex items-center transition-colors"
               >
                 {showSteps ? 'Ocultar cuenta paso a paso' : 'Ver cuenta paso a paso'}
               </button>
@@ -256,7 +256,7 @@ export function CalculadoraIVA() {
               <button
                 type="button"
                 onClick={handleCopy}
-                className="flex-1 bg-white text-slate-950 hover:bg-slate-100 active:bg-slate-200 transition-colors py-3 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-sm"
+                className="flex-1 bg-white text-slate-950 hover:bg-slate-100 active:bg-slate-200 transition-colors py-3 px-4 min-h-[44px] rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-sm"
               >
                 {copied ? <CheckCircle2 className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
                 {copied ? 'Copiado al portapapeles' : 'Copiar desglose'}
@@ -264,7 +264,7 @@ export function CalculadoraIVA() {
               <button
                 type="button"
                 onClick={reset}
-                className="px-4 py-3 border border-slate-700 hover:bg-slate-800 text-slate-300 rounded-xl text-sm font-semibold transition-colors"
+                className="px-4 py-3 min-h-[44px] border border-slate-700 hover:bg-slate-800 text-slate-300 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center"
               >
                 Limpiar
               </button>

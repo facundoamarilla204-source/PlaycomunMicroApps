@@ -15,7 +15,7 @@ export async function GET() {
 
   try {
     const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 4000)
+    const timeoutId = setTimeout(() => controller.abort(), 8000)
 
     const response = await fetch(`${workerUrl.replace(/\/$/, "")}/health`, {
       signal: controller.signal,

@@ -73,7 +73,7 @@ export default async function LoginPage(props: {
       <p className="text-center text-xs text-slate-500 mt-6 font-medium">
         ¿Aún no tenés cuenta?{" "}
         <Link href="/registro" className="text-purple-700 hover:text-purple-800 font-bold transition-colors">
-          Creá una gratis
+          Creá tu cuenta
         </Link>
       </p>
     </div>
