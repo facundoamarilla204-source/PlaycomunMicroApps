@@ -143,6 +143,11 @@ export default function SiteFooter() {
                 </Link>
               </li>
               <li>
+                <Link href="/microapps" className="text-xs text-slate-600 hover:text-brand font-medium transition-colors">
+                  Microapps independientes
+                </Link>
+              </li>
+              <li>
                 <Link href="/planes" className="text-xs text-slate-600 hover:text-brand transition-colors">
                   Planes PlayComun Pro
                 </Link>

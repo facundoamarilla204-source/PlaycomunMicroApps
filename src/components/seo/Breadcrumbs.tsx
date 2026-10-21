@@ -19,7 +19,7 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
             Inicio
           </Link>
         </li>
-        
+
         {items.map((item, index) => {
           const isLast = index === items.length - 1
           return (

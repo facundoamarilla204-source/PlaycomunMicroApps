@@ -1,4 +1,12 @@
-import { Recipe, calculateRecipeFinancials, formatCurrency, unitConversion } from './costo-receta'
+import { Recipe, calculateRecipeFinancials, formatCurrency } from './costo-receta'
+import { RecipeStep, SubrecipeFinancialItem } from './gastronomia/types'
+
+export interface ExportSingleRecipePdfOptions {
+  steps?: RecipeStep[]
+  isLivePrice?: boolean
+  priceSourceNote?: string
+  subrecipesBreakdown?: SubrecipeFinancialItem[]
+}
 
 function sanitizeFilename(name: string): string {
   return name
@@ -18,7 +26,10 @@ function sanitizeFilename(name: string): string {
 /**
  * Export a single recipe technical sheet to PDF
  */
-export async function exportSingleRecipePdf(recipe: Recipe): Promise<void> {
+export async function exportSingleRecipePdf(
+  recipe: Recipe,
+  options?: ExportSingleRecipePdfOptions
+): Promise<void> {
   const { jsPDF } = await import('jspdf')
   const { default: autoTable } = await import('jspdf-autotable')
 
@@ -45,7 +56,10 @@ export async function exportSingleRecipePdf(recipe: Recipe): Promise<void> {
 
   doc.setFont('helvetica', 'normal')
   doc.setFontSize(9)
-  doc.text('Ficha Técnica y Escandallo de Costos', margin, 17)
+  const subtitle = options?.isLivePrice
+    ? 'Ficha Técnica · Costeo en Vivo (Precios Biblioteca)'
+    : 'Ficha Técnica y Escandallo de Costos'
+  doc.text(subtitle, margin, 17)
 
   const todayStr = new Date().toLocaleDateString('es-AR', {
     day: '2-digit',
@@ -82,6 +96,45 @@ export async function exportSingleRecipePdf(recipe: Recipe): Promise<void> {
     currentY += 2
   }
 
+  const techParams: string[] = []
+  if (recipe.prep_time_minutes) techParams.push(`Prep: ${recipe.prep_time_minutes} min`)
+  if (recipe.cook_time_minutes) techParams.push(`Cocción: ${recipe.cook_time_minutes} min`)
+  if (recipe.rest_time_minutes) techParams.push(`Reposo: ${recipe.rest_time_minutes} min`)
+  if (recipe.baking_temperature_celsius) techParams.push(`Horno: ${recipe.baking_temperature_celsius}°C`)
+  if (recipe.baking_loss_percentage && recipe.baking_loss_percentage > 0) techParams.push(`Pérdida horneado: ${recipe.baking_loss_percentage}%`)
+
+  if (techParams.length > 0) {
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(8)
+    doc.setTextColor(75, 85, 99)
+    doc.text(`Parámetros técnicos: ${techParams.join('  |  ')}`, margin, currentY)
+    currentY += 5
+  }
+
+  // Banner de advertencia en caso de conversiones incompletas o incompatibles
+  if (financials.hasConversionErrors) {
+    const bannerHeight = 12
+    doc.setFillColor(254, 243, 199) // Amber 100
+    doc.setDrawColor(245, 158, 11) // Amber 500
+    doc.roundedRect(margin, currentY, contentWidth, bannerHeight, 2, 2, 'FD')
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(8)
+    doc.setTextColor(180, 83, 9) // Amber 700
+    doc.text(
+      `ADVERTENCIA: Esta receta contiene ${financials.invalidIngredientsCount} ingrediente(s) con unidades no convertibles (falta densidad).`,
+      margin + 3,
+      currentY + 5
+    )
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(7.5)
+    doc.text(
+      'Los costos e importes sugeridos son PROVISIONALES y no incluyen los ingredientes pendientes de conversión.',
+      margin + 3,
+      currentY + 9.5
+    )
+    currentY += bannerHeight + 4
+  }
+
   // 3. Financial Summary KPI Grid
   const kpiBoxHeight = 22
   const kpiColWidth = contentWidth / 4
@@ -107,18 +160,22 @@ export async function exportSingleRecipePdf(recipe: Recipe): Promise<void> {
   doc.setFont('helvetica', 'normal')
   doc.setFontSize(7.5)
   doc.setTextColor(107, 114, 128)
-  doc.text('COSTO TOTAL', colX, currentY + 6)
+  doc.text(financials.hasConversionErrors ? 'COSTO (PROVISORIO)' : 'COSTO TOTAL', colX, currentY + 6)
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(11)
   doc.setTextColor(17, 24, 39)
-  doc.text(formatCurrency(financials.totalCost), colX, currentY + 14)
+  doc.text(
+    `${formatCurrency(financials.totalCost)}${financials.hasConversionErrors ? '*' : ''}`,
+    colX,
+    currentY + 14
+  )
 
   // Column 3: Costo Unitario
   colX += kpiColWidth
   doc.setFont('helvetica', 'normal')
   doc.setFontSize(7.5)
   doc.setTextColor(107, 114, 128)
-  doc.text('COSTO UNITARIO', colX, currentY + 6)
+  doc.text(financials.hasConversionErrors ? 'COSTO UNIT. (PROV.)' : 'COSTO UNITARIO', colX, currentY + 6)
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(11)
   doc.setTextColor(109, 40, 217)
@@ -129,10 +186,10 @@ export async function exportSingleRecipePdf(recipe: Recipe): Promise<void> {
   doc.setFont('helvetica', 'normal')
   doc.setFontSize(7.5)
   doc.setTextColor(107, 114, 128)
-  doc.text('PRECIO VENTA SUG.', colX, currentY + 6)
+  doc.text(financials.hasConversionErrors ? 'PRECIO (PROVISORIO)' : 'PRECIO VENTA SUG.', colX, currentY + 6)
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(12)
-  doc.setTextColor(16, 149, 106) // Verde esmeralda
+  doc.setTextColor(financials.hasConversionErrors ? 217 : 16, financials.hasConversionErrors ? 119 : 149, financials.hasConversionErrors ? 6 : 106)
   doc.text(formatCurrency(financials.suggestedPrice), colX, currentY + 14)
   doc.setFontSize(6.5)
   doc.setFont('helvetica', 'normal')
@@ -148,13 +205,15 @@ export async function exportSingleRecipePdf(recipe: Recipe): Promise<void> {
   currentY += 4
 
   const ingredientsRows = financials.ingredientsWithCost.map((i, index) => {
+    const costText = i.conversionError ? 'Revisar unidad*' : formatCurrency(i.calculated_cost)
+    const incText = i.conversionError ? '-' : `${i.percentageOfTotal.toFixed(1)}%`
     return [
       (index + 1).toString(),
       i.name || 'Sin nombre',
       `${i.quantity} ${i.unit}`,
       `${formatCurrency(i.reference_price)} / ${i.reference_quantity} ${i.reference_unit}`,
-      formatCurrency(i.calculated_cost),
-      `${i.percentageOfTotal.toFixed(1)}%`,
+      costText,
+      incText,
     ]
   })
 
@@ -207,6 +266,96 @@ export async function exportSingleRecipePdf(recipe: Recipe): Promise<void> {
   })
 
   let finalY = (doc as any).lastAutoTable?.finalY || currentY + 40
+
+  // 4.1 Tabla de Subrecetas y Elaboraciones Compuestas (si existen)
+  const subrecipesList = options?.subrecipesBreakdown || (recipe.subrecipes || []).map((sr) => ({
+    subrecipeName: sr.subrecipe_name || 'Subreceta',
+    netQuantity: sr.quantity,
+    unit: sr.unit,
+    wastePercentage: sr.waste_percentage || 0,
+    subrecipeYieldQuantity: sr.reference_yield_quantity || 1,
+    subrecipeYieldUnit: sr.reference_yield_unit || 'unidades',
+    calculatedCost: sr.reference_total_cost || 0,
+    percentageOfTotal: 0,
+    conversionError: null,
+  }))
+
+  let totalSubrecipesCost = 0
+  if (subrecipesList.length > 0) {
+    if (finalY + 30 > pageHeight - 20) {
+      doc.addPage()
+      finalY = 20
+    } else {
+      finalY += 8
+    }
+
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(11)
+    doc.setTextColor(17, 24, 39)
+    doc.text('Subrecetas y Elaboraciones Compuestas', margin, finalY)
+    finalY += 4
+
+    totalSubrecipesCost = subrecipesList.reduce((sum, item) => sum + (Number(item.calculatedCost) || 0), 0)
+
+    const subrecipeRows = subrecipesList.map((sr, index) => {
+      const wasteText = sr.wastePercentage > 0 ? ` (+${sr.wastePercentage}% merma)` : ''
+      return [
+        (index + 1).toString(),
+        sr.subrecipeName,
+        `${sr.netQuantity} ${sr.unit}${wasteText}`,
+        `${sr.subrecipeYieldQuantity} ${sr.subrecipeYieldUnit}`,
+        sr.conversionError ? 'Revisar unidad*' : formatCurrency(sr.calculatedCost),
+        `${financials.totalCost > 0 ? ((sr.calculatedCost / financials.totalCost) * 100).toFixed(1) : 0}%`,
+      ]
+    })
+
+    subrecipeRows.push([
+      '',
+      'SUBTOTAL SUBRECETAS',
+      '',
+      '',
+      formatCurrency(totalSubrecipesCost),
+      `${financials.totalCost > 0 ? ((totalSubrecipesCost / financials.totalCost) * 100).toFixed(1) : 0}%`,
+    ])
+
+    autoTable(doc, {
+      startY: finalY,
+      head: [['#', 'Subreceta / Componente', 'Cantidad Utilizada', 'Rendimiento Base', 'Costo Componente', '% Incidencia']],
+      body: subrecipeRows,
+      margin: { left: margin, right: margin },
+      theme: 'grid',
+      styles: {
+        fontSize: 8.5,
+        cellPadding: 2.5,
+        font: 'helvetica',
+        textColor: [31, 41, 55],
+      },
+      headStyles: {
+        fillColor: [109, 40, 217],
+        textColor: [255, 255, 255],
+        fontStyle: 'bold',
+      },
+      columnStyles: {
+        0: { cellWidth: 8, halign: 'center' },
+        1: { cellWidth: 'auto', fontStyle: 'bold' },
+        2: { cellWidth: 32, halign: 'right' },
+        3: { cellWidth: 28, halign: 'right' },
+        4: { cellWidth: 28, halign: 'right', fontStyle: 'bold' },
+        5: { cellWidth: 22, halign: 'right' },
+      },
+      didParseCell: (data) => {
+        if (data.row.index === subrecipeRows.length - 1) {
+          data.cell.styles.fontStyle = 'bold'
+          data.cell.styles.fillColor = [245, 243, 255]
+          if (data.column.index === 1) {
+            data.cell.styles.textColor = [109, 40, 217]
+          }
+        }
+      },
+    })
+
+    finalY = (doc as any).lastAutoTable?.finalY || finalY + 25
+  }
 
   // 5. Tabla de Costos Adicionales (si existen)
   if (recipe.additional_costs && recipe.additional_costs.length > 0) {
@@ -306,6 +455,62 @@ export async function exportSingleRecipePdf(recipe: Recipe): Promise<void> {
     finalY + 15
   )
 
+  // 6.b Pasos de Elaboración (si existen)
+  const stepsList = options?.steps || recipe.steps
+  if (stepsList && stepsList.length > 0) {
+    if (finalY + 35 > pageHeight - 20) {
+      doc.addPage()
+      finalY = 20
+    } else {
+      finalY += 8
+    }
+
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(11)
+    doc.setTextColor(17, 24, 39)
+    doc.text('Procedimiento y Pasos de Elaboración', margin, finalY)
+    finalY += 4
+
+    const stepsRows = stepsList.map((s, idx) => {
+      const stepNum = (s.step_number || idx + 1).toString()
+      const durationStr = s.duration_minutes ? `${s.duration_minutes} min` : '-'
+      const extraParts: string[] = []
+      if (s.temperature_celsius) extraParts.push(`${s.temperature_celsius}°C`)
+      if (s.equipment) extraParts.push(`Equip: ${s.equipment}`)
+      if (s.notes) extraParts.push(s.notes)
+      const extraStr = extraParts.length > 0 ? extraParts.join(' | ') : '-'
+
+      return [stepNum, s.instruction, durationStr, extraStr]
+    })
+
+    autoTable(doc, {
+      startY: finalY,
+      head: [['#', 'Instrucción / Procedimiento', 'Tiempo', 'Parámetros / Notas']],
+      body: stepsRows,
+      margin: { left: margin, right: margin },
+      theme: 'grid',
+      styles: {
+        fontSize: 8,
+        cellPadding: 2.5,
+        font: 'helvetica',
+        textColor: [31, 41, 55],
+      },
+      headStyles: {
+        fillColor: [124, 58, 237],
+        textColor: [255, 255, 255],
+        fontStyle: 'bold',
+      },
+      columnStyles: {
+        0: { cellWidth: 8, halign: 'center' },
+        1: { cellWidth: 'auto' },
+        2: { cellWidth: 20, halign: 'center' },
+        3: { cellWidth: 50 },
+      },
+    })
+
+    finalY = (doc as any).lastAutoTable?.finalY || finalY + 25
+  }
+
   // 7. Footer en todas las páginas
   const totalPages = (doc.internal as any).getNumberOfPages()
   for (let i = 1; i <= totalPages; i++) {
@@ -370,17 +575,26 @@ export async function exportAllRecipesPdf(recipes: Recipe[]): Promise<void> {
     align: 'right',
   })
 
+  let hasAnyProvisional = false
   const tableRows = recipes.map((r, index) => {
     const fin = calculateRecipeFinancials(r)
+    if (fin.hasConversionErrors) hasAnyProvisional = true
+    const costText = fin.hasConversionErrors
+      ? `${formatCurrency(fin.totalCost)}* (Pendiente)`
+      : formatCurrency(fin.totalCost)
+    const priceText = fin.hasConversionErrors
+      ? `${formatCurrency(fin.suggestedPrice)}*`
+      : formatCurrency(fin.suggestedPrice)
+
     return [
       (index + 1).toString(),
       r.name || 'Sin nombre',
       r.category || '-',
       `${r.yield_quantity} ${r.yield_unit}`,
-      formatCurrency(fin.totalCost),
+      costText,
       formatCurrency(fin.unitCost),
       r.pricing_mode === 'margin' ? `${r.target_margin}% (margen)` : `${r.target_markup}% (recargo)`,
-      formatCurrency(fin.suggestedPrice),
+      priceText,
       formatCurrency(fin.profitPerUnit),
     ]
   })
@@ -426,6 +640,20 @@ export async function exportAllRecipesPdf(recipes: Recipe[]): Promise<void> {
       8: { cellWidth: 28, halign: 'right', textColor: [109, 40, 217] },
     },
   })
+
+  if (hasAnyProvisional) {
+    const tableFinalY = (doc as any).lastAutoTable?.finalY || 180
+    if (tableFinalY + 10 < pageHeight - 15) {
+      doc.setFont('helvetica', 'italic')
+      doc.setFontSize(7.5)
+      doc.setTextColor(180, 83, 9) // Amber 700
+      doc.text(
+        '* Las recetas marcadas con (Pendiente) contienen ingredientes con unidades incompatibles (sin densidad). Sus costos son parciales.',
+        margin,
+        tableFinalY + 6
+      )
+    }
+  }
 
   // Footers
   const totalPages = (doc.internal as any).getNumberOfPages()

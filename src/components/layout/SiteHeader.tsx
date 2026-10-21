@@ -84,6 +84,12 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
                 )
               })}
               <Link
+                href="/microapps"
+                className="text-sm font-semibold text-slate-700 transition-colors hover:text-brand py-2 px-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-md"
+              >
+                Microapps
+              </Link>
+              <Link
                 href="/#servicios"
                 className="text-sm font-semibold text-slate-700 transition-colors hover:text-brand py-2 px-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-md"
               >
@@ -220,6 +226,13 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
                     {type.name}
                   </Link>
                 ))}
+                <Link 
+                  href="/microapps"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-800 hover:bg-slate-50 hover:text-brand transition-colors"
+                >
+                  Microapps
+                </Link>
                 <Link 
                   href="/#servicios"
                   onClick={() => setMobileMenuOpen(false)}

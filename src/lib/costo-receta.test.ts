@@ -25,6 +25,20 @@ describe('costo-receta calculations', () => {
       expect(unitConversion('unidades', 'unidades', 10)).toBe(10)
       expect(unitConversion('g', 'g', 350)).toBe(350)
     })
+
+    it('should return 0 instead of silent bogus value when units are incompatible without density', () => {
+      // Anteriormente: devolvía 1, generando cálculos de costos distorsionados
+      expect(unitConversion('kg', 'ml', 1)).toBe(0)
+      expect(unitConversion('l', 'g', 1)).toBe(0)
+      expect(unitConversion('unidades', 'g', 10)).toBe(0)
+    })
+
+    it('should convert cross-dimension units when valid density is provided', () => {
+      // 1000 ml de leche a 1.03 g/ml = 1030 g -> en kg = 1.03
+      expect(unitConversion('l', 'kg', 1, 1.03)).toBeCloseTo(1.03, 3)
+      // 500 g de aceite a 0.92 g/ml = 543.48 ml
+      expect(unitConversion('g', 'ml', 500, 0.92)).toBeCloseTo(543.48, 2)
+    })
   })
 
   describe('calculateRecipeFinancials', () => {
@@ -98,6 +112,28 @@ describe('costo-receta calculations', () => {
       const result = calculateRecipeFinancials(zeroYieldRecipe)
       expect(Number.isFinite(result.unitCost)).toBe(true)
       expect(Number.isFinite(result.suggestedPrice)).toBe(true)
+    })
+
+    it('should flag conversion errors when recipe has incompatible units', () => {
+      const incompatibleRecipe: Recipe = {
+        ...sampleRecipe,
+        ingredients: [
+          {
+            id: 'bad1',
+            name: 'Leche sin densidad',
+            quantity: 200,
+            unit: 'g',
+            reference_quantity: 1,
+            reference_unit: 'l',
+            reference_price: 1500,
+          },
+        ],
+      }
+      const result = calculateRecipeFinancials(incompatibleRecipe)
+      expect(result.hasConversionErrors).toBe(true)
+      expect(result.invalidIngredientsCount).toBe(1)
+      expect(result.ingredientsWithCost[0].calculated_cost).toBe(0)
+      expect(result.ingredientsWithCost[0].conversionError).toBeTruthy()
     })
   })
 

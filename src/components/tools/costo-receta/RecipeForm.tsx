@@ -269,11 +269,24 @@ export function RecipeForm({ recipe, setRecipe, financials }: RecipeFormProps) {
                     </div>
                   </div>
 
+                  {financials.ingredientsWithCost[i]?.conversionError && (
+                    <div className="text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-lg p-2.5 flex items-start gap-1.5">
+                      <span className="font-bold text-amber-900">⚠️ Unidad incompatible:</span>
+                      <span>{financials.ingredientsWithCost[i]?.conversionError}</span>
+                    </div>
+                  )}
+
                   <div className="flex justify-between items-center text-xs pt-1 border-t border-neutral-200/60">
                     <span className="text-neutral-500">Costo proporcional en receta:</span>
-                    <span className="text-sm font-bold text-brand">
-                      {formatCurrency(calcCost)}
-                    </span>
+                    {financials.ingredientsWithCost[i]?.conversionError ? (
+                      <span className="text-xs font-semibold text-amber-700 bg-amber-100/70 px-2 py-0.5 rounded-md">
+                        Revisar unidades
+                      </span>
+                    ) : (
+                      <span className="text-sm font-bold text-brand">
+                        {formatCurrency(calcCost)}
+                      </span>
+                    )}
                   </div>
                 </div>
               )

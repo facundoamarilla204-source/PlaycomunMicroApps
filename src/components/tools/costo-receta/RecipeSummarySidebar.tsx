@@ -51,6 +51,17 @@ export function RecipeSummarySidebar({
           </div>
 
           <div className="p-5 sm:p-6 space-y-4">
+            {financials.hasConversionErrors && (
+              <div className="bg-amber-50 border border-amber-200/90 text-amber-800 rounded-xl p-3 text-xs space-y-1">
+                <div className="font-bold text-amber-900 flex items-center gap-1.5">
+                  <span>⚠️ Unidades no convertibles</span>
+                </div>
+                <p className="text-amber-700 leading-relaxed">
+                  Hay {financials.invalidIngredientsCount} ingrediente(s) con dimensiones incompatibles sin densidad. Su costo no pudo calcularse y no está sumado en el total.
+                </p>
+              </div>
+            )}
+
             {/* Cost breakdown */}
             <div className="space-y-2 text-sm">
               <div className="flex justify-between text-neutral-600">

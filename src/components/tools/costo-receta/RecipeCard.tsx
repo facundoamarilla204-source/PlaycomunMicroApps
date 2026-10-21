@@ -63,6 +63,11 @@ export function RecipeCard({
                   {recipe.category}
                 </span>
               )}
+              {financials.hasConversionErrors && (
+                <span className="inline-flex items-center gap-1 font-semibold text-amber-700 bg-amber-100/90 border border-amber-200 px-2 py-0.5 rounded-full text-2xs">
+                  ⚠️ Unidades a revisar
+                </span>
+              )}
               {updatedDateStr && <span>Act: {updatedDateStr}</span>}
             </div>
           </div>
@@ -82,41 +87,62 @@ export function RecipeCard({
 
           {/* Costo total */}
           <div className="flex justify-between items-center py-0.5">
-            <span className="text-neutral-500">Costo total:</span>
+            <span className="text-neutral-500">
+              {financials.hasConversionErrors ? 'Costo provisorio:' : 'Costo total:'}
+            </span>
             <span className="font-medium text-neutral-700">
               {formatCurrency(financials.totalCost)}
+              {financials.hasConversionErrors && <span className="text-amber-600 font-bold ml-1">*</span>}
             </span>
           </div>
 
           {/* Costo unitario */}
           <div className="flex justify-between items-center py-0.5 border-t border-dashed border-neutral-200 pt-2 font-medium">
-            <span className="text-neutral-600">Costo unitario:</span>
+            <span className="text-neutral-600">
+              {financials.hasConversionErrors ? 'Costo unit. provisorio:' : 'Costo unitario:'}
+            </span>
             <span className="text-neutral-900 font-bold">
               {formatCurrency(financials.unitCost)}
             </span>
           </div>
 
           {/* Precio de venta sugerido */}
-          <div className="mt-3 p-3 rounded-xl bg-emerald-50/80 border border-emerald-200/80 flex flex-col gap-1">
-            <div className="flex justify-between items-center">
-              <span className="text-xs font-bold text-emerald-800 uppercase tracking-wide">
-                Precio de Venta
-              </span>
-              <span className="text-xs font-semibold text-emerald-700 bg-emerald-100/90 px-2 py-0.5 rounded-full">
-                {recipe.pricing_mode === 'margin'
-                  ? `${recipe.target_margin}% margen`
-                  : `+${recipe.target_markup}% recargo`}
-              </span>
+          {financials.hasConversionErrors ? (
+            <div className="mt-3 p-3 rounded-xl bg-amber-50/90 border border-amber-200/90 flex flex-col gap-1">
+              <div className="flex justify-between items-center">
+                <span className="text-xs font-bold text-amber-900 uppercase tracking-wide">
+                  Precio No Validado
+                </span>
+                <span className="text-2xs font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full">
+                  {financials.invalidIngredientsCount} {financials.invalidIngredientsCount === 1 ? 'unidad a revisar' : 'unidades a revisar'}
+                </span>
+              </div>
+              <p className="text-xs text-amber-800 font-medium mt-0.5 leading-snug">
+                Contiene ingredientes con dimensiones no convertibles sin densidad. Editá la receta para regularizar los costos.
+              </p>
             </div>
-            <div className="flex justify-between items-baseline mt-0.5">
-              <span className="text-xl font-extrabold text-emerald-600">
-                {formatCurrency(financials.suggestedPrice)}
-              </span>
-              <span className="text-xs text-emerald-700 font-medium">
-                Gana {formatCurrency(financials.profitPerUnit)}/u
-              </span>
+          ) : (
+            <div className="mt-3 p-3 rounded-xl bg-emerald-50/80 border border-emerald-200/80 flex flex-col gap-1">
+              <div className="flex justify-between items-center">
+                <span className="text-xs font-bold text-emerald-800 uppercase tracking-wide">
+                  Precio de Venta
+                </span>
+                <span className="text-xs font-semibold text-emerald-700 bg-emerald-100/90 px-2 py-0.5 rounded-full">
+                  {recipe.pricing_mode === 'margin'
+                    ? `${recipe.target_margin}% margen`
+                    : `+${recipe.target_markup}% recargo`}
+                </span>
+              </div>
+              <div className="flex justify-between items-baseline mt-0.5">
+                <span className="text-xl font-extrabold text-emerald-600">
+                  {formatCurrency(financials.suggestedPrice)}
+                </span>
+                <span className="text-xs text-emerald-700 font-medium">
+                  Gana {formatCurrency(financials.profitPerUnit)}/u
+                </span>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
