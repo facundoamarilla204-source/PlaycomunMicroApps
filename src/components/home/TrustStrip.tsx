@@ -184,15 +184,22 @@ export default function TrustStrip() {
   ];
 
   return (
-    <section className="bg-slate-50/70 border-y border-slate-200/80 py-16">
+    <section className="bg-[#3d1083] border-y border-white/10 py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         
         <div className="mb-10 text-center md:text-left">
-          <h2 className="text-3xl font-bold text-foreground tracking-tight">
-            Lo que viene y lo que podés aprender
+          <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-violet-200">
+              Comunidad y aprendizaje
+            </span>
+            <span className="text-white/40">•</span>
+            <span className="text-xs font-medium text-purple-200">PlayComun Online</span>
+          </div>
+          <h2 className="font-display text-3xl sm:text-4xl font-normal text-white tracking-normal">
+            Próximas herramientas y guías para tu negocio
           </h2>
-          <p className="text-sm text-foreground-muted mt-1.5">
-            Herramientas en desarrollo votadas por la comunidad y artículos prácticos de gestión.
+          <p className="text-sm sm:text-base text-purple-100 mt-2 max-w-2xl leading-relaxed">
+            Votá las calculadoras en desarrollo que necesita tu rubro y leé guías paso a paso sobre costos, cobros e impuestos.
           </p>
         </div>
 
@@ -200,11 +207,11 @@ export default function TrustStrip() {
           
           {/* Bloque A: Pedí una herramienta (60%) */}
           <div className="w-full lg:w-[60%] flex flex-col">
-            <div className="bg-white rounded-2xl shadow-sm border border-border p-6 sm:p-8 flex-1 flex flex-col justify-between">
+            <div className="bg-white rounded-2xl shadow-md border border-slate-200/80 p-6 sm:p-8 flex-1 flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-5">
-                  <h3 className="text-xl font-bold text-foreground">Pedí una herramienta</h3>
-                  <span className="text-xs text-foreground-subtle font-medium">Votación abierta</span>
+                  <h3 className="text-xl font-bold text-foreground">Proponé y votá herramientas</h3>
+                  <span className="text-xs text-brand font-semibold px-2 py-0.5 rounded-md bg-brand-light border border-brand-border/60">Votación abierta</span>
                 </div>
                 
                 {/* Error de voto contextual (no rompe la lista) */}
@@ -263,10 +270,11 @@ export default function TrustStrip() {
                                 type="button"
                                 onClick={() => handleVote(c.id)}
                                 aria-label={isVoted ? `Retirar voto por ${c.nombre}` : `Votar por ${c.nombre}`}
-                                className={`min-h-[40px] px-4 py-2 text-xs sm:text-sm font-medium rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer
-                                  ${isVoted 
-                                    ? 'bg-neutral-200 text-neutral-700 hover:bg-neutral-300 active:scale-95' 
-                                    : 'bg-brand text-white hover:bg-brand-hover active:scale-95 shadow-2xs'}`}
+                                className={`min-h-[40px] px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl transition-all duration-150 flex items-center justify-center gap-1.5 cursor-pointer active:scale-[0.97] ${
+                                  isVoted 
+                                    ? 'bg-neutral-200 text-neutral-700 hover:bg-neutral-300' 
+                                    : 'bg-brand text-white hover:bg-brand-hover shadow-xs'
+                                }`}
                               >
                                 {isVoted && <Check className="w-4 h-4" />}
                                 {isVoted ? 'Votado' : 'Votar'}
@@ -338,7 +346,7 @@ export default function TrustStrip() {
 
           {/* Bloque B: Guías para tu negocio (40%) - Distribución vertical corregida sin mt-auto */}
           <div className="w-full lg:w-[40%] flex flex-col">
-            <div className="bg-white rounded-2xl shadow-sm border border-border p-6 sm:p-8 flex-1 flex flex-col">
+            <div className="bg-white rounded-2xl shadow-md border border-slate-200/80 p-6 sm:p-8 flex-1 flex flex-col">
               <div className="mb-4">
                 <div className="flex items-center gap-2 mb-1.5">
                   <BookOpen className="h-4.5 w-4.5 text-brand" />
@@ -382,10 +390,10 @@ export default function TrustStrip() {
         {/* Bloque C: Gratis vs Pro */}
         <div className="w-full">
           <div className="mb-8 text-center md:text-left">
-            <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+            <h3 className="font-display text-2xl sm:text-3xl lg:text-4xl font-normal text-white tracking-normal leading-[1.2]">
               Calculadoras libres para todos, gestión avanzada para tu negocio
             </h3>
-            <p className="text-xs sm:text-sm text-slate-600 mt-2 max-w-2xl leading-relaxed">
+            <p className="text-xs sm:text-sm text-purple-100 mt-2 max-w-2xl leading-relaxed">
               Todas las calculadoras son 100% gratuitas y sin registro obligatorio. Pasate a PlayComun Pro únicamente si necesitás comprobantes con tu logo, historial guardado en la nube y funciones comerciales avanzadas.
             </p>
           </div>
@@ -393,7 +401,7 @@ export default function TrustStrip() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
             
             {/* Pro Column (Priorizada en valor y en mobile) */}
-            <div className="order-1 md:order-2 bg-purple-50/40 border-2 border-brand rounded-2xl p-6 sm:p-8 flex flex-col relative overflow-hidden shadow-xs">
+            <div className="order-1 md:order-2 bg-white border-2 border-brand rounded-2xl p-6 sm:p-8 flex flex-col relative overflow-hidden shadow-lg">
               <div className="absolute top-0 right-0 bg-brand text-white text-xs font-bold px-3 py-1 rounded-bl-lg shadow-2xs">
                 RECOMENDADO
               </div>
@@ -475,7 +483,7 @@ export default function TrustStrip() {
             </div>
 
             {/* Gratis Column - Transparente y respetuoso */}
-            <div className="order-2 md:order-1 bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 flex flex-col shadow-xs">
+            <div className="order-2 md:order-1 bg-white border border-slate-200/90 rounded-2xl p-6 sm:p-8 flex flex-col shadow-md">
               <h4 className="text-2xl font-bold text-slate-900 mb-1">Plan Gratuito</h4>
               <p className="text-xs text-slate-500 mb-6">
                 Para uso cotidiano y personal sin necesidad de tarjetas ni registros obligatorios.

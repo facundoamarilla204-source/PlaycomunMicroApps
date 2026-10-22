@@ -62,7 +62,7 @@ export function CocinaProGate({
             </div>
 
             <div>
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
+              <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl font-normal text-slate-900 tracking-normal leading-tight">
                 Costos exactos y recetario técnico para tu cocina
               </h1>
               <p className="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed">
@@ -72,14 +72,15 @@ export function CocinaProGate({
 
             {/* Capacidades reales de la microapp */}
             <div className="space-y-3.5 pt-2">
+              <h2 className="sr-only">Funciones y herramientas incluidas en Amasia</h2>
               <div className="flex items-start gap-3">
                 <div className="h-5 w-5 rounded-md bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5 border border-emerald-200/60">
                   <Check className="h-3.5 w-3.5" strokeWidth={2.5} />
                 </div>
                 <div>
-                  <h2 className="text-xs font-bold text-slate-900">
+                  <h3 className="text-xs font-bold text-slate-900">
                     Historial de precios por insumo
-                  </h2>
+                  </h3>
                   <p className="text-xs text-slate-600 mt-0.5 leading-normal">
                     Cargás la harina, manteca o carne una sola vez. Cuando actualizás el precio de compra, se recalculan automáticamente todas las recetas que usan ese insumo.
                   </p>
@@ -91,9 +92,9 @@ export function CocinaProGate({
                   <Check className="h-3.5 w-3.5" strokeWidth={2.5} />
                 </div>
                 <div>
-                  <h2 className="text-xs font-bold text-slate-900">
+                  <h3 className="text-xs font-bold text-slate-900">
                     Costeo por porción con factor de merma
-                  </h2>
+                  </h3>
                   <p className="text-xs text-slate-600 mt-0.5 leading-normal">
                     Calculá el Food Cost y el precio de venta sugerido según el margen que necesitás para que tu negocio sea rentable.
                   </p>
@@ -105,9 +106,9 @@ export function CocinaProGate({
                   <Check className="h-3.5 w-3.5" strokeWidth={2.5} />
                 </div>
                 <div>
-                  <h2 className="text-xs font-bold text-slate-900">
+                  <h3 className="text-xs font-bold text-slate-900">
                     Calculadora panadera (% Panadero)
-                  </h2>
+                  </h3>
                   <p className="text-xs text-slate-600 mt-0.5 leading-normal">
                     Balanceá fórmulas de masa madre, controlá hidrataciones y adaptá las cantidades automáticamente al tamaño de tus moldes.
                   </p>
@@ -119,9 +120,9 @@ export function CocinaProGate({
                   <Check className="h-3.5 w-3.5" strokeWidth={2.5} />
                 </div>
                 <div>
-                  <h2 className="text-xs font-bold text-slate-900">
+                  <h3 className="text-xs font-bold text-slate-900">
                     Modo elaboración para producción
-                  </h2>
+                  </h3>
                   <p className="text-xs text-slate-600 mt-0.5 leading-normal">
                     Pantalla optimizada para cocinar sin tocar el teclado, con pesos exactos y pasos ordenados.
                   </p>

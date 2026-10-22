@@ -25,7 +25,7 @@ export function PreservedDataNotice({ preservedCount, onUpgradeClick }: Props) {
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="text-sm font-bold font-sora text-amber-950 flex items-center gap-1.5">
+            <h4 className="text-sm font-bold text-amber-950 flex items-center gap-1.5">
               <span>Datos preservados de forma segura</span>
               <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-200/70 text-amber-900">
                 {preservedCount} {preservedCount === 1 ? 'movimiento' : 'movimientos'}

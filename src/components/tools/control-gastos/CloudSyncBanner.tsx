@@ -49,7 +49,7 @@ export function CloudSyncBanner({
             )}
           </div>
           <div>
-            <h4 className="text-sm font-bold font-sora text-slate-900">
+            <h4 className="text-sm font-bold text-slate-900">
               {syncSuccess
                 ? '¡Movimientos sincronizados con tu cuenta Pro!'
                 : 'Movimientos guardados en tu dispositivo listos para sincronizar'}

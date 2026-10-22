@@ -17,11 +17,18 @@ export default function MicroappsShowcase() {
     <section aria-labelledby="microapps-heading" className="bg-white py-14 sm:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-8 sm:mb-10">
-          <h2 id="microapps-heading" className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-            Conocé nuestras microapps
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-brand">
+              Entornos de trabajo
+            </span>
+            <span className="text-slate-300">•</span>
+            <span className="text-xs font-medium text-slate-500">PlayComun Online</span>
+          </div>
+          <h2 id="microapps-heading" className="font-display text-2xl font-normal tracking-normal text-foreground sm:text-3xl">
+            Microapps especializadas
           </h2>
-          <p className="mt-1.5 max-w-2xl text-sm text-foreground-muted sm:text-base">
-            Aplicaciones diseñadas para resolver tareas específicas con herramientas más completas y especializadas.
+          <p className="mt-1.5 max-w-2xl text-sm text-foreground-muted sm:text-base leading-relaxed">
+            Espacios de trabajo completos con base de datos, historial y herramientas técnicas para rubros que necesitan más que una calculadora rápida.
           </p>
         </div>
 

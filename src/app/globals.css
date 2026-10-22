@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand: #7c3aed;
-  --color-brand-hover: #6d28d9;
-  --color-brand-active: #5b21b6;
-  --color-brand-light: #f5f3ff;
+  --color-brand: #7f22fe;
+  --color-brand-hover: #701ce3;
+  --color-brand-active: #5f15c7;
+  --color-brand-light: #f5f0ff;
   --color-brand-border: #ddd6fe;
   
   --color-foreground: #0F172A;
@@ -21,12 +21,16 @@
   --color-free-text: #065F46;
   --color-free-border: #A7F3D0;
 
-  --color-pro-bg: #f5f3ff;
-  --color-pro-text: #7c3aed;
+  --color-pro-bg: #f5f0ff;
+  --color-pro-text: #7f22fe;
   --color-pro-border: #ddd6fe;
   
-  --font-sans: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
-  --font-heading: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
+  /* Sistema tipográfico oficial: Work Sans (funcional global) + Fugaz One (titulares display) */
+  --font-sans: var(--font-work-sans), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-heading: var(--font-work-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-fugaz), cursive, sans-serif;
+  --font-fugaz: var(--font-fugaz), cursive, sans-serif;
+  --font-sora: var(--font-work-sans), ui-sans-serif, system-ui, sans-serif;
 
   /* Emil Kowalski custom easing curves */
   --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
@@ -40,6 +44,17 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Utilidades tipográficas del sistema oficial */
+.font-display,
+.font-fugaz {
+  font-family: var(--font-fugaz), cursive, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+.font-sans {
+  font-family: var(--font-sans);
 }
 
 /* Numerals in tabular data and financial tables (Impeccable craft floor) */

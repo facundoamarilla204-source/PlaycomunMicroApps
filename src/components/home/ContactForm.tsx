@@ -60,7 +60,7 @@ export default function ContactForm({
     <div className={`w-full ${embedded ? "" : "mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 relative z-10"}`}>
       {!embedded && (
         <div className="text-center mb-12">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
+          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-normal text-slate-900 tracking-normal mb-4">
             {title}
           </h2>
           <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">

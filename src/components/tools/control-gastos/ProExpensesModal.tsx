@@ -45,7 +45,7 @@ export function ProExpensesModal({
               <span className="text-[11px] font-bold uppercase tracking-wider text-purple-700">
                 PlayComun Pro
               </span>
-              <h3 className="text-lg font-bold text-slate-900 font-sora">{featureTitle}</h3>
+              <h3 className="text-lg font-bold text-slate-900">{featureTitle}</h3>
             </div>
           </div>
 

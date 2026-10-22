@@ -13,14 +13,14 @@ export default function NotFound() {
   return (
     <div className="min-h-screen bg-[#fcfcfd] flex flex-col items-center justify-center py-12 sm:py-24">
       <div className="mx-auto max-w-2xl px-4 text-center">
-        <h1 className="text-9xl font-extrabold text-brand/20 mb-4 tracking-tighter">
+        <h1 className="font-display text-9xl font-normal text-brand/20 mb-4 tracking-normal">
           404
         </h1>
-        <h2 className="text-3xl font-bold text-slate-900 mb-6">
-          Che, no encontramos esa página
+        <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">
+          No encontramos la página que buscás
         </h2>
-        <p className="text-lg text-slate-500 mb-12 max-w-lg mx-auto">
-          Capaz escribiste mal la dirección o la herramienta ya no existe. Pero no te preocupes, tenemos un montón de otras opciones.
+        <p className="text-base text-slate-500 mb-10 max-w-lg mx-auto">
+          La dirección no existe o cambió de lugar. Podés buscar en el catálogo completo o volver a las herramientas principales.
         </p>
 
         <div className="bg-white border border-border/60 rounded-3xl p-8 shadow-sm mb-8">

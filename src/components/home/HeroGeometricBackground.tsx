@@ -68,10 +68,10 @@ export const HeroGeometricBackground = memo(function HeroGeometricBackground({
       aria-hidden="true"
     >
       {/* Base rich brand violet background fill: stays static in the pinned viewport */}
-      <div className="absolute inset-0 bg-[#401289]" />
+      <div className="absolute inset-0 bg-[#3d1083]" />
 
       {/* Subtle brand depth wash on left */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#380e7a] via-[#401289] to-[#4c1d95]" />
+      <div className="absolute inset-0 bg-gradient-to-br from-[#300c6d] via-[#3d1083] to-[#4c16a3]" />
 
       {/* Architectural columns container:
           - On desktop (lg+): occupies the right half (50%-48%), perfectly balancing the text on the left
@@ -102,13 +102,13 @@ export const HeroGeometricBackground = memo(function HeroGeometricBackground({
 
             {/* Subtle vertical gradients for vibrant elements */}
             <linearGradient id="hero-vibrant-grad-1" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#8b5cf6" />
-              <stop offset="100%" stopColor="#7c3aed" />
+              <stop offset="0%" stopColor="#9b5cff" />
+              <stop offset="100%" stopColor="#7f22fe" />
             </linearGradient>
 
             <linearGradient id="hero-vibrant-grad-2" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#7c3aed" />
-              <stop offset="100%" stopColor="#6d28d9" />
+              <stop offset="0%" stopColor="#7f22fe" />
+              <stop offset="100%" stopColor="#6916dc" />
             </linearGradient>
 
             <linearGradient id="hero-lavender-grad" x1="0" y1="0" x2="0" y2="1">

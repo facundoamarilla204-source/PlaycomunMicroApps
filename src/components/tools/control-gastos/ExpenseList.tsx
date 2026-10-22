@@ -55,7 +55,7 @@ export function ExpenseList({ expenses, isLoading, onEdit, onDelete }: Props) {
         <div className="w-12 h-12 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-3">
           <SearchX className="w-6 h-6" />
         </div>
-        <h3 className="text-base font-bold text-slate-900 font-sora mb-1">
+        <h3 className="text-base font-bold text-slate-900 mb-1">
           No hay movimientos registrados
         </h3>
         <p className="text-xs text-slate-500 max-w-sm mx-auto">

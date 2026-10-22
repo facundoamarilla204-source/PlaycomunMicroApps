@@ -31,17 +31,17 @@ export default function MicroappsPage() {
         {/* Encabezado editorial del catálogo */}
         <header className="border-b border-slate-200/80 pb-8">
           <div className="flex items-center gap-2 mb-2">
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
-              PlayComun Online
+            <span className="text-xs font-bold uppercase tracking-wider text-brand">
+              Microapps independientes
             </span>
             <span className="text-slate-300">•</span>
-            <span className="text-xs font-semibold text-brand">Suites Especializadas</span>
+            <span className="text-xs font-medium text-slate-500">PlayComun Online</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+          <h1 className="font-display text-2xl sm:text-4xl font-normal text-slate-900 tracking-normal">
             Catálogo de Microapps
           </h1>
           <p className="mt-2 text-sm sm:text-base text-slate-600 max-w-2xl leading-relaxed">
-            Aplicaciones completas con espacio de trabajo dedicado, persistencia en la nube y herramientas avanzadas para optimizar tareas profesionales complejas.
+            Espacios de trabajo independientes con guardado en la nube, historial y funciones especializadas para resolver la operatoria completa de tu rubro.
           </p>
         </header>
 
@@ -113,7 +113,7 @@ export default function MicroappsPage() {
             {/* Capacidades operativas incluidas */}
             <div className="p-6 sm:p-8 bg-slate-50/40">
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4">
-                Herramientas y capacidades incluidas en la suite
+                Módulos y herramientas incluidas en Amasia
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
@@ -121,11 +121,11 @@ export default function MicroappsPage() {
                   <div className="flex items-center gap-2 mb-1">
                     <BookOpen className="h-4 w-4 text-brand shrink-0" strokeWidth={1.75} />
                     <h4 className="text-xs font-bold text-slate-900">
-                      Recetario profesional y subrecetas
+                      Recetario técnico y subrecetas
                     </h4>
                   </div>
                   <p className="text-xs text-slate-600 leading-relaxed pl-6">
-                    Costeo técnico en tiempo real con mermas, rendimientos, composición recursiva y márgenes de ganancia.
+                    Costeo exacto en tiempo real con mermas, rendimientos, composición recursiva y márgenes de ganancia.
                   </p>
                 </div>
 
@@ -133,11 +133,11 @@ export default function MicroappsPage() {
                   <div className="flex items-center gap-2 mb-1">
                     <Scale className="h-4 w-4 text-brand shrink-0" strokeWidth={1.75} />
                     <h4 className="text-xs font-bold text-slate-900">
-                      Escalado gastronómico y adaptación de moldes
+                      Escalado por molde y factores de volumen
                     </h4>
                   </div>
                   <p className="text-xs text-slate-600 leading-relaxed pl-6">
-                    Conversión por factores de volumen, peso de masa objetivo y cambio geométrico de moldes redondos y rectangulares.
+                    Conversión automática por factores de volumen, peso de masa objetivo y cambio geométrico de moldes redondos y rectangulares.
                   </p>
                 </div>
 
@@ -145,7 +145,7 @@ export default function MicroappsPage() {
                   <div className="flex items-center gap-2 mb-1">
                     <Wheat className="h-4 w-4 text-amber-600 shrink-0" strokeWidth={1.75} />
                     <h4 className="text-xs font-bold text-slate-900">
-                      Calculadora panadera especializada
+                      Calculadora de porcentaje panadero
                     </h4>
                   </div>
                   <p className="text-xs text-slate-600 leading-relaxed pl-6">
@@ -157,7 +157,7 @@ export default function MicroappsPage() {
                   <div className="flex items-center gap-2 mb-1">
                     <Flame className="h-4 w-4 text-amber-600 shrink-0" strokeWidth={1.75} />
                     <h4 className="text-xs font-bold text-slate-900">
-                      Modo de elaboración en cocina y fichas PDF
+                      Modo elaboración en cocina y fichas PDF
                     </h4>
                   </div>
                   <p className="text-xs text-slate-600 leading-relaxed pl-6">
@@ -197,17 +197,17 @@ export default function MicroappsPage() {
         >
           <div>
             <h3 className="text-sm font-bold text-slate-900">
-              ¿Buscás una calculadora puntual?
+              ¿Buscás una calculadora rápida?
             </h3>
             <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">
-              Las microapps son suites especializadas. Si necesitás calcular costos de recetas individuales, presupuestos o porcentajes rápidos, consultá el catálogo general.
+              Las microapps son espacios completos de trabajo. Si solo necesitás calcular un costo puntual, un presupuesto o porcentajes sin registrarte, usá el catálogo general.
             </p>
           </div>
           <Link
             href="/herramientas"
             className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold transition-colors shrink-0 min-h-[40px]"
           >
-            <span>Ver calculadoras individuales</span>
+            <span>Explorar calculadoras gratuitas</span>
             <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </section>

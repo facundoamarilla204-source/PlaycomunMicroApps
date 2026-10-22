@@ -1,13 +1,20 @@
-import { Sora } from "next/font/google"
+import { Work_Sans, Fugaz_One } from "next/font/google"
 import type { Metadata } from "next"
 import { siteConfig } from "@/config/site"
 import "./globals.css"
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 
-const sora = Sora({
+const workSans = Work_Sans({
   subsets: ["latin"],
-  variable: "--font-sora",
+  variable: "--font-work-sans",
+  display: "swap",
+})
+
+const fugazOne = Fugaz_One({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-fugaz",
   display: "swap",
 })
 
@@ -55,7 +62,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="es-AR" className={`h-full ${sora.variable}`}>
+    <html lang="es-AR" className={`h-full ${workSans.variable} ${fugazOne.variable}`}>
       <body className="flex flex-col min-h-full bg-background text-foreground antialiased selection:bg-brand/20 selection:text-brand font-sans">
         {children}
         <Analytics />

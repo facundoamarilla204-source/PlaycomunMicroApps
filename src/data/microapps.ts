@@ -26,11 +26,11 @@ export const microapps: Microapp[] = [
     id: 'cocina-pro',
     name: 'Amasia',
     slug: 'cocina-pro',
-    tagline: 'Gestión gastronómica: recetas, ingredientes, costos y elaboraciones en un solo lugar',
+    tagline: 'Gestión gastronómica profesional: recetas técnicas, costeo con mermas y cálculo panadero',
     summary:
-      'Organizá tus recetas, calculá costos y gestioná tus elaboraciones gastronómicas desde una aplicación profesional.',
+      'Especializada para gastronomía y pastelería: biblioteca de insumos con historial de precios, recetas con costeo en tiempo real y modo de elaboración en cocina.',
     description:
-      'Microapp integral diseñada para cocineros, reposteros y panaderos. Administrá tu biblioteca personal de insumos con historial inmutable de precios, organizá tus recetas con costeo en tiempo real y gestioná formulaciones técnicas.',
+      'Microapp integral diseñada para cocineros, reposteros y panaderos. Administrá tu biblioteca personal de insumos con historial auditado de precios, organizá tus recetas con costeo en tiempo real y gestioná formulaciones técnicas.',
     badge: 'Pro',
     status: 'active',
     url: '/cocina-pro',

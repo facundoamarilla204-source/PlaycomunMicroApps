@@ -182,29 +182,32 @@ export default function ToolGrid({
 
       {/* Category Tabs */}
       <div className="mb-8 flex gap-2 overflow-x-auto pb-2 scrollbar-thin -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap">
-        {categories.map((cat) => (
-          <button
-            key={cat.id}
-            type="button"
-            onClick={() => handleCategoryChange(cat.id)}
-            className={`whitespace-nowrap flex items-center gap-1.5 rounded-xl px-3.5 py-2 min-h-[40px] text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand cursor-pointer ${
-              activeCategory === cat.id
-                ? "bg-slate-900 text-white shadow-2xs"
-                : "border border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"
-            }`}
-          >
-            {cat.name}
-            <span
-              className={`inline-flex items-center justify-center rounded-md text-[10px] px-1.5 py-0.2 font-mono ${
-                activeCategory === cat.id
-                  ? "bg-white/20 text-white"
-                  : "bg-slate-100 text-slate-600"
+        {categories.map((cat) => {
+          const isActive = activeCategory === cat.id
+          return (
+            <button
+              key={cat.id}
+              type="button"
+              onClick={() => handleCategoryChange(cat.id)}
+              className={`whitespace-nowrap flex items-center gap-1.5 rounded-xl px-3.5 py-2 min-h-[40px] text-xs font-semibold transition-[background-color,border-color,color,transform,box-shadow] duration-150 ease-out active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8249f1] focus-visible:ring-offset-2 cursor-pointer ${
+                isActive
+                  ? "bg-[#8249f1] border border-[#8249f1] text-white shadow-xs"
+                  : "border border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"
               }`}
             >
-              {cat.count}
-            </span>
-          </button>
-        ))}
+              <span>{cat.name}</span>
+              <span
+                className={`inline-flex items-center justify-center rounded-md text-[10px] px-1.5 py-0.5 font-mono font-medium transition-colors ${
+                  isActive
+                    ? "bg-white/20 text-white"
+                    : "bg-slate-100 text-slate-600"
+                }`}
+              >
+                {cat.count}
+              </span>
+            </button>
+          )
+        })}
       </div>
 
       {/* Favorites Row */}

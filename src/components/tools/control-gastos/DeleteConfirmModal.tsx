@@ -58,7 +58,7 @@ export function DeleteConfirmModal({
             </button>
           </div>
 
-          <h3 className="text-lg font-bold text-slate-900 font-sora mb-2">{title}</h3>
+          <h3 className="text-lg font-bold text-slate-900 mb-2">{title}</h3>
 
           <p className="text-sm text-slate-600 mb-3">{description}</p>
 

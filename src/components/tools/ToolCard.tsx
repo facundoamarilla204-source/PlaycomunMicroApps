@@ -71,12 +71,12 @@ export default function ToolCard({ tool, isFavorite = false }: ToolCardProps) {
 
   return (
     <div 
-      className="group relative flex flex-col h-full rounded-xl border border-slate-200/90 bg-white p-5 shadow-xs transition-all duration-200 hover:border-brand/40 hover:shadow-sm"
+      className="group relative flex flex-col h-full rounded-2xl border border-slate-200/90 bg-white p-5 shadow-xs transition-[border-color,box-shadow,transform] duration-200 ease-out hover:border-brand/40 hover:shadow-sm hover:-translate-y-0.5"
     >
       {/* Header row: Icon & Status / Favorite (Outside the main link to avoid nested interactive elements) */}
       <div className="flex items-center justify-between gap-3 mb-3.5 relative z-10">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-light text-brand transition-colors group-hover:bg-brand group-hover:text-white">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-light text-brand transition-colors group-hover:bg-brand group-hover:text-white">
             <Icon className="h-4.5 w-4.5" />
           </div>
           <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
@@ -97,7 +97,7 @@ export default function ToolCard({ tool, isFavorite = false }: ToolCardProps) {
       {/* Main Content with Stretched Link covering the rest of the card */}
       <Link 
         href={toolUrl}
-        className="flex-1 flex flex-col justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 rounded-lg after:absolute after:inset-0 after:rounded-xl after:content-['']"
+        className="flex-1 flex flex-col justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 rounded-xl after:absolute after:inset-0 after:rounded-2xl after:content-['']"
       >
         <div>
           {/* Título permitiendo hasta 2 líneas con altura uniforme para evitar saltos en la grilla */}

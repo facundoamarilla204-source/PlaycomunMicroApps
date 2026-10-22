@@ -66,7 +66,7 @@ export default function Hero() {
   return (
     <section
       ref={heroTrackRef}
-      className="relative bg-[#401289] text-white -mt-[72px] md:-mt-[80px] h-[150vh] sm:h-[175vh] lg:h-[200vh]"
+      className="relative bg-[#3d1083] text-white -mt-[72px] md:-mt-[80px] h-[150vh] sm:h-[175vh] lg:h-[200vh]"
     >
       {/* Sticky viewport stage: stays locked at top:0 in the viewport during the entire parting animation */}
       <div className="sticky top-0 h-screen h-[100dvh] w-full flex flex-col justify-center pt-28 pb-16 sm:pt-36 sm:pb-20 md:pt-40 md:pb-24 overflow-visible">
@@ -80,98 +80,98 @@ export default function Hero() {
             y: shouldReduceMotion ? 0 : contentY,
           }}
         >
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
 
-          <div className="lg:col-span-6 xl:col-span-6 max-w-xl xl:max-w-2xl">
-            <h1 className="text-3xl sm:text-5xl lg:text-5xl font-extrabold text-white tracking-tight leading-[1.15] mb-5 drop-shadow-xs">
-              Herramientas prácticas para tu{" "}
-              <span className="text-violet-200">negocio</span>
-            </h1>
+            <div className="lg:col-span-6 xl:col-span-6 max-w-xl xl:max-w-2xl">
+              <h1 className="font-display text-3xl sm:text-5xl lg:text-[3.25rem] font-normal text-white tracking-normal leading-[1.16] mb-5 drop-shadow-xs">
+                Herramientas y calculadoras para los{" "}
+                <span className="text-violet-200">números de tu negocio</span>
+              </h1>
 
-            <p className="text-base sm:text-lg text-violet-100/90 mb-8 max-w-xl leading-relaxed">
-              Calculá costos y márgenes de venta, convertí archivos y administrá tus gastos. Todo funciona directo en el navegador, sin necesidad de registros obligatorios.
-            </p>
+              <p className="text-base sm:text-lg text-violet-100/90 mb-8 max-w-xl leading-relaxed">
+                Calculá precios de venta, costos de recetas, IVA y aguinaldo. Generá presupuestos y editá PDF directo en tu navegador.
+              </p>
 
-            {/* Search form with live suggestions container */}
-            <div ref={searchContainerRef} className="relative max-w-lg">
-              <form onSubmit={handleSearch} className="flex gap-2">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4.5 w-4.5 text-slate-400 pointer-events-none" />
-                  <input
-                    id="hero-search-query"
-                    type="text"
-                    placeholder="Buscar calculadora, PDF, precios..."
-                    aria-label="Buscar calculadora, PDF o herramienta"
-                    value={query}
-                    onChange={(e) => {
-                      setQuery(e.target.value)
-                      setShowSuggestions(true)
-                    }}
-                    onFocus={() => setShowSuggestions(true)}
-                    className="w-full rounded-xl border border-white/20 bg-white text-slate-900 py-3 pl-10 pr-4 text-sm shadow-lg outline-none transition-all placeholder:text-slate-400 focus:ring-4 focus:ring-violet-400/40 min-h-[46px]"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  aria-label="Buscar en el catálogo"
-                  title="Buscar en el catálogo"
-                  className="shrink-0 inline-flex items-center justify-center gap-1.5 rounded-xl bg-violet-600 hover:bg-violet-500 active:bg-violet-700 px-5 py-3 text-white font-semibold text-sm shadow-md transition-all active:scale-[0.97] cursor-pointer min-h-[46px] border border-violet-400/30"
-                >
-                  <Search className="h-4.5 w-4.5" />
-                  <span className="hidden sm:inline">Buscar</span>
-                </button>
-              </form>
-
-              {/* Suggestions popover */}
-              {showSuggestions && matchingTools.length > 0 && (
-                <div
-                  className="absolute left-0 right-0 top-full mt-2 rounded-xl border border-slate-200 bg-white shadow-2xl p-2 z-30 animate-in fade-in zoom-in-95 duration-150"
-                  role="listbox"
-                  aria-label="Herramientas sugeridas"
-                >
-                  <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider px-2.5 py-1">
-                    Herramientas encontradas ({matchingTools.length})
+              {/* Search form with live suggestions container */}
+              <div ref={searchContainerRef} className="relative max-w-lg">
+                <form onSubmit={handleSearch} className="flex gap-2">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4.5 w-4.5 text-slate-400 pointer-events-none" />
+                    <input
+                      id="hero-search-query"
+                      type="text"
+                      placeholder="¿Qué necesitás resolver? Ej: precio de venta, aguinaldo, presupuesto, PDF..."
+                      aria-label="Buscar herramienta en el catálogo"
+                      value={query}
+                      onChange={(e) => {
+                        setQuery(e.target.value)
+                        setShowSuggestions(true)
+                      }}
+                      onFocus={() => setShowSuggestions(true)}
+                      className="w-full rounded-xl border border-white/20 bg-white text-slate-900 py-3 pl-10 pr-4 text-sm shadow-lg outline-none transition-all placeholder:text-slate-400 focus:ring-4 focus:ring-violet-400/40 min-h-[46px]"
+                    />
                   </div>
-                  <div className="flex flex-col gap-0.5 max-h-[380px] sm:max-h-[420px] overflow-y-auto overscroll-contain scrollbar-thin">
-                    {matchingTools.slice(0, 8).map((tool) => (
-                      <Link
-                        key={tool.slug}
-                        href={tool.customUrl || `/herramientas/${tool.slug}`}
-                        onClick={() => setShowSuggestions(false)}
-                        className="flex items-center justify-between p-2.5 rounded-lg hover:bg-violet-50 text-slate-800 hover:text-violet-700 transition-colors text-xs"
-                      >
-                        <div className="flex flex-col pr-2 min-w-0">
-                          <span className="font-semibold text-slate-900 truncate">{tool.name}</span>
-                          <span className="text-[11px] text-slate-500 line-clamp-1">{tool.description}</span>
-                        </div>
-                        <span className="text-[11px] font-medium text-brand shrink-0 inline-flex items-center gap-0.5 ml-2">
-                          Abrir <ArrowRight className="h-3 w-3" />
-                        </span>
-                      </Link>
-                    ))}
-                  </div>
-                  {matchingTools.length > 8 && (
-                    <div className="mt-1 pt-1.5 border-t border-slate-100 px-2.5 py-1.5 bg-slate-50/70 rounded-b-lg">
-                      <button
-                        type="button"
-                        onClick={handleSearch}
-                        className="text-xs text-brand font-semibold hover:underline text-left cursor-pointer block w-full"
-                      >
-                        Ver los {matchingTools.length} resultados en el catálogo completo →
-                      </button>
+                  <button
+                    type="submit"
+                    aria-label="Buscar en el catálogo"
+                    title="Buscar en el catálogo"
+                    className="shrink-0 inline-flex items-center justify-center gap-1.5 rounded-xl bg-violet-600 hover:bg-violet-500 active:bg-violet-700 px-5 py-3 text-white font-semibold text-sm shadow-md transition-all active:scale-[0.97] cursor-pointer min-h-[46px] border border-violet-400/30"
+                  >
+                    <Search className="h-4.5 w-4.5" />
+                    <span className="hidden sm:inline">Buscar</span>
+                  </button>
+                </form>
+
+                {/* Suggestions popover */}
+                {showSuggestions && matchingTools.length > 0 && (
+                  <div
+                    className="absolute left-0 right-0 top-full mt-2 rounded-xl border border-slate-200 bg-white shadow-2xl p-2 z-30 animate-in fade-in zoom-in-95 duration-150"
+                    role="listbox"
+                    aria-label="Herramientas sugeridas"
+                  >
+                    <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider px-2.5 py-1">
+                      Resultados en el catálogo ({matchingTools.length})
                     </div>
-                  )}
-                </div>
-              )}
+                    <div className="flex flex-col gap-0.5 max-h-[380px] sm:max-h-[420px] overflow-y-auto overscroll-contain scrollbar-thin">
+                      {matchingTools.slice(0, 8).map((tool) => (
+                        <Link
+                          key={tool.slug}
+                          href={tool.customUrl || `/herramientas/${tool.slug}`}
+                          onClick={() => setShowSuggestions(false)}
+                          className="flex items-center justify-between p-2.5 rounded-lg hover:bg-violet-50 text-slate-800 hover:text-violet-700 transition-colors text-xs"
+                        >
+                          <div className="flex flex-col pr-2 min-w-0">
+                            <span className="font-semibold text-slate-900 truncate">{tool.name}</span>
+                            <span className="text-[11px] text-slate-500 line-clamp-1">{tool.description}</span>
+                          </div>
+                          <span className="text-[11px] font-medium text-brand shrink-0 inline-flex items-center gap-0.5 ml-2">
+                            Abrir herramienta <ArrowRight className="h-3 w-3" />
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
+                    {matchingTools.length > 8 && (
+                      <div className="mt-1 pt-1.5 border-t border-slate-100 px-2.5 py-1.5 bg-slate-50/70 rounded-b-lg">
+                        <button
+                          type="button"
+                          onClick={handleSearch}
+                          className="text-xs text-brand font-semibold hover:underline text-left cursor-pointer block w-full"
+                        >
+                          Ver los {matchingTools.length} resultados en el catálogo completo →
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
             </div>
 
+            {/* Right side is open and unobstructed to showcase the geometric architecture */}
+            <div className="hidden lg:block lg:col-span-6 xl:col-span-6 pointer-events-none" aria-hidden="true" />
+
           </div>
-
-          {/* Right side is open and unobstructed to showcase the geometric architecture */}
-          <div className="hidden lg:block lg:col-span-6 xl:col-span-6 pointer-events-none" aria-hidden="true" />
-
-        </div>
-      </motion.div>
+        </motion.div>
       </div>
     </section>
   )

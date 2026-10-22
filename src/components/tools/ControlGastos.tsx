@@ -114,7 +114,7 @@ export function ControlGastos({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-5 border-b border-slate-200/80">
         <div>
           <div className="flex items-center gap-2.5 mb-1">
-            <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 font-sora">
+            <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
               Control de Gastos y Finanzas
             </h1>
             {isCloudMode ? (

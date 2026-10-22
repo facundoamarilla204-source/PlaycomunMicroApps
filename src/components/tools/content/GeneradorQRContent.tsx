@@ -2,7 +2,7 @@ import { Link as LinkIcon, QrCode, Smartphone, Printer, Settings } from "lucide-
 
 export function GeneradorQRContent() {
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 md:px-0 font-sora">
+    <div className="w-full max-w-4xl mx-auto px-4 md:px-0">
       <div className="prose prose-purple max-w-none">
         <h2>¿Qué es un Código QR Dinámico?</h2>
         <p>

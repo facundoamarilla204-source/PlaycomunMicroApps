@@ -22,7 +22,7 @@ export default function PlanesClient({
           <span className="text-xs font-bold uppercase tracking-wider text-purple-700 bg-purple-100 px-3 py-1 rounded-full">
             Planes y Precios
           </span>
-          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900">
+          <h1 className="font-display text-3xl sm:text-5xl font-normal tracking-normal text-slate-900">
             Herramientas para tu trabajo diario
           </h1>
           <p className="text-base sm:text-lg text-slate-600 max-w-2xl leading-relaxed">

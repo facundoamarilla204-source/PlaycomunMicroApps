@@ -126,7 +126,7 @@ export function ExpenseForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4 font-sans">
       <div className="flex items-center justify-between mb-1">
-        <h2 className="text-lg font-bold text-slate-900 font-sora">
+        <h2 className="text-lg font-bold text-slate-900">
           {editingExpense
             ? `Editar ${movementType === 'income' ? 'Ingreso' : 'Gasto'}`
             : 'Nuevo Movimiento'}

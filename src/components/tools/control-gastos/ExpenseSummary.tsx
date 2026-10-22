@@ -41,7 +41,7 @@ export function ExpenseSummary({ expenses, periodLabel }: Props) {
               {summary.incomeCount} {summary.incomeCount === 1 ? 'reg.' : 'regs.'}
             </span>
           </div>
-          <p className="text-2xl sm:text-3xl font-extrabold text-emerald-950 font-sora tracking-tight truncate">
+          <p className="text-2xl sm:text-3xl font-extrabold text-emerald-950 tracking-tight truncate tabular-nums">
             {formatter.format(summary.totalIncome)}
           </p>
         </div>
@@ -57,7 +57,7 @@ export function ExpenseSummary({ expenses, periodLabel }: Props) {
               {summary.expenseCount} {summary.expenseCount === 1 ? 'reg.' : 'regs.'}
             </span>
           </div>
-          <p className="text-2xl sm:text-3xl font-extrabold text-rose-950 font-sora tracking-tight truncate">
+          <p className="text-2xl sm:text-3xl font-extrabold text-rose-950 tracking-tight truncate tabular-nums">
             {formatter.format(summary.totalExpense)}
           </p>
         </div>
@@ -87,7 +87,7 @@ export function ExpenseSummary({ expenses, periodLabel }: Props) {
               {isPositiveBalance ? 'Superávit' : 'Déficit'}
             </span>
           </div>
-          <p className="text-2xl sm:text-3xl font-extrabold font-sora tracking-tight truncate text-white">
+          <p className="text-2xl sm:text-3xl font-extrabold tracking-tight truncate text-white tabular-nums">
             {formatter.format(summary.netBalance)}
           </p>
         </div>

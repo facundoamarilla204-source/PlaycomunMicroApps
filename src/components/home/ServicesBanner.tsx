@@ -10,7 +10,7 @@ export default function ServicesBanner() {
             
             <div className="max-w-xl">
               <img src="/otter-hero.png" alt="PlayComun Nutria" className="mb-8 h-32 w-auto object-contain drop-shadow-sm" />
-              <h2 className="mb-5 text-4xl sm:text-5xl font-extrabold text-[#0F172A] leading-[1.1] text-balance">
+              <h2 className="font-display mb-5 text-3xl sm:text-4xl lg:text-5xl font-normal text-[#0F172A] leading-[1.15] text-balance tracking-normal">
                 También desarrollamos software a medida
               </h2>
               <p className="mb-8 text-lg text-foreground-muted leading-relaxed max-w-md text-balance">

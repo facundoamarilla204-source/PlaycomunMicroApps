@@ -98,7 +98,7 @@ export function CategoryModal({
               <div className="w-9 h-9 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center">
                 <Tag className="w-5 h-5" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 font-sora">
+              <h3 className="text-lg font-bold text-slate-900">
                 Administrar Categorías
               </h3>
             </div>
