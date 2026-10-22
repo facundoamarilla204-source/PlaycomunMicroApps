@@ -187,7 +187,7 @@ export function ProFeatureModal({
               {!isAuthenticated ? (
                 <>
                   <Link
-                    href="/ingresar"
+                    href={`/ingresar?redirect=${encodeURIComponent(typeof window !== "undefined" ? window.location.pathname : "/herramientas/generador-facturas")}`}
                     onClick={onClose}
                     className="w-full py-2.5 px-4 rounded-xl font-semibold text-xs text-white bg-purple-600 hover:bg-purple-700 shadow-xs flex items-center justify-center gap-2 transition-colors"
                   >

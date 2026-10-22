@@ -21,6 +21,8 @@ import { RecipeSummarySidebar } from './costo-receta/RecipeSummarySidebar'
 import { RecipeList } from './costo-receta/RecipeList'
 import { AuthModal, DeleteConfirmModal, ProUpgradeModal } from './costo-receta/Modals'
 
+const RECIPE_DRAFT_KEY = 'playcomun_receta_draft'
+
 export function CostoReceta({ user }: { user: User | null }) {
   const [activeTab, setActiveTab] = useState<'create' | 'list'>('create')
   const [recipe, setRecipe] = useState<Recipe>(emptyRecipe)
@@ -37,6 +39,40 @@ export function CostoReceta({ user }: { user: User | null }) {
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null)
 
   const router = useRouter()
+
+  const handleGoToLogin = useCallback(() => {
+    const currentUrl = typeof window !== 'undefined'
+      ? (window.location.pathname + window.location.search)
+      : '/herramientas/calculadora-costo-receta'
+    router.push(`/ingresar?redirect=${encodeURIComponent(currentUrl)}`)
+  }, [router])
+
+  // Recuperar borrador guardado en localStorage al montar
+  useEffect(() => {
+    try {
+      const savedDraft = localStorage.getItem(RECIPE_DRAFT_KEY)
+      if (savedDraft) {
+        const parsed = JSON.parse(savedDraft)
+        if (parsed && typeof parsed === 'object' && (parsed.name || (parsed.ingredients && parsed.ingredients.length > 0))) {
+          setRecipe(parsed)
+        }
+      }
+    } catch (e) {
+      console.warn('Error al recuperar borrador de receta:', e)
+    }
+  }, [])
+
+  // Auto-guardar borrador en localStorage cuando hay cambios
+  useEffect(() => {
+    try {
+      const hasContent = (recipe.name && recipe.name.trim() !== '') || (recipe.ingredients && recipe.ingredients.length > 0)
+      if (hasContent) {
+        localStorage.setItem(RECIPE_DRAFT_KEY, JSON.stringify(recipe))
+      }
+    } catch (e) {
+      console.warn('Error al persistir borrador de receta:', e)
+    }
+  }, [recipe])
 
   // 1. Cargar estado de suscripción Pro y recetas desde el servidor
   const refreshUserAndRecipes = useCallback(async () => {
@@ -120,6 +156,9 @@ export function CostoReceta({ user }: { user: User | null }) {
       await refreshUserAndRecipes()
       setActiveTab('list')
       setRecipe(emptyRecipe)
+      try {
+        localStorage.removeItem(RECIPE_DRAFT_KEY)
+      } catch {}
     } catch (error: any) {
       console.error('Error al guardar la receta:', error)
       alert('Error al guardar la receta: ' + (error.message || 'Error desconocido'))
@@ -185,6 +224,9 @@ export function CostoReceta({ user }: { user: User | null }) {
   const handleNewRecipe = () => {
     setRecipe(emptyRecipe)
     setActiveTab('create')
+    try {
+      localStorage.removeItem(RECIPE_DRAFT_KEY)
+    } catch {}
   }
 
   const handleOpenProModalForFeature = (feature: 'save' | 'library' | 'duplicate' | 'edit') => {
@@ -311,7 +353,7 @@ export function CostoReceta({ user }: { user: User | null }) {
           onEditRecipe={handleEdit}
           onDuplicateRecipe={handleDuplicate}
           onDeleteRecipeRequest={(id) => setDeleteConfirmId(id)}
-          onGoToAuth={() => router.push('/ingresar')}
+          onGoToAuth={handleGoToLogin}
           onOpenProModal={handleOpenProModalForFeature}
         />
       )}
@@ -320,7 +362,7 @@ export function CostoReceta({ user }: { user: User | null }) {
       <AuthModal
         isOpen={showAuthDialog}
         onClose={() => setShowAuthDialog(false)}
-        onLogin={() => router.push('/ingresar')}
+        onLogin={handleGoToLogin}
       />
 
       <ProUpgradeModal
@@ -329,7 +371,7 @@ export function CostoReceta({ user }: { user: User | null }) {
         preservedCount={preservedCount}
         isAuthenticated={!!user}
         onClose={() => setShowProModal(false)}
-        onLogin={() => router.push('/ingresar')}
+        onLogin={handleGoToLogin}
       />
 
       <DeleteConfirmModal

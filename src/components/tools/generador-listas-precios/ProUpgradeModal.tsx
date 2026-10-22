@@ -106,7 +106,7 @@ export function ProUpgradeModal({
 
         <div className="flex flex-col sm:flex-row items-center gap-3">
           <Link
-            href="/precios"
+            href="/planes"
             className="w-full flex items-center justify-center gap-2 rounded-xl bg-purple-600 px-5 py-3 font-bold text-xs sm:text-sm text-white shadow-xs hover:bg-purple-700 active:bg-purple-800 transition-all text-center"
           >
             <span>Ver planes de suscripción</span>

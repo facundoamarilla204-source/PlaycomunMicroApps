@@ -4,8 +4,8 @@ import { useState, useRef, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Search, ArrowRight } from "lucide-react"
-import Image from "next/image"
 import { tools } from "@/data/tools"
+import { HeroGeometricBackground } from "./HeroGeometricBackground"
 
 const QUICK_CHIPS = [
   { label: "Calculadora de precios", slug: "calculadora-precios" },
@@ -60,16 +60,20 @@ export default function Hero() {
   }, [])
 
   return (
-    <section className="relative overflow-hidden bg-slate-50/50 pt-12 pb-10 sm:pt-16 sm:pb-14 md:pt-20 md:pb-16 border-b border-slate-200/80">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-8 items-center">
+    <section className="relative overflow-hidden bg-[#401289] text-white -mt-[72px] md:-mt-[80px] min-h-screen min-h-[100dvh] flex flex-col justify-center pt-28 pb-16 sm:pt-36 sm:pb-20 md:pt-40 md:pb-24 border-b border-violet-950/40">
+      {/* Geometric background reproducing the Bauhaus reference design in brand colors */}
+      <HeroGeometricBackground />
 
-          <div className="lg:col-span-7 max-w-2xl">
-            <h1 className="text-3xl sm:text-5xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-[1.15] mb-5">
-              Calculadoras y herramientas prácticas para tu <span className="text-brand">negocio</span>
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+
+          <div className="lg:col-span-6 xl:col-span-6 max-w-xl xl:max-w-2xl">
+            <h1 className="text-3xl sm:text-5xl lg:text-5xl font-extrabold text-white tracking-tight leading-[1.15] mb-5 drop-shadow-xs">
+              Calculadoras y herramientas prácticas para tu{" "}
+              <span className="text-violet-200">negocio</span>
             </h1>
 
-            <p className="text-base sm:text-lg text-slate-600 mb-8 max-w-xl leading-relaxed">
+            <p className="text-base sm:text-lg text-violet-100/90 mb-8 max-w-xl leading-relaxed">
               Calculá costos y márgenes de venta, convertí archivos y administrá tus gastos. Todo funciona directo en el navegador, sin necesidad de registros obligatorios.
             </p>
 
@@ -89,14 +93,14 @@ export default function Hero() {
                       setShowSuggestions(true)
                     }}
                     onFocus={() => setShowSuggestions(true)}
-                    className="w-full rounded-xl border border-slate-300 bg-white py-3 pl-10 pr-4 text-sm text-slate-900 shadow-xs outline-none transition-colors placeholder:text-slate-400 focus:border-brand focus:ring-2 focus:ring-brand/20 min-h-[44px]"
+                    className="w-full rounded-xl border border-white/20 bg-white text-slate-900 py-3 pl-10 pr-4 text-sm shadow-lg outline-none transition-all placeholder:text-slate-400 focus:ring-4 focus:ring-violet-400/40 min-h-[46px]"
                   />
                 </div>
                 <button
                   type="submit"
                   aria-label="Buscar en el catálogo"
                   title="Buscar en el catálogo"
-                  className="shrink-0 inline-flex items-center justify-center gap-1.5 rounded-xl bg-brand px-5 py-3 text-white font-semibold text-sm shadow-xs transition-colors hover:bg-brand-hover active:bg-brand-active cursor-pointer min-h-[44px]"
+                  className="shrink-0 inline-flex items-center justify-center gap-1.5 rounded-xl bg-violet-600 hover:bg-violet-500 active:bg-violet-700 px-5 py-3 text-white font-semibold text-sm shadow-md transition-all active:scale-[0.97] cursor-pointer min-h-[46px] border border-violet-400/30"
                 >
                   <Search className="h-4.5 w-4.5" />
                   <span className="hidden sm:inline">Buscar</span>
@@ -106,7 +110,7 @@ export default function Hero() {
               {/* Suggestions popover */}
               {showSuggestions && matchingTools.length > 0 && (
                 <div 
-                  className="absolute left-0 right-0 top-full mt-2 rounded-xl border border-slate-200 bg-white shadow-lg p-2 z-30 animate-in fade-in zoom-in-95 duration-150"
+                  className="absolute left-0 right-0 top-full mt-2 rounded-xl border border-slate-200 bg-white shadow-2xl p-2 z-30 animate-in fade-in zoom-in-95 duration-150"
                   role="listbox"
                   aria-label="Herramientas sugeridas"
                 >
@@ -119,7 +123,7 @@ export default function Hero() {
                         key={tool.slug}
                         href={tool.customUrl || `/herramientas/${tool.slug}`}
                         onClick={() => setShowSuggestions(false)}
-                        className="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 text-slate-800 hover:text-brand transition-colors text-xs"
+                        className="flex items-center justify-between p-2 rounded-lg hover:bg-violet-50 text-slate-800 hover:text-violet-700 transition-colors text-xs"
                       >
                         <div className="flex flex-col pr-2">
                           <span className="font-semibold text-slate-900">{tool.name}</span>
@@ -147,13 +151,13 @@ export default function Hero() {
             </div>
 
             {/* Quick search chips */}
-            <div className="mt-4 flex flex-wrap items-center gap-1.5 sm:gap-2">
-              <span className="text-xs font-semibold text-slate-400 mr-1">Frecuentes:</span>
+            <div className="mt-5 flex flex-wrap items-center gap-1.5 sm:gap-2">
+              <span className="text-xs font-semibold text-violet-200/90 mr-1">Frecuentes:</span>
               {QUICK_CHIPS.map((chip) => (
                 <Link
                   key={chip.slug}
                   href={`/herramientas/${chip.slug}`}
-                  className="rounded-lg border border-slate-200 bg-white/90 hover:bg-white hover:border-brand/40 hover:text-brand px-2.5 py-1 text-xs font-medium text-slate-700 transition-colors shadow-2xs"
+                  className="rounded-lg border border-white/20 bg-white/10 hover:bg-white/20 hover:border-white/40 px-2.5 py-1 text-xs font-medium text-white transition-all shadow-xs backdrop-blur-xs active:scale-[0.97]"
                 >
                   {chip.label}
                 </Link>
@@ -162,22 +166,8 @@ export default function Hero() {
 
           </div>
 
-          <div className="lg:col-span-5 flex justify-center lg:justify-end">
-            <div className="relative w-full max-w-[420px] aspect-square flex items-center justify-center">
-              {/* Soft ambient aura matching the brand violet tone */}
-              <div className="absolute w-3/4 h-3/4 rounded-full bg-brand/10 blur-3xl pointer-events-none" />
-              <Image
-                src="/otter-hero.png"
-                alt="Mascota de PlayComun"
-                fill
-                sizes="(max-width: 768px) 100vw, 420px"
-                className="object-contain object-center select-none relative z-10"
-                priority
-                unoptimized
-                onContextMenu={(e) => e.preventDefault()}
-              />
-            </div>
-          </div>
+          {/* Right side is open and unobstructed to showcase the geometric architecture */}
+          <div className="hidden lg:block lg:col-span-6 xl:col-span-6 pointer-events-none" aria-hidden="true" />
 
         </div>
       </div>

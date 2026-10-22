@@ -17,7 +17,7 @@ export default async function AccountPage() {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect("/ingresar")
+    redirect("/ingresar?redirect=/cuenta")
   }
 
   const userInitial = user.email?.charAt(0).toUpperCase() || "U"

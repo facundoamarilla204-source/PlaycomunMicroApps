@@ -10,9 +10,14 @@ export const metadata = buildMetadata({
 })
 
 export default async function LoginPage(props: {
-  searchParams: Promise<{ error?: string }>
+  searchParams: Promise<{ error?: string; redirect?: string; next?: string; callbackUrl?: string }>
 }) {
   const searchParams = await props.searchParams
+  const rawRedirect = searchParams?.redirect || searchParams?.next || searchParams?.callbackUrl || ''
+  const redirectTo = (rawRedirect.startsWith('/') && !rawRedirect.startsWith('//') && !rawRedirect.startsWith('/\\'))
+    ? rawRedirect
+    : ''
+
   return (
     <div className="max-w-sm mx-auto w-full">
       <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 mb-2">
@@ -29,6 +34,10 @@ export default async function LoginPage(props: {
       )}
 
       <form action={login} className="space-y-4">
+        {redirectTo && (
+          <input type="hidden" name="redirectTo" value={redirectTo} />
+        )}
+
         <div className="space-y-1.5">
           <label htmlFor="email" className="text-xs font-bold uppercase tracking-wider text-slate-700 block">
             Correo electrónico
@@ -72,7 +81,10 @@ export default async function LoginPage(props: {
 
       <p className="text-center text-xs text-slate-500 mt-6 font-medium">
         ¿Aún no tenés cuenta?{" "}
-        <Link href="/registro" className="text-purple-700 hover:text-purple-800 font-bold transition-colors">
+        <Link 
+          href={redirectTo ? `/registro?redirect=${encodeURIComponent(redirectTo)}` : "/registro"} 
+          className="text-purple-700 hover:text-purple-800 font-bold transition-colors"
+        >
           Creá tu cuenta
         </Link>
       </p>

@@ -142,7 +142,7 @@ export function FavoritesDrawer({
                 <p className="text-purple-800 text-[11px] leading-relaxed">
                   Tus paletas se guardan de forma privada en este navegador. Para acceder a ellas desde cualquier dispositivo, podés{" "}
                   <Link
-                    href="/ingresar"
+                    href={`/ingresar?redirect=${encodeURIComponent(typeof window !== "undefined" ? window.location.pathname : "/herramientas/generador-paletas")}`}
                     className="font-bold underline hover:text-purple-950 text-purple-900"
                   >
                     iniciar sesión gratis

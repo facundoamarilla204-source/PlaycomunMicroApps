@@ -13,7 +13,7 @@ export default async function DashboardLayout({
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect("/ingresar")
+    redirect("/ingresar?redirect=/cuenta")
   }
 
   const isPro = await isProUser(user.id)
