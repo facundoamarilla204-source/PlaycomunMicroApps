@@ -145,7 +145,7 @@ export default function ToolGrid({
   const activeCategoryName = categories.find(c => c.id === activeCategory)?.name || "Herramientas"
 
   return (
-    <section className={`py-10 sm:py-14 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 ${isPending ? 'opacity-80 transition-opacity' : 'opacity-100 transition-opacity'}`}>
+    <section id="herramientas" className={`py-10 sm:py-14 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 ${isPending ? 'opacity-80 transition-opacity' : 'opacity-100 transition-opacity'}`}>
       
       {/* Filters & Search section */}
       {(showSearch || showTypeFilter) && (

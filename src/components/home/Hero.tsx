@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Search, ArrowRight } from "lucide-react"
+import { motion, useScroll, useTransform, useReducedMotion } from "motion/react"
 import { tools } from "@/data/tools"
 import { HeroGeometricBackground } from "./HeroGeometricBackground"
 
@@ -12,6 +13,17 @@ export default function Hero() {
   const [showSuggestions, setShowSuggestions] = useState(false)
   const router = useRouter()
   const searchContainerRef = useRef<HTMLDivElement>(null)
+  const heroTrackRef = useRef<HTMLElement>(null)
+  const shouldReduceMotion = useReducedMotion()
+
+  const { scrollYProgress } = useScroll({
+    target: heroTrackRef,
+    offset: ["start start", "end end"],
+  })
+
+  // Subtle content exit motion when the columns have vanished and hero is about to unpin
+  const contentOpacity = useTransform(scrollYProgress, [0.65, 0.95], [1, 0.2])
+  const contentY = useTransform(scrollYProgress, [0.65, 0.95], [0, -35])
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -52,11 +64,22 @@ export default function Hero() {
   }, [])
 
   return (
-    <section className="relative bg-[#401289] text-white -mt-[72px] md:-mt-[80px] min-h-screen min-h-[100dvh] flex flex-col justify-center pt-28 pb-16 sm:pt-36 sm:pb-20 md:pt-40 md:pb-24">
-      {/* Geometric background reproducing the Bauhaus reference design in brand colors */}
-      <HeroGeometricBackground />
+    <section
+      ref={heroTrackRef}
+      className="relative bg-[#401289] text-white -mt-[72px] md:-mt-[80px] h-[150vh] sm:h-[175vh] lg:h-[200vh]"
+    >
+      {/* Sticky viewport stage: stays locked at top:0 in the viewport during the entire parting animation */}
+      <div className="sticky top-0 h-screen h-[100dvh] w-full flex flex-col justify-center pt-28 pb-16 sm:pt-36 sm:pb-20 md:pt-40 md:pb-24 overflow-visible">
+        {/* Geometric background reproducing the Bauhaus reference design in brand colors */}
+        <HeroGeometricBackground containerRef={heroTrackRef} />
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">
+        <motion.div
+          className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full"
+          style={{
+            opacity: shouldReduceMotion ? 1 : contentOpacity,
+            y: shouldReduceMotion ? 0 : contentY,
+          }}
+        >
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
 
           <div className="lg:col-span-6 xl:col-span-6 max-w-xl xl:max-w-2xl">
@@ -148,6 +171,7 @@ export default function Hero() {
           <div className="hidden lg:block lg:col-span-6 xl:col-span-6 pointer-events-none" aria-hidden="true" />
 
         </div>
+      </motion.div>
       </div>
     </section>
   )

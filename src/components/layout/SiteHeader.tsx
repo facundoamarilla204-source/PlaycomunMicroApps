@@ -25,15 +25,30 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
   const isAuthenticated = !!user
   const categories = getCategories().filter(c => c.id !== "todas")
 
+  const isHome = pathname === "/" || (typeof window !== "undefined" && window.location.pathname === "/")
+
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10)
+      const isHomePage = pathname === "/" || (typeof window !== "undefined" && window.location.pathname === "/")
+      if (isHomePage) {
+        const nextSection = document.getElementById("herramientas")
+        if (nextSection) {
+          const rect = nextSection.getBoundingClientRect()
+          // Only switch to solid white header when the white content section reaches the navbar (<= 80px)
+          setIsScrolled(rect.top <= 80)
+        } else {
+          setIsScrolled(window.scrollY > window.innerHeight * 0.9)
+        }
+      } else {
+        setIsScrolled(window.scrollY > 10)
+      }
     }
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
 
-  const isHome = pathname === "/"
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    handleScroll()
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [pathname])
+
   const isTransparent = isHome && !isScrolled
 
   return (
