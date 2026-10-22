@@ -6,8 +6,8 @@ import { RecipeEditor } from '@/components/cocina-pro/recetas/editor/RecipeEdito
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Nueva Receta · Cocina Pro',
-  description: 'Creá una nueva receta técnica con escandallo dinámico, ingredientes de tu biblioteca y pasos de elaboración en Cocina Pro.',
+  title: 'Nueva Receta · Amasia',
+  description: 'Creá una nueva receta técnica con escandallo dinámico, ingredientes de tu biblioteca y pasos de elaboración en Amasia.',
 }
 
 export default async function NuevaRecetaPage() {

@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { createClient } from '@/utils/supabase/server'
 import { isProUser } from '@/lib/pro'
-import { ChefHat } from 'lucide-react'
+import { AmasiaLogo } from '@/components/microapps/AmasiaLogo'
 import { CocinaProGate } from '@/components/cocina-pro/CocinaProGate'
 import { CocinaProSidebar } from '@/components/cocina-pro/CocinaProSidebar'
 import { CocinaProBottomNav } from '@/components/cocina-pro/CocinaProBottomNav'
@@ -11,15 +11,18 @@ export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: {
-    default: 'Cocina Pro · PlayComun Online',
-    template: '%s | Cocina Pro',
+    default: 'Amasia · PlayComun Online',
+    template: '%s | Amasia',
   },
   description:
-    'Microapp independiente de gestión gastronómica: biblioteca de ingredientes, historial inmutable de precios y recetario técnico.',
+    'Amasia: gestión gastronómica integral. Recetas, ingredientes, costos y elaboraciones en un solo lugar.',
   manifest: '/cocina-pro/manifest.json',
   icons: {
-    icon: [{ url: '/favicon.png', type: 'image/png' }],
-    apple: [{ url: '/favicon.png', type: 'image/png' }],
+    icon: [
+      { url: '/amasia/favicon-64.png', sizes: '64x64', type: 'image/png' },
+      { url: '/amasia/icon-192.png', sizes: '192x192', type: 'image/png' },
+    ],
+    apple: [{ url: '/amasia/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }],
   },
 }
 
@@ -58,12 +61,12 @@ export default async function CocinaProLayout({
             href="/cocina-pro"
             className="flex items-center gap-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-lg group min-w-0"
           >
-            <div className="h-8 w-8 rounded-lg bg-slate-900 text-white flex items-center justify-center shadow-xs shrink-0 group-hover:bg-brand transition-colors">
-              <ChefHat className="h-4.5 w-4.5 text-white" strokeWidth={1.75} />
+            <div className="h-9 w-9 shrink-0 flex items-center justify-center">
+              <AmasiaLogo variant="symbol" className="h-9 w-9" />
             </div>
             <div className="min-w-0">
               <span className="text-sm font-bold text-slate-900 leading-tight block truncate">
-                Cocina Pro
+                Amasia
               </span>
               <span className="text-[10px] text-slate-500 font-medium leading-tight block truncate">
                 Gestión gastronómica

@@ -1,5 +1,6 @@
 import Hero from "@/components/home/Hero"
 import ToolGrid from "@/components/home/ToolGrid"
+import MicroappsShowcase from "@/components/home/MicroappsShowcase"
 import TrustStrip from "@/components/home/TrustStrip"
 import ServicesBanner from "@/components/home/ServicesBanner"
 import ContactForm from "@/components/home/ContactForm"
@@ -50,6 +51,7 @@ export default async function Home() {
       <JsonLd data={jsonLdData} />
       <Hero />
       <ToolGrid userFavorites={userFavorites} isHome={true} limit={12} />
+      <MicroappsShowcase />
       <TrustStrip />
       <ServicesBanner />
       <ContactForm />

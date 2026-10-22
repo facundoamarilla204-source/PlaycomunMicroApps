@@ -10,8 +10,8 @@ import {
   ArrowLeft,
   User as UserIcon,
   Wheat,
-  ChefHat,
 } from 'lucide-react'
+import { AmasiaLogo } from '@/components/microapps/AmasiaLogo'
 
 export function CocinaProSidebar({ userEmail }: { userEmail?: string }) {
   const pathname = usePathname()
@@ -52,7 +52,7 @@ export function CocinaProSidebar({ userEmail }: { userEmail?: string }) {
   return (
     <aside
       className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 bg-white border-r border-slate-200/90 z-30"
-      aria-label="Navegación de Cocina Pro"
+      aria-label="Navegación de Amasia"
     >
       {/* Encabezado del espacio de trabajo */}
       <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between">
@@ -60,12 +60,12 @@ export function CocinaProSidebar({ userEmail }: { userEmail?: string }) {
           href="/cocina-pro"
           className="flex items-center gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-lg group min-w-0"
         >
-          <div className="h-9 w-9 rounded-xl bg-slate-900 text-white flex items-center justify-center shadow-xs group-hover:bg-brand transition-colors shrink-0">
-            <ChefHat className="h-5 w-5 text-white" strokeWidth={1.75} />
+          <div className="h-10 w-10 shrink-0 flex items-center justify-center">
+            <AmasiaLogo variant="symbol" className="h-10 w-10" />
           </div>
           <div className="min-w-0">
             <span className="text-sm font-bold text-slate-900 tracking-tight block leading-tight truncate">
-              Cocina Pro
+              Amasia
             </span>
             <span className="text-[11px] text-slate-500 font-medium block leading-tight mt-0.5 truncate">
               Gestión gastronómica

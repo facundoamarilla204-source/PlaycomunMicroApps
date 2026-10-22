@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { microapps } from '@/data/microapps'
 import {
-  ChefHat,
   ArrowRight,
   BookOpen,
   Wheat,
@@ -12,6 +11,7 @@ import {
   Sparkles,
   ArrowUpRight,
 } from 'lucide-react'
+import { AmasiaLogo } from '@/components/microapps/AmasiaLogo'
 
 export const metadata: Metadata = {
   title: 'Catálogo de Microapps · PlayComun Online',
@@ -45,15 +45,15 @@ export default function MicroappsPage() {
           </p>
         </header>
 
-        {/* Ficha principal de producto: Cocina Pro */}
-        <section aria-label="Microapp destacada: Cocina Pro">
+        {/* Ficha principal de producto: Amasia */}
+        <section aria-label="Microapp destacada: Amasia">
           <article className="bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-xs hover:border-slate-300 transition-colors">
             {/* Cabecera de la ficha */}
             <div className="p-6 sm:p-8 border-b border-slate-100">
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                 <div className="flex items-start gap-4">
-                  <div className="h-12 w-12 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0 shadow-xs">
-                    <ChefHat className="h-6 w-6 text-white" strokeWidth={1.75} />
+                  <div className="h-14 w-14 shrink-0 flex items-center justify-center">
+                    <AmasiaLogo variant="symbol" className="h-14 w-14" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2.5 flex-wrap">
@@ -61,7 +61,7 @@ export default function MicroappsPage() {
                         {cocinaPro.name}
                       </h2>
                       <span className="text-xs font-medium text-slate-500">
-                        Obrador y costeo profesional
+                        Gestión gastronómica
                       </span>
                     </div>
                     <p className="text-xs sm:text-sm text-slate-600 mt-1">
@@ -74,7 +74,7 @@ export default function MicroappsPage() {
                   href={cocinaPro.url}
                   className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-brand text-white text-xs font-bold hover:bg-brand-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand shadow-xs transition-colors min-h-[44px] shrink-0 active:scale-[0.98]"
                 >
-                  <span>Abrir Cocina Pro</span>
+                  <span>Abrir Amasia</span>
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>

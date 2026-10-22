@@ -79,7 +79,7 @@ describe('Cocina Pro - Fase 4: Microapps y Biblioteca de Ingredientes', () => {
     it('debe contener la microapp Cocina Pro con estado activo y ruta funcional', () => {
       const cocinaPro = getMicroappBySlug('cocina-pro')
       expect(cocinaPro).toBeDefined()
-      expect(cocinaPro?.name).toBe('Cocina Pro')
+      expect(cocinaPro?.name).toBe('Amasia')
       expect(cocinaPro?.url).toBe('/cocina-pro')
       expect(cocinaPro?.status).toBe('active')
       expect(cocinaPro?.badge).toBe('Pro')

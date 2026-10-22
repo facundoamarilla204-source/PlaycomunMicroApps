@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import Link from 'next/link'
-import { Calculator, List, Plus, Crown, Lock, ChefHat, ArrowRight } from 'lucide-react'
+import { Calculator, List, Plus, Crown, Lock, ArrowRight } from 'lucide-react'
+import { AmasiaLogo } from '@/components/microapps/AmasiaLogo'
 import { User } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
 import {
@@ -236,21 +237,21 @@ export function CostoReceta({ user }: { user: User | null }) {
 
   return (
     <div className="w-full max-w-6xl mx-auto space-y-6">
-      {/* Banner de acceso a la microapp independiente Cocina Pro */}
+      {/* Banner de acceso a la microapp gastronómica Amasia */}
       <div className="bg-purple-50/70 border border-purple-100 rounded-xl p-3 sm:px-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
         <div className="flex items-center gap-2.5">
-          <span className="p-1.5 rounded-lg bg-purple-100 text-brand">
-            <ChefHat className="h-4 w-4" />
+          <span className="h-7 w-7 shrink-0 flex items-center justify-center">
+            <AmasiaLogo variant="symbol" className="h-7 w-7" />
           </span>
           <span className="text-xs text-slate-700">
-            ¿Querés organizar tu biblioteca de insumos y precios de compra? Conocé la nueva microapp <strong>Cocina Pro</strong>.
+            ¿Querés organizar tu biblioteca de insumos y precios de compra? Conocé la suite gastronómica <strong>Amasia</strong>.
           </span>
         </div>
         <Link
           href="/cocina-pro"
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand hover:underline shrink-0"
         >
-          <span>Abrir Cocina Pro</span>
+          <span>Abrir Amasia</span>
           <ArrowRight className="h-3.5 w-3.5" />
         </Link>
       </div>

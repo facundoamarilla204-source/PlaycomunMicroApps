@@ -77,7 +77,7 @@ export const HeroGeometricBackground = memo(function HeroGeometricBackground() {
 
             <linearGradient id="hero-white-grad" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#ffffff" />
-              <stop offset="100%" stopColor="#f8fafc" />
+              <stop offset="100%" stopColor="#ffffff" />
             </linearGradient>
           </defs>
 
@@ -234,8 +234,6 @@ export const HeroGeometricBackground = memo(function HeroGeometricBackground() {
         </svg>
       </div>
 
-      {/* Subtle bottom border line */}
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-white/10 pointer-events-none" />
     </div>
   )
 })

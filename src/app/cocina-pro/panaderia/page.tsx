@@ -5,9 +5,9 @@ import { BakersCalculator } from '@/components/cocina-pro/panaderia/BakersCalcul
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Calculadora de Panadería y Porcentaje Panadero · Cocina Pro',
+  title: 'Calculadora de Panadería y Porcentaje Panadero · Amasia',
   description:
-    'Calculá porcentajes panaderos, balanceá hidratación tradicional y de líquidos, y formulá recetas de pan y pizza en Cocina Pro.',
+    'Calculá porcentajes panaderos, balanceá hidratación tradicional y de líquidos, y formulá recetas de pan y pizza en Amasia.',
 }
 
 export default async function CocinaProPanaderiaPage() {

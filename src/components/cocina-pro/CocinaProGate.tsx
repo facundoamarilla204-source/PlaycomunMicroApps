@@ -1,7 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { ChefHat, ArrowLeft, Scale, Layers, Wheat, Flame, Check } from 'lucide-react'
+import { ArrowLeft, Scale, Layers, Wheat, Flame, Check } from 'lucide-react'
+import { AmasiaLogo } from '@/components/microapps/AmasiaLogo'
 
 interface CocinaProGateProps {
   isAuthenticated: boolean
@@ -46,13 +47,13 @@ export function CocinaProGate({
           
           {/* Columna izquierda: Propuesta de valor real y acceso */}
           <div className="lg:col-span-6 space-y-6">
-            <div className="flex items-center gap-2.5">
-              <div className="h-10 w-10 rounded-xl bg-brand/10 text-brand flex items-center justify-center font-bold">
-                <ChefHat className="h-5 w-5" strokeWidth={1.8} />
+            <div className="flex items-center gap-3">
+              <div className="h-12 w-12 shrink-0 flex items-center justify-center">
+                <AmasiaLogo variant="symbol" className="h-12 w-12" />
               </div>
               <div>
                 <span className="text-xs font-bold text-brand uppercase tracking-wider block">
-                  Microapp de Gestión Gastronómica
+                  Amasia · Gestión Gastronómica
                 </span>
                 <span className="text-xs text-slate-500">
                   Plan PlayComun Pro
@@ -139,7 +140,7 @@ export function CocinaProGate({
                     Ver planes y precios de suscripción
                   </Link>
                   <p className="text-xs text-slate-500">
-                    Cocina Pro requiere una suscripción Pro activa. Podés cancelar en cualquier momento desde tu panel de cuenta.
+                    Amasia requiere una suscripción Pro activa. Podés cancelar en cualquier momento desde tu panel de cuenta.
                   </p>
                 </>
               ) : (
@@ -282,7 +283,7 @@ export function CocinaProGate({
 
       {/* Pie minimalista */}
       <footer className="w-full border-t border-slate-200/80 py-4 px-4 sm:px-6 text-center text-xs text-slate-500">
-        PlayComun Herramientas · Espacio Cocina Pro
+        PlayComun Herramientas · Espacio Amasia
       </footer>
     </div>
   )

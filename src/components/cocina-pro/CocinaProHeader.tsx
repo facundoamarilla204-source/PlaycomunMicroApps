@@ -1,7 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { ChefHat, ArrowLeft, ShieldCheck, User as UserIcon } from 'lucide-react'
+import { ArrowLeft, ShieldCheck, User as UserIcon } from 'lucide-react'
+import { AmasiaLogo } from '@/components/microapps/AmasiaLogo'
 
 export function CocinaProHeader({
   title,
@@ -19,12 +20,12 @@ export function CocinaProHeader({
         <div className="flex items-center gap-3">
           {/* Logo visible solo en mobile */}
           <div className="md:hidden flex items-center gap-2.5">
-            <div className="h-8 w-8 rounded-lg bg-slate-900 text-white flex items-center justify-center shadow-xs">
-              <ChefHat className="h-4.5 w-4.5 text-white" strokeWidth={1.75} />
+            <div className="h-9 w-9 shrink-0 flex items-center justify-center">
+              <AmasiaLogo variant="symbol" className="h-9 w-9" />
             </div>
             <div>
               <span className="text-sm font-bold text-slate-900 block leading-tight">
-                Cocina Pro
+                Amasia
               </span>
               <span className="text-[10px] text-slate-500 font-medium block leading-tight">
                 Gestión gastronómica

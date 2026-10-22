@@ -7,14 +7,6 @@ import { Search, ArrowRight } from "lucide-react"
 import { tools } from "@/data/tools"
 import { HeroGeometricBackground } from "./HeroGeometricBackground"
 
-const QUICK_CHIPS = [
-  { label: "Calculadora de precios", slug: "calculadora-precios" },
-  { label: "Calculadora IVA", slug: "calculadora-iva" },
-  { label: "Aguinaldo (SAC)", slug: "calculadora-aguinaldo" },
-  { label: "Presupuestos", slug: "generador-presupuestos" },
-  { label: "Comprimir imágenes", slug: "compresor-imagenes" }
-]
-
 export default function Hero() {
   const [query, setQuery] = useState("")
   const [showSuggestions, setShowSuggestions] = useState(false)
@@ -30,13 +22,13 @@ export default function Hero() {
   }
 
   // Live matching tools from real catalog
-  const matchingTools = query.trim().length >= 2 
+  const matchingTools = query.trim().length >= 2
     ? tools.filter(
-        (t) =>
-          t.name.toLowerCase().includes(query.toLowerCase()) ||
-          t.description.toLowerCase().includes(query.toLowerCase()) ||
-          t.keywords.some((k) => k.toLowerCase().includes(query.toLowerCase()))
-      )
+      (t) =>
+        t.name.toLowerCase().includes(query.toLowerCase()) ||
+        t.description.toLowerCase().includes(query.toLowerCase()) ||
+        t.keywords.some((k) => k.toLowerCase().includes(query.toLowerCase()))
+    )
     : []
 
   // Close suggestions on outside click or Escape
@@ -60,7 +52,7 @@ export default function Hero() {
   }, [])
 
   return (
-    <section className="relative overflow-hidden bg-[#401289] text-white -mt-[72px] md:-mt-[80px] min-h-screen min-h-[100dvh] flex flex-col justify-center pt-28 pb-16 sm:pt-36 sm:pb-20 md:pt-40 md:pb-24 border-b border-violet-950/40">
+    <section className="relative bg-[#401289] text-white -mt-[72px] md:-mt-[80px] min-h-screen min-h-[100dvh] flex flex-col justify-center pt-28 pb-16 sm:pt-36 sm:pb-20 md:pt-40 md:pb-24">
       {/* Geometric background reproducing the Bauhaus reference design in brand colors */}
       <HeroGeometricBackground />
 
@@ -69,7 +61,7 @@ export default function Hero() {
 
           <div className="lg:col-span-6 xl:col-span-6 max-w-xl xl:max-w-2xl">
             <h1 className="text-3xl sm:text-5xl lg:text-5xl font-extrabold text-white tracking-tight leading-[1.15] mb-5 drop-shadow-xs">
-              Calculadoras y herramientas prácticas para tu{" "}
+              Herramientas prácticas para tu{" "}
               <span className="text-violet-200">negocio</span>
             </h1>
 
@@ -109,7 +101,7 @@ export default function Hero() {
 
               {/* Suggestions popover */}
               {showSuggestions && matchingTools.length > 0 && (
-                <div 
+                <div
                   className="absolute left-0 right-0 top-full mt-2 rounded-xl border border-slate-200 bg-white shadow-2xl p-2 z-30 animate-in fade-in zoom-in-95 duration-150"
                   role="listbox"
                   aria-label="Herramientas sugeridas"
@@ -117,30 +109,30 @@ export default function Hero() {
                   <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider px-2.5 py-1">
                     Herramientas encontradas ({matchingTools.length})
                   </div>
-                  <div className="flex flex-col gap-0.5 max-h-64 overflow-y-auto scrollbar-thin">
-                    {matchingTools.slice(0, 5).map((tool) => (
+                  <div className="flex flex-col gap-0.5 max-h-[380px] sm:max-h-[420px] overflow-y-auto overscroll-contain scrollbar-thin">
+                    {matchingTools.slice(0, 8).map((tool) => (
                       <Link
                         key={tool.slug}
                         href={tool.customUrl || `/herramientas/${tool.slug}`}
                         onClick={() => setShowSuggestions(false)}
-                        className="flex items-center justify-between p-2 rounded-lg hover:bg-violet-50 text-slate-800 hover:text-violet-700 transition-colors text-xs"
+                        className="flex items-center justify-between p-2.5 rounded-lg hover:bg-violet-50 text-slate-800 hover:text-violet-700 transition-colors text-xs"
                       >
-                        <div className="flex flex-col pr-2">
-                          <span className="font-semibold text-slate-900">{tool.name}</span>
+                        <div className="flex flex-col pr-2 min-w-0">
+                          <span className="font-semibold text-slate-900 truncate">{tool.name}</span>
                           <span className="text-[11px] text-slate-500 line-clamp-1">{tool.description}</span>
                         </div>
-                        <span className="text-[11px] font-medium text-brand shrink-0 inline-flex items-center gap-0.5">
+                        <span className="text-[11px] font-medium text-brand shrink-0 inline-flex items-center gap-0.5 ml-2">
                           Abrir <ArrowRight className="h-3 w-3" />
                         </span>
                       </Link>
                     ))}
                   </div>
-                  {matchingTools.length > 5 && (
-                    <div className="mt-1 pt-1.5 border-t border-slate-100 px-2 py-1">
+                  {matchingTools.length > 8 && (
+                    <div className="mt-1 pt-1.5 border-t border-slate-100 px-2.5 py-1.5 bg-slate-50/70 rounded-b-lg">
                       <button
                         type="button"
                         onClick={handleSearch}
-                        className="text-xs text-brand font-semibold hover:underline text-left cursor-pointer"
+                        className="text-xs text-brand font-semibold hover:underline text-left cursor-pointer block w-full"
                       >
                         Ver los {matchingTools.length} resultados en el catálogo completo →
                       </button>
@@ -148,20 +140,6 @@ export default function Hero() {
                   )}
                 </div>
               )}
-            </div>
-
-            {/* Quick search chips */}
-            <div className="mt-5 flex flex-wrap items-center gap-1.5 sm:gap-2">
-              <span className="text-xs font-semibold text-violet-200/90 mr-1">Frecuentes:</span>
-              {QUICK_CHIPS.map((chip) => (
-                <Link
-                  key={chip.slug}
-                  href={`/herramientas/${chip.slug}`}
-                  className="rounded-lg border border-white/20 bg-white/10 hover:bg-white/20 hover:border-white/40 px-2.5 py-1 text-xs font-medium text-white transition-all shadow-xs backdrop-blur-xs active:scale-[0.97]"
-                >
-                  {chip.label}
-                </Link>
-              ))}
             </div>
 
           </div>

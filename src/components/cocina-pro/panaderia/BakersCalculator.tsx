@@ -441,7 +441,7 @@ export function BakersCalculator({ initialRecipes = [] }: BakersCalculatorProps)
       } else {
         setFeedback({
           type: 'success',
-          text: `Receta "${saveRes.data.name}" guardada con éxito en tu recetario de Cocina Pro.`,
+          text: `Receta "${saveRes.data.name}" guardada con éxito en tu recetario de Amasia.`,
         })
       }
     } catch (err: any) {
@@ -1002,12 +1002,12 @@ export function BakersCalculator({ initialRecipes = [] }: BakersCalculatorProps)
           {isSaving ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin" />
-              <span>Guardando en Cocina Pro...</span>
+              <span>Guardando en Amasia...</span>
             </>
           ) : (
             <>
               <Save className="h-4 w-4" />
-              <span>Guardar en Cocina Pro</span>
+              <span>Guardar en Amasia</span>
             </>
           )}
         </button>

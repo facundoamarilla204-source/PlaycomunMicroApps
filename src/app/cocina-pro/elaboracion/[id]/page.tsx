@@ -16,13 +16,13 @@ export async function generateMetadata({ params }: CookingPageProps): Promise<Me
 
   if (!recipe) {
     return {
-      title: 'Elaboración no encontrada · Cocina Pro',
+      title: 'Elaboración no encontrada · Amasia',
     }
   }
 
   return {
-    title: `Elaborando: ${recipe.name} · Cocina Pro`,
-    description: `Seguí el paso a paso, tiempos de cocción y mise en place para ${recipe.name} en Cocina Pro.`,
+    title: `Elaborando: ${recipe.name} · Amasia`,
+    description: `Seguí el paso a paso, tiempos de cocción y mise en place para ${recipe.name} en Amasia.`,
   }
 }
 
@@ -36,7 +36,7 @@ export default async function CocinaProElaboracionPage({ params }: CookingPagePr
         <div className="h-12 w-12 rounded-2xl bg-purple-100 text-brand flex items-center justify-center mx-auto">
           <Lock className="h-6 w-6" />
         </div>
-        <h2 className="text-base font-bold text-slate-900">Función exclusiva Cocina Pro</h2>
+        <h2 className="text-base font-bold text-slate-900">Función exclusiva Amasia</h2>
         <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
           El modo de elaboración paso a paso en cocina requiere una suscripción Pro activa.
         </p>
@@ -45,7 +45,7 @@ export default async function CocinaProElaboracionPage({ params }: CookingPagePr
           className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand text-white text-xs font-bold hover:bg-brand-hover transition-colors min-h-[44px]"
         >
           <ArrowLeft className="h-4 w-4" />
-          <span>Volver a Cocina Pro</span>
+          <span>Volver a Amasia</span>
         </Link>
       </div>
     )

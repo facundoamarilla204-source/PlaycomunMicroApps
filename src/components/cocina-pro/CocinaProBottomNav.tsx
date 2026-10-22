@@ -43,7 +43,7 @@ export function CocinaProBottomNav() {
   return (
     <nav
       className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/90 shadow-xs pb-safe"
-      aria-label="Navegación móvil de Cocina Pro"
+      aria-label="Navegación móvil de Amasia"
     >
       <div className="grid grid-cols-5 h-16 items-center px-1 max-w-md mx-auto">
         {tabs.map((tab) => {

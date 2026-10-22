@@ -9,8 +9,8 @@ import { RecipeEditor } from '@/components/cocina-pro/recetas/editor/RecipeEdito
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Editar Receta · Cocina Pro',
-  description: 'Modificá ingredientes, mermas, rendimientos, costos y pasos de elaboración de tu receta técnica en Cocina Pro.',
+  title: 'Editar Receta · Amasia',
+  description: 'Modificá ingredientes, mermas, rendimientos, costos y pasos de elaboración de tu receta técnica en Amasia.',
 }
 
 export default async function EditarRecetaPage({

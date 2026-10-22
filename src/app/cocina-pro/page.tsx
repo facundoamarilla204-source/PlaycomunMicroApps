@@ -17,8 +17,8 @@ import { getUserRecipesServer } from '@/app/actions/recipes'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Inicio · Cocina Pro',
-  description: 'Panel de control de tu espacio gastronómico Cocina Pro.',
+  title: 'Inicio · Amasia',
+  description: 'Panel de control de tu espacio gastronómico Amasia.',
 }
 
 export default async function CocinaProHomePage() {
@@ -41,7 +41,7 @@ export default async function CocinaProHomePage() {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="text-xs font-bold text-brand uppercase tracking-wider">
-                Cocina Pro
+                Amasia
               </span>
               <span className="text-slate-300">•</span>
               <span className="text-xs text-slate-500 font-medium">Panel Operativo</span>

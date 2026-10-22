@@ -2,10 +2,10 @@ import { NextResponse } from 'next/server'
 
 export async function GET() {
   const manifest = {
-    name: 'Cocina Pro · PlayComun Online',
-    short_name: 'Cocina Pro',
+    name: 'Amasia · PlayComun Online',
+    short_name: 'Amasia',
     description:
-      'Gestión gastronómica profesional: biblioteca de ingredientes con historial de precios, costeo técnico y recetario.',
+      'Gestión gastronómica profesional: recetas, ingredientes, costos y elaboraciones en un solo lugar.',
     start_url: '/cocina-pro',
     scope: '/cocina-pro',
     display: 'standalone',
@@ -14,8 +14,14 @@ export async function GET() {
     theme_color: '#7C3AED',
     icons: [
       {
-        src: '/favicon.png',
-        sizes: '192x192 512x512',
+        src: '/amasia/icon-192.png',
+        sizes: '192x192',
+        type: 'image/png',
+        purpose: 'any maskable',
+      },
+      {
+        src: '/amasia/icon-512.png',
+        sizes: '512x512',
         type: 'image/png',
         purpose: 'any maskable',
       },

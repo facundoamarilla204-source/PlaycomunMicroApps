@@ -4,10 +4,12 @@ export type Microapp = {
   slug: string
   tagline: string
   description: string
+  /** Resumen de una línea para superficies compactas (ej. inicio). Si falta, se usa `tagline`. */
+  summary?: string
   badge: 'Pro' | 'Nuevo' | 'BETA'
   status: 'active' | 'in_development'
   url: string
-  icon: 'ChefHat' | 'Calculator' | 'Layers'
+  icon: 'AmasiaManga' | 'ChefHat' | 'Calculator' | 'Layers'
   accentColor: string
   category: 'gastronomia' | 'finanzas' | 'operaciones'
   audience: string
@@ -22,15 +24,17 @@ export type Microapp = {
 export const microapps: Microapp[] = [
   {
     id: 'cocina-pro',
-    name: 'Cocina Pro',
+    name: 'Amasia',
     slug: 'cocina-pro',
-    tagline: 'Gestión gastronómica profesional para cocinas, pastelerías y panaderías',
+    tagline: 'Gestión gastronómica: recetas, ingredientes, costos y elaboraciones en un solo lugar',
+    summary:
+      'Organizá tus recetas, calculá costos y gestioná tus elaboraciones gastronómicas desde una aplicación profesional.',
     description:
       'Microapp integral diseñada para cocineros, reposteros y panaderos. Administrá tu biblioteca personal de insumos con historial inmutable de precios, organizá tus recetas con costeo en tiempo real y gestioná formulaciones técnicas.',
     badge: 'Pro',
     status: 'active',
     url: '/cocina-pro',
-    icon: 'ChefHat',
+    icon: 'AmasiaManga',
     accentColor: '#7C3AED',
     category: 'gastronomia',
     audience: 'Cocineros, pasteleros, chocolateros, reposteros y panaderos profesionales',
@@ -82,4 +86,9 @@ export const microapps: Microapp[] = [
 
 export function getMicroappBySlug(slug: string): Microapp | undefined {
   return microapps.find((app) => app.slug === slug)
+}
+
+/** Microapps publicadas y navegables. Fuente única para el inicio y el catálogo. */
+export function getActiveMicroapps(): Microapp[] {
+  return microapps.filter((app) => app.status === 'active')
 }

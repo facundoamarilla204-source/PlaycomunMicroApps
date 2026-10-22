@@ -5,9 +5,9 @@ import { RecipesViewer } from '@/components/cocina-pro/recetas/RecipesViewer'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Recetario Profesional · Cocina Pro',
+  title: 'Recetario Profesional · Amasia',
   description:
-    'Consultá tus recetas guardadas, ingredientes, rendimientos y costos de elaboración en Cocina Pro.',
+    'Consultá tus recetas guardadas, ingredientes, rendimientos y costos de elaboración en Amasia.',
 }
 
 export default async function CocinaProRecipesPage() {
