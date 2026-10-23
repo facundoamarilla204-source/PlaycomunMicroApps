@@ -133,6 +133,7 @@ export function CocinaProMobileDrawer({
                         <Link
                           key={item.id}
                           href={item.href}
+                          prefetch={true}
                           onClick={onClose}
                           className={`flex items-center justify-between p-3 rounded-xl transition-all duration-150 min-h-[48px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand active:scale-[0.99] ${
                             active

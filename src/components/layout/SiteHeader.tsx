@@ -31,13 +31,18 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
     const handleScroll = () => {
       const isHomePage = pathname === "/" || (typeof window !== "undefined" && window.location.pathname === "/")
       if (isHomePage) {
+        // En el inicio, si el usuario no scrolleó o está arriba, el header DEBE ser transparente sobre el Hero morado
+        if (window.scrollY < 20) {
+          setIsScrolled(false)
+          return
+        }
         const nextSection = document.getElementById("herramientas")
         if (nextSection) {
           const rect = nextSection.getBoundingClientRect()
-          // Only switch to solid white header when the white content section reaches the navbar (<= 80px)
+          // Solo se vuelve blanco cuando la sección blanca llega a la barra de navegación (<= 80px)
           setIsScrolled(rect.top <= 80)
         } else {
-          setIsScrolled(window.scrollY > window.innerHeight * 0.9)
+          setIsScrolled(window.scrollY > window.innerHeight * 0.7)
         }
       } else {
         setIsScrolled(window.scrollY > 10)
@@ -70,8 +75,11 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
                 alt={siteConfig.name} 
                 width={220} 
                 height={56} 
-                className={`h-9 sm:h-10 w-auto transition-all duration-200 ${isTransparent ? 'brightness-0 invert' : ''}`} 
-                style={{ width: "auto" }} 
+                className="h-9 sm:h-10 w-auto transition-all duration-200" 
+                style={{ 
+                  width: "auto",
+                  filter: isTransparent ? "brightness(0) invert(1)" : "none"
+                }} 
                 priority 
               />
             </Link>
@@ -125,6 +133,7 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
               })}
               <Link
                 href="/microapps"
+                prefetch={true}
                 className={`text-sm font-semibold transition-colors py-2 px-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-md ${
                   isTransparent ? "text-white hover:text-violet-200 drop-shadow-xs" : "text-slate-700 hover:text-brand"
                 }`}
@@ -133,6 +142,7 @@ export default function SiteHeader({ user, isPro = false }: { user?: any, isPro?
               </Link>
               <Link
                 href="/planes"
+                prefetch={true}
                 className={`text-sm font-semibold transition-colors py-2 px-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-md ${
                   isTransparent ? "text-white hover:text-violet-200 drop-shadow-xs" : "text-slate-700 hover:text-brand"
                 }`}

@@ -97,6 +97,7 @@ export default function ToolCard({ tool, isFavorite = false }: ToolCardProps) {
       {/* Main Content with Stretched Link covering the rest of the card */}
       <Link 
         href={toolUrl}
+        prefetch={true}
         className="flex-1 flex flex-col justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 rounded-xl after:absolute after:inset-0 after:rounded-2xl after:content-['']"
       >
         <div>

@@ -38,8 +38,8 @@ export function CocinaProSidebar({
     >
       {/* Encabezado del espacio de trabajo */}
       <div
-        className={`p-3.5 sm:p-4 border-b border-slate-100 flex items-center ${
-          isCollapsed ? 'justify-center' : 'justify-between'
+        className={`p-3 sm:p-3.5 border-b border-slate-100 flex items-center ${
+          isCollapsed ? 'flex-col gap-3 py-3 px-2' : 'justify-between'
         }`}
       >
         <Link
@@ -62,17 +62,19 @@ export function CocinaProSidebar({
           )}
         </Link>
 
-        {/* Botón para contraer/expandir sidebar */}
+        {/* Botón para contraer/expandir sidebar: siempre visible y accesible */}
         {onToggleCollapse && (
           <button
             type="button"
             onClick={onToggleCollapse}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand cursor-pointer"
-            title={isCollapsed ? 'Expandir barra lateral' : 'Contraer barra lateral'}
-            aria-label={isCollapsed ? 'Expandir barra lateral' : 'Contraer barra lateral'}
+            className={`rounded-xl text-slate-400 hover:text-slate-800 hover:bg-slate-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand cursor-pointer active:scale-95 flex items-center justify-center ${
+              isCollapsed ? 'h-9 w-9 bg-slate-50 border border-slate-200/80' : 'p-1.5'
+            }`}
+            title={isCollapsed ? 'Expandir menú lateral (mostrar nombres)' : 'Contraer menú lateral'}
+            aria-label={isCollapsed ? 'Expandir menú lateral' : 'Contraer menú lateral'}
           >
             {isCollapsed ? (
-              <PanelLeftOpen className="h-4 w-4" />
+              <PanelLeftOpen className="h-4.5 w-4.5 text-purple-700" />
             ) : (
               <PanelLeftClose className="h-4 w-4" />
             )}
@@ -81,7 +83,13 @@ export function CocinaProSidebar({
       </div>
 
       {/* Lista de navegación agrupada */}
-      <nav className="flex-1 px-2.5 py-3 space-y-4 overflow-y-auto scrollbar-thin">
+      <nav
+        className={`flex-1 ${
+          isCollapsed
+            ? 'px-2 py-2.5 space-y-1.5 overflow-y-auto overflow-x-hidden scrollbar-hide'
+            : 'px-2.5 py-3 space-y-4 overflow-y-auto scrollbar-thin'
+        }`}
+      >
         {AMASIA_NAV_GROUPS.map((group) => (
           <div key={group.id} className="space-y-1">
             {!isCollapsed && (
@@ -98,22 +106,23 @@ export function CocinaProSidebar({
                   <div key={item.id} className="relative group/tooltip flex justify-center py-0.5">
                     <Link
                       href={item.href}
+                      prefetch={true}
                       aria-label={item.name}
-                      className={`h-11 w-11 rounded-xl flex items-center justify-center transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand ${
+                      className={`h-10 w-10 rounded-xl flex items-center justify-center transition-[background-color,color,border-color,transform] duration-150 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand ${
                         active
                           ? 'bg-purple-100 text-purple-950 font-bold border border-purple-300 shadow-2xs'
-                          : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                          : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 border border-transparent'
                       }`}
                     >
                       <Icon
-                        className={`h-5 w-5 ${active ? 'text-purple-700' : 'text-slate-500'}`}
+                        className={`h-4.5 w-4.5 ${active ? 'text-purple-700' : 'text-slate-500'}`}
                         strokeWidth={active ? 2 : 1.75}
                       />
                     </Link>
-                    {/* Tooltip accesible flotante */}
-                    <div className="absolute left-full ml-2.5 top-1/2 -translate-y-1/2 px-2.5 py-1.5 bg-slate-900 text-white text-xs font-semibold rounded-lg shadow-lg opacity-0 pointer-events-none group-hover/tooltip:opacity-100 transition-opacity z-50 whitespace-nowrap">
-                      {item.name}
-                      <span className="block text-[10px] text-slate-300 font-normal">
+                    {/* Tooltip accesible flotante con animación refinada */}
+                    <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-2.5 py-1.5 bg-slate-900 text-white text-xs font-semibold rounded-lg shadow-xl opacity-0 pointer-events-none group-hover/tooltip:opacity-100 group-hover/tooltip:translate-x-0 -translate-x-1 transition-all duration-150 z-50 whitespace-nowrap border border-slate-800">
+                      <span>{item.name}</span>
+                      <span className="block text-[10px] text-slate-400 font-normal mt-0.5">
                         {item.description}
                       </span>
                     </div>
@@ -125,6 +134,7 @@ export function CocinaProSidebar({
                 <Link
                   key={item.id}
                   href={item.href}
+                  prefetch={true}
                   className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand ${
                     active
                       ? 'bg-purple-50/90 text-purple-950 border border-purple-200/80 shadow-2xs'
@@ -182,9 +192,20 @@ export function CocinaProSidebar({
           </>
         ) : (
           <div className="flex flex-col items-center gap-2">
+            {onToggleCollapse && (
+              <button
+                type="button"
+                onClick={onToggleCollapse}
+                className="h-10 w-10 rounded-xl bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200/80 flex items-center justify-center transition-colors active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand shadow-2xs"
+                title="Expandir menú lateral"
+                aria-label="Expandir menú lateral"
+              >
+                <PanelLeftOpen className="h-4.5 w-4.5" />
+              </button>
+            )}
             <Link
               href="/microapps"
-              className="p-2 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+              className="h-9 w-9 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 flex items-center justify-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
               title="Volver a Microapps"
               aria-label="Volver a Microapps"
             >

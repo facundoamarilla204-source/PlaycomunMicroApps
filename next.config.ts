@@ -14,6 +14,9 @@ const nextConfig: NextConfig = {
       "lucide-react",
       "motion",
       "@mercadopago/sdk-react",
+      "jspdf",
+      "pdf-lib",
+      "browser-image-compression",
     ],
   },
   typescript: {

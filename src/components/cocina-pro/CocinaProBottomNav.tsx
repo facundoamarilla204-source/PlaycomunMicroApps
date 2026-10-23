@@ -56,6 +56,7 @@ export function CocinaProBottomNav({ onOpenDrawer }: CocinaProBottomNavProps) {
             <Link
               key={tab.name}
               href={tab.href}
+              prefetch={true}
               className={`flex flex-col items-center justify-center h-full min-h-[48px] py-1 px-1 rounded-lg transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand ${
                 tab.active
                   ? 'text-purple-700 font-bold'
