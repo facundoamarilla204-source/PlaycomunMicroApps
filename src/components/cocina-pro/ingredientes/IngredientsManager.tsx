@@ -141,14 +141,14 @@ export function IngredientsManager({
       <div className="bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-xs font-bold text-brand uppercase tracking-wider">
+            <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold bg-purple-50 text-purple-900 border border-purple-200/80">
               Biblioteca de insumos
             </span>
           </div>
           <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
             Biblioteca personal de ingredientes
           </h1>
-          <p className="text-xs sm:text-sm text-slate-700 mt-1 max-w-xl">
+          <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-xl">
             Registrá tus insumos con sus presentaciones de compra, mantené precios actualizados y consultá su historial inmutable.
           </p>
         </div>
@@ -158,7 +158,7 @@ export function IngredientsManager({
             setIngredientToEdit(null)
             setIsFormOpen(true)
           }}
-          className="btn-tactile inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-brand text-white text-xs font-semibold hover:bg-brand-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand shadow-xs transition-colors min-h-[44px] cursor-pointer shrink-0"
+          className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[#7f22fe] hover:bg-[#6c1ce0] text-white text-xs font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7f22fe]/40 shadow-xs transition-colors min-h-[44px] cursor-pointer shrink-0 active:scale-[0.98]"
         >
           <Plus className="h-4 w-4" />
           <span>Nuevo ingrediente</span>
@@ -170,13 +170,13 @@ export function IngredientsManager({
         <div className="flex flex-col sm:flex-row sm:items-center gap-3">
           {/* Campo de búsqueda */}
           <div className="relative flex-1">
-            <Search className="h-4 w-4 text-slate-600 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="h-4 w-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Buscar por nombre de ingrediente o marca..."
-              className="w-full pl-9 pr-8 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm text-slate-900 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand transition-colors"
+              className="w-full pl-9 pr-8 py-2.5 rounded-xl border border-slate-300 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#7f22fe]/20 focus:border-[#7f22fe] transition-colors"
             />
             {search && (
               <button

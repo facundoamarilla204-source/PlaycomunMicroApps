@@ -62,7 +62,7 @@ export function CocinaProGate({
             </div>
 
             <div>
-              <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl font-normal text-slate-900 tracking-normal leading-tight">
+              <h1 className="font-sans text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
                 Costos exactos y recetario técnico para tu cocina
               </h1>
               <p className="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed">
@@ -136,11 +136,11 @@ export function CocinaProGate({
                 <>
                   <Link
                     href="/planes"
-                    className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-3.5 rounded-xl bg-brand text-white font-bold text-sm shadow-sm hover:bg-brand-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 transition-all active:scale-[0.98] min-h-[46px]"
+                    className="inline-flex w-full sm:w-auto items-center justify-center px-6 py-3.5 rounded-xl bg-slate-900 text-white font-medium text-sm shadow-xs hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2 transition-all active:scale-[0.98] min-h-[46px]"
                   >
                     Ver planes y precios de suscripción
                   </Link>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-slate-600">
                     Amasia requiere una suscripción Pro activa. Podés cancelar en cualquier momento desde tu panel de cuenta.
                   </p>
                 </>
@@ -149,20 +149,20 @@ export function CocinaProGate({
                   <div className="flex flex-col sm:flex-row gap-3">
                     <Link
                       href="/ingresar?next=/cocina-pro"
-                      className="inline-flex items-center justify-center px-6 py-3.5 rounded-xl bg-brand text-white font-bold text-sm shadow-sm hover:bg-brand-hover transition-all active:scale-[0.98] min-h-[46px]"
+                      className="inline-flex items-center justify-center px-6 py-3.5 rounded-xl bg-slate-900 text-white font-medium text-sm shadow-xs hover:bg-slate-800 transition-all active:scale-[0.98] min-h-[46px]"
                     >
                       Iniciar sesión para ingresar
                     </Link>
                     <Link
                       href="/planes"
-                      className="inline-flex items-center justify-center px-5 py-3.5 rounded-xl border border-slate-300 bg-white text-slate-700 font-semibold text-sm hover:bg-slate-50 transition-colors min-h-[46px]"
+                      className="inline-flex items-center justify-center px-5 py-3.5 rounded-xl border border-slate-300 bg-white text-slate-800 font-medium text-sm hover:bg-slate-50 transition-colors min-h-[46px] active:scale-[0.98]"
                     >
                       Conocer planes Pro
                     </Link>
                   </div>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-slate-600">
                     ¿Primera vez en PlayComun?{' '}
-                    <Link href="/registro" className="text-brand font-semibold hover:underline">
+                    <Link href="/registro" className="text-purple-700 font-semibold hover:underline">
                       Creá tu cuenta gratis
                     </Link>
                   </p>
@@ -178,26 +178,26 @@ export function CocinaProGate({
               <div className="flex items-start justify-between pb-4 border-b border-slate-100 gap-3">
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-[11px] font-bold text-amber-700 bg-amber-50 border border-amber-200/60 px-2 py-0.5 rounded-md">
+                    <span className="text-[11px] font-semibold text-amber-950 bg-amber-50 border border-amber-300 px-2 py-0.5 rounded-md">
                       Panadería y Pastelería
                     </span>
-                    <span className="text-[11px] text-slate-400 font-medium">
+                    <span className="text-[11px] text-slate-600 font-medium">
                       Ficha técnica #014
                     </span>
                   </div>
                   <h3 className="text-base sm:text-lg font-bold text-slate-900 mt-1.5">
                     Medialunas de Manteca Artesanales
                   </h3>
-                  <p className="text-xs text-slate-500 mt-0.5">
+                  <p className="text-xs text-slate-600 mt-0.5">
                     Rendimiento: 24 unidades estándar (55 g c/u)
                   </p>
                 </div>
 
                 <div className="text-right shrink-0">
-                  <span className="text-[10px] text-slate-400 font-medium block uppercase tracking-wider">
+                  <span className="text-[10px] text-slate-600 font-semibold block uppercase tracking-wider">
                     Costo x Unidad
                   </span>
-                  <span className="text-lg sm:text-xl font-extrabold text-slate-900 tabular-nums">
+                  <span className="text-lg sm:text-xl font-extrabold text-slate-950 tabular-nums">
                     $ 385,40
                   </span>
                 </div>
@@ -205,23 +205,23 @@ export function CocinaProGate({
 
               {/* Indicadores clave de rendimiento gastronómico */}
               <div className="grid grid-cols-3 gap-2 sm:gap-3">
-                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200/60">
-                  <span className="text-[10px] font-medium text-slate-500 block">Costo Batch</span>
-                  <span className="text-sm font-bold text-slate-900 tabular-nums">$ 9.249,60</span>
+                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200/90">
+                  <span className="text-[10px] font-semibold text-slate-600 block">Costo Batch</span>
+                  <span className="text-sm font-bold text-slate-950 tabular-nums">$ 9.249,60</span>
                 </div>
-                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200/60">
-                  <span className="text-[10px] font-medium text-slate-500 block">Venta Sugerida</span>
-                  <span className="text-sm font-bold text-emerald-700 tabular-nums">$ 950,00</span>
+                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200/90">
+                  <span className="text-[10px] font-semibold text-slate-600 block">Venta Sugerida</span>
+                  <span className="text-sm font-bold text-emerald-800 tabular-nums">$ 950,00</span>
                 </div>
-                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200/60">
-                  <span className="text-[10px] font-medium text-slate-500 block">Food Cost</span>
-                  <span className="text-sm font-bold text-slate-900 tabular-nums">40,5%</span>
+                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200/90">
+                  <span className="text-[10px] font-semibold text-slate-600 block">Food Cost</span>
+                  <span className="text-sm font-bold text-slate-950 tabular-nums">40,5%</span>
                 </div>
               </div>
 
               {/* Lista tangible de insumos con pesos y costos */}
               <div>
-                <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2 flex items-center justify-between">
+                <div className="text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-2 flex items-center justify-between">
                   <span>Insumos del pastón</span>
                   <span>Costo calculado</span>
                 </div>
@@ -230,48 +230,48 @@ export function CocinaProGate({
                   <div className="py-2 flex items-center justify-between">
                     <div>
                       <span className="font-semibold text-slate-800">Harina 000 de fuerza</span>
-                      <span className="text-[11px] text-slate-500 ml-1.5 tabular-nums">1.000 g</span>
+                      <span className="text-[11px] text-slate-600 ml-1.5 tabular-nums">1.000 g</span>
                     </div>
-                    <span className="font-medium text-slate-700 tabular-nums">$ 1.150,00</span>
+                    <span className="font-semibold text-slate-900 tabular-nums">$ 1.150,00</span>
                   </div>
 
                   <div className="py-2 flex items-center justify-between">
                     <div>
                       <span className="font-semibold text-slate-800">Manteca 82% materia grasa</span>
-                      <span className="text-[11px] text-slate-500 ml-1.5 tabular-nums">500 g</span>
+                      <span className="text-[11px] text-slate-600 ml-1.5 tabular-nums">500 g</span>
                     </div>
-                    <span className="font-medium text-slate-700 tabular-nums">$ 5.200,00</span>
+                    <span className="font-semibold text-slate-900 tabular-nums">$ 5.200,00</span>
                   </div>
 
                   <div className="py-2 flex items-center justify-between">
                     <div>
                       <span className="font-semibold text-slate-800">Leche entera pasteurizada</span>
-                      <span className="text-[11px] text-slate-500 ml-1.5 tabular-nums">450 ml</span>
+                      <span className="text-[11px] text-slate-600 ml-1.5 tabular-nums">450 ml</span>
                     </div>
-                    <span className="font-medium text-slate-700 tabular-nums">$ 675,00</span>
+                    <span className="font-semibold text-slate-900 tabular-nums">$ 675,00</span>
                   </div>
 
                   <div className="py-2 flex items-center justify-between">
                     <div>
                       <span className="font-semibold text-slate-800">Azúcar común tipo A</span>
-                      <span className="text-[11px] text-slate-500 ml-1.5 tabular-nums">200 g</span>
+                      <span className="text-[11px] text-slate-600 ml-1.5 tabular-nums">200 g</span>
                     </div>
-                    <span className="font-medium text-slate-700 tabular-nums">$ 360,00</span>
+                    <span className="font-semibold text-slate-900 tabular-nums">$ 360,00</span>
                   </div>
 
                   <div className="py-2 flex items-center justify-between">
                     <div>
                       <span className="font-semibold text-slate-800">Levadura fresca prensada</span>
-                      <span className="text-[11px] text-slate-500 ml-1.5 tabular-nums">50 g</span>
+                      <span className="text-[11px] text-slate-600 ml-1.5 tabular-nums">50 g</span>
                     </div>
-                    <span className="font-medium text-slate-700 tabular-nums">$ 480,00</span>
+                    <span className="font-semibold text-slate-900 tabular-nums">$ 480,00</span>
                   </div>
                 </div>
               </div>
 
               {/* Mensaje de integración de la herramienta */}
-              <div className="pt-3 border-t border-slate-100 flex items-center gap-2 text-[11px] text-slate-500">
-                <Scale className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+              <div className="pt-3 border-t border-slate-100 flex items-center gap-2 text-xs text-slate-600">
+                <Scale className="h-4 w-4 text-slate-500 shrink-0" />
                 <span>
                   Al actualizar el precio de la Manteca en tu biblioteca, se recalcula este batch y todo tu catálogo al instante.
                 </span>
@@ -283,7 +283,7 @@ export function CocinaProGate({
       </main>
 
       {/* Pie minimalista */}
-      <footer className="w-full border-t border-slate-200/80 py-4 px-4 sm:px-6 text-center text-xs text-slate-500">
+      <footer className="w-full border-t border-slate-200/80 py-4 px-4 sm:px-6 text-center text-xs text-slate-600">
         PlayComun Herramientas · Espacio Amasia
       </footer>
     </div>

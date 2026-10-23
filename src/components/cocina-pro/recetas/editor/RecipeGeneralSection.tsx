@@ -1,5 +1,6 @@
 'use client'
 
+import { ChefHat, Percent } from 'lucide-react'
 import { Recipe, Unit } from '@/lib/costo-receta'
 
 const COMMON_CATEGORIES = [
@@ -33,13 +34,19 @@ export function RecipeGeneralSection({
 }) {
   return (
     <div className="bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-xs space-y-5">
-      <div>
-        <h2 className="text-sm font-bold uppercase tracking-wider text-slate-800">
-          Datos generales de la elaboración
-        </h2>
-        <p className="text-xs text-slate-700 mt-0.5">
-          Identificación, categoría comercial y rendimiento estándar de la preparación.
-        </p>
+      {/* Encabezado de la sección */}
+      <div className="flex items-center gap-2.5">
+        <div className="h-9 w-9 rounded-xl bg-purple-50 text-purple-800 flex items-center justify-center border border-purple-100 shrink-0">
+          <ChefHat className="h-4 w-4" />
+        </div>
+        <div>
+          <h2 className="text-base sm:text-lg font-bold text-slate-900 leading-tight">
+            Datos generales de la elaboración
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-600 mt-0.5">
+            Identificación, categoría comercial y rendimiento estándar de la preparación.
+          </p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -55,7 +62,7 @@ export function RecipeGeneralSection({
             value={recipe.name}
             onChange={(e) => onChange({ name: e.target.value })}
             placeholder="Ej: Medialunas de manteca estilo marplatense"
-            className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-900 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand min-h-[44px]"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#7f22fe]/20 focus:border-[#7f22fe] min-h-[44px] transition-colors"
           />
         </div>
 
@@ -72,7 +79,7 @@ export function RecipeGeneralSection({
               value={recipe.category}
               onChange={(e) => onChange({ category: e.target.value })}
               placeholder="Ej: Panadería"
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-900 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand min-h-[44px]"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#7f22fe]/20 focus:border-[#7f22fe] min-h-[44px] transition-colors"
             />
             <datalist id="categories-list">
               {COMMON_CATEGORIES.map((c) => (
@@ -100,7 +107,7 @@ export function RecipeGeneralSection({
                 onChange({ yield_quantity: isNaN(val) ? 0 : val })
               }}
               placeholder="12"
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-900 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand min-h-[44px]"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#7f22fe]/20 focus:border-[#7f22fe] min-h-[44px] transition-colors"
             />
           </div>
 
@@ -112,7 +119,7 @@ export function RecipeGeneralSection({
               id="recipe-yield-unit"
               value={recipe.yield_unit}
               onChange={(e) => onChange({ yield_unit: e.target.value as Unit })}
-              className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand min-h-[44px]"
+              className="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-[#7f22fe]/20 focus:border-[#7f22fe] min-h-[44px] transition-colors"
             >
               {YIELD_UNITS.map((u) => (
                 <option key={u.value} value={u.value}>
@@ -134,30 +141,35 @@ export function RecipeGeneralSection({
             value={recipe.description}
             onChange={(e) => onChange({ description: e.target.value })}
             placeholder="Breve reseña del producto, características organolépticas, presentación o sugerencia de venta..."
-            className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-900 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand leading-relaxed resize-y"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#7f22fe]/20 focus:border-[#7f22fe] leading-relaxed resize-y transition-colors"
           />
         </div>
       </div>
 
       {/* Política de fijación de precios y rentabilidad */}
-      <div className="pt-4 border-t border-slate-100">
-        <span className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
-          Política de rentabilidad y precio de venta
-        </span>
+      <div className="pt-4 border-t border-slate-100 space-y-3">
+        <div>
+          <span className="block text-xs font-bold text-slate-900 uppercase tracking-wider">
+            Política de rentabilidad y precio de venta
+          </span>
+          <p className="text-xs text-slate-600 mt-0.5">
+            Definí la regla comercial para calcular la sugerencia de precio final.
+          </p>
+        </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <span className="block text-xs font-semibold text-slate-800 mb-1.5">
               Modo de cálculo
             </span>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="bg-slate-100/90 p-1 rounded-xl flex gap-1 border border-slate-200">
               <button
                 type="button"
                 onClick={() => onChange({ pricing_mode: 'margin' })}
-                className={`py-2 px-3 rounded-xl border text-xs font-semibold transition-colors min-h-[44px] cursor-pointer ${
+                className={`flex-1 py-2 px-3 rounded-lg text-xs font-medium transition-all cursor-pointer min-h-[38px] active:scale-[0.98] ${
                   recipe.pricing_mode === 'margin'
-                    ? 'border-brand bg-purple-50 text-brand'
-                    : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+                    ? 'bg-white text-slate-950 shadow-xs border border-slate-200/90 font-semibold'
+                    : 'text-slate-700 hover:text-slate-950 hover:bg-white/50'
                 }`}
               >
                 Margen sobre venta
@@ -165,10 +177,10 @@ export function RecipeGeneralSection({
               <button
                 type="button"
                 onClick={() => onChange({ pricing_mode: 'markup' })}
-                className={`py-2 px-3 rounded-xl border text-xs font-semibold transition-colors min-h-[44px] cursor-pointer ${
+                className={`flex-1 py-2 px-3 rounded-lg text-xs font-medium transition-all cursor-pointer min-h-[38px] active:scale-[0.98] ${
                   recipe.pricing_mode === 'markup'
-                    ? 'border-brand bg-purple-50 text-brand'
-                    : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+                    ? 'bg-white text-slate-950 shadow-xs border border-slate-200/90 font-semibold'
+                    : 'text-slate-700 hover:text-slate-950 hover:bg-white/50'
                 }`}
               >
                 Recargo sobre costo
@@ -198,13 +210,13 @@ export function RecipeGeneralSection({
                   }
                 }}
                 placeholder="30"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-900 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand min-h-[44px] pr-8"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#7f22fe]/20 focus:border-[#7f22fe] min-h-[44px] pr-8 transition-colors"
               />
-              <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-600">
+              <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-700">
                 %
               </span>
             </div>
-            <p className="text-[11px] text-slate-600 mt-1">
+            <p className="text-xs text-slate-600 mt-1">
               {recipe.pricing_mode === 'margin'
                 ? 'Porcentaje del precio final de venta que constituye ganancia bruta.'
                 : 'Porcentaje que se adiciona sobre el costo total de elaboración.'}

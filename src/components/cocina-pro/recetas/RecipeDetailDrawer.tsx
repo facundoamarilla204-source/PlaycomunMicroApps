@@ -19,6 +19,7 @@ import {
   ListOrdered,
   Wrench,
   Scale,
+  CalendarCheck,
 } from 'lucide-react'
 import { Recipe, calculateRecipeFinancials } from '@/lib/costo-receta'
 import { exportSingleRecipePdf } from '@/lib/recipePdf'
@@ -409,10 +410,18 @@ export function RecipeDetailDrawer({
           <div className="p-4 border-t border-slate-100 bg-slate-50/80 flex flex-wrap items-center justify-between gap-2 shrink-0">
             <div className="flex flex-wrap items-center gap-2">
               <Link
-                href={`/cocina-pro/elaboracion/${recipe.id}`}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold transition-colors shadow-xs min-h-[44px] btn-tactile"
+                href={`/cocina-pro/recetas/${recipe.id}/editar`}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#7f22fe] hover:bg-[#6c1ce0] text-white text-xs font-semibold transition-all shadow-xs min-h-[44px] active:scale-[0.98]"
               >
-                <Flame className="h-3.5 w-3.5" />
+                <Edit3 className="h-3.5 w-3.5" />
+                <span>Editar receta</span>
+              </Link>
+
+              <Link
+                href={`/cocina-pro/elaboracion/${recipe.id}`}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-violet-50 hover:bg-violet-100 border border-violet-200/80 text-violet-900 text-xs font-semibold transition-all min-h-[44px] active:scale-[0.98]"
+              >
+                <Flame className="h-3.5 w-3.5 text-[#7f22fe]" />
                 <span>Comenzar elaboración</span>
               </Link>
 
@@ -423,19 +432,19 @@ export function RecipeDetailDrawer({
                     onClose()
                     onScale(recipe)
                   }}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold transition-colors min-h-[44px] btn-tactile"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 text-xs font-semibold transition-all min-h-[44px] active:scale-[0.98]"
                 >
-                  <Scale className="h-3.5 w-3.5 text-brand" />
+                  <Scale className="h-3.5 w-3.5 text-slate-500" />
                   <span>Escalar receta</span>
                 </button>
               )}
 
               <Link
-                href={`/cocina-pro/recetas/${recipe.id}/editar`}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-brand text-white text-xs font-semibold hover:bg-brand-hover transition-colors shadow-xs min-h-[44px] btn-tactile"
+                href={`/cocina-pro/produccion/nuevo?addRecipeId=${recipe.id}`}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 text-xs font-semibold transition-all min-h-[44px] active:scale-[0.98]"
               >
-                <Edit3 className="h-3.5 w-3.5" />
-                <span>Editar receta</span>
+                <CalendarCheck className="h-3.5 w-3.5 text-slate-500" />
+                <span>Planificar lote</span>
               </Link>
 
               <button

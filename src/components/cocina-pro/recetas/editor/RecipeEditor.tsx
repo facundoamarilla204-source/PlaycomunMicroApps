@@ -213,7 +213,7 @@ export function RecipeEditor({
                 e.preventDefault()
               }
             }}
-            className="p-2.5 rounded-xl border border-slate-200 text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition-colors shrink-0"
+            className="p-2.5 rounded-xl border border-slate-200 text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition-colors shrink-0 active:scale-[0.98]"
             aria-label="Volver al recetario"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -221,14 +221,14 @@ export function RecipeEditor({
 
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-bold text-brand uppercase tracking-wider">
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg text-[11px] font-semibold bg-violet-50 text-violet-900 border border-violet-200/80">
                 {mode === 'create' ? 'Nueva elaboración' : 'Editor profesional'}
               </span>
               {isDirty && (
                 <span className="inline-block w-2 h-2 rounded-full bg-amber-500" title="Cambios sin guardar" />
               )}
             </div>
-            <h1 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight line-clamp-1">
+            <h1 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight line-clamp-1 mt-0.5 font-sans">
               {recipe.name.trim() || 'Receta sin título'}
             </h1>
           </div>
@@ -239,16 +239,16 @@ export function RecipeEditor({
             <button
               type="button"
               onClick={() => setIsScaleOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 transition-colors min-h-[44px]"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 bg-white border border-slate-200/90 hover:bg-slate-50 transition-colors min-h-[44px] active:scale-[0.98]"
             >
-              <Scale className="h-4 w-4 text-brand" />
+              <Scale className="h-4 w-4 text-[#7f22fe]" />
               <span>Escalar</span>
             </button>
           )}
 
           <Link
             href="/cocina-pro/recetas"
-            className="px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors min-h-[44px] flex items-center"
+            className="px-3.5 py-2.5 rounded-xl text-xs font-medium text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-colors min-h-[44px] flex items-center active:scale-[0.98]"
           >
             Cancelar
           </Link>
@@ -257,16 +257,16 @@ export function RecipeEditor({
             type="button"
             onClick={handleSave}
             disabled={isSaving}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand text-white text-xs font-bold hover:bg-brand-hover transition-colors shadow-xs min-h-[44px] cursor-pointer disabled:opacity-60"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#7f22fe] hover:bg-[#6c1ce0] text-white text-xs font-semibold transition-all shadow-xs min-h-[44px] cursor-pointer disabled:opacity-60 active:scale-[0.98]"
           >
             {isSaving ? (
               <>
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <Loader2 className="h-4 w-4 animate-spin text-white/80" />
                 <span>Guardando...</span>
               </>
             ) : (
               <>
-                <Save className="h-4 w-4" />
+                <Save className="h-4 w-4 text-white" />
                 <span>Guardar receta</span>
               </>
             )}
@@ -353,9 +353,9 @@ export function RecipeEditor({
               type="button"
               onClick={handleSave}
               disabled={isSaving}
-              className="px-4 py-2 rounded-xl bg-brand text-white text-xs font-bold hover:bg-brand-hover min-h-[44px] flex items-center gap-1.5"
+              className="px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-medium hover:bg-slate-800 min-h-[44px] flex items-center gap-1.5 active:scale-[0.98]"
             >
-              {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+              {isSaving ? <Loader2 className="h-4 w-4 animate-spin text-slate-400" /> : <Save className="h-4 w-4 text-purple-300" />}
               <span>Guardar</span>
             </button>
           </div>

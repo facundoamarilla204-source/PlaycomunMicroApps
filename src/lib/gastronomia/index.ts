@@ -30,3 +30,15 @@ export * from './recipe-linking'
 // 9. Subrecetas, elaboraciones compuestas y costeo recursivo
 export * from './subrecipes'
 
+// 10. Planificador de producción y consolidación de compras
+export * from './production-plan'
+
+// 11. Inventario, trazabilidad de existencias y contraste de faltantes
+export * from './inventory'
+
+// 12. Arquitectura de navegación centralizada de Amasia
+export * from './navigation'
+
+// 13. Clientes, pedidos comerciales y calendario de entregas
+export * from './orders'
+

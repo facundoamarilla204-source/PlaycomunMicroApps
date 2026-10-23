@@ -182,30 +182,32 @@ export function RecipeSubrecipesSection({
   return (
     <div className="bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-xs space-y-5">
       {/* Encabezado de la sección */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-slate-100">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="p-1.5 rounded-lg bg-purple-50 text-brand">
-              <Layers className="h-4 w-4" />
-            </span>
-            <h2 className="text-base font-bold text-slate-900 tracking-tight">
-              Subrecetas y elaboraciones compuestas
-            </h2>
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-900 border border-purple-200 tabular-nums">
-              {subrecipes.length}
-            </span>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3.5 border-b border-slate-100">
+        <div className="flex items-center gap-2.5">
+          <div className="h-9 w-9 rounded-xl bg-purple-50 text-purple-800 flex items-center justify-center border border-purple-100 shrink-0">
+            <Layers className="h-4 w-4" />
           </div>
-          <p className="text-xs text-slate-700 mt-1 leading-relaxed">
-            Incorporá otras preparaciones existentes como componentes de esta fórmula (bizcochuelos, cremas, rellenos, ganaches).
-          </p>
+          <div>
+            <div className="flex items-center gap-2">
+              <h2 className="text-base sm:text-lg font-bold text-slate-900 leading-tight">
+                Subrecetas y elaboraciones compuestas
+              </h2>
+              <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-purple-100 text-purple-950 border border-purple-200 tabular-nums">
+                {subrecipes.length}
+              </span>
+            </div>
+            <p className="text-xs sm:text-sm text-slate-600 mt-0.5 leading-relaxed">
+              Incorporá otras preparaciones existentes como componentes de esta fórmula (bizcochuelos, cremas, rellenos, ganaches).
+            </p>
+          </div>
         </div>
 
         <button
           type="button"
           onClick={() => setIsSelectModalOpen(true)}
-          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-purple-50 text-brand hover:bg-purple-100 border border-purple-200/80 text-xs font-bold transition-all min-h-[44px] cursor-pointer self-start sm:self-center shadow-xs active:scale-[0.98]"
+          className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-slate-800 text-xs font-medium hover:bg-slate-50 transition-colors shadow-2xs min-h-[44px] cursor-pointer self-start sm:self-center active:scale-[0.98]"
         >
-          <Plus className="h-4 w-4" />
+          <Plus className="h-4 w-4 text-purple-700" />
           <span>Incorporar subreceta</span>
         </button>
       </div>
@@ -328,7 +330,7 @@ export function RecipeSubrecipesSection({
                 <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
                   {/* Cantidad requerida */}
                   <div className="sm:col-span-4">
-                    <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                    <label className="block text-[11px] font-semibold text-slate-800 mb-1">
                       Cantidad requerida
                     </label>
                     <input
@@ -337,19 +339,19 @@ export function RecipeSubrecipesSection({
                       min="0.001"
                       value={sub.quantity}
                       onChange={(e) => handleUpdate(idx, { quantity: parseFloat(e.target.value) || 0 })}
-                      className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand tabular-nums min-h-[40px]"
+                      className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-800 focus:border-slate-800 tabular-nums min-h-[40px] transition-colors"
                     />
                   </div>
 
                   {/* Unidad de uso */}
                   <div className="sm:col-span-3">
-                    <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                    <label className="block text-[11px] font-semibold text-slate-800 mb-1">
                       Unidad
                     </label>
                     <select
                       value={sub.unit}
                       onChange={(e) => handleUpdate(idx, { unit: e.target.value as Unit })}
-                      className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand min-h-[40px]"
+                      className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900 bg-white focus:outline-none focus:ring-1 focus:ring-slate-800 focus:border-slate-800 min-h-[40px] transition-colors"
                     >
                       {UNITS.map((u) => (
                         <option key={u.value} value={u.value}>
@@ -361,7 +363,7 @@ export function RecipeSubrecipesSection({
 
                   {/* Porcentaje de merma */}
                   <div className="sm:col-span-2">
-                    <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                    <label className="block text-[11px] font-semibold text-slate-800 mb-1">
                       % Merma
                     </label>
                     <input
@@ -371,7 +373,7 @@ export function RecipeSubrecipesSection({
                       max="99"
                       value={sub.waste_percentage || 0}
                       onChange={(e) => handleUpdate(idx, { waste_percentage: parseFloat(e.target.value) || 0 })}
-                      className="w-full px-2.5 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand tabular-nums min-h-[40px]"
+                      className="w-full px-2.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-800 focus:border-slate-800 tabular-nums min-h-[40px] transition-colors"
                     />
                   </div>
 
@@ -380,7 +382,7 @@ export function RecipeSubrecipesSection({
                     <span className="block text-[10px] text-slate-600 font-medium">
                       Costo proporcional
                     </span>
-                    <span className="text-sm font-extrabold text-slate-900 tabular-nums">
+                    <span className="text-sm font-extrabold text-slate-950 tabular-nums">
                       {formatCurrency(costCalc.calculatedCost)}
                     </span>
                   </div>

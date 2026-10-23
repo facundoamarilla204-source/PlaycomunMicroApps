@@ -56,29 +56,34 @@ export function RecipeStepsSection({
 
   return (
     <div className="bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-xs space-y-4">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-slate-100">
-        <div>
-          <h2 className="text-sm font-bold uppercase tracking-wider text-slate-800">
-            Procedimiento y pasos de elaboración ({steps.length})
-          </h2>
-          <p className="text-xs text-slate-700 mt-0.5">
-            Secuencia ordenada de preparación, tiempos de amasado o leudado, temperaturas y notas de obrador.
-          </p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3.5 border-b border-slate-100">
+        <div className="flex items-center gap-2.5">
+          <div className="h-9 w-9 rounded-xl bg-purple-50 text-purple-800 flex items-center justify-center border border-purple-100 shrink-0">
+            <ListOrdered className="h-4 w-4" />
+          </div>
+          <div>
+            <h2 className="text-base sm:text-lg font-bold text-slate-900 leading-tight">
+              Procedimiento y pasos de elaboración ({steps.length})
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-600 mt-0.5">
+              Secuencia ordenada de preparación, tiempos de amasado o leudado, temperaturas y notas de obrador.
+            </p>
+          </div>
         </div>
 
         <button
           type="button"
           onClick={handleAddStep}
-          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-purple-50 text-brand border border-purple-200 text-xs font-semibold hover:bg-purple-100 transition-colors shadow-xs min-h-[44px] cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-slate-800 text-xs font-medium hover:bg-slate-50 transition-colors shadow-2xs min-h-[44px] cursor-pointer active:scale-[0.98]"
         >
-          <Plus className="h-4 w-4" />
+          <Plus className="h-4 w-4 text-purple-700" />
           <span>Agregar paso</span>
         </button>
       </div>
 
       {steps.length === 0 ? (
         <div className="p-8 text-center border border-dashed border-slate-300 rounded-xl my-2">
-          <ListOrdered className="h-8 w-8 text-slate-300 mx-auto mb-2" />
+          <ListOrdered className="h-8 w-8 text-slate-400 mx-auto mb-2" />
           <p className="text-sm font-bold text-slate-800">
             Esta receta no tiene pasos de preparación registrados
           </p>
@@ -88,9 +93,9 @@ export function RecipeStepsSection({
           <button
             type="button"
             onClick={handleAddStep}
-            className="mt-3 inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200"
+            className="mt-3 inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-slate-300 bg-white text-slate-800 text-xs font-medium hover:bg-slate-50 transition-colors shadow-2xs active:scale-[0.98]"
           >
-            <Plus className="h-3.5 w-3.5" />
+            <Plus className="h-4 w-4 text-purple-700" />
             <span>Agregar primer paso</span>
           </button>
         </div>
@@ -103,10 +108,10 @@ export function RecipeStepsSection({
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="flex items-center gap-2">
-                  <span className="inline-flex items-center justify-center h-6 w-6 rounded-full bg-purple-100 text-brand text-xs font-bold">
+                  <span className="inline-flex items-center justify-center h-6 w-6 rounded-full bg-purple-100 text-purple-950 border border-purple-200/80 text-xs font-bold">
                     {idx + 1}
                   </span>
-                  <span className="text-xs font-bold text-slate-800">
+                  <span className="text-xs font-bold text-slate-900">
                     Paso #{idx + 1}
                   </span>
                 </div>
@@ -145,7 +150,7 @@ export function RecipeStepsSection({
 
               {/* Instrucción principal */}
               <div>
-                <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                <label className="block text-[11px] font-semibold text-slate-800 mb-1">
                   Instrucción o procedimiento <span className="text-red-500">*</span>
                 </label>
                 <textarea
@@ -154,14 +159,14 @@ export function RecipeStepsSection({
                   value={step.instruction}
                   onChange={(e) => handleUpdateStep(idx, { instruction: e.target.value })}
                   placeholder="Detallá la acción a realizar: mezclado, batido, temperatura de masa, tiempo de reposo..."
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs text-slate-900 placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-brand leading-relaxed resize-y"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-800 focus:border-slate-800 leading-relaxed resize-y transition-colors"
                 />
               </div>
 
               {/* Campos opcionales: duración, temperatura, equipamiento */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1 text-xs">
                 <div>
-                  <label className="block text-[10px] font-semibold text-slate-600 mb-0.5">
+                  <label className="block text-[11px] font-semibold text-slate-800 mb-1">
                     Duración (min)
                   </label>
                   <div className="relative">
@@ -174,14 +179,14 @@ export function RecipeStepsSection({
                         handleUpdateStep(idx, { duration_minutes: isNaN(val) ? null : val })
                       }}
                       placeholder="Ej: 15"
-                      className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-brand"
+                      className="w-full px-2.5 py-2 rounded-lg border border-slate-300 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-800 focus:border-slate-800 min-h-[38px] transition-colors"
                     />
-                    <Clock className="h-3.5 w-3.5 text-slate-600 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <Clock className="h-3.5 w-3.5 text-slate-500 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-semibold text-slate-600 mb-0.5">
+                  <label className="block text-[11px] font-semibold text-slate-800 mb-1">
                     Temperatura (°C)
                   </label>
                   <div className="relative">
@@ -194,14 +199,14 @@ export function RecipeStepsSection({
                         handleUpdateStep(idx, { temperature_celsius: isNaN(val) ? null : val })
                       }}
                       placeholder="Ej: 24"
-                      className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-brand"
+                      className="w-full px-2.5 py-2 rounded-lg border border-slate-300 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-800 focus:border-slate-800 min-h-[38px] transition-colors"
                     />
-                    <Flame className="h-3.5 w-3.5 text-slate-600 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <Flame className="h-3.5 w-3.5 text-slate-500 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-semibold text-slate-600 mb-0.5">
+                  <label className="block text-[11px] font-semibold text-slate-800 mb-1">
                     Equipamiento
                   </label>
                   <div className="relative">
@@ -210,9 +215,9 @@ export function RecipeStepsSection({
                       value={step.equipment ?? ''}
                       onChange={(e) => handleUpdateStep(idx, { equipment: e.target.value || null })}
                       placeholder="Ej: Amasadora espiral"
-                      className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-brand"
+                      className="w-full px-2.5 py-2 rounded-lg border border-slate-300 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-800 focus:border-slate-800 min-h-[38px] transition-colors"
                     />
-                    <Wrench className="h-3.5 w-3.5 text-slate-600 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <Wrench className="h-3.5 w-3.5 text-slate-500 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                   </div>
                 </div>
               </div>

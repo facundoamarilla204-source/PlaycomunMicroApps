@@ -209,23 +209,23 @@ export function RecipesViewer({
       <div className="bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-xs font-bold text-brand uppercase tracking-wider">
+            <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold bg-purple-50 text-purple-900 border border-purple-200/80">
               Recetario técnico
             </span>
           </div>
           <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
             Tus recetas guardadas ({recipes.length})
           </h1>
-          <p className="text-xs sm:text-sm text-slate-700 mt-1 max-w-xl">
+          <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-xl">
             Creá, editá y organizá tus recetas profesionales con insumos de tu biblioteca, pasos de preparación y cálculo de costos en tiempo real.
           </p>
         </div>
 
         <Link
           href="/cocina-pro/recetas/nueva"
-          className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-brand text-white text-xs font-semibold hover:bg-brand-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand shadow-xs transition-colors min-h-[44px] cursor-pointer shrink-0"
+          className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[#7f22fe] hover:bg-[#6c1ce0] text-white text-xs font-semibold shadow-xs transition-all min-h-[44px] cursor-pointer shrink-0 active:scale-[0.98]"
         >
-          <Plus className="h-4 w-4" />
+          <Plus className="h-4 w-4 text-violet-200" />
           <span>Nueva receta</span>
         </Link>
       </div>
@@ -234,18 +234,18 @@ export function RecipesViewer({
       <div className="bg-white rounded-2xl border border-slate-200/90 p-4 shadow-xs space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center gap-3">
           <div className="relative flex-1">
-            <Search className="h-4 w-4 text-slate-600 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="h-4 w-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Buscar receta por nombre o categoría..."
-              className="w-full pl-9 pr-8 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm text-slate-900 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand transition-colors"
+              className="w-full pl-9 pr-8 py-2.5 rounded-xl border border-slate-300 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#7f22fe]/20 focus:border-[#7f22fe] transition-colors"
             />
             {search && (
               <button
                 onClick={() => setSearch('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-slate-600 hover:text-slate-900 rounded"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-slate-500 hover:text-slate-900 rounded"
                 aria-label="Limpiar búsqueda"
               >
                 <X className="h-3.5 w-3.5" />
@@ -258,7 +258,7 @@ export function RecipesViewer({
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-brand transition-colors"
+                className="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-xs sm:text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-[#7f22fe]/20 focus:border-[#7f22fe] transition-colors"
                 aria-label="Filtrar por categoría"
               >
                 <option value="">Todas las categorías ({recipes.length})</option>
@@ -279,7 +279,7 @@ export function RecipesViewer({
               onClick={() => setSelectedCategory('')}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors shrink-0 ${
                 !selectedCategory
-                  ? 'bg-purple-100 text-brand'
+                  ? 'bg-purple-50 text-purple-950 border border-purple-200/80 shadow-2xs'
                   : 'text-slate-700 hover:bg-slate-100'
               }`}
             >
@@ -293,7 +293,7 @@ export function RecipesViewer({
                   onClick={() => setSelectedCategory(selectedCategory === cat ? '' : cat)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors shrink-0 ${
                     selectedCategory === cat
-                      ? 'bg-purple-100 text-brand'
+                      ? 'bg-purple-50 text-purple-950 border border-purple-200/80 shadow-2xs'
                       : 'text-slate-700 hover:bg-slate-100'
                   }`}
                 >
@@ -308,19 +308,19 @@ export function RecipesViewer({
       {/* Listado de recetas */}
       {recipes.length === 0 ? (
         <div className="bg-white rounded-2xl border border-dashed border-slate-300 p-8 sm:p-12 text-center max-w-xl mx-auto my-8">
-          <BookOpen className="h-12 w-12 text-slate-300 mx-auto mb-3" />
+          <BookOpen className="h-12 w-12 text-slate-400 mx-auto mb-3" />
           <h2 className="text-base sm:text-lg font-bold text-slate-900">
             Aún no tenés recetas guardadas
           </h2>
-          <p className="text-xs sm:text-sm text-slate-700 mt-2 leading-relaxed">
+          <p className="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">
             Podés crear tu primera receta en el editor profesional para definir cantidades, ingredientes de tu biblioteca, pasos de preparación y márgenes de ganancia.
           </p>
           <div className="mt-6">
             <Link
               href="/cocina-pro/recetas/nueva"
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-brand text-white text-xs sm:text-sm font-semibold hover:bg-brand-hover transition-colors shadow-xs min-h-[44px]"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#7f22fe] hover:bg-[#6c1ce0] text-white text-xs sm:text-sm font-semibold transition-all shadow-xs min-h-[44px] active:scale-[0.98]"
             >
-              <Plus className="h-4 w-4" />
+              <Plus className="h-4 w-4 text-violet-200" />
               <span>Crear primera receta</span>
             </Link>
           </div>
@@ -354,22 +354,22 @@ export function RecipesViewer({
             return (
               <div
                 key={recipe.id}
-                className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs hover:border-brand/40 transition-all flex flex-col justify-between"
+                className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs hover:border-slate-300 transition-all flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-start justify-between gap-2 mb-2">
                     <div className="flex items-center gap-1.5 flex-wrap">
-                      <span className="inline-flex px-2 py-0.5 rounded-md bg-purple-50 text-brand text-[11px] font-bold capitalize">
+                      <span className="inline-flex px-2 py-0.5 rounded-md bg-violet-50 text-violet-900 border border-violet-200/80 text-[11px] font-semibold capitalize">
                         {recipe.category || 'General'}
                       </span>
                       {hasSubrecipes && (
-                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-indigo-50 text-indigo-700 text-[10px] font-bold">
-                          <Layers className="h-3 w-3" />
+                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200 text-[10px] font-medium">
+                          <Layers className="h-3 w-3 text-slate-500" />
                           <span>{recipe.subrecipes?.length} subrecetas</span>
                         </span>
                       )}
                     </div>
-                    <span className="text-[11px] text-slate-700 font-medium tabular-nums">
+                    <span className="text-[11px] text-slate-500 font-medium tabular-nums">
                       Rinde: {recipe.yield_quantity} {recipe.yield_unit}
                     </span>
                   </div>
@@ -379,7 +379,7 @@ export function RecipesViewer({
                   </h3>
 
                   {recipe.description && (
-                    <p className="text-xs text-slate-700 mt-1 line-clamp-2 leading-relaxed">
+                    <p className="text-xs text-slate-600 mt-1 line-clamp-2 leading-relaxed">
                       {recipe.description}
                     </p>
                   )}
@@ -387,37 +387,37 @@ export function RecipesViewer({
                   {/* Resumen de costos */}
                   <div className="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-slate-100 text-xs">
                     <div>
-                      <span className="text-[10px] text-slate-700 block">Costo total</span>
-                      <span className="font-extrabold text-slate-900 text-sm tabular-nums">
+                      <span className="text-[10px] text-slate-500 font-medium block">Costo total</span>
+                      <span className="font-bold text-slate-900 text-sm tabular-nums">
                         ${financials.totalCost.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
                         {financials.hasConversionErrors && '*'}
                       </span>
                     </div>
 
                     <div className="text-right">
-                      <span className="text-[10px] text-emerald-800 font-semibold block">Venta sugerida</span>
-                      <span className="font-extrabold text-emerald-800 text-sm tabular-nums">
+                      <span className="text-[10px] text-slate-500 font-medium block">Venta sugerida</span>
+                      <span className="font-bold text-emerald-700 text-sm tabular-nums">
                         ${financials.suggestedPrice.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
                       </span>
                     </div>
                   </div>
 
                   {/* Detalle de insumos y tiempos */}
-                  <div className="flex items-center gap-3 mt-3 text-[11px] text-slate-700 flex-wrap">
+                  <div className="flex items-center gap-3 mt-3 text-[11px] text-slate-500 flex-wrap">
                     <span className="inline-flex items-center gap-1 tabular-nums">
-                      <Layers className="h-3 w-3 text-slate-600" />
+                      <Layers className="h-3 w-3 text-slate-400" />
                       <span>{recipe.ingredients.length} insumos</span>
                     </span>
 
                     {hasSubrecipes && (
-                      <span className="inline-flex items-center gap-1 tabular-nums text-indigo-700 font-medium">
+                      <span className="inline-flex items-center gap-1 tabular-nums text-slate-600 font-medium">
                         <span>+ {recipe.subrecipes?.length} subrecetas</span>
                       </span>
                     )}
 
                     {(recipe.prep_time_minutes || recipe.cook_time_minutes) && (
                       <span className="inline-flex items-center gap-1 tabular-nums">
-                        <Clock className="h-3 w-3 text-slate-600" />
+                        <Clock className="h-3 w-3 text-slate-400" />
                         <span>
                           {(recipe.prep_time_minutes || 0) + (recipe.cook_time_minutes || 0)} min
                         </span>
@@ -426,26 +426,28 @@ export function RecipesViewer({
                   </div>
                 </div>
 
-                {/* Acciones de la receta */}
+                {/* Acciones de la receta unificadas en jerarquía */}
                 <div className="mt-5 pt-3 border-t border-slate-100 space-y-2">
+                  {/* Fila principal: Editar (CTA Principal) y Elaborar (Modo taller) */}
                   <div className="grid grid-cols-2 gap-2">
                     <Link
                       href={`/cocina-pro/recetas/${recipe.id}/editar`}
-                      className="inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-brand text-white text-xs font-semibold hover:bg-brand-hover transition-colors min-h-[44px] shadow-xs btn-tactile"
+                      className="inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-[#7f22fe] hover:bg-[#6c1ce0] text-white text-xs font-semibold transition-all min-h-[42px] shadow-xs active:scale-[0.98] cursor-pointer"
                     >
-                      <Edit3 className="h-3.5 w-3.5" />
+                      <Edit3 className="h-3.5 w-3.5 text-violet-200" />
                       <span>Editar</span>
                     </Link>
 
                     <Link
                       href={`/cocina-pro/elaboracion/${recipe.id}`}
-                      className="inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold transition-colors min-h-[44px] shadow-xs btn-tactile"
+                      className="inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-violet-50 hover:bg-violet-100 text-violet-900 border border-violet-200/80 text-xs font-semibold transition-all min-h-[42px] active:scale-[0.98] cursor-pointer"
                     >
-                      <Flame className="h-3.5 w-3.5" />
+                      <Flame className="h-3.5 w-3.5 text-[#7f22fe]" />
                       <span>Elaborar</span>
                     </Link>
                   </div>
 
+                  {/* Fila secundaria: Ver ficha técnica y Escalar cantidades */}
                   <div className="grid grid-cols-2 gap-2">
                     <button
                       type="button"
@@ -453,9 +455,9 @@ export function RecipesViewer({
                         setSelectedRecipe(recipe)
                         setIsDetailOpen(true)
                       }}
-                      className="inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-purple-50 text-brand text-xs font-semibold hover:bg-purple-100 transition-colors min-h-[40px] btn-tactile"
+                      className="inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/90 text-xs font-medium transition-all min-h-[38px] active:scale-[0.98] cursor-pointer"
                     >
-                      <Eye className="h-3.5 w-3.5" />
+                      <Eye className="h-3.5 w-3.5 text-slate-500" />
                       <span>Ver ficha</span>
                     </button>
 
@@ -465,23 +467,24 @@ export function RecipesViewer({
                         setScalingRecipe(recipe)
                         setIsScaleOpen(true)
                       }}
-                      className="inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-slate-100 text-slate-800 text-xs font-semibold hover:bg-slate-200 transition-colors min-h-[40px] btn-tactile"
+                      className="inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/90 text-xs font-medium transition-all min-h-[38px] active:scale-[0.98] cursor-pointer"
                     >
-                      <Scale className="h-3.5 w-3.5 text-brand" />
+                      <Scale className="h-3.5 w-3.5 text-slate-500" />
                       <span>Escalar</span>
                     </button>
                   </div>
 
+                  {/* Fila utilidades: Duplicar, Exportar PDF y Eliminar */}
                   <div className="flex items-center justify-between gap-1 pt-1">
                     <button
                       type="button"
                       disabled={isDuplicatingThis}
                       onClick={() => handleDuplicate(recipe)}
-                      className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-700 hover:text-slate-900 py-1.5 px-2 rounded-lg hover:bg-slate-100 disabled:opacity-50 transition-colors"
+                      className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-500 hover:text-slate-900 py-1.5 px-2 rounded-lg hover:bg-slate-100 disabled:opacity-50 transition-colors cursor-pointer"
                       title="Duplicar receta"
                     >
                       {isDuplicatingThis ? (
-                        <Loader2 className="h-3 w-3 animate-spin text-brand" />
+                        <Loader2 className="h-3 w-3 animate-spin text-[#7f22fe]" />
                       ) : (
                         <Copy className="h-3 w-3" />
                       )}
@@ -491,7 +494,7 @@ export function RecipesViewer({
                     <button
                       type="button"
                       onClick={() => exportSingleRecipePdf(recipe, { steps: recipe.steps, subrecipesBreakdown: financials.subrecipesBreakdown })}
-                      className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-700 hover:text-slate-900 py-1.5 px-2 rounded-lg hover:bg-slate-100 transition-colors"
+                      className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-500 hover:text-slate-900 py-1.5 px-2 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
                       title="Exportar ficha técnica PDF"
                     >
                       <FileDown className="h-3 w-3" />
@@ -501,7 +504,7 @@ export function RecipesViewer({
                     <button
                       type="button"
                       onClick={() => setRecipeToDelete(recipe)}
-                      className="inline-flex items-center gap-1 text-[11px] font-medium text-rose-700 hover:text-rose-900 py-1.5 px-2 rounded-lg hover:bg-rose-50 transition-colors"
+                      className="inline-flex items-center gap-1 text-[11px] font-medium text-rose-600 hover:text-rose-700 py-1.5 px-2 rounded-lg hover:bg-rose-50 transition-colors cursor-pointer"
                       title="Eliminar receta"
                     >
                       <Trash2 className="h-3 w-3" />
