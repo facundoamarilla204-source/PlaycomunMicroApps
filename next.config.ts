@@ -38,6 +38,7 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       // Herramientas: Redirección permanente de raíz a /herramientas/<slug>
+      { source: "/herramienta/:slug*", destination: "/herramientas/:slug*", permanent: true },
       { source: "/costo-receta", destination: "/herramientas/costo-receta", permanent: true },
       { source: "/control-gastos", destination: "/herramientas/control-gastos", permanent: true },
       { source: "/calculadora-precios", destination: "/herramientas/calculadora-precios", permanent: true },

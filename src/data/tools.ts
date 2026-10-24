@@ -849,9 +849,9 @@ export const tools: Tool[] = [
     name: "Ordenar PDF",
     type: "utilidad",
     category: "clientes-utilidades",
-    exampleResult: "Organizar, unir, dividir y escanear páginas",
+    exampleResult: "Organizar, unir, dividir y escanear páginas con OCR",
     tier: "free",
-    description: "Organizá, uní, dividí, rotá y eliminá páginas de tus archivos PDF. Incluye escáner de documentos con cámara física 100% privado.",
+    description: "Organizá, uní, dividí, rotá y eliminá páginas de tus archivos PDF. Incluye escáner de documentos con cámara física, conexión por código QR con el celular y reconstrucción de texto digital mediante OCR 100% privado.",
     icon: "Files",
     status: "live",
     featured: true,
@@ -863,31 +863,36 @@ export const tools: Tool[] = [
       "extraer paginas pdf",
       "rotar pdf",
       "escanear documentos a pdf",
+      "escanear ocr pdf",
       "juntar pdf gratis",
       "separar pdf online",
       "organizar hojas pdf",
       "escanear con celular a pdf",
       "combinar pdf"
     ],
-    updatedAt: "2026-10-12T00:00:00.000Z",
+    updatedAt: "2026-10-24T00:00:00.000Z",
     seo: {
-      title: "Ordenar PDF gratis: Unir, dividir y rotar",
-      description: "Organizá tus documentos PDF online: uní varios archivos, reordená y rotá páginas, dividí por partes o rangos y escaneá con la cámara de tu celular de forma 100% privada.",
-      h1: "Ordenar PDF y Escanear Documentos Online",
-      intro: "La forma más simple y privada de organizar, combinar, dividir, rotar y escanear páginas de tus documentos PDF directamente desde el navegador."
+      title: "Ordenar PDF gratis: Unir, dividir, rotar y escanear con OCR",
+      description: "Organizá tus documentos PDF online: uní varios archivos, reordená páginas, dividí por partes y escaneá hojas A4 con tu celular o cámara reconstruyendo texto digital mediante OCR.",
+      h1: "Ordenar PDF y Escanear Documentos Online con OCR",
+      intro: "La forma más simple y privada de organizar, combinar, dividir, rotar y escanear páginas de tus documentos PDF directamente desde el navegador, con reconocimiento OCR de texto."
     },
     faqs: [
       {
         question: "¿Cómo funciona la privacidad de mis documentos PDF y fotografías escaneadas?",
-        answer: "Todas las operaciones (unión, ordenamiento, división, rotación, eliminación y escaneo) se procesan 100% en la memoria de tu dispositivo usando las capacidades de tu navegador. Tus archivos y capturas nunca se suben a servidores remotos ni a ninguna base de datos."
+        answer: "Todas las operaciones (unión, ordenamiento, división, rotación, eliminación, escaneo y reconocimiento OCR) se procesan en la memoria de tu dispositivo usando las capacidades de tu navegador. Tus archivos y capturas nunca se almacenan en servidores remotos ni en bases de datos comerciales."
+      },
+      {
+        question: "¿Cómo reconstruye el escáner el texto de las hojas mediante OCR en lugar de incrustar fotos?",
+        answer: "A diferencia de los escáneres comunes que se limitan a pegar fotos de las hojas, nuestra herramienta analiza la imagen con un motor de OCR directamente en tu navegador, reconoce caracteres, jerarquías, títulos, párrafos y listas, y genera un documento PDF digital con texto seleccionable, copiable y sin incrustar la fotografía original."
+      },
+      {
+        question: "¿Cómo conecto mi celular a la PC con el código QR para escanear?",
+        answer: "Al presionar 'Usar celular', la pantalla de tu computadora genera un código QR asociado a una sesión temporal protegida con tokens criptográficos aleatorios. Al escanearlo con la cámara del celular, se abre una interfaz de captura móvil adaptada con encuadre A4 y corrección de perspectiva. Las fotos se transfieren directamente a tu sesión de PC en tiempo real sin requerir instalación de apps."
       },
       {
         question: "¿Puedo combinar varios archivos PDF y luego ordenar las páginas a mi gusto?",
         answer: "Sí. Podés subir múltiples archivos PDF a la vez o añadir nuevos documentos en cualquier momento. La herramienta te permite reordenar el orden de los archivos y luego desplazar, girar o eliminar cualquiera de las páginas del conjunto."
-      },
-      {
-        question: "¿Cómo funciona el escáner a PDF desde el celular sin instalar aplicaciones?",
-        answer: "El escáner utiliza la cámara de tu teléfono móvil mediante los estándares seguros del navegador. Podés capturar varias páginas seguidas, ajustar los bordes con corrección de perspectiva, aplicar filtros de alto contraste y generar un documento PDF estándar A4 listo para compartir."
       },
       {
         question: "¿Cómo divido un PDF en varias partes o extraigo páginas específicas?",

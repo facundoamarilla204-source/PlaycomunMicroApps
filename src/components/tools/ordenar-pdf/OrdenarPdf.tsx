@@ -628,14 +628,14 @@ export function OrdenarPdf() {
                 <Plus className="h-3.5 w-3.5" /> Añadir PDFs
               </button>
 
-              {/* Botón Escanear con cámara */}
+              {/* Botón Escanear con cámara o celular */}
               <button
                 type="button"
                 onClick={() => setIsCameraModalOpen(true)}
                 className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-gray-200 bg-white hover:border-violet-500 hover:text-violet-700 text-gray-700 text-xs font-semibold transition-colors shadow-2xs"
-                title="Tomar fotografías de páginas con la cámara"
+                title="Escanear hojas con la cámara, conectar celular vía QR o reconocer texto con OCR"
               >
-                <Camera className="h-3.5 w-3.5 text-violet-600" /> Escanear
+                <Camera className="h-3.5 w-3.5 text-violet-600" /> Escanear / OCR
               </button>
 
               {/* Dividir PDF */}

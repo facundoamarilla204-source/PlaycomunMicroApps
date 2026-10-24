@@ -96,7 +96,7 @@ export function InitialChoiceView({
           </button>
         </motion.div>
 
-        {/* Opción 2: Escanear con cámara */}
+        {/* Opción 2: Escanear con cámara o celular (QR) */}
         <motion.div
           whileHover={{ y: -3 }}
           transition={{ duration: 0.2 }}
@@ -105,7 +105,7 @@ export function InitialChoiceView({
         >
           <div className="w-full flex justify-end">
             <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 border border-emerald-200/50">
-              <Camera className="h-3 w-3" /> Cámara móvil o webcam
+              <Camera className="h-3 w-3" /> Cámara, celular (QR) u OCR
             </span>
           </div>
 
@@ -116,10 +116,10 @@ export function InitialChoiceView({
 
             <div className="space-y-1">
               <h3 className="text-xl font-bold text-gray-900 group-hover:text-violet-700 transition-colors">
-                Escanear a PDF con cámara
+                Escanear con cámara o celular (QR)
               </h3>
               <p className="text-sm text-gray-600 max-w-sm">
-                Fotografiá documentos impresos, hojas de cuaderno o recibos. Incluye corrección de bordes y filtros de lectura.
+                Fotografiá hojas A4 con tu teléfono o webcam, reconocé el texto con OCR y reconstruí páginas digitales de texto real.
               </p>
             </div>
           </div>
@@ -128,7 +128,7 @@ export function InitialChoiceView({
             type="button"
             className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gray-900 text-white font-medium text-sm hover:bg-violet-600 transition-all active:scale-95 shadow-md shadow-gray-900/10"
           >
-            Abrir escáner de cámara
+            Abrir escáner con OCR y QR
           </button>
         </motion.div>
       </div>
