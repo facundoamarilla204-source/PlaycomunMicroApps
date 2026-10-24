@@ -872,10 +872,10 @@ export const tools: Tool[] = [
     ],
     updatedAt: "2026-10-24T00:00:00.000Z",
     seo: {
-      title: "Ordenar PDF gratis: Unir, dividir, rotar y escanear con OCR",
-      description: "Organizá tus documentos PDF online: uní varios archivos, reordená páginas, dividí por partes y escaneá hojas A4 con tu celular o cámara reconstruyendo texto digital mediante OCR.",
-      h1: "Ordenar PDF y Escanear Documentos Online con OCR",
-      intro: "La forma más simple y privada de organizar, combinar, dividir, rotar y escanear páginas de tus documentos PDF directamente desde el navegador, con reconocimiento OCR de texto."
+      title: "Ordenar PDF y Escanear Documentos Online con OCR",
+      description: "Organizá páginas de archivos PDF en tu navegador: uní documentos, ordená hojas, dividí por partes y digitalizá páginas físicas mediante cámara con OCR privado.",
+      h1: "Ordenar PDF y digitalizar documentos",
+      intro: "Organización de páginas, combinación de archivos PDF y digitalización de hojas con cámara u OCR local en tu navegador."
     },
     faqs: [
       {
@@ -1068,7 +1068,163 @@ export const tools: Tool[] = [
       }
     ],
     related: ["compresor-imagenes", "convertidor-archivos", "generador-qr", "generador-listas-precios"]
+  },
+  {
+    slug: "generador-favicon",
+    name: "Generador de favicons",
+    type: "generador",
+    category: "clientes-utilidades",
+    exampleResult: "Paquete completo ICO, PNG, WebManifest y HTML",
+    tier: "free",
+    description: "Creá favicons listos para usar en tu web: subí tu logo o imagen, configurá el encuadre, previsualizá en pestañas de navegador y descargá el paquete ZIP con favicon.ico multi-resolución, iconos PNG y manifiesto PWA.",
+    icon: "Image",
+    status: "live",
+    featured: true,
+    keywords: [
+      "generador de favicon",
+      "crear favicon online",
+      "convertir logo a favicon",
+      "generar favicon para web",
+      "favicon ico online",
+      "apple touch icon generator",
+      "favicon png",
+      "favicon multi resolucion",
+      "site webmanifest generator"
+    ],
+    updatedAt: "2026-10-24T00:00:00.000Z",
+    seo: {
+      title: "Generador de favicons online gratis: Crear favicon.ico y PNGs",
+      description: "Generador de favicons online gratis y 100% privado. Creá el archivo favicon.ico multi-resolución, iconos Apple Touch, manifiesto Android PWA y código HTML listo para copiar.",
+      h1: "Generador de favicons para sitios web",
+      intro: "Convertí cualquier logo o imagen en un paquete completo de favicons con previsualización en pestañas reales, formato ICO genuino y código HTML listo para tu página."
+    },
+    faqs: [
+      {
+        question: "¿Qué archivos incluye el paquete generado?",
+        answer: "El paquete ZIP incluye el archivo tradicional multi-resolución favicon.ico (con capas de 16x16, 32x32 y 48x48 px), las variantes individuales PNG (16x16, 32x32, 48x48 px), el icono de alta resolución para dispositivos Apple (apple-touch-icon.png de 180x180 px), los iconos para Android/PWA (192x192 y 512x512 px), el archivo site.webmanifest y un archivo README instructivo."
+      },
+      {
+        question: "¿El archivo favicon.ico es un formato ICO real o una imagen renombrada?",
+        answer: "Es un archivo binario ICO genuino codificado según el estándar de Microsoft Windows, conteniendo las tres capas de resolución estándar (16, 32 y 48 píxeles). No es un archivo PNG renombrado."
+      },
+      {
+        question: "¿Se conserva la transparencia de mi logo?",
+        answer: "Sí. Si subís un archivo PNG, WebP o SVG con fondo transparente y mantenés seleccionada la opción de fondo transparente, todos los iconos generados preservarán el canal alfa intacto."
+      },
+      {
+        question: "¿Mis imágenes se suben a algún servidor?",
+        answer: "No. El procesamiento, escalado, composición y empaquetado ZIP se ejecutan íntegramente de forma local en tu navegador mediante HTML5 Canvas y JavaScript. Tus imágenes nunca viajan por internet ni quedan almacenadas en servidores."
+      },
+      {
+        question: "¿Cómo instalo los favicons en mi web?",
+        answer: "Solo tenés que descomprimir el archivo ZIP, colocar todos los archivos en la raíz pública de tu proyecto (por ejemplo en la carpeta public/ de Next.js, Vite o Astro, o en la raíz de tu servidor Apache/Nginx) y copiar el fragmento de código HTML en la sección <head> de tu página."
+      }
+    ],
+    related: ["compresor-imagenes", "convertidor-archivos", "ordenar-pdf", "generador-paletas-colores"]
+  },
+  {
+    slug: "eliminar-metadatos-exif",
+    name: "Eliminar metadatos EXIF",
+    type: "utilidad",
+    category: "clientes-utilidades",
+    exampleResult: "Fotos limpias sin GPS ni datos personales",
+    tier: "free",
+    description: "Eliminá metadatos EXIF, coordenadas de ubicación GPS y datos de cámara de tus fotos JPEG, PNG y WebP antes de compartirlas. 100% privado y en tu navegador.",
+    icon: "FileImage",
+    status: "live",
+    featured: true,
+    keywords: [
+      "eliminar metadatos exif",
+      "quitar metadatos de fotos",
+      "borrar gps de fotos",
+      "eliminar exif online",
+      "limpiar metadatos imagen",
+      "quitar ubicacion de una foto",
+      "borrar datos de fotografias",
+      "eliminar exif jpeg png webp"
+    ],
+    updatedAt: "2026-10-24T00:00:00.000Z",
+    seo: {
+      title: "Eliminar metadatos EXIF de imágenes online gratis: Quitar GPS y cámara",
+      description: "Eliminá metadatos EXIF, coordenadas GPS, fecha y datos de cámara de tus fotos online y gratis. Procesamiento 100% local en tu navegador sin subir imágenes.",
+      h1: "Eliminar metadatos EXIF de fotografías",
+      intro: "Protegé tu privacidad eliminando la ubicación GPS, marca de la cámara, fecha y datos ocultos de tus imágenes antes de compartirlas o publicarlas en internet."
+    },
+    faqs: [
+      {
+        question: "¿Qué metadatos elimina esta herramienta?",
+        answer: "Elimina selectivamente coordenadas geográficas GPS, datos del modelo de teléfono o cámara, software de edición, fechas y horas de captura, comentarios y miniaturas EXIF incrustadas en fotos JPEG, PNG y WebP."
+      },
+      {
+        question: "¿Se pierde calidad en las imágenes al eliminar los metadatos?",
+        answer: "No. En archivos JPEG, PNG y WebP estándar se realiza una extracción binaria sin pérdidas (lossless), eliminando los bloques de metadatos sin descomprimir ni recomprimir los píxeles de la imagen original."
+      },
+      {
+        question: "¿Mis fotos se suben a algún servidor?",
+        answer: "No. El análisis y la limpieza de metadatos se ejecutan 100% de manera local en la memoria de tu propio dispositivo. Ninguna fotografía viaja por internet ni se almacena en la nube."
+      },
+      {
+        question: "¿Puedo procesar varias fotos a la vez y descargarlas juntas?",
+        answer: "Sí. Podés seleccionar múltiples fotos por lote, ver qué datos contiene cada una y descargar cada imagen individual o un archivo ZIP con todas las imágenes limpias."
+      }
+    ],
+    related: ["compresor-imagenes", "convertidor-archivos", "generador-favicon", "ordenar-pdf", "marca-de-agua-imagenes"]
+  },
+  {
+    slug: "marca-de-agua-imagenes",
+    name: "Marca de agua para imágenes",
+    type: "utilidad",
+    category: "clientes-utilidades",
+    exampleResult: "Fotos protegidas con logo o texto",
+    tier: "free",
+    description: "Poné marcas de agua de texto o logo a tus imágenes en lote. Controlá posición, tamaño, opacidad y rotación con vista previa en tiempo real y descarga en ZIP.",
+    icon: "Stamp",
+    status: "live",
+    featured: true,
+    keywords: [
+      "marca de agua imagenes",
+      "poner marca de agua a una imagen",
+      "agregar logo a una foto",
+      "marca de agua online",
+      "proteger fotos con logo",
+      "watermark generator online",
+      "marca de agua lote",
+      "marca de agua transparente",
+      "marca de agua texto",
+      "watermark maker free"
+    ],
+    updatedAt: "2026-10-24T00:00:00.000Z",
+    seo: {
+      title: "Poner marca de agua a imágenes online gratis: Logo y texto",
+      description: "Agregá marcas de agua de texto o logotipo a tus fotos online y gratis. Procesamiento en lote en tu navegador con posicionamiento preciso y descarga individual o en ZIP.",
+      h1: "Generador de marcas de agua para imágenes",
+      intro: "Protegé tus fotografías con tu logo o un texto personalizado. Ajustá tamaño, opacidad, rotación y posición con vista previa interactiva y procesamiento seguro en tu dispositivo."
+    },
+    faqs: [
+      {
+        question: "¿Cómo funciona el procesamiento de las marcas de agua?",
+        answer: "El procesamiento se realiza directamente en tu navegador web mediante HTML5 Canvas y aceleración gráfica local. Ninguna fotografía ni logotipo viaja por internet ni se almacena en servidores externos."
+      },
+      {
+        question: "¿Puedo aplicar la misma marca de agua a muchas fotos a la vez?",
+        answer: "Sí. Podés cargar un lote completo de imágenes y la herramienta aplicará los mismos parámetros relativos de tamaño, margen, rotación y posición a todas las fotografías de forma simultánea."
+      },
+      {
+        question: "¿Qué formatos de imagen y logotipo son compatibles?",
+        answer: "Admite imágenes JPG, PNG y WebP. Para logotipos, podés subir archivos PNG o WebP con transparencia alfa para que se integren de forma limpia sobre tus fotos sin recuadros blancos."
+      },
+      {
+        question: "¿Se reduce la resolución original de mis fotografías?",
+        answer: "No. La composición de la marca de agua se calcula y graba sobre la resolución nativa original de cada fotografía. Podés conservar el formato original o elegir JPG, PNG o WebP con la calidad deseada."
+      },
+      {
+        question: "¿Puedo descargar todas las fotos procesadas juntas?",
+        answer: "Sí. Tenés la opción de descargar cada fotografía procesada de forma individual o descargar un único archivo comprimido ZIP con todo el lote completo."
+      }
+    ],
+    related: ["compresor-imagenes", "eliminar-metadatos-exif", "generador-favicon", "convertidor-archivos"]
   }
 ]
+
 
 

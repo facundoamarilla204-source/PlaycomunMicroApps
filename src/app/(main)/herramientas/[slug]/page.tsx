@@ -101,6 +101,18 @@ const FirmarPdfTool = dynamic(
   () => import("@/components/tools/firmar-pdf/FirmarPdfTool").then((m) => m.FirmarPdfTool),
   { loading: () => <ToolSkeleton /> }
 )
+const GeneradorFaviconTool = dynamic(
+  () => import("@/components/tools/generador-favicon/GeneradorFaviconTool").then((m) => m.GeneradorFaviconTool),
+  { loading: () => <ToolSkeleton /> }
+)
+const EliminarMetadatosExifTool = dynamic(
+  () => import("@/components/tools/eliminar-metadatos-exif/EliminarMetadatosExifTool").then((m) => m.EliminarMetadatosExifTool),
+  { loading: () => <ToolSkeleton /> }
+)
+const MarcaDeAguaTool = dynamic(
+  () => import("@/components/tools/marca-de-agua/MarcaDeAguaTool").then((m) => m.MarcaDeAguaTool),
+  { loading: () => <ToolSkeleton /> }
+)
 
 // Contenido SEO estático renderizado en servidor (SSR nativo)
 import { AguinaldoContent } from "@/components/tools/content/AguinaldoContent"
@@ -124,6 +136,9 @@ import { CortadorAudioContent } from "@/components/tools/content/CortadorAudioCo
 import GeneradorListasContent from "@/components/tools/content/GeneradorListasContent"
 import { GeneradorPaletasContent } from "@/components/tools/content/GeneradorPaletasContent"
 import { FirmarPdfContent } from "@/components/tools/content/FirmarPdfContent"
+import { GeneradorFaviconContent } from "@/components/tools/content/GeneradorFaviconContent"
+import { EliminarMetadatosExifContent } from "@/components/tools/content/EliminarMetadatosExifContent"
+import { MarcaDeAguaContent } from "@/components/tools/content/MarcaDeAguaContent"
 
 import { isProUser } from "@/lib/pro"
 
@@ -307,6 +322,33 @@ function getToolComponent(slug: string, user: User | null, isPro: boolean = fals
           <FirmarPdfTool />
           <div className="mt-16 flex justify-center">
             <FirmarPdfContent />
+          </div>
+        </>
+      )
+    case "generador-favicon":
+      return (
+        <>
+          <GeneradorFaviconTool />
+          <div className="mt-16 flex justify-center">
+            <GeneradorFaviconContent />
+          </div>
+        </>
+      )
+    case "eliminar-metadatos-exif":
+      return (
+        <>
+          <EliminarMetadatosExifTool />
+          <div className="mt-16 flex justify-center">
+            <EliminarMetadatosExifContent />
+          </div>
+        </>
+      )
+    case "marca-de-agua-imagenes":
+      return (
+        <>
+          <MarcaDeAguaTool />
+          <div className="mt-16 flex justify-center">
+            <MarcaDeAguaContent />
           </div>
         </>
       )

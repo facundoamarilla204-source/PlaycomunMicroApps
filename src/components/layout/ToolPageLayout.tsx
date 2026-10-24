@@ -44,19 +44,16 @@ export function ToolPageLayout({ tool, children, content }: ToolPageLayoutProps)
 
         {/* Tool Header */}
         <div className="mt-4 mb-8 sm:mb-10 max-w-3xl">
-          <div className="flex flex-wrap items-center gap-2 mb-3">
-            <span className="inline-flex items-center rounded-md bg-purple-50 px-2.5 py-1 text-xs font-semibold text-brand ring-1 ring-inset ring-purple-600/10">
-              {categoryName}
-            </span>
+          <div className="flex items-center gap-3 text-xs text-slate-500 mb-3 font-medium">
+            <span>{categoryName}</span>
+            <span className="text-slate-300">•</span>
+            <span>Uso libre en navegador</span>
             {tool.tier === "pro" && (
-              <span className="inline-flex items-center rounded-md px-2.5 py-1 text-xs font-medium ring-1 ring-inset bg-purple-100/70 text-purple-800 ring-purple-600/20">
-                Plan Pro
-              </span>
+              <>
+                <span className="text-slate-300">•</span>
+                <span className="font-semibold text-brand">Plan Pro</span>
+              </>
             )}
-            <span className="inline-flex items-center gap-1 text-xs text-slate-500 ml-1">
-              <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
-              Sin registro requerido
-            </span>
           </div>
 
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight mb-3">
