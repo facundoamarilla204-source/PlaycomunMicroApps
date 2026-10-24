@@ -13,6 +13,7 @@ export interface RecognizedBlock {
   type: RecognizedBlockType
   text: string
   confidence: number
+  isBold?: boolean
   bbox?: {
     x0: number
     y0: number
@@ -267,43 +268,80 @@ export function sanitizeSpanishTextForPdf(text: string): string {
     .replace(/[\u2022\u25CF\u25CB]/g, "•")
 }
 
+export interface ClassifiedLineResult {
+  type: RecognizedBlockType
+  isBold: boolean
+}
+
 /**
- * Classifies a raw text line into a structured document block.
+ * Classifies a raw text line into a structured document block using
+ * visual hierarchy cues (relative line height, bold signals, keywords, indentation).
  */
 export function classifyLine(
   text: string,
   lineIndex: number,
   totalLines: number,
-  avgCharHeight?: number
-): RecognizedBlockType {
+  lineHeight?: number,
+  medianLineHeight?: number,
+  hasBoldWord?: boolean
+): ClassifiedLineResult {
   const trimmed = text.trim()
-  if (!trimmed) return "paragraph"
+  if (!trimmed) return { type: "paragraph", isBold: false }
 
-  // Check for bullet list item
+  // 1. Check for bullet or numbered list item
   if (/^([•*\-–—]|(\d+|[a-zA-Z])[.)])\s+/.test(trimmed)) {
-    return "list_item"
+    return { type: "list_item", isBold: Boolean(hasBoldWord) }
   }
 
-  // Check for table row (multiple columnar tokens separated by 2+ spaces or tabs)
+  // 2. Check for table row (multiple columnar tokens separated by 2+ spaces or tabs)
   if (/\s{3,}|\t/.test(trimmed) && trimmed.split(/\s{2,}|\t/).length >= 2) {
-    return "table_row"
+    return { type: "table_row", isBold: Boolean(hasBoldWord) }
   }
 
-  // Check for Title: first 3 lines, short, capitalized or uppercase with Spanish accents
+  // 3. Significant font size / line height (CamScanner visual hierarchy)
+  const isSignificantlyLarge =
+    Boolean(lineHeight && medianLineHeight && lineHeight >= medianLineHeight * 1.32)
+  const isModeratelyLarge =
+    Boolean(lineHeight && medianLineHeight && lineHeight >= medianLineHeight * 1.15)
+
+  // 4. Spanish Administrative & Document Section Keywords
+  const isSectionKeyword =
+    /^(ART[ÍI]CULO|CL[ÁA]USULA|CAP[ÍI]TULO|SECCI[ÓO]N|ANEXO|T[ÍI]TULO|PRIMERO|SEGUNDO|TERCERO|CUARTO|QUINTO|SEXTO|S[ÉE]PTIMO|OCTAVO|NOVENO|D[ÉE]CIMO|RESOLUCI[ÓO]N|DECRETO|LEY|CONSIDERANDO:|RESUELVE:|CERTIFICO|CERTIFICADO|INFORME|ACTA)\b/i.test(
+      trimmed
+    )
+
+  // 5. Uppercase evaluation
   const isAllUpper =
     trimmed.length > 3 &&
     trimmed === trimmed.toUpperCase() &&
     /[A-ZÁÉÍÓÚÑ]/.test(trimmed)
-  if (lineIndex <= 2 && (isAllUpper || (trimmed.length < 55 && !trimmed.endsWith(".")))) {
-    return lineIndex === 0 ? "title" : "heading"
+
+  // Title: very large line height, or first 2 lines with prominent uppercase/no period
+  if (
+    isSignificantlyLarge ||
+    (lineIndex <= 2 && trimmed.length < 70 && (isAllUpper || !trimmed.endsWith(".")))
+  ) {
+    return { type: "title", isBold: true }
   }
 
-  // Check for Subheading
-  if (trimmed.length < 50 && (isAllUpper || /^[A-ZÁÉÍÓÚÑ0-9\s:_-]{3,50}$/.test(trimmed))) {
-    return "subheading"
+  // Heading: section keyword, moderately large font, or standalone uppercase line
+  if (
+    isSectionKeyword ||
+    isModeratelyLarge ||
+    (trimmed.length < 65 && (isAllUpper || /^[A-ZÁÉÍÓÚÑ0-9\s:_-]{3,65}$/.test(trimmed)))
+  ) {
+    return { type: "heading", isBold: true }
   }
 
-  return "paragraph"
+  // Subheading: subsections like 1.1, 2.3, or bold short phrase
+  if (/^\d+(\.\d+)+\s+/.test(trimmed) || (hasBoldWord && trimmed.length < 60)) {
+    return { type: "subheading", isBold: true }
+  }
+
+  return {
+    type: "paragraph",
+    isBold: Boolean(hasBoldWord),
+  }
 }
 
 /**
@@ -408,16 +446,40 @@ export async function performOcrOnImage(
     const fullText = (data.text || "").trim()
     const blocks: RecognizedBlock[] = []
 
+    // Calculate median line height for font size normalization
+    let medianLineHeight = 24
+    if (data.lines && data.lines.length > 0) {
+      const validHeights = data.lines
+        .map((l: any) => (l.bbox ? Math.abs(l.bbox.y1 - l.bbox.y0) : 0))
+        .filter((h: number) => h > 5)
+        .sort((a: number, b: number) => a - b)
+      if (validHeights.length > 0) {
+        medianLineHeight = validHeights[Math.floor(validHeights.length / 2)]
+      }
+    }
+
     if (data.lines && data.lines.length > 0) {
       data.lines.forEach((line: any, idx: number) => {
         const lineText = sanitizeSpanishTextForPdf((line.text || "").trim())
         if (!lineText) return
 
-        const type = classifyLine(lineText, idx, data.lines.length)
+        const lineH = line.bbox ? Math.abs(line.bbox.y1 - line.bbox.y0) : undefined
+        const hasBoldWord = Boolean(line.words && line.words.some((w: any) => w.is_bold))
+
+        const { type, isBold } = classifyLine(
+          lineText,
+          idx,
+          data.lines.length,
+          lineH,
+          medianLineHeight,
+          hasBoldWord
+        )
+
         blocks.push({
           id: `block_${idx}_${Date.now()}`,
           type,
           text: lineText,
+          isBold,
           confidence: Math.round(line.confidence || 0),
           bbox: line.bbox
             ? {
@@ -434,10 +496,12 @@ export async function performOcrOnImage(
       const lines = fullText.split(/\r?\n/).filter((l: string) => l.trim().length > 0)
       lines.forEach((rawText: string, idx: number) => {
         const lineText = sanitizeSpanishTextForPdf(rawText.trim())
+        const { type, isBold } = classifyLine(lineText, idx, lines.length)
         blocks.push({
           id: `block_fallback_${idx}`,
-          type: classifyLine(lineText, idx, lines.length),
+          type,
           text: lineText,
+          isBold,
           confidence: Math.round(data.confidence || 85),
         })
       })
@@ -620,13 +684,20 @@ export async function reconstructDigitalPdf(
               color: textDark,
             })
           } catch {}
-          wrapAndDrawText(cleanItem, fontRegular, baseFontSize, textDark, 20)
+          wrapAndDrawText(
+            cleanItem,
+            block.isBold ? fontBold : fontRegular,
+            baseFontSize,
+            textDark,
+            20
+          )
           cursorY -= 3
           break
         }
 
         case "table_row": {
           const cols = trimmed.split(/\s{2,}|\t/).filter(Boolean)
+          const targetFont = block.isBold ? fontBold : fontRegular
           if (cols.length >= 2) {
             const colWidth = maxContentW / cols.length
             cols.forEach((colText, cIdx) => {
@@ -636,14 +707,14 @@ export async function reconstructDigitalPdf(
                   x: xPos,
                   y: cursorY,
                   size: baseFontSize * 0.95,
-                  font: fontRegular,
+                  font: targetFont,
                   color: textDark,
                 })
               } catch {}
             })
             cursorY -= baseFontSize * lineSpacing + 2
           } else {
-            wrapAndDrawText(trimmed, fontRegular, baseFontSize, textDark)
+            wrapAndDrawText(trimmed, targetFont, baseFontSize, textDark)
             cursorY -= 3
           }
           break
@@ -651,7 +722,8 @@ export async function reconstructDigitalPdf(
 
         case "paragraph":
         default: {
-          wrapAndDrawText(trimmed, fontRegular, baseFontSize, textDark)
+          const targetFont = block.isBold ? fontBold : fontRegular
+          wrapAndDrawText(trimmed, targetFont, baseFontSize, textDark)
           cursorY -= 4 // Paragraph gap
           break
         }

@@ -26,6 +26,15 @@ import {
   Plus,
   Zap,
   ZapOff,
+  ZoomIn,
+  ZoomOut,
+  Maximize2,
+  Bold,
+  Eye,
+  EyeOff,
+  Sliders,
+  ArrowLeft,
+  ArrowRight,
 } from "lucide-react"
 import {
   detectDocumentCorners,
@@ -36,7 +45,7 @@ import {
   Point,
 } from "@/lib/pdf-editor/scanner-engine"
 import { DocumentPage } from "@/lib/pdf-editor/types"
-import { formatBytes } from "@/lib/pdf-editor/pdf-engine"
+import { formatBytes, getPdfJs } from "@/lib/pdf-editor/pdf-engine"
 import {
   performOcrOnImage,
   reconstructDigitalPdf,
@@ -67,6 +76,7 @@ type ScannerStep =
   | "adjust"
   | "review"
   | "ocr_processing"
+  | "pdf_preview"
   | "ocr_editor"
 
 export function CameraScannerModal({
@@ -86,16 +96,16 @@ export function CameraScannerModal({
   const [isTorchOn, setIsTorchOn] = useState<boolean>(false)
   const [hasTorch, setHasTorch] = useState<boolean>(false)
 
-  // QR Mobile Pairing State
+  // QR Mobile Pairing State (Persistent across all steps)
   const [qrSessionToken, setQrSessionToken] = useState<string | null>(null)
   const [qrUrl, setQrUrl] = useState<string | null>(null)
   const [lanQrUrl, setLanQrUrl] = useState<string | null>(null)
   const [onlineQrUrl, setOnlineQrUrl] = useState<string | null>(null)
   const [qrNetworkMode, setQrNetworkMode] = useState<"lan" | "online">("lan")
   const [isRegeneratingQr, setIsRegeneratingQr] = useState<boolean>(false)
-  const [qrStatus, setQrStatus] = useState<"loading" | "pending" | "connected" | "receiving" | "expired" | "error">(
-    "loading"
-  )
+  const [qrStatus, setQrStatus] = useState<
+    "loading" | "pending" | "connected" | "receiving" | "expired" | "error"
+  >("loading")
   const [copiedQrLink, setCopiedQrLink] = useState<boolean>(false)
   const [qrErrorMessage, setQrErrorMessage] = useState<string | null>(null)
   const qrPollingRef = useRef<NodeJS.Timeout | null>(null)
@@ -106,6 +116,7 @@ export function CameraScannerModal({
   const [activeCorner, setActiveCorner] = useState<keyof DocumentCorners | null>(null)
   const [filterMode, setFilterMode] = useState<"color" | "grayscale" | "contrast">("contrast")
   const [adjustRotation, setAdjustRotation] = useState<number>(0)
+  const [pageIndexToRescan, setPageIndexToRescan] = useState<number | null>(null)
 
   // Clean processed document preview (no branding, no desk, pure paper)
   const [processedPreviewUrl, setProcessedPreviewUrl] = useState<string | null>(null)
@@ -115,7 +126,7 @@ export function CameraScannerModal({
   // Confirmed scanned pages
   const [confirmedPages, setConfirmedPages] = useState<ConfirmedScannedPage[]>([])
 
-  // OCR Processing & Editor State
+  // OCR Processing & Reconstructed Document Configuration
   const [ocrProgressPercent, setOcrProgressPercent] = useState<number>(0)
   const [ocrStatusMessage, setOcrStatusMessage] = useState<string>("")
   const [activeEditorPageIndex, setActiveEditorPageIndex] = useState<number>(0)
@@ -126,37 +137,47 @@ export function CameraScannerModal({
   const [isExportingPdf, setIsExportingPdf] = useState<boolean>(false)
   const [exportSuccessMessage, setExportSuccessMessage] = useState<string | null>(null)
 
+  // Visual PDF Preview Engine (pdfjs-dist canvas renderer)
+  const pdfCanvasRef = useRef<HTMLCanvasElement>(null)
+  const [previewPdfBlob, setPreviewPdfBlob] = useState<Blob | null>(null)
+  const [pdfJsDoc, setPdfJsDoc] = useState<any | null>(null)
+  const [previewPageIndex, setPreviewPageIndex] = useState<number>(0)
+  const [previewScale, setPreviewScale] = useState<number>(1.15)
+  const [isRenderingPdf, setIsRenderingPdf] = useState<boolean>(false)
+  const [isReferencePhotoOpen, setIsReferencePhotoOpen] = useState<boolean>(false)
+  const [isDrawerEditorOpen, setIsDrawerEditorOpen] = useState<boolean>(false)
+  const [isAddPageModalOpen, setIsAddPageModalOpen] = useState<boolean>(false)
+  const [isProcessingIncrementalOcr, setIsProcessingIncrementalOcr] = useState<boolean>(false)
+  const renderTaskRef = useRef<any>(null)
+
   // Refs
   const videoRef = useRef<HTMLVideoElement>(null)
   const adjustCanvasRef = useRef<HTMLCanvasElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const addPageFileInputRef = useRef<HTMLInputElement>(null)
 
   // 1. Initialize camera stream
   const startCamera = useCallback(async (deviceId?: string) => {
     setIsCameraLoading(true)
     setCameraError(null)
 
-    if (typeof window !== "undefined" && !window.isSecureContext && window.location.hostname !== "localhost") {
+    if (
+      typeof window !== "undefined" &&
+      !window.isSecureContext &&
+      window.location.hostname !== "localhost"
+    ) {
       setCameraError(
-        "El acceso a la cámara requiere una conexión segura HTTPS. Podés cargar imágenes desde tu dispositivo o conectar el celular por QR."
+        "El acceso a la cámara requiere conexión segura HTTPS. Podés usar la conexión por QR con tu celular o subir imágenes."
       )
       setIsCameraLoading(false)
       return
-    }
-
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      setCameraError(
-        "Tu navegador no admite acceso directo a la cámara. Podés subir imágenes o escanear mediante código QR."
-      )
-      setIsCameraLoading(false)
-      return
-    }
-
-    if (stream) {
-      stream.getTracks().forEach((track) => track.stop())
     }
 
     try {
+      if (stream) {
+        stream.getTracks().forEach((t) => t.stop())
+      }
+
       const constraints: MediaStreamConstraints = {
         video: deviceId
           ? { deviceId: { exact: deviceId } }
@@ -168,45 +189,44 @@ export function CameraScannerModal({
         audio: false,
       }
 
-      const mediaStream = await navigator.mediaDevices.getUserMedia(constraints)
-      setStream(mediaStream)
+      const newStream = await navigator.mediaDevices.getUserMedia(constraints)
+      setStream(newStream)
 
       if (videoRef.current) {
-        videoRef.current.srcObject = mediaStream
-        videoRef.current.play().catch(() => {})
+        videoRef.current.srcObject = newStream
       }
 
-      // Check torch capability
-      const track = mediaStream.getVideoTracks()[0]
-      if (track) {
-        const capabilities = (track.getCapabilities && track.getCapabilities()) || {}
-        setHasTorch(Boolean((capabilities as any).torch))
-      }
-
+      // Detect available cameras & torch support
       const devices = await navigator.mediaDevices.enumerateDevices()
       const videoDevices = devices.filter((d) => d.kind === "videoinput")
       setCameras(videoDevices)
 
+      const track = newStream.getVideoTracks()[0]
       if (track) {
-        const settings = track.getSettings()
-        if (settings.deviceId) {
-          setSelectedCameraId(settings.deviceId)
+        const capabilities = (track.getCapabilities && track.getCapabilities()) || {}
+        setHasTorch(Boolean((capabilities as any).torch))
+        if (!selectedCameraId) {
+          setSelectedCameraId(track.getSettings().deviceId || "")
         }
       }
     } catch (err: any) {
       if (err.name === "NotAllowedError" || err.name === "PermissionDeniedError") {
         setCameraError(
-          "Permiso de cámara denegado. Habilitá el permiso en tu navegador o conectá tu celular escaneando el código QR."
+          "Permiso de cámara denegado. Habilitá la cámara en los permisos del navegador o escaneá con tu celular vía QR."
         )
       } else if (err.name === "NotFoundError" || err.name === "DevicesNotFoundError") {
-        setCameraError("No se encontró ninguna cámara activa en esta computadora. Usá la conexión por QR con tu celular.")
+        setCameraError(
+          "No se encontró ninguna cámara activa en esta computadora. Usá la conexión por QR con tu celular."
+        )
       } else {
-        setCameraError("No se pudo iniciar la cámara en este dispositivo. Podés conectar tu celular escaneando el código QR.")
+        setCameraError(
+          "No se pudo iniciar la cámara en este dispositivo. Podés conectar tu celular escaneando el código QR."
+        )
       }
     } finally {
       setIsCameraLoading(false)
     }
-  }, [stream])
+  }, [stream, selectedCameraId])
 
   // Stop camera when closing or switching away
   const stopCamera = useCallback(() => {
@@ -230,7 +250,7 @@ export function CameraScannerModal({
     return () => {
       stopCamera()
     }
-  }, [isOpen, step])
+  }, [isOpen, step, startCamera, stopCamera])
 
   // Camera switch toggle
   const handleSwitchCamera = () => {
@@ -259,8 +279,8 @@ export function CameraScannerModal({
     } catch {}
   }
 
-  // QR Session Management & Regeneration
-  const startQrSession = async (_param?: unknown) => {
+  // QR Session Management & Creation
+  const startQrSession = async () => {
     stopCamera()
     setStep("qr_connect")
     setIsRegeneratingQr(true)
@@ -289,7 +309,6 @@ export function CameraScannerModal({
       setLanQrUrl(data.lanQrUrl || null)
       setOnlineQrUrl(data.onlineQrUrl || null)
 
-      // Choose default URL: if running locally and LAN IP is available, prefer LAN
       const isLocalhost =
         typeof window !== "undefined" &&
         (window.location.hostname === "localhost" ||
@@ -323,9 +342,9 @@ export function CameraScannerModal({
     }
   }
 
-  // Poll QR Session status while on qr_connect step
+  // PERSISTENT BACKGROUND POLLING: Keeps running while qrSessionToken exists
   useEffect(() => {
-    if (step !== "qr_connect" || !qrSessionToken) {
+    if (!qrSessionToken || qrStatus === "expired") {
       if (qrPollingRef.current) {
         clearInterval(qrPollingRef.current)
         qrPollingRef.current = null
@@ -351,7 +370,6 @@ export function CameraScannerModal({
         }
 
         if (data.pages && data.pages.length > 0) {
-          // Merge incoming pages into confirmedPages without duplication
           setConfirmedPages((prev) => {
             const existingIds = new Set(prev.map((p) => p.id))
             const newEntries: ConfirmedScannedPage[] = []
@@ -377,14 +395,14 @@ export function CameraScannerModal({
       } catch {}
     }
 
-    qrPollingRef.current = setInterval(checkQrStatus, 1500)
+    qrPollingRef.current = setInterval(checkQrStatus, 1600)
     return () => {
       if (qrPollingRef.current) {
         clearInterval(qrPollingRef.current)
         qrPollingRef.current = null
       }
     }
-  }, [step, qrSessionToken])
+  }, [qrSessionToken, qrStatus])
 
   // Helper: Warp perspective, rotate and apply flat-field enhancement
   const generateProcessedDoc = useCallback(
@@ -408,7 +426,7 @@ export function CameraScannerModal({
     []
   )
 
-  // Capture frame
+  // Capture frame from webcam
   const handleCaptureFrame = async () => {
     if (!videoRef.current) return
     const video = videoRef.current
@@ -448,48 +466,43 @@ export function CameraScannerModal({
     const url = URL.createObjectURL(file)
 
     img.onload = async () => {
-      URL.revokeObjectURL(url)
       const canvas = document.createElement("canvas")
-      canvas.width = img.naturalWidth || img.width
-      canvas.height = img.naturalHeight || img.height
+      canvas.width = img.naturalWidth
+      canvas.height = img.naturalHeight
       const ctx = canvas.getContext("2d")
-      if (!ctx) return
-      ctx.drawImage(img, 0, 0)
+      if (ctx) {
+        ctx.drawImage(img, 0, 0)
+        setCapturedCanvas(canvas)
+        const detected = detectDocumentCorners(canvas)
+        setCorners(detected)
+        setFilterMode("contrast")
+        setAdjustRotation(0)
 
-      stopCamera()
-      setCapturedCanvas(canvas)
-      const detected = detectDocumentCorners(canvas)
-      setCorners(detected)
-      setFilterMode("contrast")
-      setAdjustRotation(0)
-
-      setIsProcessingWarp(true)
-      setStep("preview_processed")
-      try {
-        const { dataUrl, blob } = await generateProcessedDoc(canvas, detected, 0, "contrast")
-        setProcessedPreviewUrl(dataUrl)
-        setProcessedBlob(blob)
-      } finally {
-        setIsProcessingWarp(false)
+        setIsProcessingWarp(true)
+        setStep("preview_processed")
+        try {
+          const { dataUrl, blob } = await generateProcessedDoc(canvas, detected, 0, "contrast")
+          setProcessedPreviewUrl(dataUrl)
+          setProcessedBlob(blob)
+        } finally {
+          setIsProcessingWarp(false)
+        }
       }
+      URL.revokeObjectURL(url)
     }
-
     img.src = url
+    e.target.value = ""
   }
 
-  // Interactive Adjust Canvas Redraw
+  // Redraw corners on manual adjustment canvas
   const redrawAdjustCanvas = useCallback(() => {
     if (!adjustCanvasRef.current || !capturedCanvas || !corners) return
     const canvas = adjustCanvasRef.current
     const ctx = canvas.getContext("2d")
     if (!ctx) return
 
-    const parent = canvas.parentElement
-    if (!parent) return
-    const maxW = parent.clientWidth
-    const maxH = Math.min(window.innerHeight * 0.52, 440)
-
-    const scale = Math.min(maxW / capturedCanvas.width, maxH / capturedCanvas.height, 1)
+    const maxW = 540
+    const scale = Math.min(1, maxW / capturedCanvas.width)
     canvas.width = Math.round(capturedCanvas.width * scale)
     canvas.height = Math.round(capturedCanvas.height * scale)
 
@@ -506,11 +519,11 @@ export function CameraScannerModal({
     const dBR = toDisp(corners.br)
     const dBL = toDisp(corners.bl)
 
-    // Shaded mask outside selection
+    // Shaded mask
     ctx.fillStyle = "rgba(0, 0, 0, 0.55)"
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    // Cutout
+    // Clear cutout inside corners
     ctx.save()
     ctx.beginPath()
     ctx.moveTo(dTL.x, dTL.y)
@@ -522,7 +535,7 @@ export function CameraScannerModal({
     ctx.drawImage(capturedCanvas, 0, 0, canvas.width, canvas.height)
     ctx.restore()
 
-    // Line
+    // Boundary outline
     ctx.beginPath()
     ctx.moveTo(dTL.x, dTL.y)
     ctx.lineTo(dTR.x, dTR.y)
@@ -530,16 +543,16 @@ export function CameraScannerModal({
     ctx.lineTo(dBL.x, dBL.y)
     ctx.closePath()
     ctx.lineWidth = 2.5
-    ctx.strokeStyle = "#8B5CF6"
+    ctx.strokeStyle = "#8b5cf6"
     ctx.stroke()
 
     // 4 Corner handles
     const drawHandle = (p: Point) => {
       ctx.beginPath()
       ctx.arc(p.x, p.y, 11, 0, Math.PI * 2)
-      ctx.fillStyle = "#8B5CF6"
+      ctx.fillStyle = "#8b5cf6"
       ctx.fill()
-      ctx.lineWidth = 3
+      ctx.lineWidth = 2.5
       ctx.strokeStyle = "#ffffff"
       ctx.stroke()
 
@@ -561,7 +574,7 @@ export function CameraScannerModal({
     }
   }, [step, redrawAdjustCanvas, corners])
 
-  // Mouse & Touch dragging
+  // Pointer interactions for dragging corners
   const getCanvasCoords = (e: React.MouseEvent | React.TouchEvent): Point | null => {
     if (!adjustCanvasRef.current || !capturedCanvas) return null
     const canvas = adjustCanvasRef.current
@@ -596,7 +609,7 @@ export function CameraScannerModal({
 
     const canvas = adjustCanvasRef.current
     const scale = canvas.width / capturedCanvas.width
-    const threshold = 40 / scale
+    const threshold = 35 / scale
 
     const dist = (p1: Point, p2: Point) => Math.hypot(p1.x - p2.x, p1.y - p2.y)
     const dTL = dist(pos, corners.tl)
@@ -633,7 +646,12 @@ export function CameraScannerModal({
     if (!capturedCanvas || !corners) return
     setIsProcessingWarp(true)
     try {
-      const { dataUrl, blob } = await generateProcessedDoc(capturedCanvas, corners, adjustRotation, newFilter)
+      const { dataUrl, blob } = await generateProcessedDoc(
+        capturedCanvas,
+        corners,
+        adjustRotation,
+        newFilter
+      )
       setProcessedPreviewUrl(dataUrl)
       setProcessedBlob(blob)
     } finally {
@@ -647,7 +665,12 @@ export function CameraScannerModal({
     if (!capturedCanvas || !corners) return
     setIsProcessingWarp(true)
     try {
-      const { dataUrl, blob } = await generateProcessedDoc(capturedCanvas, corners, newRot, filterMode)
+      const { dataUrl, blob } = await generateProcessedDoc(
+        capturedCanvas,
+        corners,
+        newRot,
+        filterMode
+      )
       setProcessedPreviewUrl(dataUrl)
       setProcessedBlob(blob)
     } finally {
@@ -660,7 +683,12 @@ export function CameraScannerModal({
     setIsProcessingWarp(true)
     setStep("preview_processed")
     try {
-      const { dataUrl, blob } = await generateProcessedDoc(capturedCanvas, corners, adjustRotation, filterMode)
+      const { dataUrl, blob } = await generateProcessedDoc(
+        capturedCanvas,
+        corners,
+        adjustRotation,
+        filterMode
+      )
       setProcessedPreviewUrl(dataUrl)
       setProcessedBlob(blob)
     } finally {
@@ -668,7 +696,25 @@ export function CameraScannerModal({
     }
   }
 
-  // Confirm page adjustment
+  // Helper: Generates actual digital PDF blob from pages with recognizedContent
+  const generatePdfBlobFromConfirmedPages = useCallback(
+    async (pages: ConfirmedScannedPage[]) => {
+      const validPages = pages
+        .map((p) => p.recognizedContent)
+        .filter((rc): rc is RecognizedPageContent => Boolean(rc))
+
+      if (validPages.length === 0) return null
+
+      return await reconstructDigitalPdf(validPages, {
+        documentTitle,
+        fontFamily,
+        fontSize: baseFontSize,
+      })
+    },
+    [documentTitle, fontFamily, baseFontSize]
+  )
+
+  // Confirm single page adjustment
   const handleConfirmCurrentPage = async () => {
     let finalDataUrl = processedPreviewUrl
     let finalBlob = processedBlob
@@ -680,7 +726,7 @@ export function CameraScannerModal({
       finalBlob = res.blob
     }
 
-    const newPage: ConfirmedScannedPage = {
+    const pageObj: ConfirmedScannedPage = {
       id: `scan_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
       dataUrl: finalDataUrl,
       blob: finalBlob,
@@ -688,15 +734,29 @@ export function CameraScannerModal({
       rotation: adjustRotation,
     }
 
-    setConfirmedPages((prev) => [...prev, newPage])
+    let updatedPages = [...confirmedPages]
+    if (pageIndexToRescan !== null && pageIndexToRescan < updatedPages.length) {
+      updatedPages[pageIndexToRescan] = pageObj
+      setPageIndexToRescan(null)
+    } else {
+      updatedPages.push(pageObj)
+    }
+
+    setConfirmedPages(updatedPages)
     setCapturedCanvas(null)
     setCorners(null)
     setProcessedPreviewUrl(null)
     setProcessedBlob(null)
-    setStep("review")
+
+    // If we were already in pdf_preview, return directly there and trigger incremental OCR
+    if (previewPdfBlob) {
+      setStep("pdf_preview")
+    } else {
+      setStep("review")
+    }
   }
 
-  // Confirm page and directly proceed to OCR processing
+  // Confirm page and directly proceed to OCR & Real PDF Preview
   const handleConfirmAndRunOcr = async () => {
     let finalDataUrl = processedPreviewUrl
     let finalBlob = processedBlob
@@ -716,31 +776,50 @@ export function CameraScannerModal({
       rotation: adjustRotation,
     }
 
-    const allPages = [...confirmedPages, newPage]
+    let allPages = [...confirmedPages]
+    if (pageIndexToRescan !== null && pageIndexToRescan < allPages.length) {
+      allPages[pageIndexToRescan] = newPage
+      setPageIndexToRescan(null)
+    } else {
+      allPages.push(newPage)
+    }
+
     setConfirmedPages(allPages)
     setCapturedCanvas(null)
     setCorners(null)
     setProcessedPreviewUrl(null)
     setProcessedBlob(null)
 
+    await runOcrOnAllPages(allPages)
+  }
+
+  // OCR Processing logic (Incremental or Full)
+  const runOcrOnAllPages = async (pagesToProcess: ConfirmedScannedPage[]) => {
     setStep("ocr_processing")
     setOcrProgressPercent(5)
     setOcrStatusMessage("Preparando imágenes y cargando motor OCR...")
 
     const updatedPages: ConfirmedScannedPage[] = []
 
-    for (let i = 0; i < allPages.length; i++) {
-      const page = allPages[i]
+    for (let i = 0; i < pagesToProcess.length; i++) {
+      const page = pagesToProcess[i]
       const pageNum = i + 1
-      setOcrStatusMessage(`Procesando página ${pageNum} de ${allPages.length}...`)
+
+      // If page already has recognized content and wasn't newly captured, preserve user edits!
+      if (page.recognizedContent) {
+        updatedPages.push(page)
+        continue
+      }
+
+      setOcrStatusMessage(`Reconociendo página ${pageNum} de ${pagesToProcess.length}...`)
 
       try {
         const recognized = await performOcrOnImage(page.dataUrl, {
           language: ocrLanguage,
           onProgress: (pct, msg) => {
-            const overallPct = Math.round(((i + pct / 100) / allPages.length) * 100)
+            const overallPct = Math.round(((i + pct / 100) / pagesToProcess.length) * 100)
             setOcrProgressPercent(overallPct)
-            setOcrStatusMessage(`Página ${pageNum}/${allPages.length}: ${msg}`)
+            setOcrStatusMessage(`Página ${pageNum}/${pagesToProcess.length}: ${msg}`)
           },
         })
         recognized.pageIndex = i
@@ -768,11 +847,165 @@ export function CameraScannerModal({
 
     setConfirmedPages(updatedPages)
     setActiveEditorPageIndex(0)
-    setStep("ocr_editor")
+
+    // Generate real PDF and switch straight to visual PDF preview!
+    const newPdfBlob = await generatePdfBlobFromConfirmedPages(updatedPages)
+    if (newPdfBlob) {
+      setPreviewPdfBlob(newPdfBlob)
+      setPreviewPageIndex(0)
+      setStep("pdf_preview")
+    } else {
+      setStep("review")
+    }
   }
 
-  // Move page in review list
-  const handleMoveScannedPage = (index: number, direction: "left" | "right") => {
+  // Incremental OCR for newly added pages while in pdf_preview
+  const handleProcessIncrementalOcr = async () => {
+    setIsProcessingIncrementalOcr(true)
+    setOcrProgressPercent(5)
+    setOcrStatusMessage("Reconociendo nuevas páginas añadidas...")
+
+    const updatedPages = [...confirmedPages]
+    for (let i = 0; i < updatedPages.length; i++) {
+      const page = updatedPages[i]
+      if (page.recognizedContent) continue
+
+      try {
+        const recognized = await performOcrOnImage(page.dataUrl, {
+          language: ocrLanguage,
+          onProgress: (pct, msg) => {
+            setOcrProgressPercent(pct)
+            setOcrStatusMessage(`Página ${i + 1}: ${msg}`)
+          },
+        })
+        recognized.pageIndex = i
+        updatedPages[i] = { ...page, recognizedContent: recognized }
+      } catch (err) {
+        updatedPages[i] = {
+          ...page,
+          recognizedContent: {
+            pageIndex: i,
+            fullText: "",
+            blocks: [
+              {
+                id: `block_empty_${Date.now()}`,
+                type: "paragraph",
+                text: "No se pudo reconocer texto automático en esta hoja añadida.",
+                confidence: 0,
+              },
+            ],
+            confidence: 0,
+            hasText: false,
+          },
+        }
+      }
+    }
+
+    setConfirmedPages(updatedPages)
+    const newBlob = await generatePdfBlobFromConfirmedPages(updatedPages)
+    if (newBlob) {
+      setPreviewPdfBlob(newBlob)
+    }
+    setIsProcessingIncrementalOcr(false)
+  }
+
+  // Load PDF in pdfjs when previewPdfBlob changes
+  useEffect(() => {
+    let isCancelled = false
+    if (!previewPdfBlob) {
+      setPdfJsDoc(null)
+      return
+    }
+
+    const loadDoc = async () => {
+      try {
+        const arrayBuffer = await previewPdfBlob.arrayBuffer()
+        const pdfjs = await getPdfJs()
+        const loadingTask = pdfjs.getDocument({ data: arrayBuffer.slice(0) })
+        const doc = await loadingTask.promise
+        if (!isCancelled) {
+          setPdfJsDoc(doc)
+        }
+      } catch (err) {
+        console.error("Error loading PDF in viewer:", err)
+      }
+    }
+
+    loadDoc()
+    return () => {
+      isCancelled = true
+    }
+  }, [previewPdfBlob])
+
+  // High-DPI Canvas Rendering of current PDF page
+  useEffect(() => {
+    if (!pdfJsDoc || !pdfCanvasRef.current || step !== "pdf_preview") return
+
+    let isCancelled = false
+
+    const renderPage = async () => {
+      setIsRenderingPdf(true)
+      try {
+        if (renderTaskRef.current) {
+          try {
+            renderTaskRef.current.cancel()
+          } catch {}
+          renderTaskRef.current = null
+        }
+
+        const targetPageNumber = Math.min(
+          Math.max(1, previewPageIndex + 1),
+          pdfJsDoc.numPages
+        )
+        const page = await pdfJsDoc.getPage(targetPageNumber)
+        if (isCancelled) return
+
+        const canvas = pdfCanvasRef.current
+        if (!canvas) return
+
+        const dpr = typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1
+        const effectiveScale = previewScale * Math.min(dpr, 2)
+        const viewport = page.getViewport({ scale: effectiveScale })
+
+        canvas.width = Math.floor(viewport.width)
+        canvas.height = Math.floor(viewport.height)
+        canvas.style.width = `${Math.floor(viewport.width / Math.min(dpr, 2))}px`
+        canvas.style.height = `${Math.floor(viewport.height / Math.min(dpr, 2))}px`
+
+        const ctx = canvas.getContext("2d", { willReadFrequently: false })
+        if (!ctx) return
+
+        const renderTask = page.render({
+          canvasContext: ctx,
+          viewport: viewport,
+        })
+        renderTaskRef.current = renderTask
+        await renderTask.promise
+      } catch (err: any) {
+        if (err?.name !== "RenderingCancelledException") {
+          console.error("Error rendering PDF page to canvas:", err)
+        }
+      } finally {
+        if (!isCancelled) {
+          setIsRenderingPdf(false)
+        }
+      }
+    }
+
+    renderPage()
+
+    return () => {
+      isCancelled = true
+      if (renderTaskRef.current) {
+        try {
+          renderTaskRef.current.cancel()
+        } catch {}
+      }
+    }
+  }, [pdfJsDoc, previewPageIndex, previewScale, step])
+
+  // Move page in list
+  const handleMoveScannedPage = async (index: number, direction: "left" | "right") => {
     const target = direction === "left" ? index - 1 : index + 1
     if (target < 0 || target >= confirmedPages.length) return
     const updated = [...confirmedPages]
@@ -780,65 +1013,41 @@ export function CameraScannerModal({
     updated[index] = updated[target]
     updated[target] = temp
     setConfirmedPages(updated)
+
+    if (step === "pdf_preview") {
+      setPreviewPageIndex(target)
+      setActiveEditorPageIndex(target)
+      const newBlob = await generatePdfBlobFromConfirmedPages(updated)
+      if (newBlob) setPreviewPdfBlob(newBlob)
+    }
   }
 
   // Remove page
-  const handleRemoveScannedPage = (id: string) => {
-    setConfirmedPages(confirmedPages.filter((p) => p.id !== id))
+  const handleRemoveScannedPage = async (id: string) => {
+    if (confirmedPages.length <= 1) {
+      alert("No se puede eliminar la única página del documento.")
+      return
+    }
+    const confirmed = window.confirm("¿Querés eliminar esta página del documento?")
+    if (!confirmed) return
+
+    const updated = confirmedPages.filter((p) => p.id !== id)
+    setConfirmedPages(updated)
+
+    const nextIdx = Math.max(0, Math.min(previewPageIndex, updated.length - 1))
+    setPreviewPageIndex(nextIdx)
+    setActiveEditorPageIndex(nextIdx)
+
+    if (step === "pdf_preview") {
+      const newBlob = await generatePdfBlobFromConfirmedPages(updated)
+      if (newBlob) setPreviewPdfBlob(newBlob)
+    }
   }
 
-  // Run OCR on all confirmed pages
-  const handleStartOcrProcessing = async () => {
-    if (confirmedPages.length === 0) return
-
-    setStep("ocr_processing")
-    setOcrProgressPercent(5)
-    setOcrStatusMessage("Preparando imágenes y cargando motor OCR...")
-
-    const updatedPages: ConfirmedScannedPage[] = []
-
-    for (let i = 0; i < confirmedPages.length; i++) {
-      const page = confirmedPages[i]
-      const pageNum = i + 1
-
-      setOcrStatusMessage(`Procesando página ${pageNum} de ${confirmedPages.length}...`)
-
-      try {
-        const recognized = await performOcrOnImage(page.dataUrl, {
-          language: ocrLanguage,
-          onProgress: (pct, msg) => {
-            const overallPct = Math.round(((i + pct / 100) / confirmedPages.length) * 100)
-            setOcrProgressPercent(overallPct)
-            setOcrStatusMessage(`Página ${pageNum}/${confirmedPages.length}: ${msg}`)
-          },
-        })
-        recognized.pageIndex = i
-        updatedPages.push({ ...page, recognizedContent: recognized })
-      } catch (err: any) {
-        // Fallback: minimal block if OCR error
-        updatedPages.push({
-          ...page,
-          recognizedContent: {
-            pageIndex: i,
-            fullText: "",
-            blocks: [
-              {
-                id: `block_empty_${Date.now()}`,
-                type: "paragraph",
-                text: "No se pudo reconocer texto automático en esta hoja. Podés escribir o corregir el contenido aquí.",
-                confidence: 0,
-              },
-            ],
-            confidence: 0,
-            hasText: false,
-          },
-        })
-      }
-    }
-
-    setConfirmedPages(updatedPages)
-    setActiveEditorPageIndex(0)
-    setStep("ocr_editor")
+  // Rescan / Repeat a specific page
+  const handleRescanPage = (index: number) => {
+    setPageIndexToRescan(index)
+    setStep("capture")
   }
 
   // Update text of a block in active editor page
@@ -878,6 +1087,31 @@ export function CameraScannerModal({
     newBlocks[blockIndex] = {
       ...newBlocks[blockIndex],
       type: newType,
+    }
+
+    const updatedPage: ConfirmedScannedPage = {
+      ...current,
+      recognizedContent: {
+        ...current.recognizedContent,
+        blocks: newBlocks,
+      },
+    }
+
+    const updatedAll = [...confirmedPages]
+    updatedAll[activeEditorPageIndex] = updatedPage
+    setConfirmedPages(updatedAll)
+  }
+
+  // Toggle bold for a block
+  const handleToggleBlockBold = (blockIndex: number) => {
+    const current = confirmedPages[activeEditorPageIndex]
+    if (!current || !current.recognizedContent) return
+
+    const newBlocks = [...current.recognizedContent.blocks]
+    const currentBlock = newBlocks[blockIndex]
+    newBlocks[blockIndex] = {
+      ...currentBlock,
+      isBold: !currentBlock.isBold,
     }
 
     const updatedPage: ConfirmedScannedPage = {
@@ -944,17 +1178,24 @@ export function CameraScannerModal({
     setConfirmedPages(updatedAll)
   }
 
-  // Download 100% Reconstructed Digital PDF (Zero embedded photos!)
+  // Apply edits from drawer and update the visual PDF preview
+  const handleApplyDrawerEditsAndRefreshPreview = async () => {
+    const newBlob = await generatePdfBlobFromConfirmedPages(confirmedPages)
+    if (newBlob) {
+      setPreviewPdfBlob(newBlob)
+    }
+  }
+
+  // Explicit Download of 100% Reconstructed Digital PDF
   const handleExportReconstructedPdf = async () => {
     if (confirmedPages.length === 0) return
 
-    // Ensure all pages have recognizedContent
     const validPages = confirmedPages
       .map((p) => p.recognizedContent)
       .filter((rc): rc is RecognizedPageContent => Boolean(rc))
 
     if (validPages.length === 0) {
-      alert("Por favor iniciá el reconocimiento OCR antes de generar el PDF digital.")
+      alert("Por favor iniciá el reconocimiento OCR antes de exportar el PDF digital.")
       return
     }
 
@@ -962,11 +1203,13 @@ export function CameraScannerModal({
     setExportSuccessMessage(null)
 
     try {
-      const pdfBlob = await reconstructDigitalPdf(validPages, {
-        documentTitle,
-        fontFamily,
-        fontSize: baseFontSize,
-      })
+      const pdfBlob =
+        previewPdfBlob ||
+        (await reconstructDigitalPdf(validPages, {
+          documentTitle,
+          fontFamily,
+          fontSize: baseFontSize,
+        }))
 
       const safeTitle = (documentTitle || "documento_escaneado")
         .toLowerCase()
@@ -983,10 +1226,10 @@ export function CameraScannerModal({
       URL.revokeObjectURL(url)
 
       setExportSuccessMessage(
-        `¡PDF reconstruido con éxito! (${validPages.length} páginas de texto digital, ${formatBytes(pdfBlob.size)}). No contiene imágenes incrustadas.`
+        `PDF reconstruido con éxito (${validPages.length} páginas de texto digital, ${formatBytes(pdfBlob.size)}).`
       )
     } catch (err: any) {
-      alert("Error al generar el PDF digital: " + err.message)
+      alert("Error al exportar el PDF digital: " + err.message)
     } finally {
       setIsExportingPdf(false)
     }
@@ -999,7 +1242,7 @@ export function CameraScannerModal({
     const newDocPages: DocumentPage[] = confirmedPages.map((cp, idx) => ({
       id: `scanned_page_${Date.now()}_${idx}`,
       sourceFileId: "camera_scanner",
-      sourceFileName: "Documento Escaneado",
+      sourceFileName: documentTitle || "Documento Escaneado",
       sourceFileColorIndex: 2,
       originalPageIndex: idx,
       displayPageNumber: idx + 1,
@@ -1032,54 +1275,72 @@ export function CameraScannerModal({
     setOnlineQrUrl(null)
     setQrStatus("loading")
     setIsRegeneratingQr(false)
+    setPreviewPdfBlob(null)
+    setPdfJsDoc(null)
     onClose()
   }
 
   if (!isOpen) return null
 
-  const activePage = confirmedPages[activeEditorPageIndex]
+  const activePage = confirmedPages[activeEditorPageIndex] || confirmedPages[previewPageIndex]
+  const pendingOcrCount = confirmedPages.filter((p) => !p.recognizedContent).length
+  const totalPreviewPages = pdfJsDoc ? pdfJsDoc.numPages : confirmedPages.length
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-gray-950/80 backdrop-blur-md">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-gray-950/85 backdrop-blur-md">
         <motion.div
-          initial={{ opacity: 0, scale: 0.96 }}
+          initial={{ opacity: 0, scale: 0.97 }}
           animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.96 }}
-          className="relative w-full max-w-4xl rounded-2xl bg-gray-900 border border-gray-800 text-white overflow-hidden flex flex-col max-h-[95vh] shadow-2xl"
+          exit={{ opacity: 0, scale: 0.97 }}
+          className="relative w-full max-w-5xl rounded-2xl bg-gray-900 border border-gray-800 text-white overflow-hidden flex flex-col max-h-[96vh] shadow-2xl"
         >
           {/* Header */}
-          <div className="flex items-center justify-between p-4 sm:p-5 border-b border-gray-800 bg-gray-900/90 shrink-0">
+          <div className="flex items-center justify-between p-3.5 sm:p-4 border-b border-gray-800 bg-gray-900/95 shrink-0">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-600 text-white shadow-sm">
-                <Camera className="h-5 w-5" />
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-600 text-white shadow-xs">
+                {step === "pdf_preview" ? (
+                  <FileText className="h-5 w-5" />
+                ) : (
+                  <Camera className="h-5 w-5" />
+                )}
               </div>
               <div>
-                <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
-                  Escanear y Reconstruir Documentos
+                <h3 className="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+                  {step === "pdf_preview"
+                    ? "Vista Previa del Documento Reconstruido"
+                    : "Escanear y Reconstruir Documentos"}
                 </h3>
-                <p className="text-xs text-gray-400">
-                  {step === "capture" && "Alineá la hoja A4 o conectá el celular mediante QR"}
+                <p className="text-[11px] text-gray-400">
+                  {step === "capture" &&
+                    (pageIndexToRescan !== null
+                      ? `Repetir captura de la página ${pageIndexToRescan + 1}`
+                      : "Alineá la hoja A4 o conectá el celular mediante QR")}
                   {step === "qr_connect" && "Escaneá el código QR con la cámara de tu celular"}
-                  {step === "preview_processed" && "Resultado del escaneo limpio: verificá la hoja procesada"}
+                  {step === "preview_processed" &&
+                    "Resultado del escaneo limpio: verificá la hoja procesada"}
                   {step === "adjust" && "Ajustá manualmente las esquinas de recorte"}
                   {step === "review" && `${confirmedPages.length} páginas capturadas para procesar`}
-                  {step === "ocr_processing" && "Reconociendo contenido y jerarquías..."}
-                  {step === "ocr_editor" && "Revisá y editá el documento digital antes de exportar"}
+                  {step === "ocr_processing" && "Reconociendo contenido y jerarquías tipográficas..."}
+                  {step === "pdf_preview" &&
+                    "Texto digital real y proporciones A4 exactamente como se descargará el PDF"}
                 </p>
               </div>
             </div>
 
             <div className="flex items-center gap-2">
-              {confirmedPages.length > 0 && step !== "review" && step !== "ocr_editor" && (
-                <button
-                  type="button"
-                  onClick={() => setStep("review")}
-                  className="px-3 py-1.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-xs font-medium text-gray-200 transition-colors"
-                >
-                  Páginas ({confirmedPages.length})
-                </button>
-              )}
+              {confirmedPages.length > 0 &&
+                step !== "review" &&
+                step !== "pdf_preview" &&
+                step !== "ocr_processing" && (
+                  <button
+                    type="button"
+                    onClick={() => setStep(previewPdfBlob ? "pdf_preview" : "review")}
+                    className="px-3 py-1.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-xs font-medium text-gray-200 transition-colors"
+                  >
+                    {previewPdfBlob ? "Ver PDF" : `Páginas (${confirmedPages.length})`}
+                  </button>
+                )}
               <button
                 type="button"
                 onClick={handleCloseModal}
@@ -1092,8 +1353,8 @@ export function CameraScannerModal({
           </div>
 
           {/* Modal Body */}
-          <div className="flex-1 overflow-y-auto p-4 sm:p-6 flex flex-col justify-center items-center bg-gray-950/70 min-h-[360px]">
-            {/* ETAPA 1: CAPTURA DE CÁMARA (9:16 VERTICAL + A4 1:1.414 RECTANGLE) */}
+          <div className="flex-1 overflow-y-auto p-3 sm:p-5 flex flex-col justify-center items-center bg-gray-950/80 min-h-[380px] relative">
+            {/* ETAPA 1: CAPTURA DE CÁMARA */}
             {step === "capture" && (
               <div className="w-full flex flex-col items-center space-y-4">
                 {cameraError ? (
@@ -1135,8 +1396,7 @@ export function CameraScannerModal({
                   </div>
                 ) : (
                   <>
-                    {/* CAMERA PREVIEW: 9:16 VERTICAL RATIO WITH A4 1:1.414 GUIDE */}
-                    <div className="relative w-full max-w-sm aspect-9/16 max-h-[60vh] rounded-3xl overflow-hidden bg-black flex items-center justify-center shadow-2xl border border-gray-800">
+                    <div className="relative w-full max-w-sm aspect-9/16 max-h-[58vh] rounded-3xl overflow-hidden bg-black flex items-center justify-center shadow-2xl border border-gray-800">
                       <video
                         ref={videoRef}
                         autoPlay
@@ -1153,7 +1413,6 @@ export function CameraScannerModal({
                           aspectRatio: "1 / 1.414",
                         }}
                       >
-                        {/* L-Brackets en 4 esquinas */}
                         <div className="absolute top-1.5 left-1.5 w-4 h-4 border-t-3 border-l-3 border-white rounded-tl-xs" />
                         <div className="absolute top-1.5 right-1.5 w-4 h-4 border-t-3 border-r-3 border-white rounded-tr-xs" />
                         <div className="absolute bottom-1.5 left-1.5 w-4 h-4 border-b-3 border-l-3 border-white rounded-bl-xs" />
@@ -1172,9 +1431,8 @@ export function CameraScannerModal({
                       )}
                     </div>
 
-                    {/* CONTROLES DE CAPTURA Y CONEXIÓN QR */}
-                    <div className="w-full max-w-sm flex items-center justify-between px-2 pt-2">
-                      {/* Conectar Celular vía QR */}
+                    {/* CONTROLES DE CAPTURA */}
+                    <div className="w-full max-w-sm flex items-center justify-between px-2 pt-1">
                       <button
                         type="button"
                         onClick={startQrSession}
@@ -1187,17 +1445,15 @@ export function CameraScannerModal({
                         <span>Usar celular</span>
                       </button>
 
-                      {/* Obturador Central */}
                       <button
                         type="button"
                         onClick={handleCaptureFrame}
                         aria-label="Capturar fotografía de página"
-                        className="h-18 w-18 rounded-full border-4 border-white/80 bg-violet-600 hover:bg-violet-500 active:scale-95 transition-all shadow-xl flex items-center justify-center"
+                        className="h-17 w-17 rounded-full border-4 border-white/80 bg-violet-600 hover:bg-violet-500 active:scale-95 transition-all shadow-xl flex items-center justify-center"
                       >
-                        <div className="h-7 w-7 rounded-full bg-white shadow-xs" />
+                        <div className="h-6 w-6 rounded-full bg-white shadow-xs" />
                       </button>
 
-                      {/* Alternativa linterna o subir foto */}
                       <input
                         ref={fileInputRef}
                         type="file"
@@ -1225,18 +1481,19 @@ export function CameraScannerModal({
 
             {/* ETAPA: CONEXIÓN CELULAR MEDIANTE QR */}
             {step === "qr_connect" && (
-              <div className="w-full max-w-md p-6 rounded-3xl bg-gray-900 border border-gray-800 text-center space-y-6 shadow-2xl">
+              <div className="w-full max-w-md p-6 rounded-3xl bg-gray-900 border border-gray-800 text-center space-y-5 shadow-2xl">
                 <div className="space-y-1">
                   <h4 className="text-base sm:text-lg font-bold text-white">
                     Conectar celular con código QR
                   </h4>
                   <p className="text-xs text-gray-400 max-w-sm mx-auto">
-                    Escaneá este código con la cámara de tu teléfono para capturar las hojas directamente. Las fotos aparecerán aquí al instante.
+                    Escaneá este código con la cámara de tu teléfono. Podés capturar una o varias
+                    páginas consecutivas sin tener que reconectar.
                   </p>
                 </div>
 
                 {qrStatus === "loading" && (
-                  <div className="py-12 flex flex-col items-center justify-center gap-3">
+                  <div className="py-10 flex flex-col items-center justify-center gap-3">
                     <div className="h-10 w-10 border-3 border-violet-500 border-t-transparent rounded-full animate-spin" />
                     <p className="text-xs text-gray-400">Creando sesión segura de escaneo...</p>
                   </div>
@@ -1248,253 +1505,214 @@ export function CameraScannerModal({
                     <button
                       type="button"
                       onClick={startQrSession}
-                      className="px-4 py-2 rounded-xl bg-gray-800 text-white font-medium hover:bg-gray-700"
+                      className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-medium"
                     >
-                      Reintentar
+                      Reintentar conexión
                     </button>
                   </div>
                 )}
 
-                {/* Selector de red (Wi-Fi local vs Servidor Web) */}
-                {lanQrUrl && onlineQrUrl && qrStatus !== "loading" && (
-                  <div className="flex p-1 rounded-xl bg-gray-950/80 border border-gray-800 text-[11px] max-w-sm mx-auto w-full">
-                    <button
-                      type="button"
-                      onClick={() => handleSwitchQrNetwork("lan")}
-                      className={`flex-1 py-1.5 px-2 rounded-lg font-medium transition-all ${
-                        qrNetworkMode === "lan"
-                          ? "bg-violet-600 text-white shadow-xs"
-                          : "text-gray-400 hover:text-gray-200"
-                      }`}
-                    >
-                      Red Wi-Fi Local
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleSwitchQrNetwork("online")}
-                      className={`flex-1 py-1.5 px-2 rounded-lg font-medium transition-all ${
-                        qrNetworkMode === "online"
-                          ? "bg-violet-600 text-white shadow-xs"
-                          : "text-gray-400 hover:text-gray-200"
-                      }`}
-                    >
-                      Servidor Web
-                    </button>
-                  </div>
-                )}
-
-                {qrUrl && qrStatus !== "loading" && qrStatus !== "error" && (
-                  <div className="space-y-4">
-                    <div className="mx-auto w-52 h-52 bg-white p-3 rounded-2xl shadow-xl flex items-center justify-center">
-                      <QRCodeSVG value={qrUrl} size={180} level="M" />
-                    </div>
-
-                    {/* Botón para regenerar código QR */}
-                    <div className="flex items-center justify-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => startQrSession(true)}
-                        disabled={isRegeneratingQr}
-                        className="px-3.5 py-1.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-semibold inline-flex items-center gap-1.5 transition-colors disabled:opacity-50 border border-gray-700"
-                      >
-                        <RefreshCw className={`h-3.5 w-3.5 ${isRegeneratingQr ? "animate-spin" : ""}`} />
-                        <span>Regenerar nuevo código QR</span>
-                      </button>
-                    </div>
-
-                    {/* Estado de sincronización */}
-                    <div className="p-3 rounded-2xl bg-gray-950/70 border border-gray-800/80 text-xs">
-                      {qrStatus === "pending" && (
-                        <p className="text-gray-400 flex items-center justify-center gap-2">
-                          <span className="h-2 w-2 rounded-full bg-amber-400 animate-ping" />
-                          Esperando que escanees el código con tu celular...
-                        </p>
+                {(qrStatus === "pending" ||
+                  qrStatus === "connected" ||
+                  qrStatus === "receiving") &&
+                  qrUrl && (
+                    <div className="space-y-4">
+                      {lanQrUrl && onlineQrUrl && (
+                        <div className="flex items-center justify-center gap-1.5 p-1 bg-gray-950/70 border border-gray-800 rounded-xl max-w-xs mx-auto text-[11px]">
+                          <button
+                            type="button"
+                            onClick={() => handleSwitchQrNetwork("lan")}
+                            className={`flex-1 py-1 px-2.5 rounded-lg font-medium transition-colors ${
+                              qrNetworkMode === "lan"
+                                ? "bg-violet-600 text-white shadow-xs"
+                                : "text-gray-400 hover:text-white"
+                            }`}
+                          >
+                            Misma red Wi-Fi
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleSwitchQrNetwork("online")}
+                            className={`flex-1 py-1 px-2.5 rounded-lg font-medium transition-colors ${
+                              qrNetworkMode === "online"
+                                ? "bg-violet-600 text-white shadow-xs"
+                                : "text-gray-400 hover:text-white"
+                            }`}
+                          >
+                            Internet Web
+                          </button>
+                        </div>
                       )}
-                      {qrStatus === "connected" && (
-                        <p className="text-emerald-400 font-semibold flex items-center justify-center gap-2">
-                          <span className="h-2 w-2 rounded-full bg-emerald-400" />
-                          ¡Celular conectado! Listo para tomar fotos.
-                        </p>
-                      )}
-                      {qrStatus === "receiving" && (
-                        <p className="text-violet-400 font-semibold flex items-center justify-center gap-2">
-                          <span className="h-2 w-2 rounded-full bg-violet-400 animate-pulse" />
-                          Recibiendo páginas desde el teléfono ({confirmedPages.length} recibidas)...
-                        </p>
-                      )}
-                      {qrStatus === "expired" && (
-                        <div className="space-y-2">
-                          <p className="text-rose-400 font-semibold">
-                            El código QR ha expirado.
+
+                      <div className="inline-block p-4 rounded-2xl bg-white shadow-xl relative group">
+                        <QRCodeSVG
+                          value={qrUrl}
+                          size={190}
+                          level="M"
+                          includeMargin={false}
+                          bgColor="#ffffff"
+                          fgColor="#000000"
+                        />
+                      </div>
+
+                      <div className="flex items-center justify-center gap-2">
+                        <span
+                          className={`h-2.5 w-2.5 rounded-full ${
+                            qrStatus === "connected" || qrStatus === "receiving"
+                              ? "bg-emerald-400 animate-pulse"
+                              : "bg-amber-400 animate-ping"
+                          }`}
+                        />
+                        <span className="text-xs font-semibold text-gray-300">
+                          {qrStatus === "receiving"
+                            ? "Transfiriendo fotografías desde el celular..."
+                            : qrStatus === "connected"
+                              ? "¡Celular conectado! Listo para capturar"
+                              : "Esperando escaneo del código QR..."}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center justify-center gap-2 pt-1">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (qrUrl) {
+                              navigator.clipboard.writeText(qrUrl)
+                              setCopiedQrLink(true)
+                              setTimeout(() => setCopiedQrLink(false), 2000)
+                            }
+                          }}
+                          className="px-3 py-1.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs font-medium inline-flex items-center gap-1.5 transition-colors"
+                        >
+                          <Copy className="h-3.5 w-3.5" />
+                          <span>{copiedQrLink ? "Enlace copiado" : "Copiar enlace"}</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={startQrSession}
+                          disabled={isRegeneratingQr}
+                          className="px-3 py-1.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs font-medium inline-flex items-center gap-1.5 transition-colors"
+                        >
+                          <RefreshCw
+                            className={`h-3.5 w-3.5 ${isRegeneratingQr ? "animate-spin" : ""}`}
+                          />
+                          <span>Regenerar QR</span>
+                        </button>
+                      </div>
+
+                      {confirmedPages.length > 0 && (
+                        <div className="pt-2 border-t border-gray-800">
+                          <p className="text-xs text-emerald-400 font-semibold mb-2">
+                            {confirmedPages.length}{" "}
+                            {confirmedPages.length === 1 ? "página recibida" : "páginas recibidas"}
                           </p>
                           <button
                             type="button"
-                            onClick={() => startQrSession(true)}
-                            className="px-3 py-1 bg-rose-600 text-white rounded-lg text-xs font-bold"
+                            onClick={() => setStep(previewPdfBlob ? "pdf_preview" : "review")}
+                            className="w-full py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-xs shadow-md shadow-violet-600/30 transition-all flex items-center justify-center gap-2"
                           >
-                            Generar código nuevo
+                            <span>Continuar con {confirmedPages.length} páginas</span>
+                            <ArrowRight className="h-4 w-4" />
                           </button>
                         </div>
                       )}
                     </div>
+                  )}
 
-                    {/* Copiar enlace directo y visualización de URL */}
-                    <div className="space-y-1.5 text-center">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (qrUrl) {
-                            navigator.clipboard.writeText(qrUrl)
-                            setCopiedQrLink(true)
-                            setTimeout(() => setCopiedQrLink(false), 2000)
-                          }
-                        }}
-                        className="px-3 py-1.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 font-medium inline-flex items-center gap-1.5 transition-colors text-xs"
-                      >
-                        <Copy className="h-3.5 w-3.5" />
-                        {copiedQrLink ? "¡Enlace copiado!" : "Copiar enlace móvil"}
-                      </button>
-                      <p className="text-[10px] text-gray-500 font-mono truncate max-w-xs mx-auto">
-                        {qrUrl}
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                {/* Acciones */}
-                <div className="flex items-center justify-between gap-3 pt-2">
+                <div className="pt-2">
                   <button
                     type="button"
-                    onClick={() => {
-                      setStep("capture")
-                      startCamera()
-                    }}
-                    className="flex-1 py-2.5 rounded-xl border border-gray-700 hover:bg-gray-800 text-xs font-medium text-gray-300 transition-colors"
+                    onClick={() => setStep(previewPdfBlob ? "pdf_preview" : "capture")}
+                    className="text-xs text-gray-400 hover:text-white"
                   >
-                    Usar webcam de la PC
+                    Volver
                   </button>
-
-                  {confirmedPages.length > 0 && (
-                    <button
-                      type="button"
-                      onClick={() => setStep("review")}
-                      className="flex-1 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-bold shadow-md shadow-violet-600/30 transition-all flex items-center justify-center gap-1.5"
-                    >
-                      <Check className="h-4 w-4" />
-                      <span>Revisar ({confirmedPages.length})</span>
-                    </button>
-                  )}
                 </div>
               </div>
             )}
 
-            {/* ETAPA: VISTA PREVIA DEL ESCANEO LIMPIO (SIN MARCAS, SIN FONDO DE MESA) */}
-            {step === "preview_processed" && (
+            {/* ETAPA: VISTA PREVIA LIMPIA DE LA HOJA PROCESADA */}
+            {step === "preview_processed" && processedPreviewUrl && (
               <div className="w-full max-w-2xl flex flex-col items-center space-y-4">
-                {/* Contenedor del documento escaneado: apariencia de escáner dedicado sobre fondo neutro */}
-                <div className="w-full flex items-center justify-center p-3 sm:p-5 rounded-2xl bg-gray-950/70 border border-gray-800/80">
-                  {isProcessingWarp ? (
-                    <div className="h-72 sm:h-96 w-full flex flex-col items-center justify-center text-xs text-gray-400 gap-3">
-                      <div className="h-8 w-8 rounded-full border-2 border-violet-500 border-t-transparent animate-spin" />
-                      <span>Optimizando contraste, nitidez y perspectiva de la hoja...</span>
+                <div className="relative aspect-3/4 max-h-[50vh] rounded-2xl overflow-hidden bg-white shadow-2xl border border-gray-800 flex items-center justify-center p-2">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={processedPreviewUrl}
+                    alt="Página escaneada procesada"
+                    className="max-h-full max-w-full object-contain"
+                  />
+                  {isProcessingWarp && (
+                    <div className="absolute inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center text-white text-xs gap-2">
+                      <div className="h-6 w-6 rounded-full border-2 border-violet-400 border-t-transparent animate-spin" />
+                      <span>Aplicando corrección...</span>
                     </div>
-                  ) : processedPreviewUrl ? (
-                    <div className="relative max-h-[54vh] max-w-full flex items-center justify-center">
-                      {/* Documento escaneado limpio: libre de marcas de agua, firmas, logos o bordes agregados */}
-                      <img
-                        src={processedPreviewUrl}
-                        alt="Documento escaneado procesado"
-                        className="max-h-[50vh] max-w-full object-contain rounded-sm shadow-2xl bg-white select-none pointer-events-none"
-                      />
-                    </div>
-                  ) : null}
+                  )}
                 </div>
 
-                {/* Barra de herramientas exterior: controles para refinar el documento */}
                 <div className="w-full space-y-3">
                   <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
-                    {/* Selector de filtro de lectura */}
-                    <div className="flex items-center gap-1.5 p-1 rounded-xl bg-gray-900 border border-gray-800">
-                      <span className="text-[11px] text-gray-400 px-2 font-medium">Mejora:</span>
+                    <div className="flex items-center gap-1 bg-gray-900 border border-gray-800 p-1 rounded-xl">
                       <button
                         type="button"
                         onClick={() => handleChangeFilter("contrast")}
-                        disabled={isProcessingWarp}
-                        className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors ${
+                        className={`px-3 py-1.5 rounded-lg font-medium transition-colors ${
                           filterMode === "contrast"
-                            ? "bg-violet-600 text-white shadow-xs"
+                            ? "bg-violet-600 text-white"
                             : "text-gray-300 hover:text-white"
                         }`}
                       >
-                        Alto contraste (Ideal OCR)
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleChangeFilter("grayscale")}
-                        disabled={isProcessingWarp}
-                        className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors ${
-                          filterMode === "grayscale"
-                            ? "bg-violet-600 text-white shadow-xs"
-                            : "text-gray-300 hover:text-white"
-                        }`}
-                      >
-                        Escala de grises
+                        Documento nítido
                       </button>
                       <button
                         type="button"
                         onClick={() => handleChangeFilter("color")}
-                        disabled={isProcessingWarp}
-                        className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors ${
+                        className={`px-3 py-1.5 rounded-lg font-medium transition-colors ${
                           filterMode === "color"
-                            ? "bg-violet-600 text-white shadow-xs"
+                            ? "bg-violet-600 text-white"
                             : "text-gray-300 hover:text-white"
                         }`}
                       >
                         Color original
                       </button>
+                      <button
+                        type="button"
+                        onClick={() => handleChangeFilter("grayscale")}
+                        className={`px-3 py-1.5 rounded-lg font-medium transition-colors ${
+                          filterMode === "grayscale"
+                            ? "bg-violet-600 text-white"
+                            : "text-gray-300 hover:text-white"
+                        }`}
+                      >
+                        Escala de grises
+                      </button>
                     </div>
 
-                    {/* Acciones de orientación y ajuste manual */}
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
                         onClick={handleRotatePage}
-                        disabled={isProcessingWarp}
-                        className="px-3 py-1.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 transition-colors inline-flex items-center gap-1.5"
-                        title="Girar orientación de la página 90°"
+                        className="px-3 py-1.5 rounded-xl bg-gray-900 border border-gray-800 hover:bg-gray-800 text-gray-200 transition-colors inline-flex items-center gap-1.5"
                       >
-                        <RotateCw className="h-3.5 w-3.5" />
-                        <span>Girar 90°</span>
+                        <RotateCw className="h-3.5 w-3.5" /> Girar 90°
                       </button>
-
                       <button
                         type="button"
                         onClick={() => setStep("adjust")}
-                        disabled={isProcessingWarp}
-                        className="px-3 py-1.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 transition-colors inline-flex items-center gap-1.5"
-                        title="Ajustar manualmente las 4 esquinas del recorte"
+                        className="px-3 py-1.5 rounded-xl bg-gray-900 border border-gray-800 hover:bg-gray-800 text-gray-200 transition-colors inline-flex items-center gap-1.5"
                       >
-                        <Crop className="h-3.5 w-3.5 text-violet-400" />
-                        <span>Reajustar recorte</span>
+                        <Crop className="h-3.5 w-3.5 text-violet-400" /> Reajustar bordes
                       </button>
                     </div>
                   </div>
 
-                  {/* Botones de acción principales */}
-                  <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+                  <div className="flex items-center justify-between gap-3 pt-2">
                     <button
                       type="button"
-                      onClick={() => {
-                        setCapturedCanvas(null)
-                        setCorners(null)
-                        setProcessedPreviewUrl(null)
-                        setProcessedBlob(null)
-                        setStep("capture")
-                        startCamera()
-                      }}
-                      className="px-4 py-2.5 rounded-xl border border-gray-700 text-xs font-medium text-gray-300 hover:bg-gray-800 transition-colors"
+                      onClick={() => setStep("capture")}
+                      className="px-4 py-2.5 rounded-xl border border-gray-700 text-xs font-semibold text-gray-300 hover:bg-gray-800 transition-colors"
                     >
-                      Repetir captura
+                      Repetir foto
                     </button>
 
                     <div className="flex items-center gap-2">
@@ -1515,7 +1733,7 @@ export function CameraScannerModal({
                         className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-bold shadow-lg shadow-violet-600/30 transition-colors"
                       >
                         <Sparkles className="h-4 w-4" />
-                        <span>Continuar con OCR y PDF</span>
+                        <span>Reconocer texto (OCR)</span>
                       </button>
                     </div>
                   </div>
@@ -1523,7 +1741,7 @@ export function CameraScannerModal({
               </div>
             )}
 
-            {/* ETAPA: AJUSTE MANUAL DE ESQUINAS DE RECORTE */}
+            {/* ETAPA: AJUSTE MANUAL DE ESQUINAS */}
             {step === "adjust" && (
               <div className="w-full max-w-2xl flex flex-col items-center space-y-4">
                 <div className="relative border border-gray-800 rounded-2xl overflow-hidden bg-black flex items-center justify-center select-none touch-none shadow-2xl">
@@ -1535,7 +1753,7 @@ export function CameraScannerModal({
                     onTouchStart={handlePointerDown}
                     onTouchMove={handlePointerMove}
                     onTouchEnd={handlePointerUp}
-                    className="cursor-crosshair max-h-[48vh] max-w-full"
+                    className="cursor-crosshair max-h-[46vh] max-w-full"
                   />
                 </div>
 
@@ -1579,29 +1797,29 @@ export function CameraScannerModal({
                       <RotateCw className="h-3.5 w-3.5" /> Girar 90°
                     </button>
                   </div>
-                </div>
 
-                <div className="w-full flex items-center justify-between gap-3 pt-2">
-                  <button
-                    type="button"
-                    onClick={() => setStep("preview_processed")}
-                    className="px-4 py-2.5 rounded-xl border border-gray-700 text-xs font-medium text-gray-300 hover:bg-gray-800 transition-colors"
-                  >
-                    Volver a vista previa
-                  </button>
+                  <div className="w-full flex items-center justify-between gap-3 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setStep("preview_processed")}
+                      className="px-4 py-2.5 rounded-xl border border-gray-700 text-xs font-medium text-gray-300 hover:bg-gray-800 transition-colors"
+                    >
+                      Volver a vista previa
+                    </button>
 
-                  <button
-                    type="button"
-                    onClick={handleApplyCrop}
-                    className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-700 text-white text-xs font-semibold shadow-md shadow-violet-600/30 transition-colors"
-                  >
-                    <Check className="h-4 w-4" /> Aplicar recorte
-                  </button>
+                    <button
+                      type="button"
+                      onClick={handleApplyCrop}
+                      className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-700 text-white text-xs font-semibold shadow-md shadow-violet-600/30 transition-colors"
+                    >
+                      <Check className="h-4 w-4" /> Aplicar recorte
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
 
-            {/* ETAPA 3: REVISIÓN DE PÁGINAS Y LANZAMIENTO DEL OCR */}
+            {/* ETAPA: REVISIÓN DE LOTE DE PÁGINAS */}
             {step === "review" && (
               <div className="w-full max-w-3xl space-y-6">
                 <div className="flex items-center justify-between text-xs">
@@ -1618,7 +1836,13 @@ export function CameraScannerModal({
                     </button>
                     <button
                       type="button"
-                      onClick={startQrSession}
+                      onClick={() => {
+                        if (qrSessionToken) {
+                          setStep("qr_connect")
+                        } else {
+                          startQrSession()
+                        }
+                      }}
                       className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-violet-400 font-medium transition-colors"
                     >
                       <Smartphone className="h-3.5 w-3.5" /> Más con celular
@@ -1678,14 +1902,24 @@ export function CameraScannerModal({
                             </button>
                           </div>
 
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveScannedPage(page.id)}
-                            className="p-1 text-rose-400 hover:text-rose-300"
-                            title="Eliminar página"
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </button>
+                          <div className="flex items-center gap-1">
+                            <button
+                              type="button"
+                              onClick={() => handleRescanPage(idx)}
+                              className="p-1 text-gray-400 hover:text-white"
+                              title="Repetir captura de esta hoja"
+                            >
+                              <RotateCw className="h-3.5 w-3.5" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveScannedPage(page.id)}
+                              className="p-1 text-rose-400 hover:text-rose-300"
+                              title="Eliminar página"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -1695,9 +1929,9 @@ export function CameraScannerModal({
                 {/* Idioma del OCR */}
                 <div className="p-4 rounded-2xl bg-gray-900 border border-gray-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
                   <div>
-                    <h5 className="font-bold text-white">Reconocimiento OCR</h5>
+                    <h5 className="font-bold text-white">Reconocimiento OCR con formato</h5>
                     <p className="text-gray-400">
-                      Reconstruye el documento con texto digital real en lugar de incrustar las fotografías.
+                      Reconstruye títulos, negritas, subtítulos y párrafos en texto digital real A4.
                     </p>
                   </div>
 
@@ -1728,17 +1962,17 @@ export function CameraScannerModal({
                   <button
                     type="button"
                     disabled={confirmedPages.length === 0}
-                    onClick={handleStartOcrProcessing}
+                    onClick={() => runOcrOnAllPages(confirmedPages)}
                     className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-bold shadow-lg shadow-violet-600/30 transition-all disabled:opacity-40"
                   >
                     <Sparkles className="h-4 w-4 text-violet-200" />
-                    <span>Reconocer texto (OCR) y reconstruir documento</span>
+                    <span>Reconocer texto y ver vista previa del PDF</span>
                   </button>
                 </div>
               </div>
             )}
 
-            {/* ETAPA 4: OCR EN PROCESO */}
+            {/* ETAPA: OCR EN PROCESO */}
             {step === "ocr_processing" && (
               <div className="w-full max-w-md p-8 rounded-3xl bg-gray-900 border border-gray-800 text-center space-y-6 shadow-2xl">
                 <div className="mx-auto h-16 w-16 rounded-2xl bg-violet-500/10 text-violet-400 flex items-center justify-center">
@@ -1750,7 +1984,6 @@ export function CameraScannerModal({
                   <p className="text-xs text-gray-400 leading-relaxed">{ocrStatusMessage}</p>
                 </div>
 
-                {/* Barra de progreso */}
                 <div className="space-y-1.5">
                   <div className="w-full h-2.5 rounded-full bg-gray-800 overflow-hidden">
                     <motion.div
@@ -1767,205 +2000,571 @@ export function CameraScannerModal({
                 </div>
 
                 <p className="text-[11px] text-gray-500">
-                  El procesamiento se realiza de manera 100% privada dentro de tu navegador. Tus hojas nunca se envían a servidores externos.
+                  El procesamiento se realiza de manera 100% privada dentro de tu navegador. Tus
+                  hojas nunca se envían a servidores externos.
                 </p>
               </div>
             )}
 
-            {/* ETAPA 5: EDITOR DE DOCUMENTO DIGITAL RECONSTRUIDO */}
-            {step === "ocr_editor" && activePage && activePage.recognizedContent && (
-              <div className="w-full max-w-4xl space-y-5">
-                {exportSuccessMessage && (
-                  <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs flex items-center gap-2">
-                    <Check className="h-4 w-4 shrink-0" />
-                    <span>{exportSuccessMessage}</span>
+            {/* ETAPA PRINCIPAL: VISTA PREVIA VISUAL DEL PDF RECONSTRUIDO */}
+            {step === "pdf_preview" && (
+              <div className="w-full flex flex-col items-center space-y-4">
+                {/* Banner de aviso si hay páginas recibidas sin OCR */}
+                {pendingOcrCount > 0 && (
+                  <div className="w-full p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs flex flex-wrap items-center justify-between gap-2 shadow-sm">
+                    <div className="flex items-center gap-2">
+                      <AlertCircle className="h-4 w-4 shrink-0" />
+                      <span>
+                        Se agregaron {pendingOcrCount} página(s) nueva(s) sin procesar.
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      disabled={isProcessingIncrementalOcr}
+                      onClick={handleProcessIncrementalOcr}
+                      className="px-3 py-1 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-xs"
+                    >
+                      <Sparkles className="h-3.5 w-3.5" />
+                      <span>
+                        {isProcessingIncrementalOcr
+                          ? "Procesando..."
+                          : "Procesar e incorporar al PDF"}
+                      </span>
+                    </button>
                   </div>
                 )}
 
-                {/* Pestañas de páginas */}
-                <div className="flex items-center justify-between border-b border-gray-800 pb-3 flex-wrap gap-2 text-xs">
-                  <div className="flex items-center gap-1.5 overflow-x-auto">
-                    {confirmedPages.map((page, idx) => (
-                      <button
-                        key={page.id}
-                        type="button"
-                        onClick={() => setActiveEditorPageIndex(idx)}
-                        className={`px-3 py-1.5 rounded-xl font-semibold transition-colors ${
-                          activeEditorPageIndex === idx
-                            ? "bg-violet-600 text-white"
-                            : "bg-gray-800 text-gray-300 hover:bg-gray-700"
-                        }`}
-                      >
-                        Página {idx + 1}
-                      </button>
-                    ))}
+                {/* BARRA DE HERRAMIENTAS SUPERIOR DE LA VISTA PREVIA */}
+                <div className="w-full p-2.5 sm:p-3 rounded-2xl bg-gray-900 border border-gray-800 flex flex-wrap items-center justify-between gap-3 text-xs shadow-md">
+                  {/* Navegación de páginas */}
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      disabled={previewPageIndex === 0}
+                      onClick={() => setPreviewPageIndex((p) => Math.max(0, p - 1))}
+                      className="p-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 disabled:opacity-30 transition-colors"
+                      title="Página anterior"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </button>
+                    <span className="font-semibold text-gray-200 px-2 min-w-24 text-center">
+                      Página {previewPageIndex + 1} de {totalPreviewPages}
+                    </span>
+                    <button
+                      type="button"
+                      disabled={previewPageIndex >= totalPreviewPages - 1}
+                      onClick={() =>
+                        setPreviewPageIndex((p) => Math.min(totalPreviewPages - 1, p + 1))
+                      }
+                      className="p-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 disabled:opacity-30 transition-colors"
+                      title="Página siguiente"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => setStep("review")}
-                    className="text-xs text-gray-400 hover:text-white"
-                  >
-                    Volver a lote de fotos
-                  </button>
+                  {/* Controles de Zoom */}
+                  <div className="flex items-center gap-1 bg-gray-950/70 border border-gray-800 p-1 rounded-xl">
+                    <button
+                      type="button"
+                      onClick={() => setPreviewScale((s) => Math.max(0.65, s - 0.2))}
+                      className="p-1 rounded-lg text-gray-400 hover:text-white transition-colors"
+                      title="Alejar"
+                    >
+                      <ZoomOut className="h-3.5 w-3.5" />
+                    </button>
+                    <span className="text-[11px] font-mono px-1.5 text-gray-300">
+                      {Math.round(previewScale * 100)}%
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setPreviewScale((s) => Math.min(2.5, s + 0.2))}
+                      className="p-1 rounded-lg text-gray-400 hover:text-white transition-colors"
+                      title="Acercar"
+                    >
+                      <ZoomIn className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPreviewScale(1.15)}
+                      className="px-2 py-0.5 rounded-lg text-[10px] text-gray-400 hover:text-white hover:bg-gray-800 transition-colors ml-1"
+                      title="Restablecer tamaño normal"
+                    >
+                      Ajustar
+                    </button>
+                  </div>
+
+                  {/* Acciones de Edición, Referencia y Agregar Páginas */}
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setIsReferencePhotoOpen((prev) => !prev)}
+                      className={`px-3 py-1.5 rounded-xl border text-xs font-medium inline-flex items-center gap-1.5 transition-colors ${
+                        isReferencePhotoOpen
+                          ? "bg-violet-600/20 border-violet-500/50 text-violet-300"
+                          : "bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700"
+                      }`}
+                      title="Comparar con la foto original"
+                    >
+                      {isReferencePhotoOpen ? (
+                        <EyeOff className="h-3.5 w-3.5" />
+                      ) : (
+                        <Eye className="h-3.5 w-3.5" />
+                      )}
+                      <span>Foto original</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setIsDrawerEditorOpen((prev) => !prev)}
+                      className={`px-3 py-1.5 rounded-xl border text-xs font-semibold inline-flex items-center gap-1.5 transition-colors ${
+                        isDrawerEditorOpen
+                          ? "bg-violet-600 text-white border-violet-500 shadow-md shadow-violet-600/30"
+                          : "bg-gray-800 border-gray-700 text-gray-200 hover:bg-gray-700"
+                      }`}
+                    >
+                      <Edit3 className="h-3.5 w-3.5" />
+                      <span>Editar texto y jerarquía</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setIsAddPageModalOpen(true)}
+                      className="px-3 py-1.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-violet-300 border border-violet-500/30 text-xs font-semibold inline-flex items-center gap-1.5 transition-colors"
+                    >
+                      <Plus className="h-3.5 w-3.5" />
+                      <span>Agregar páginas</span>
+                    </button>
+                  </div>
                 </div>
 
-                {/* Layout de Edición: Foto de referencia vs Bloques digitales */}
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-start">
-                  {/* Columna Izquierda: Fotografía de referencia (Sólo visual para comparar) */}
-                  <div className="md:col-span-4 p-3 rounded-2xl bg-gray-900 border border-gray-800 space-y-2">
-                    <div className="flex items-center justify-between text-[11px] text-gray-400 font-semibold">
-                      <span>Foto original (Referencia)</span>
-                      <span className="text-amber-400">No se incrustará en el PDF</span>
-                    </div>
+                {/* ÁREA CENTRAL: VISTA PREVIA DEL PDF EN LIENZO A4 CON SOMBRA ELEGANTE */}
+                <div className="w-full flex justify-center items-start gap-4 overflow-x-auto py-2">
+                  {/* Foto de referencia lateral (opcional) */}
+                  {isReferencePhotoOpen && activePage && (
+                    <motion.div
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      className="w-64 shrink-0 rounded-2xl bg-gray-900 border border-gray-800 p-3 space-y-2 self-start shadow-xl"
+                    >
+                      <div className="flex items-center justify-between text-[11px] font-semibold text-gray-300">
+                        <span>Foto capturada (Pág. {previewPageIndex + 1})</span>
+                        <button
+                          type="button"
+                          onClick={() => setIsReferencePhotoOpen(false)}
+                          className="p-1 hover:text-white"
+                        >
+                          <X className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
 
-                    <div className="relative aspect-3/4 rounded-xl overflow-hidden bg-black flex items-center justify-center border border-gray-800">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={activePage.dataUrl}
-                        alt="Foto de referencia"
-                        className="max-h-full max-w-full object-contain"
-                      />
-                    </div>
+                      <div className="relative aspect-3/4 rounded-xl overflow-hidden bg-black flex items-center justify-center border border-gray-800">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={activePage.dataUrl}
+                          alt="Foto original de referencia"
+                          className="max-h-full max-w-full object-contain"
+                        />
+                      </div>
 
-                    <p className="text-[10px] text-gray-500 leading-tight">
-                      Esta foto se usa exclusivamente para que compares el texto reconocido. El PDF final contendrá únicamente caracteres vectoriales digitales.
-                    </p>
-                  </div>
+                      <p className="text-[10px] text-gray-500 leading-tight">
+                        Referencia fotográfica. El PDF final contiene texto digital puro y no
+                        contiene fotos ni marcas de agua.
+                      </p>
+                    </motion.div>
+                  )}
 
-                  {/* Columna Derecha: Bloques de texto editable */}
-                  <div className="md:col-span-8 p-4 rounded-2xl bg-gray-900 border border-gray-800 space-y-3">
-                    <div className="flex items-center justify-between text-xs font-semibold">
-                      <span className="text-gray-200">
-                        Contenido Digital Reconocido ({activePage.recognizedContent.blocks.length} bloques)
-                      </span>
-                      <button
-                        type="button"
-                        onClick={handleAddBlock}
-                        className="px-2.5 py-1 rounded-lg bg-gray-800 hover:bg-gray-700 text-violet-300 inline-flex items-center gap-1 text-[11px]"
-                      >
-                        <Plus className="h-3 w-3" /> Añadir bloque
-                      </button>
-                    </div>
-
-                    {!activePage.recognizedContent.hasText && (
-                      <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs flex items-center gap-2">
-                        <AlertCircle className="h-4 w-4 shrink-0" />
-                        <span>Se detectó poco texto en esta hoja. Podés escribir o corregir manualmente a continuación.</span>
+                  {/* LIENZO REAL DE RENDERIZADO DEL PDF (A4) */}
+                  <div className="relative flex flex-col items-center justify-center rounded-2xl bg-gray-950 p-4 border border-gray-800/80 shadow-2xl min-h-[460px] max-w-full overflow-auto">
+                    {isRenderingPdf && (
+                      <div className="absolute inset-0 bg-gray-950/60 backdrop-blur-xs flex items-center justify-center text-xs text-violet-300 gap-2 z-10 rounded-2xl">
+                        <div className="h-6 w-6 rounded-full border-2 border-violet-400 border-t-transparent animate-spin" />
+                        <span>Renderizando vector PDF...</span>
                       </div>
                     )}
 
-                    <div className="space-y-3 max-h-[46vh] overflow-y-auto pr-1">
-                      {activePage.recognizedContent.blocks.map((block, bIdx) => (
-                        <div
-                          key={block.id}
-                          className="p-3 rounded-xl bg-gray-950/70 border border-gray-800/80 space-y-2 text-xs"
-                        >
-                          <div className="flex items-center justify-between gap-2">
-                            <div className="flex items-center gap-2">
-                              <span className="text-[10px] text-gray-500 font-mono">#{bIdx + 1}</span>
-                              <select
-                                value={block.type}
-                                onChange={(e) =>
-                                  handleChangeBlockType(bIdx, e.target.value as RecognizedBlockType)
-                                }
-                                className="px-2 py-0.5 rounded-md bg-gray-800 border border-gray-700 text-white text-[11px]"
+                    <div className="bg-white rounded-md shadow-2xl overflow-hidden border border-gray-300 ring-1 ring-black/10">
+                      <canvas ref={pdfCanvasRef} className="block" />
+                    </div>
+                  </div>
+
+                  {/* CAJÓN LATERAL SLIDE-OVER: EDICIÓN DE TEXTO, TÍTULOS Y NEGRITAS */}
+                  {isDrawerEditorOpen && activePage && activePage.recognizedContent && (
+                    <motion.div
+                      initial={{ opacity: 0, x: 30 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 30 }}
+                      className="w-84 sm:w-96 shrink-0 rounded-2xl bg-gray-900 border border-gray-800 p-4 space-y-3 self-start shadow-2xl max-h-[70vh] flex flex-col"
+                    >
+                      <div className="flex items-center justify-between border-b border-gray-800 pb-2">
+                        <div>
+                          <h4 className="text-xs font-bold text-white flex items-center gap-1.5">
+                            <Sliders className="h-3.5 w-3.5 text-violet-400" />
+                            <span>Editar Página {previewPageIndex + 1}</span>
+                          </h4>
+                          <p className="text-[10px] text-gray-400">
+                            {activePage.recognizedContent.blocks.length} bloques reconocidos
+                          </p>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={handleAddBlock}
+                            className="px-2 py-1 rounded-lg bg-gray-800 hover:bg-gray-700 text-violet-300 text-[11px] font-semibold inline-flex items-center gap-1"
+                          >
+                            <Plus className="h-3 w-3" /> Bloque
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setIsDrawerEditorOpen(false)}
+                            className="p-1 text-gray-400 hover:text-white"
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Lista de bloques scrollable */}
+                      <div className="flex-1 overflow-y-auto space-y-3 pr-1 text-xs">
+                        {activePage.recognizedContent.blocks.map((block, bIdx) => (
+                          <div
+                            key={block.id}
+                            className="p-2.5 rounded-xl bg-gray-950/80 border border-gray-800 space-y-2"
+                          >
+                            <div className="flex items-center justify-between gap-1.5">
+                              <div className="flex items-center gap-1.5 flex-wrap">
+                                <span className="text-[10px] text-gray-500 font-mono">
+                                  #{bIdx + 1}
+                                </span>
+                                <select
+                                  value={block.type}
+                                  onChange={(e) =>
+                                    handleChangeBlockType(
+                                      bIdx,
+                                      e.target.value as RecognizedBlockType
+                                    )
+                                  }
+                                  className="px-2 py-0.5 rounded-md bg-gray-800 border border-gray-700 text-white text-[11px]"
+                                >
+                                  <option value="title">Título Principal</option>
+                                  <option value="heading">Encabezado</option>
+                                  <option value="subheading">Subtítulo</option>
+                                  <option value="paragraph">Párrafo normal</option>
+                                  <option value="list_item">Lista (•)</option>
+                                  <option value="table_row">Fila de tabla</option>
+                                </select>
+
+                                {/* Toggle Negrita */}
+                                <button
+                                  type="button"
+                                  onClick={() => handleToggleBlockBold(bIdx)}
+                                  className={`px-2 py-0.5 rounded-md text-[11px] font-bold inline-flex items-center gap-1 transition-colors ${
+                                    block.isBold
+                                      ? "bg-violet-600 text-white shadow-xs"
+                                      : "bg-gray-800 text-gray-400 hover:text-white"
+                                  }`}
+                                  title="Alternar formato negrita"
+                                >
+                                  <Bold className="h-3 w-3" /> Negrita
+                                </button>
+                              </div>
+
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveBlock(bIdx)}
+                                className="text-gray-500 hover:text-rose-400 p-1"
+                                title="Eliminar bloque"
                               >
-                                <option value="title">Título Principal</option>
-                                <option value="heading">Encabezado</option>
-                                <option value="subheading">Subtítulo</option>
-                                <option value="paragraph">Párrafo</option>
-                                <option value="list_item">Ítem de Lista (•)</option>
-                                <option value="table_row">Fila de Tabla</option>
-                              </select>
+                                <Trash2 className="h-3.5 w-3.5" />
+                              </button>
                             </div>
+
+                            <textarea
+                              value={block.text}
+                              onChange={(e) => handleUpdateBlockText(bIdx, e.target.value)}
+                              rows={Math.min(3, Math.max(1, Math.ceil(block.text.length / 50)))}
+                              className="w-full p-2 rounded-lg bg-gray-900 border border-gray-800 text-gray-100 text-xs leading-relaxed focus:border-violet-500 focus:outline-hidden resize-y"
+                            />
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Botón para aplicar y refrescar canvas */}
+                      <div className="pt-2 border-t border-gray-800">
+                        <button
+                          type="button"
+                          onClick={handleApplyDrawerEditsAndRefreshPreview}
+                          className="w-full py-2 px-3 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-xs shadow-md shadow-violet-600/30 transition-all flex items-center justify-center gap-2"
+                        >
+                          <Check className="h-4 w-4" />
+                          <span>Actualizar vista previa</span>
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </div>
+
+                {/* TIRA DE MINIATURAS (FILMSTRIP) INFERIOR PARA NAVEGAR Y GESTIONAR HOJAS */}
+                <div className="w-full p-2.5 rounded-2xl bg-gray-900 border border-gray-800 space-y-2">
+                  <div className="flex items-center justify-between text-xs px-1 text-gray-400">
+                    <span className="font-semibold text-gray-300">
+                      Páginas del documento ({confirmedPages.length})
+                    </span>
+                    <span className="text-[11px]">
+                      Hacé clic para cambiar de página o usá las flechas para reordenar
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2.5 overflow-x-auto py-1">
+                    {confirmedPages.map((page, idx) => {
+                      const isActive = previewPageIndex === idx
+                      return (
+                        <div
+                          key={page.id}
+                          onClick={() => {
+                            setPreviewPageIndex(idx)
+                            setActiveEditorPageIndex(idx)
+                          }}
+                          className={`relative rounded-xl overflow-hidden border-2 cursor-pointer shrink-0 transition-all p-1 bg-gray-950 flex flex-col items-center ${
+                            isActive
+                              ? "border-violet-500 shadow-md shadow-violet-500/20 scale-105"
+                              : "border-gray-800 hover:border-gray-700 opacity-70 hover:opacity-100"
+                          }`}
+                          style={{ width: 88 }}
+                        >
+                          <div className="relative aspect-3/4 w-full rounded-lg overflow-hidden bg-white flex items-center justify-center">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={page.dataUrl}
+                              alt={`Página ${idx + 1}`}
+                              className="max-h-full max-w-full object-contain"
+                            />
+                            <span className="absolute bottom-1 right-1 bg-black/80 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
+                              {idx + 1}
+                            </span>
+                          </div>
+
+                          {/* Mini controles de orden y borrado */}
+                          <div
+                            className="flex items-center justify-between w-full pt-1 px-1 text-gray-400"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <button
+                              type="button"
+                              disabled={idx === 0}
+                              onClick={() => handleMoveScannedPage(idx, "left")}
+                              className="p-0.5 hover:text-white disabled:opacity-20"
+                              title="Mover antes"
+                            >
+                              <ChevronLeft className="h-3 w-3" />
+                            </button>
 
                             <button
                               type="button"
-                              onClick={() => handleRemoveBlock(bIdx)}
-                              className="text-gray-500 hover:text-rose-400 p-1"
-                              title="Eliminar bloque"
+                              onClick={() => handleRescanPage(idx)}
+                              className="p-0.5 text-gray-400 hover:text-white"
+                              title="Repetir captura de esta página"
                             >
-                              <Trash2 className="h-3.5 w-3.5" />
+                              <RotateCw className="h-3 w-3" />
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveScannedPage(page.id)}
+                              className="p-0.5 text-rose-400 hover:text-rose-300"
+                              title="Eliminar página"
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </button>
+
+                            <button
+                              type="button"
+                              disabled={idx === confirmedPages.length - 1}
+                              onClick={() => handleMoveScannedPage(idx, "right")}
+                              className="p-0.5 hover:text-white disabled:opacity-20"
+                              title="Mover después"
+                            >
+                              <ChevronRight className="h-3 w-3" />
                             </button>
                           </div>
-
-                          <textarea
-                            value={block.text}
-                            onChange={(e) => handleUpdateBlockText(bIdx, e.target.value)}
-                            rows={Math.min(4, Math.max(1, Math.ceil(block.text.length / 60)))}
-                            className="w-full p-2 rounded-lg bg-gray-900 border border-gray-800 text-gray-100 text-xs leading-relaxed focus:border-violet-500 focus:outline-hidden resize-y"
-                          />
                         </div>
-                      ))}
+                      )
+                    })}
+                  </div>
+                </div>
+
+                {/* ACCIONES FINALES INFERIORES: LLEVAR A MESA Y DESCARGAR PDF */}
+                <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-3 pt-1 border-t border-gray-800">
+                  <div className="flex items-center gap-2 w-full sm:w-auto">
+                    <button
+                      type="button"
+                      onClick={() => setStep("review")}
+                      className="px-4 py-2.5 rounded-xl border border-gray-700 text-xs font-semibold text-gray-300 hover:bg-gray-800 transition-colors"
+                    >
+                      Volver al lote
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleSendToWorkbench}
+                      className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-xs font-semibold text-gray-200 transition-colors"
+                    >
+                      <Layers className="h-4 w-4" /> Mesa de trabajo
+                    </button>
+                  </div>
+
+                  <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+                    {exportSuccessMessage && (
+                      <span className="text-emerald-400 text-xs font-medium truncate">
+                        {exportSuccessMessage}
+                      </span>
+                    )}
+
+                    <button
+                      type="button"
+                      disabled={isExportingPdf || confirmedPages.length === 0}
+                      onClick={handleExportReconstructedPdf}
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-lg shadow-emerald-600/30 transition-all disabled:opacity-40"
+                    >
+                      <Download className="h-4 w-4" />
+                      <span>
+                        {isExportingPdf
+                          ? "Generando archivo..."
+                          : "Descargar PDF Digital Reconstruido (.pdf)"}
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* MODAL / DIÁLOGO FLOTANTE: AGREGAR PÁGINAS CONTINUO */}
+            {isAddPageModalOpen && (
+              <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  className="w-full max-w-md p-6 rounded-3xl bg-gray-900 border border-gray-800 text-white space-y-5 shadow-2xl"
+                >
+                  <div className="flex items-center justify-between border-b border-gray-800 pb-3">
+                    <div className="flex items-center gap-2">
+                      <div className="h-8 w-8 rounded-xl bg-violet-600 text-white flex items-center justify-center">
+                        <Plus className="h-4 w-4" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold text-white">Agregar más páginas</h4>
+                        <p className="text-[11px] text-gray-400">
+                          Conservá el documento actual y sumá hojas nuevas
+                        </p>
+                      </div>
                     </div>
+                    <button
+                      type="button"
+                      onClick={() => setIsAddPageModalOpen(false)}
+                      className="p-1 text-gray-400 hover:text-white"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
                   </div>
-                </div>
 
-                {/* Configuración de salida PDF */}
-                <div className="p-4 rounded-2xl bg-gray-900 border border-gray-800 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                  <div>
-                    <label className="block text-gray-400 font-medium mb-1">Título del Documento</label>
+                  <div className="space-y-2.5">
+                    {/* Opción 1: Celular conectado (persistencia de sesión) */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsAddPageModalOpen(false)
+                        if (qrSessionToken) {
+                          setStep("qr_connect")
+                        } else {
+                          startQrSession()
+                        }
+                      }}
+                      className="w-full p-3.5 rounded-2xl bg-gray-950 border border-gray-800 hover:border-violet-500/50 flex items-center gap-3 text-left transition-all group"
+                    >
+                      <div className="h-10 w-10 rounded-xl bg-violet-600/20 text-violet-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                        <Smartphone className="h-5 w-5" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-bold text-white">
+                            Desde el celular conectado
+                          </span>
+                          {qrSessionToken && qrStatus === "connected" && (
+                            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                          )}
+                        </div>
+                        <p className="text-[11px] text-gray-400">
+                          {qrSessionToken
+                            ? "Tu celular sigue listo para fotografiar la siguiente página sin escanear otro QR."
+                            : "Conectá tu teléfono mediante código QR para capturar hojas."}
+                        </p>
+                      </div>
+                    </button>
+
+                    {/* Opción 2: Cámara de esta PC */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsAddPageModalOpen(false)
+                        setStep("capture")
+                      }}
+                      className="w-full p-3.5 rounded-2xl bg-gray-950 border border-gray-800 hover:border-violet-500/50 flex items-center gap-3 text-left transition-all group"
+                    >
+                      <div className="h-10 w-10 rounded-xl bg-violet-600/20 text-violet-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                        <Camera className="h-5 w-5" />
+                      </div>
+                      <div className="flex-1">
+                        <span className="text-xs font-bold text-white block">
+                          Cámara de esta computadora
+                        </span>
+                        <p className="text-[11px] text-gray-400">
+                          Abrí la webcam para fotografiar la hoja A4 con guía de encuadre.
+                        </p>
+                      </div>
+                    </button>
+
+                    {/* Opción 3: Subir foto local */}
                     <input
-                      type="text"
-                      value={documentTitle}
-                      onChange={(e) => setDocumentTitle(e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-gray-700 text-white text-xs"
-                      placeholder="Ej: Contrato de Arriendo"
+                      ref={addPageFileInputRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        setIsAddPageModalOpen(false)
+                        handleFileUpload(e)
+                      }}
                     />
-                  </div>
-
-                  <div>
-                    <label className="block text-gray-400 font-medium mb-1">Tipografía Digital</label>
-                    <select
-                      value={fontFamily}
-                      onChange={(e) => setFontFamily(e.target.value as any)}
-                      className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-gray-700 text-white text-xs"
+                    <button
+                      type="button"
+                      onClick={() => addPageFileInputRef.current?.click()}
+                      className="w-full p-3.5 rounded-2xl bg-gray-950 border border-gray-800 hover:border-violet-500/50 flex items-center gap-3 text-left transition-all group"
                     >
-                      <option value="helvetica">Helvetica (Moderna y limpia)</option>
-                      <option value="times">Times Roman (Clásica formal)</option>
-                      <option value="courier">Courier (Monospace técnica)</option>
-                    </select>
+                      <div className="h-10 w-10 rounded-xl bg-violet-600/20 text-violet-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                        <ImageIcon className="h-5 w-5" />
+                      </div>
+                      <div className="flex-1">
+                        <span className="text-xs font-bold text-white block">
+                          Subir fotografía desde archivo
+                        </span>
+                        <p className="text-[11px] text-gray-400">
+                          Elegí una imagen de tu disco para sumarla como nueva página.
+                        </p>
+                      </div>
+                    </button>
                   </div>
 
-                  <div>
-                    <label className="block text-gray-400 font-medium mb-1">Tamaño de Fuente Base</label>
-                    <select
-                      value={baseFontSize}
-                      onChange={(e) => setBaseFontSize(Number(e.target.value))}
-                      className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-gray-700 text-white text-xs"
+                  <div className="pt-1 text-center">
+                    <button
+                      type="button"
+                      onClick={() => setIsAddPageModalOpen(false)}
+                      className="text-xs text-gray-400 hover:text-white"
                     >
-                      <option value={10}>10 pt (Compacto)</option>
-                      <option value={11}>11 pt (Estándar de lectura)</option>
-                      <option value={12}>12 pt (Grande y accesible)</option>
-                    </select>
+                      Cancelar
+                    </button>
                   </div>
-                </div>
-
-                {/* Acciones Finales de Exportación */}
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
-                  <button
-                    type="button"
-                    onClick={handleSendToWorkbench}
-                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-xs font-semibold text-gray-200 transition-colors"
-                  >
-                    <Layers className="h-4 w-4" /> Llevar a la mesa de trabajo
-                  </button>
-
-                  <button
-                    type="button"
-                    disabled={isExportingPdf || confirmedPages.length === 0}
-                    onClick={handleExportReconstructedPdf}
-                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-bold shadow-lg shadow-violet-600/30 transition-all disabled:opacity-40"
-                  >
-                    <Download className="h-4 w-4" />
-                    <span>
-                      {isExportingPdf
-                        ? "Generando PDF Vectorial..."
-                        : "Descargar PDF Digital Reconstruido (.pdf)"}
-                    </span>
-                  </button>
-                </div>
+                </motion.div>
               </div>
             )}
           </div>
