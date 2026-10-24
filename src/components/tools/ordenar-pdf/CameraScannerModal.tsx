@@ -82,6 +82,10 @@ export function CameraScannerModal({
   // QR Mobile Pairing State
   const [qrSessionToken, setQrSessionToken] = useState<string | null>(null)
   const [qrUrl, setQrUrl] = useState<string | null>(null)
+  const [lanQrUrl, setLanQrUrl] = useState<string | null>(null)
+  const [onlineQrUrl, setOnlineQrUrl] = useState<string | null>(null)
+  const [qrNetworkMode, setQrNetworkMode] = useState<"lan" | "online">("lan")
+  const [isRegeneratingQr, setIsRegeneratingQr] = useState<boolean>(false)
   const [qrStatus, setQrStatus] = useState<"loading" | "pending" | "connected" | "receiving" | "expired" | "error">(
     "loading"
   )
@@ -243,23 +247,67 @@ export function CameraScannerModal({
     } catch {}
   }
 
-  // QR Session Management
-  const startQrSession = async () => {
+  // QR Session Management & Regeneration
+  const startQrSession = async (_param?: unknown) => {
     stopCamera()
     setStep("qr_connect")
+    setIsRegeneratingQr(true)
     setQrStatus("loading")
     setQrErrorMessage(null)
+
+    // If an existing token was active, cleanly purge it in background
+    if (qrSessionToken) {
+      fetch("/api/scan-session/cleanup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionToken: qrSessionToken }),
+      }).catch(() => {})
+    }
+
+    setQrSessionToken(null)
+    setQrUrl(null)
+    setLanQrUrl(null)
+    setOnlineQrUrl(null)
 
     try {
       const res = await fetch("/api/scan-session/create", { method: "POST" })
       if (!res.ok) throw new Error("No se pudo iniciar la sesión para el celular.")
       const data = await res.json()
       setQrSessionToken(data.sessionToken)
-      setQrUrl(data.qrUrl)
+      setLanQrUrl(data.lanQrUrl || null)
+      setOnlineQrUrl(data.onlineQrUrl || null)
+
+      // Choose default URL: if running locally and LAN IP is available, prefer LAN
+      const isLocalhost =
+        typeof window !== "undefined" &&
+        (window.location.hostname === "localhost" ||
+          window.location.hostname === "127.0.0.1" ||
+          window.location.hostname.startsWith("192.168."))
+
+      if (isLocalhost && data.lanQrUrl) {
+        setQrNetworkMode("lan")
+        setQrUrl(data.lanQrUrl)
+      } else {
+        setQrNetworkMode("online")
+        setQrUrl(data.onlineQrUrl || data.qrUrl)
+      }
+
       setQrStatus("pending")
     } catch (err: any) {
       setQrStatus("error")
       setQrErrorMessage(err?.message || "Error al generar el código QR de conexión.")
+    } finally {
+      setIsRegeneratingQr(false)
+    }
+  }
+
+  // Switch between LAN Wi-Fi and Online Web Domain
+  const handleSwitchQrNetwork = (mode: "lan" | "online") => {
+    setQrNetworkMode(mode)
+    if (mode === "lan" && lanQrUrl) {
+      setQrUrl(lanQrUrl)
+    } else if (mode === "online" && onlineQrUrl) {
+      setQrUrl(onlineQrUrl)
     }
   }
 
@@ -812,6 +860,12 @@ export function CameraScannerModal({
         body: JSON.stringify({ sessionToken: qrSessionToken }),
       }).catch(() => {})
     }
+    setQrSessionToken(null)
+    setQrUrl(null)
+    setLanQrUrl(null)
+    setOnlineQrUrl(null)
+    setQrStatus("loading")
+    setIsRegeneratingQr(false)
     onClose()
   }
 
@@ -1034,10 +1088,51 @@ export function CameraScannerModal({
                   </div>
                 )}
 
+                {/* Selector de red (Wi-Fi local vs Servidor Web) */}
+                {lanQrUrl && onlineQrUrl && qrStatus !== "loading" && (
+                  <div className="flex p-1 rounded-xl bg-gray-950/80 border border-gray-800 text-[11px] max-w-sm mx-auto w-full">
+                    <button
+                      type="button"
+                      onClick={() => handleSwitchQrNetwork("lan")}
+                      className={`flex-1 py-1.5 px-2 rounded-lg font-medium transition-all ${
+                        qrNetworkMode === "lan"
+                          ? "bg-violet-600 text-white shadow-xs"
+                          : "text-gray-400 hover:text-gray-200"
+                      }`}
+                    >
+                      Red Wi-Fi Local
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleSwitchQrNetwork("online")}
+                      className={`flex-1 py-1.5 px-2 rounded-lg font-medium transition-all ${
+                        qrNetworkMode === "online"
+                          ? "bg-violet-600 text-white shadow-xs"
+                          : "text-gray-400 hover:text-gray-200"
+                      }`}
+                    >
+                      Servidor Web
+                    </button>
+                  </div>
+                )}
+
                 {qrUrl && qrStatus !== "loading" && qrStatus !== "error" && (
                   <div className="space-y-4">
                     <div className="mx-auto w-52 h-52 bg-white p-3 rounded-2xl shadow-xl flex items-center justify-center">
                       <QRCodeSVG value={qrUrl} size={180} level="M" />
+                    </div>
+
+                    {/* Botón para regenerar código QR */}
+                    <div className="flex items-center justify-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => startQrSession(true)}
+                        disabled={isRegeneratingQr}
+                        className="px-3.5 py-1.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-semibold inline-flex items-center gap-1.5 transition-colors disabled:opacity-50 border border-gray-700"
+                      >
+                        <RefreshCw className={`h-3.5 w-3.5 ${isRegeneratingQr ? "animate-spin" : ""}`} />
+                        <span>Regenerar nuevo código QR</span>
+                      </button>
                     </div>
 
                     {/* Estado de sincronización */}
@@ -1045,7 +1140,7 @@ export function CameraScannerModal({
                       {qrStatus === "pending" && (
                         <p className="text-gray-400 flex items-center justify-center gap-2">
                           <span className="h-2 w-2 rounded-full bg-amber-400 animate-ping" />
-                          Esperando que escanees el código...
+                          Esperando que escanees el código con tu celular...
                         </p>
                       )}
                       {qrStatus === "connected" && (
@@ -1061,14 +1156,23 @@ export function CameraScannerModal({
                         </p>
                       )}
                       {qrStatus === "expired" && (
-                        <p className="text-rose-400 font-semibold">
-                          El código QR ha expirado. Hacé clic para generar uno nuevo.
-                        </p>
+                        <div className="space-y-2">
+                          <p className="text-rose-400 font-semibold">
+                            El código QR ha expirado.
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() => startQrSession(true)}
+                            className="px-3 py-1 bg-rose-600 text-white rounded-lg text-xs font-bold"
+                          >
+                            Generar código nuevo
+                          </button>
+                        </div>
                       )}
                     </div>
 
-                    {/* Copiar enlace directo */}
-                    <div className="flex items-center justify-center gap-2 text-xs">
+                    {/* Copiar enlace directo y visualización de URL */}
+                    <div className="space-y-1.5 text-center">
                       <button
                         type="button"
                         onClick={() => {
@@ -1078,11 +1182,14 @@ export function CameraScannerModal({
                             setTimeout(() => setCopiedQrLink(false), 2000)
                           }
                         }}
-                        className="px-3 py-1.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 font-medium inline-flex items-center gap-1.5 transition-colors"
+                        className="px-3 py-1.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 font-medium inline-flex items-center gap-1.5 transition-colors text-xs"
                       >
                         <Copy className="h-3.5 w-3.5" />
                         {copiedQrLink ? "¡Enlace copiado!" : "Copiar enlace móvil"}
                       </button>
+                      <p className="text-[10px] text-gray-500 font-mono truncate max-w-xs mx-auto">
+                        {qrUrl}
+                      </p>
                     </div>
                   </div>
                 )}

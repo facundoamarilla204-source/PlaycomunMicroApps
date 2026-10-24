@@ -4,8 +4,19 @@ import { siteConfig } from "@/config/site"
 
 export async function POST(req: NextRequest) {
   try {
-    const origin = req.nextUrl.origin || siteConfig.url
-    const session = await createScanSession(origin)
+    let customOrigin: string | undefined
+
+    try {
+      const body = await req.json().catch(() => ({}))
+      if (body && typeof body.customOrigin === "string" && body.customOrigin.trim()) {
+        customOrigin = body.customOrigin.trim()
+      }
+    } catch {}
+
+    const reqOrigin = req.nextUrl.origin || req.headers.get("origin") || siteConfig.url
+    const targetOrigin = customOrigin || reqOrigin
+
+    const session = await createScanSession(targetOrigin)
     return NextResponse.json(session)
   } catch (err: any) {
     return NextResponse.json(
@@ -14,3 +25,4 @@ export async function POST(req: NextRequest) {
     )
   }
 }
+

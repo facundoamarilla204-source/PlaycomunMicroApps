@@ -26,15 +26,24 @@ describe("Scan Session (Mobile QR Pairing & Ephemeral Store)", () => {
     expect(isValidImageDataUrl("data:image/png;base64,invalid_bytes")).toBe(false)
   })
 
-  it("creates a secure session with cryptographic tokens and valid QR URL", async () => {
-    const session = await createScanSession("https://playcomun.com")
+  it("creates a secure session with cryptographic tokens, LAN and Online QR URLs", async () => {
+    const session = await createScanSession("https://playcomun.online")
     expect(session.sessionToken).toBeDefined()
     expect(session.sessionToken.length).toBeGreaterThanOrEqual(24)
     expect(session.uploadToken).toBeDefined()
     expect(session.uploadToken.length).toBeGreaterThanOrEqual(24)
     expect(session.sessionToken).not.toEqual(session.uploadToken)
-    expect(session.qrUrl).toBe(`https://playcomun.com/escanear-movil/${session.uploadToken}`)
+    expect(session.qrUrl).toContain(`/escanear-movil/${session.uploadToken}`)
+    expect(session.onlineQrUrl).toBe(`https://www.playcomun.online/escanear-movil/${session.uploadToken}`)
     expect(new Date(session.expiresAt).getTime()).toBeGreaterThan(Date.now())
+  })
+
+  it("regenerates distinct tokens on subsequent session requests", async () => {
+    const session1 = await createScanSession("http://localhost:3000")
+    const session2 = await createScanSession("http://localhost:3000")
+    expect(session1.sessionToken).not.toEqual(session2.sessionToken)
+    expect(session1.uploadToken).not.toEqual(session2.uploadToken)
+    expect(session1.qrUrl).not.toEqual(session2.qrUrl)
   })
 
   it("handles the complete mobile pairing flow: create -> ping -> upload -> status -> cleanup", async () => {

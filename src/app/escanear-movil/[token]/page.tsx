@@ -73,40 +73,41 @@ export default function MobileScannerPage({ params }: MobileScannerPageProps) {
   const adjustCanvasRef = useRef<HTMLCanvasElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // 1. Initial Ping to verify session
-  useEffect(() => {
-    let isMounted = true
-    const pingSession = async () => {
-      try {
-        const res = await fetch(`/api/scan-session/ping?token=${uploadToken}`)
-        const data = await res.json()
-        if (!isMounted) return
+  const [isRetrying, setIsRetrying] = useState<boolean>(false)
 
-        if (!res.ok || !data.ok) {
-          if (data.status === "expired") {
-            setSessionState("expired")
-            setSessionErrorMessage("La sesión ha expirado. Por favor solicitá un nuevo código QR en tu PC.")
-          } else {
-            setSessionState("error")
-            setSessionErrorMessage("El enlace o código QR de escaneo no es válido.")
-          }
-          return
-        }
+  // 1. Ping to verify session
+  const pingSession = useCallback(async () => {
+    setIsRetrying(true)
+    setSessionState("connecting")
+    try {
+      const res = await fetch(`/api/scan-session/ping?token=${uploadToken}`)
+      const data = await res.json()
 
-        setSessionState("ready")
-      } catch {
-        if (isMounted) {
+      if (!res.ok || !data.ok) {
+        if (data.status === "expired") {
+          setSessionState("expired")
+          setSessionErrorMessage("La sesión ha expirado. Por favor solicitá un nuevo código QR en tu PC.")
+        } else {
           setSessionState("error")
-          setSessionErrorMessage("Error de conexión al servidor. Verificá tu acceso a internet.")
+          setSessionErrorMessage("El enlace o código QR de escaneo no es válido o la sesión ya finalizó.")
         }
+        return
       }
-    }
 
-    pingSession()
-    return () => {
-      isMounted = false
+      setSessionState("ready")
+    } catch {
+      setSessionState("error")
+      setSessionErrorMessage(
+        "Error de conexión al servidor. Si estás en desarrollo local, verificá que tu celular esté en la misma red Wi-Fi."
+      )
+    } finally {
+      setIsRetrying(false)
     }
   }, [uploadToken])
+
+  useEffect(() => {
+    pingSession()
+  }, [pingSession])
 
   // 2. Start Camera
   const startCamera = useCallback(
@@ -503,9 +504,22 @@ export default function MobileScannerPage({ params }: MobileScannerPageProps) {
             {sessionErrorMessage || "El código QR ha expirado o no existe."}
           </p>
         </div>
-        <p className="text-[11px] text-gray-500 max-w-xs">
-          Regresá a tu computadora y hacé clic en &laquo;Escanear con el celular&raquo; para generar un nuevo código QR.
-        </p>
+
+        <div className="pt-2 flex flex-col items-center gap-3 w-full max-w-xs">
+          <button
+            type="button"
+            onClick={pingSession}
+            disabled={isRetrying}
+            className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition-colors shadow-md shadow-emerald-600/20 flex items-center justify-center gap-2 disabled:opacity-50"
+          >
+            <RefreshCw className={`h-4 w-4 ${isRetrying ? "animate-spin" : ""}`} />
+            <span>{isRetrying ? "Verificando conexión..." : "Reintentar conexión"}</span>
+          </button>
+
+          <p className="text-[11px] text-gray-500 leading-normal">
+            En tu computadora, hacé clic en el botón &laquo;Regenerar nuevo código QR&raquo; para actualizar la sesión de inmediato.
+          </p>
+        </div>
       </div>
     )
   }
