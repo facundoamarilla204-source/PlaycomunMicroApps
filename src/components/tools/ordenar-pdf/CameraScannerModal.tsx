@@ -60,7 +60,14 @@ export interface ConfirmedScannedPage {
   recognizedContent?: RecognizedPageContent
 }
 
-type ScannerStep = "capture" | "qr_connect" | "adjust" | "review" | "ocr_processing" | "ocr_editor"
+type ScannerStep =
+  | "capture"
+  | "qr_connect"
+  | "preview_processed"
+  | "adjust"
+  | "review"
+  | "ocr_processing"
+  | "ocr_editor"
 
 export function CameraScannerModal({
   isOpen,
@@ -99,6 +106,11 @@ export function CameraScannerModal({
   const [activeCorner, setActiveCorner] = useState<keyof DocumentCorners | null>(null)
   const [filterMode, setFilterMode] = useState<"color" | "grayscale" | "contrast">("contrast")
   const [adjustRotation, setAdjustRotation] = useState<number>(0)
+
+  // Clean processed document preview (no branding, no desk, pure paper)
+  const [processedPreviewUrl, setProcessedPreviewUrl] = useState<string | null>(null)
+  const [processedBlob, setProcessedBlob] = useState<Blob | null>(null)
+  const [isProcessingWarp, setIsProcessingWarp] = useState<boolean>(false)
 
   // Confirmed scanned pages
   const [confirmedPages, setConfirmedPages] = useState<ConfirmedScannedPage[]>([])
@@ -374,8 +386,30 @@ export function CameraScannerModal({
     }
   }, [step, qrSessionToken])
 
+  // Helper: Warp perspective, rotate and apply flat-field enhancement
+  const generateProcessedDoc = useCallback(
+    async (
+      sourceCanvas: HTMLCanvasElement,
+      pts: DocumentCorners,
+      rot: number,
+      filter: "color" | "grayscale" | "contrast"
+    ) => {
+      let warped = applyPerspectiveWarp(sourceCanvas, pts)
+      if (rot !== 0) {
+        warped = rotateCanvas(warped, rot)
+      }
+      applyImageFilters(warped, filter)
+      const dataUrl = warped.toDataURL("image/png")
+      const blob = await new Promise<Blob>((resolve) => {
+        warped.toBlob((b) => resolve(b || new Blob()), "image/png")
+      })
+      return { dataUrl, blob }
+    },
+    []
+  )
+
   // Capture frame
-  const handleCaptureFrame = () => {
+  const handleCaptureFrame = async () => {
     if (!videoRef.current) return
     const video = videoRef.current
     if (video.videoWidth === 0 || video.videoHeight === 0) return
@@ -394,7 +428,16 @@ export function CameraScannerModal({
     setCorners(detected)
     setFilterMode("contrast")
     setAdjustRotation(0)
-    setStep("adjust")
+
+    setIsProcessingWarp(true)
+    setStep("preview_processed")
+    try {
+      const { dataUrl, blob } = await generateProcessedDoc(canvas, detected, 0, "contrast")
+      setProcessedPreviewUrl(dataUrl)
+      setProcessedBlob(blob)
+    } finally {
+      setIsProcessingWarp(false)
+    }
   }
 
   // File upload fallback
@@ -404,7 +447,7 @@ export function CameraScannerModal({
     const img = new Image()
     const url = URL.createObjectURL(file)
 
-    img.onload = () => {
+    img.onload = async () => {
       URL.revokeObjectURL(url)
       const canvas = document.createElement("canvas")
       canvas.width = img.naturalWidth || img.width
@@ -419,7 +462,16 @@ export function CameraScannerModal({
       setCorners(detected)
       setFilterMode("contrast")
       setAdjustRotation(0)
-      setStep("adjust")
+
+      setIsProcessingWarp(true)
+      setStep("preview_processed")
+      try {
+        const { dataUrl, blob } = await generateProcessedDoc(canvas, detected, 0, "contrast")
+        setProcessedPreviewUrl(dataUrl)
+        setProcessedBlob(blob)
+      } finally {
+        setIsProcessingWarp(false)
+      }
     }
 
     img.src = url
@@ -576,33 +628,147 @@ export function CameraScannerModal({
     setActiveCorner(null)
   }
 
+  const handleChangeFilter = async (newFilter: "color" | "grayscale" | "contrast") => {
+    setFilterMode(newFilter)
+    if (!capturedCanvas || !corners) return
+    setIsProcessingWarp(true)
+    try {
+      const { dataUrl, blob } = await generateProcessedDoc(capturedCanvas, corners, adjustRotation, newFilter)
+      setProcessedPreviewUrl(dataUrl)
+      setProcessedBlob(blob)
+    } finally {
+      setIsProcessingWarp(false)
+    }
+  }
+
+  const handleRotatePage = async () => {
+    const newRot = (adjustRotation + 90) % 360
+    setAdjustRotation(newRot)
+    if (!capturedCanvas || !corners) return
+    setIsProcessingWarp(true)
+    try {
+      const { dataUrl, blob } = await generateProcessedDoc(capturedCanvas, corners, newRot, filterMode)
+      setProcessedPreviewUrl(dataUrl)
+      setProcessedBlob(blob)
+    } finally {
+      setIsProcessingWarp(false)
+    }
+  }
+
+  const handleApplyCrop = async () => {
+    if (!capturedCanvas || !corners) return
+    setIsProcessingWarp(true)
+    setStep("preview_processed")
+    try {
+      const { dataUrl, blob } = await generateProcessedDoc(capturedCanvas, corners, adjustRotation, filterMode)
+      setProcessedPreviewUrl(dataUrl)
+      setProcessedBlob(blob)
+    } finally {
+      setIsProcessingWarp(false)
+    }
+  }
+
   // Confirm page adjustment
   const handleConfirmCurrentPage = async () => {
-    if (!capturedCanvas || !corners) return
+    let finalDataUrl = processedPreviewUrl
+    let finalBlob = processedBlob
 
-    let warped = applyPerspectiveWarp(capturedCanvas, corners)
-    if (adjustRotation !== 0) {
-      warped = rotateCanvas(warped, adjustRotation)
+    if (!finalDataUrl || !finalBlob) {
+      if (!capturedCanvas || !corners) return
+      const res = await generateProcessedDoc(capturedCanvas, corners, adjustRotation, filterMode)
+      finalDataUrl = res.dataUrl
+      finalBlob = res.blob
     }
-    applyImageFilters(warped, filterMode)
-
-    const dataUrl = warped.toDataURL("image/jpeg", 0.88)
-    const blob = await new Promise<Blob>((resolve) => {
-      warped.toBlob((b) => resolve(b || new Blob()), "image/jpeg", 0.88)
-    })
 
     const newPage: ConfirmedScannedPage = {
       id: `scan_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
-      dataUrl,
-      blob,
+      dataUrl: finalDataUrl,
+      blob: finalBlob,
       filter: filterMode,
       rotation: adjustRotation,
     }
 
-    setConfirmedPages([...confirmedPages, newPage])
+    setConfirmedPages((prev) => [...prev, newPage])
     setCapturedCanvas(null)
     setCorners(null)
+    setProcessedPreviewUrl(null)
+    setProcessedBlob(null)
     setStep("review")
+  }
+
+  // Confirm page and directly proceed to OCR processing
+  const handleConfirmAndRunOcr = async () => {
+    let finalDataUrl = processedPreviewUrl
+    let finalBlob = processedBlob
+
+    if (!finalDataUrl || !finalBlob) {
+      if (!capturedCanvas || !corners) return
+      const res = await generateProcessedDoc(capturedCanvas, corners, adjustRotation, filterMode)
+      finalDataUrl = res.dataUrl
+      finalBlob = res.blob
+    }
+
+    const newPage: ConfirmedScannedPage = {
+      id: `scan_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+      dataUrl: finalDataUrl,
+      blob: finalBlob,
+      filter: filterMode,
+      rotation: adjustRotation,
+    }
+
+    const allPages = [...confirmedPages, newPage]
+    setConfirmedPages(allPages)
+    setCapturedCanvas(null)
+    setCorners(null)
+    setProcessedPreviewUrl(null)
+    setProcessedBlob(null)
+
+    setStep("ocr_processing")
+    setOcrProgressPercent(5)
+    setOcrStatusMessage("Preparando imágenes y cargando motor OCR...")
+
+    const updatedPages: ConfirmedScannedPage[] = []
+
+    for (let i = 0; i < allPages.length; i++) {
+      const page = allPages[i]
+      const pageNum = i + 1
+      setOcrStatusMessage(`Procesando página ${pageNum} de ${allPages.length}...`)
+
+      try {
+        const recognized = await performOcrOnImage(page.dataUrl, {
+          language: ocrLanguage,
+          onProgress: (pct, msg) => {
+            const overallPct = Math.round(((i + pct / 100) / allPages.length) * 100)
+            setOcrProgressPercent(overallPct)
+            setOcrStatusMessage(`Página ${pageNum}/${allPages.length}: ${msg}`)
+          },
+        })
+        recognized.pageIndex = i
+        updatedPages.push({ ...page, recognizedContent: recognized })
+      } catch (err: any) {
+        updatedPages.push({
+          ...page,
+          recognizedContent: {
+            pageIndex: i,
+            fullText: "",
+            blocks: [
+              {
+                id: `block_empty_${Date.now()}`,
+                type: "paragraph",
+                text: "No se pudo reconocer texto automático en esta hoja. Podés escribir o corregir el contenido aquí.",
+                confidence: 0,
+              },
+            ],
+            confidence: 0,
+            hasText: false,
+          },
+        })
+      }
+    }
+
+    setConfirmedPages(updatedPages)
+    setActiveEditorPageIndex(0)
+    setStep("ocr_editor")
   }
 
   // Move page in review list
@@ -805,7 +971,7 @@ export function CameraScannerModal({
       const safeTitle = (documentTitle || "documento_escaneado")
         .toLowerCase()
         .replace(/[^a-z0-9_-]+/g, "_")
-      const fileName = `${safeTitle}_ocr_playcomun.pdf`
+      const fileName = `${safeTitle}.pdf`
 
       const url = URL.createObjectURL(pdfBlob)
       const a = document.createElement("a")
@@ -895,7 +1061,8 @@ export function CameraScannerModal({
                 <p className="text-xs text-gray-400">
                   {step === "capture" && "Alineá la hoja A4 o conectá el celular mediante QR"}
                   {step === "qr_connect" && "Escaneá el código QR con la cámara de tu celular"}
-                  {step === "adjust" && "Ajustá los bordes y el contraste de lectura"}
+                  {step === "preview_processed" && "Resultado del escaneo limpio: verificá la hoja procesada"}
+                  {step === "adjust" && "Ajustá manualmente las esquinas de recorte"}
                   {step === "review" && `${confirmedPages.length} páginas capturadas para procesar`}
                   {step === "ocr_processing" && "Reconociendo contenido y jerarquías..."}
                   {step === "ocr_editor" && "Revisá y editá el documento digital antes de exportar"}
@@ -1221,7 +1388,142 @@ export function CameraScannerModal({
               </div>
             )}
 
-            {/* ETAPA 2: AJUSTE DE BORDES Y FILTRO DE LECTURA */}
+            {/* ETAPA: VISTA PREVIA DEL ESCANEO LIMPIO (SIN MARCAS, SIN FONDO DE MESA) */}
+            {step === "preview_processed" && (
+              <div className="w-full max-w-2xl flex flex-col items-center space-y-4">
+                {/* Contenedor del documento escaneado: apariencia de escáner dedicado sobre fondo neutro */}
+                <div className="w-full flex items-center justify-center p-3 sm:p-5 rounded-2xl bg-gray-950/70 border border-gray-800/80">
+                  {isProcessingWarp ? (
+                    <div className="h-72 sm:h-96 w-full flex flex-col items-center justify-center text-xs text-gray-400 gap-3">
+                      <div className="h-8 w-8 rounded-full border-2 border-violet-500 border-t-transparent animate-spin" />
+                      <span>Optimizando contraste, nitidez y perspectiva de la hoja...</span>
+                    </div>
+                  ) : processedPreviewUrl ? (
+                    <div className="relative max-h-[54vh] max-w-full flex items-center justify-center">
+                      {/* Documento escaneado limpio: libre de marcas de agua, firmas, logos o bordes agregados */}
+                      <img
+                        src={processedPreviewUrl}
+                        alt="Documento escaneado procesado"
+                        className="max-h-[50vh] max-w-full object-contain rounded-sm shadow-2xl bg-white select-none pointer-events-none"
+                      />
+                    </div>
+                  ) : null}
+                </div>
+
+                {/* Barra de herramientas exterior: controles para refinar el documento */}
+                <div className="w-full space-y-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+                    {/* Selector de filtro de lectura */}
+                    <div className="flex items-center gap-1.5 p-1 rounded-xl bg-gray-900 border border-gray-800">
+                      <span className="text-[11px] text-gray-400 px-2 font-medium">Mejora:</span>
+                      <button
+                        type="button"
+                        onClick={() => handleChangeFilter("contrast")}
+                        disabled={isProcessingWarp}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors ${
+                          filterMode === "contrast"
+                            ? "bg-violet-600 text-white shadow-xs"
+                            : "text-gray-300 hover:text-white"
+                        }`}
+                      >
+                        Alto contraste (Ideal OCR)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleChangeFilter("grayscale")}
+                        disabled={isProcessingWarp}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors ${
+                          filterMode === "grayscale"
+                            ? "bg-violet-600 text-white shadow-xs"
+                            : "text-gray-300 hover:text-white"
+                        }`}
+                      >
+                        Escala de grises
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleChangeFilter("color")}
+                        disabled={isProcessingWarp}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors ${
+                          filterMode === "color"
+                            ? "bg-violet-600 text-white shadow-xs"
+                            : "text-gray-300 hover:text-white"
+                        }`}
+                      >
+                        Color original
+                      </button>
+                    </div>
+
+                    {/* Acciones de orientación y ajuste manual */}
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={handleRotatePage}
+                        disabled={isProcessingWarp}
+                        className="px-3 py-1.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 transition-colors inline-flex items-center gap-1.5"
+                        title="Girar orientación de la página 90°"
+                      >
+                        <RotateCw className="h-3.5 w-3.5" />
+                        <span>Girar 90°</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setStep("adjust")}
+                        disabled={isProcessingWarp}
+                        className="px-3 py-1.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 transition-colors inline-flex items-center gap-1.5"
+                        title="Ajustar manualmente las 4 esquinas del recorte"
+                      >
+                        <Crop className="h-3.5 w-3.5 text-violet-400" />
+                        <span>Reajustar recorte</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Botones de acción principales */}
+                  <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCapturedCanvas(null)
+                        setCorners(null)
+                        setProcessedPreviewUrl(null)
+                        setProcessedBlob(null)
+                        setStep("capture")
+                        startCamera()
+                      }}
+                      className="px-4 py-2.5 rounded-xl border border-gray-700 text-xs font-medium text-gray-300 hover:bg-gray-800 transition-colors"
+                    >
+                      Repetir captura
+                    </button>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={handleConfirmCurrentPage}
+                        disabled={isProcessingWarp}
+                        className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-semibold border border-gray-700 transition-colors"
+                      >
+                        <Check className="h-4 w-4 text-emerald-400" />
+                        <span>Confirmar página</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={handleConfirmAndRunOcr}
+                        disabled={isProcessingWarp}
+                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-bold shadow-lg shadow-violet-600/30 transition-colors"
+                      >
+                        <Sparkles className="h-4 w-4" />
+                        <span>Continuar con OCR y PDF</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ETAPA: AJUSTE MANUAL DE ESQUINAS DE RECORTE */}
             {step === "adjust" && (
               <div className="w-full max-w-2xl flex flex-col items-center space-y-4">
                 <div className="relative border border-gray-800 rounded-2xl overflow-hidden bg-black flex items-center justify-center select-none touch-none shadow-2xl">
@@ -1277,67 +1579,23 @@ export function CameraScannerModal({
                       <RotateCw className="h-3.5 w-3.5" /> Girar 90°
                     </button>
                   </div>
-
-                  {/* Filtro de lectura */}
-                  <div className="p-3 rounded-2xl bg-gray-900 border border-gray-800 flex items-center justify-between gap-2 text-xs">
-                    <span className="text-gray-400 font-medium shrink-0">Filtro de lectura:</span>
-                    <div className="flex gap-1.5">
-                      <button
-                        type="button"
-                        onClick={() => setFilterMode("contrast")}
-                        className={`px-3 py-1 rounded-lg transition-colors font-medium ${
-                          filterMode === "contrast"
-                            ? "bg-violet-600 text-white"
-                            : "bg-gray-800 text-gray-300 hover:bg-gray-700"
-                        }`}
-                      >
-                        Alto contraste (Ideal OCR)
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setFilterMode("grayscale")}
-                        className={`px-3 py-1 rounded-lg transition-colors font-medium ${
-                          filterMode === "grayscale"
-                            ? "bg-violet-600 text-white"
-                            : "bg-gray-800 text-gray-300 hover:bg-gray-700"
-                        }`}
-                      >
-                        Escala de grises
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setFilterMode("color")}
-                        className={`px-3 py-1 rounded-lg transition-colors font-medium ${
-                          filterMode === "color"
-                            ? "bg-violet-600 text-white"
-                            : "bg-gray-800 text-gray-300 hover:bg-gray-700"
-                        }`}
-                      >
-                        Color original
-                      </button>
-                    </div>
-                  </div>
                 </div>
 
                 <div className="w-full flex items-center justify-between gap-3 pt-2">
                   <button
                     type="button"
-                    onClick={() => {
-                      setCapturedCanvas(null)
-                      setCorners(null)
-                      setStep("capture")
-                    }}
+                    onClick={() => setStep("preview_processed")}
                     className="px-4 py-2.5 rounded-xl border border-gray-700 text-xs font-medium text-gray-300 hover:bg-gray-800 transition-colors"
                   >
-                    Repetir toma
+                    Volver a vista previa
                   </button>
 
                   <button
                     type="button"
-                    onClick={handleConfirmCurrentPage}
+                    onClick={handleApplyCrop}
                     className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-700 text-white text-xs font-semibold shadow-md shadow-violet-600/30 transition-colors"
                   >
-                    <Check className="h-4 w-4" /> Guardar página
+                    <Check className="h-4 w-4" /> Aplicar recorte
                   </button>
                 </div>
               </div>

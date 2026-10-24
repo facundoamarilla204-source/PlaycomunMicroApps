@@ -42,14 +42,95 @@ export interface ReconstructPdfOptions {
  * Prepares and enhances a canvas frame for high-accuracy OCR.
  * Converts to high-contrast grayscale with background noise reduction.
  */
+/**
+ * Estimates 2D background illumination map for flat-field correction.
+ */
+function estimateOcrBackground(
+  data: Uint8ClampedArray,
+  w: number,
+  h: number,
+  cellSize: number = 28
+): { grid: Float32Array; gridW: number; gridH: number } {
+  const gridW = Math.max(2, Math.ceil(w / cellSize))
+  const gridH = Math.max(2, Math.ceil(h / cellSize))
+  const grid = new Float32Array(gridW * gridH)
+
+  for (let gy = 0; gy < gridH; gy++) {
+    const startY = gy * cellSize
+    const endY = Math.min(h, startY + cellSize)
+    for (let gx = 0; gx < gridW; gx++) {
+      const startX = gx * cellSize
+      const endX = Math.min(w, startX + cellSize)
+
+      const samples: number[] = []
+      for (let y = startY; y < endY; y += 2) {
+        const row = y * w
+        for (let x = startX; x < endX; x += 2) {
+          const idx = (row + x) * 4
+          const lum = 0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2]
+          samples.push(lum)
+        }
+      }
+
+      if (samples.length > 0) {
+        samples.sort((a, b) => a - b)
+        const p85Idx = Math.min(samples.length - 1, Math.floor(samples.length * 0.85))
+        grid[gy * gridW + gx] = Math.max(50, samples[p85Idx])
+      } else {
+        grid[gy * gridW + gx] = 220
+      }
+    }
+  }
+
+  return { grid, gridW, gridH }
+}
+
+function sampleOcrBackground(
+  grid: Float32Array,
+  gridW: number,
+  gridH: number,
+  w: number,
+  h: number,
+  x: number,
+  y: number
+): number {
+  const gx = (x / Math.max(1, w)) * (gridW - 1)
+  const gy = (y / Math.max(1, h)) * (gridH - 1)
+  const gxi = Math.floor(gx)
+  const gyi = Math.floor(gy)
+  const fx = gx - gxi
+  const fy = gy - gyi
+
+  const idx00 = gyi * gridW + gxi
+  const idx10 = gyi * gridW + Math.min(gridW - 1, gxi + 1)
+  const idx01 = Math.min(gridH - 1, gyi + 1) * gridW + gxi
+  const idx11 = Math.min(gridH - 1, gyi + 1) * gridW + Math.min(gridW - 1, gxi + 1)
+
+  const top = (1 - fx) * grid[idx00] + fx * grid[idx10]
+  const bot = (1 - fx) * grid[idx01] + fx * grid[idx11]
+  return Math.max(45, (1 - fy) * top + fy * bot)
+}
+
+/**
+ * Prepares and enhances a canvas frame for high-accuracy OCR inspired by CamScanner:
+ * 1. Resolution normalization: Ensures text has adequate glyph height (>30px per letter).
+ * 2. Flat-field background illumination normalization (shadow attenuation).
+ * 3. Character boundary unsharp sharpening.
+ * 4. Adaptive contrast mapping that protects accents (á, é, í, ó, ú), eñes (ñ, Ñ), and punctuation.
+ */
 export function preprocessCanvasForOcr(
   sourceCanvas: HTMLCanvasElement,
-  maxDimension: number = 2200
+  maxDimension: number = 2400
 ): HTMLCanvasElement {
   let targetW = sourceCanvas.width
   let targetH = sourceCanvas.height
 
-  if (targetW > maxDimension || targetH > maxDimension) {
+  // If capture is smaller than 1300px wide, upscale to guarantee font stroke clarity
+  if (targetW < 1300 && targetH < 1800) {
+    const scale = Math.min(1300 / targetW, 1800 / targetH)
+    targetW = Math.round(targetW * scale)
+    targetH = Math.round(targetH * scale)
+  } else if (targetW > maxDimension || targetH > maxDimension) {
     const ratio = Math.min(maxDimension / targetW, maxDimension / targetH)
     targetW = Math.round(targetW * ratio)
     targetH = Math.round(targetH * ratio)
@@ -61,32 +142,63 @@ export function preprocessCanvasForOcr(
   const ctx = outCanvas.getContext("2d", { willReadFrequently: true })
   if (!ctx) return sourceCanvas
 
+  ctx.imageSmoothingEnabled = true
+  ctx.imageSmoothingQuality = "high"
   ctx.drawImage(sourceCanvas, 0, 0, targetW, targetH)
+
   const imgData = ctx.getImageData(0, 0, targetW, targetH)
   const data = imgData.data
-  const len = data.length
 
-  // High-contrast document enhancement
-  for (let i = 0; i < len; i += 4) {
-    const r = data[i]
-    const g = data[i + 1]
-    const b = data[i + 2]
-    const lum = 0.299 * r + 0.587 * g + 0.114 * b
+  // 1. Illumination background estimation
+  const { grid, gridW, gridH } = estimateOcrBackground(data, targetW, targetH, 30)
 
-    // Document threshold stretch: clarify dark ink, whiten paper background
-    let enhanced: number
-    if (lum > 165) {
-      enhanced = 255
-    } else if (lum < 100) {
-      enhanced = Math.max(0, lum * 0.6)
-    } else {
-      // Linear transition in midtones
-      enhanced = ((lum - 100) / (165 - 100)) * 255
+  // 2. Compute normalized luminance buffer
+  const normBuffer = new Float32Array(targetW * targetH)
+  for (let y = 0; y < targetH; y++) {
+    const rowOffset = y * targetW
+    for (let x = 0; x < targetW; x++) {
+      const idx = (rowOffset + x) * 4
+      const lum = 0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2]
+      const bg = sampleOcrBackground(grid, gridW, gridH, targetW, targetH, x, y)
+      // Flat-field normalized luminance scaled to standard 240 paper reference
+      normBuffer[rowOffset + x] = (lum / Math.max(45, bg)) * 240
     }
+  }
 
-    data[i] = enhanced
-    data[i + 1] = enhanced
-    data[i + 2] = enhanced
+  // 3. Unsharp mask sharpening and adaptive contrast mapping
+  for (let y = 0; y < targetH; y++) {
+    const rowOffset = y * targetW
+    const prevRow = Math.max(0, y - 1) * targetW
+    const nextRow = Math.min(targetH - 1, y + 1) * targetW
+
+    for (let x = 0; x < targetW; x++) {
+      const prevX = Math.max(0, x - 1)
+      const nextX = Math.min(targetW - 1, x + 1)
+
+      const center = normBuffer[rowOffset + x]
+      const neighbors =
+        normBuffer[prevRow + x] +
+        normBuffer[nextRow + x] +
+        normBuffer[rowOffset + prevX] +
+        normBuffer[rowOffset + nextX]
+
+      // Laplacian high-pass sharpening to crisp text edges
+      const sharpened = center * 1.8 - neighbors * 0.2
+
+      let enhanced: number
+      if (sharpened > 175) {
+        enhanced = 255
+      } else if (sharpened < 110) {
+        enhanced = Math.max(0, Math.round(sharpened * 0.65))
+      } else {
+        enhanced = Math.round(((sharpened - 110) / (175 - 110)) * 255)
+      }
+
+      const pixelIdx = (rowOffset + x) * 4
+      data[pixelIdx] = enhanced
+      data[pixelIdx + 1] = enhanced
+      data[pixelIdx + 2] = enhanced
+    }
   }
 
   ctx.putImageData(imgData, 0, 0)
@@ -139,7 +251,26 @@ async function loadTesseractFromCdn(): Promise<any> {
 /**
  * Classifies a raw text line into a structured document block.
  */
-function classifyLine(
+/**
+ * Sanitizes recognized Spanish text for WinAnsi PDF embedding without character corruption.
+ * Replaces non-WinAnsi smart quotes and dashes while preserving all accented vowels, eñes and punctuation.
+ * Conforms strictly to Antislop R-02 (no em dashes).
+ */
+export function sanitizeSpanishTextForPdf(text: string): string {
+  if (!text) return ""
+  return text
+    .normalize("NFC")
+    .replace(/[\u2018\u2019\u201A]/g, "'")
+    .replace(/[\u201C\u201D\u201E]/g, '"')
+    .replace(/[\u2013\u2014]/g, "-") // No em dash in copy, standard hyphen
+    .replace(/\u00A0/g, " ")
+    .replace(/[\u2022\u25CF\u25CB]/g, "•")
+}
+
+/**
+ * Classifies a raw text line into a structured document block.
+ */
+export function classifyLine(
   text: string,
   lineIndex: number,
   totalLines: number,
@@ -158,7 +289,7 @@ function classifyLine(
     return "table_row"
   }
 
-  // Check for Title: first 3 lines, short, capitalized or uppercase
+  // Check for Title: first 3 lines, short, capitalized or uppercase with Spanish accents
   const isAllUpper =
     trimmed.length > 3 &&
     trimmed === trimmed.toUpperCase() &&
@@ -176,7 +307,45 @@ function classifyLine(
 }
 
 /**
- * Processes an image using in-browser OCR (Tesseract.js) in Spanish (or specified language),
+ * Converts input (canvas, blob, or dataUrl) into a preprocessed HTMLCanvasElement for OCR.
+ */
+async function prepareCanvasForOcr(
+  input: HTMLCanvasElement | Blob | string
+): Promise<HTMLCanvasElement | Blob | string> {
+  if (typeof window === "undefined") return input
+
+  try {
+    let sourceCanvas: HTMLCanvasElement | null = null
+
+    if (typeof input === "string") {
+      const img = new Image()
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve()
+        img.onerror = () => reject(new Error("No se pudo decodificar imagen para OCR."))
+        img.src = input
+      })
+      const c = document.createElement("canvas")
+      c.width = img.naturalWidth || img.width
+      c.height = img.naturalHeight || img.height
+      const ctx = c.getContext("2d")
+      if (ctx) {
+        ctx.drawImage(img, 0, 0)
+        sourceCanvas = c
+      }
+    } else if (input instanceof HTMLCanvasElement) {
+      sourceCanvas = input
+    }
+
+    if (sourceCanvas) {
+      return preprocessCanvasForOcr(sourceCanvas)
+    }
+  } catch {}
+
+  return input
+}
+
+/**
+ * Processes an image using in-browser OCR (Tesseract.js) in Spanish,
  * detecting structural document hierarchies (titles, lists, tables, paragraphs).
  */
 export async function performOcrOnImage(
@@ -215,11 +384,25 @@ export async function performOcrOnImage(
       },
     })
 
+    // Configure segmentation and whitespace preservation
+    try {
+      await worker.setParameters({
+        tessedit_pageseg_mode: "1", // Auto page segmentation with OSD
+        preserve_interword_spaces: "1",
+      })
+    } catch {}
+
     if (onProgress) {
-      onProgress(40, "Analizando texto y estructura de la página...")
+      onProgress(35, "Optimizando contraste e iluminación del documento...")
     }
 
-    const ret = await worker.recognize(imageCanvasOrBlob)
+    const processedInput = await prepareCanvasForOcr(imageCanvasOrBlob)
+
+    if (onProgress) {
+      onProgress(45, "Analizando texto y estructura de la página...")
+    }
+
+    const ret = await worker.recognize(processedInput)
     const { data } = ret
 
     const fullText = (data.text || "").trim()
@@ -227,7 +410,7 @@ export async function performOcrOnImage(
 
     if (data.lines && data.lines.length > 0) {
       data.lines.forEach((line: any, idx: number) => {
-        const lineText = (line.text || "").trim()
+        const lineText = sanitizeSpanishTextForPdf((line.text || "").trim())
         if (!lineText) return
 
         const type = classifyLine(lineText, idx, data.lines.length)
@@ -249,11 +432,12 @@ export async function performOcrOnImage(
     } else if (fullText) {
       // Fallback: split by newlines
       const lines = fullText.split(/\r?\n/).filter((l: string) => l.trim().length > 0)
-      lines.forEach((lineText: string, idx: number) => {
+      lines.forEach((rawText: string, idx: number) => {
+        const lineText = sanitizeSpanishTextForPdf(rawText.trim())
         blocks.push({
           id: `block_fallback_${idx}`,
           type: classifyLine(lineText, idx, lines.length),
-          text: lineText.trim(),
+          text: lineText,
           confidence: Math.round(data.confidence || 85),
         })
       })
@@ -268,7 +452,7 @@ export async function performOcrOnImage(
       fullText,
       blocks,
       confidence: Math.round(data.confidence || 0),
-      hasText: fullText.length > 10,
+      hasText: fullText.length > 5,
     }
   } finally {
     if (worker) {
@@ -280,6 +464,7 @@ export async function performOcrOnImage(
 /**
  * Reconstructs digital vector PDF pages from recognized content.
  * CRITICAL: NO PHOTOGRAPHS OR IMAGES ARE EMBEDDED.
+ * NO PLAYCOMUN BRANDING, LOGOS, WATERMARKS OR FOOTERS.
  * The generated PDF consists 100% of real digital selectable vector text and fonts.
  */
 export async function reconstructDigitalPdf(
@@ -292,6 +477,13 @@ export async function reconstructDigitalPdf(
 
   const pdfDoc = await PDFDocument.create()
 
+  // Clear all branding or generator metadata
+  pdfDoc.setTitle(options.documentTitle || "Documento Digital")
+  pdfDoc.setAuthor("")
+  pdfDoc.setSubject("")
+  pdfDoc.setProducer("PDF")
+  pdfDoc.setCreator("PDF")
+
   // Standard A4: 595.28 x 841.89 points
   const pageWidth = 595.28
   const pageHeight = 841.89
@@ -299,16 +491,13 @@ export async function reconstructDigitalPdf(
   // Embed clean digital fonts
   let fontRegular = await pdfDoc.embedFont(StandardFonts.Helvetica)
   let fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold)
-  let fontItalic = await pdfDoc.embedFont(StandardFonts.HelveticaOblique)
 
   if (options.fontFamily === "times") {
     fontRegular = await pdfDoc.embedFont(StandardFonts.TimesRoman)
     fontBold = await pdfDoc.embedFont(StandardFonts.TimesRomanBold)
-    fontItalic = await pdfDoc.embedFont(StandardFonts.TimesRomanItalic)
   } else if (options.fontFamily === "courier") {
     fontRegular = await pdfDoc.embedFont(StandardFonts.Courier)
     fontBold = await pdfDoc.embedFont(StandardFonts.CourierBold)
-    fontItalic = await pdfDoc.embedFont(StandardFonts.CourierOblique)
   }
 
   const baseFontSize = options.fontSize || 10.5
@@ -316,7 +505,7 @@ export async function reconstructDigitalPdf(
   const marginH = 48
   const marginV = 52
   const maxContentW = pageWidth - marginH * 2
-  const minContentY = marginV + 20
+  const minContentY = marginV + 15
 
   const totalPages = pages.length
 
@@ -327,8 +516,6 @@ export async function reconstructDigitalPdf(
 
     // Color definitions
     const textDark = rgb(0.12, 0.12, 0.16)
-    const textMuted = rgb(0.4, 0.42, 0.48)
-    const ruleColor = rgb(0.85, 0.86, 0.9)
 
     // Helper: Wrap text line by line within maxContentW
     const wrapAndDrawText = (
@@ -338,31 +525,38 @@ export async function reconstructDigitalPdf(
       color: any,
       indent: number = 0
     ) => {
-      const words = text.split(" ")
+      const sanitized = sanitizeSpanishTextForPdf(text)
+      const words = sanitized.split(" ")
       let currentLine = ""
       const usableW = maxContentW - indent
 
       for (const word of words) {
         const testLine = currentLine ? `${currentLine} ${word}` : word
-        const testW = font.widthOfTextAtSize(testLine, size)
+        let testW = 0
+        try {
+          testW = font.widthOfTextAtSize(testLine, size)
+        } catch {
+          testW = testLine.length * (size * 0.55)
+        }
 
         if (testW <= usableW) {
           currentLine = testLine
         } else {
           // Draw line
           if (cursorY < minContentY) {
-            // New page overflow
             currentPage = pdfDoc.addPage([pageWidth, pageHeight])
             cursorY = pageHeight - marginV
           }
           if (currentLine) {
-            currentPage.drawText(currentLine, {
-              x: marginH + indent,
-              y: cursorY,
-              size,
-              font,
-              color,
-            })
+            try {
+              currentPage.drawText(currentLine, {
+                x: marginH + indent,
+                y: cursorY,
+                size,
+                font,
+                color,
+              })
+            } catch {}
             cursorY -= size * lineSpacing
           }
           currentLine = word
@@ -374,35 +568,29 @@ export async function reconstructDigitalPdf(
           currentPage = pdfDoc.addPage([pageWidth, pageHeight])
           cursorY = pageHeight - marginV
         }
-        currentPage.drawText(currentLine, {
-          x: marginH + indent,
-          y: cursorY,
-          size,
-          font,
-          color,
-        })
+        try {
+          currentPage.drawText(currentLine, {
+            x: marginH + indent,
+            y: cursorY,
+            size,
+            font,
+            color,
+          })
+        } catch {}
         cursorY -= size * lineSpacing
       }
     }
 
     // Process blocks in order
     for (const block of pageData.blocks) {
-      const trimmed = block.text.trim()
+      const trimmed = sanitizeSpanishTextForPdf(block.text.trim())
       if (!trimmed) continue
 
       switch (block.type) {
         case "title": {
           cursorY -= 8
-          wrapAndDrawText(trimmed, fontBold, baseFontSize * 1.7, textDark)
-          cursorY -= 4
-          // Subtle horizontal separator rule under document title
-          currentPage.drawLine({
-            start: { x: marginH, y: cursorY },
-            end: { x: pageWidth - marginH, y: cursorY },
-            thickness: 1,
-            color: ruleColor,
-          })
-          cursorY -= 12
+          wrapAndDrawText(trimmed, fontBold, baseFontSize * 1.6, textDark)
+          cursorY -= 8
           break
         }
 
@@ -421,35 +609,37 @@ export async function reconstructDigitalPdf(
         }
 
         case "list_item": {
-          // Clean list bullet
           const bullet = "•"
           const cleanItem = trimmed.replace(/^([•*\-–—]|(\d+|[a-zA-Z])[.)])\s*/, "")
-          currentPage.drawText(bullet, {
-            x: marginH + 6,
-            y: cursorY,
-            size: baseFontSize,
-            font: fontBold,
-            color: textDark,
-          })
+          try {
+            currentPage.drawText(bullet, {
+              x: marginH + 6,
+              y: cursorY,
+              size: baseFontSize,
+              font: fontBold,
+              color: textDark,
+            })
+          } catch {}
           wrapAndDrawText(cleanItem, fontRegular, baseFontSize, textDark, 20)
           cursorY -= 3
           break
         }
 
         case "table_row": {
-          // Format columnar items
           const cols = trimmed.split(/\s{2,}|\t/).filter(Boolean)
           if (cols.length >= 2) {
             const colWidth = maxContentW / cols.length
             cols.forEach((colText, cIdx) => {
               const xPos = marginH + cIdx * colWidth
-              currentPage.drawText(colText.slice(0, 35), {
-                x: xPos,
-                y: cursorY,
-                size: baseFontSize * 0.95,
-                font: fontRegular,
-                color: textDark,
-              })
+              try {
+                currentPage.drawText(colText.slice(0, 35), {
+                  x: xPos,
+                  y: cursorY,
+                  size: baseFontSize * 0.95,
+                  font: fontRegular,
+                  color: textDark,
+                })
+              } catch {}
             })
             cursorY -= baseFontSize * lineSpacing + 2
           } else {
@@ -468,16 +658,18 @@ export async function reconstructDigitalPdf(
       }
     }
 
-    // Draw footer page number
-    const footerText = `Página ${pIdx + 1} de ${totalPages}`
-    const footerW = fontRegular.widthOfTextAtSize(footerText, 9)
-    currentPage.drawText(footerText, {
-      x: (pageWidth - footerW) / 2,
-      y: marginV - 20,
-      size: 9,
-      font: fontRegular,
-      color: textMuted,
-    })
+    // Optional page number only if explicitly configured
+    if (options.addPageNumbers) {
+      const footerText = `${pIdx + 1}`
+      const footerW = fontRegular.widthOfTextAtSize(footerText, 9)
+      currentPage.drawText(footerText, {
+        x: (pageWidth - footerW) / 2,
+        y: marginV - 20,
+        size: 9,
+        font: fontRegular,
+        color: rgb(0.45, 0.45, 0.5),
+      })
+    }
   }
 
   const pdfBytes = await pdfDoc.save()

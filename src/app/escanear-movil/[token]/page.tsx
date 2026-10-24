@@ -35,7 +35,7 @@ interface CapturedMobilePage {
   pageNumber: number
 }
 
-type MobileStep = "capture" | "adjust" | "sent_summary"
+type MobileStep = "capture" | "preview_processed" | "adjust" | "sent_summary"
 
 export default function MobileScannerPage({ params }: MobileScannerPageProps) {
   const resolvedParams = use(params)
@@ -62,6 +62,10 @@ export default function MobileScannerPage({ params }: MobileScannerPageProps) {
   const [activeCorner, setActiveCorner] = useState<keyof DocumentCorners | null>(null)
   const [adjustRotation, setAdjustRotation] = useState<number>(0)
   const [filterMode, setFilterMode] = useState<"color" | "contrast" | "grayscale">("contrast")
+
+  // Clean processed document preview (no branding, no desk, pure paper)
+  const [processedPreviewUrl, setProcessedPreviewUrl] = useState<string | null>(null)
+  const [isProcessingWarp, setIsProcessingWarp] = useState<boolean>(false)
 
   // Syncing state
   const [isUploading, setIsUploading] = useState<boolean>(false)
@@ -223,8 +227,27 @@ export default function MobileScannerPage({ params }: MobileScannerPageProps) {
     } catch {}
   }
 
+  // Helper: Warp perspective, rotate and apply flat-field enhancement
+  const generateProcessedDoc = useCallback(
+    async (
+      sourceCanvas: HTMLCanvasElement,
+      pts: DocumentCorners,
+      rot: number,
+      filter: "color" | "contrast" | "grayscale"
+    ) => {
+      let warped = applyPerspectiveWarp(sourceCanvas, pts)
+      if (rot !== 0) {
+        warped = rotateCanvas(warped, rot)
+      }
+      applyImageFilters(warped, filter)
+      const dataUrl = warped.toDataURL("image/png")
+      return { dataUrl }
+    },
+    []
+  )
+
   // Capture current video frame
-  const handleCaptureFrame = () => {
+  const handleCaptureFrame = async () => {
     if (!videoRef.current) return
     const video = videoRef.current
     if (video.videoWidth === 0 || video.videoHeight === 0) return
@@ -243,7 +266,15 @@ export default function MobileScannerPage({ params }: MobileScannerPageProps) {
     setCorners(detected)
     setAdjustRotation(0)
     setFilterMode("contrast")
-    setStep("adjust")
+
+    setIsProcessingWarp(true)
+    setStep("preview_processed")
+    try {
+      const { dataUrl } = await generateProcessedDoc(canvas, detected, 0, "contrast")
+      setProcessedPreviewUrl(dataUrl)
+    } finally {
+      setIsProcessingWarp(false)
+    }
   }
 
   // Fallback: Upload from file/gallery
@@ -253,7 +284,7 @@ export default function MobileScannerPage({ params }: MobileScannerPageProps) {
     const img = new Image()
     const url = URL.createObjectURL(file)
 
-    img.onload = () => {
+    img.onload = async () => {
       URL.revokeObjectURL(url)
       const canvas = document.createElement("canvas")
       canvas.width = img.naturalWidth || img.width
@@ -268,7 +299,15 @@ export default function MobileScannerPage({ params }: MobileScannerPageProps) {
       setCorners(detected)
       setAdjustRotation(0)
       setFilterMode("contrast")
-      setStep("adjust")
+
+      setIsProcessingWarp(true)
+      setStep("preview_processed")
+      try {
+        const { dataUrl } = await generateProcessedDoc(canvas, detected, 0, "contrast")
+        setProcessedPreviewUrl(dataUrl)
+      } finally {
+        setIsProcessingWarp(false)
+      }
     }
 
     img.src = url
@@ -425,29 +464,64 @@ export default function MobileScannerPage({ params }: MobileScannerPageProps) {
     setActiveCorner(null)
   }
 
+  const handleChangeFilter = async (newFilter: "color" | "contrast" | "grayscale") => {
+    setFilterMode(newFilter)
+    if (!capturedCanvas || !corners) return
+    setIsProcessingWarp(true)
+    try {
+      const { dataUrl } = await generateProcessedDoc(capturedCanvas, corners, adjustRotation, newFilter)
+      setProcessedPreviewUrl(dataUrl)
+    } finally {
+      setIsProcessingWarp(false)
+    }
+  }
+
+  const handleRotatePage = async () => {
+    const newRot = (adjustRotation + 90) % 360
+    setAdjustRotation(newRot)
+    if (!capturedCanvas || !corners) return
+    setIsProcessingWarp(true)
+    try {
+      const { dataUrl } = await generateProcessedDoc(capturedCanvas, corners, newRot, filterMode)
+      setProcessedPreviewUrl(dataUrl)
+    } finally {
+      setIsProcessingWarp(false)
+    }
+  }
+
+  const handleApplyCrop = async () => {
+    if (!capturedCanvas || !corners) return
+    setIsProcessingWarp(true)
+    setStep("preview_processed")
+    try {
+      const { dataUrl } = await generateProcessedDoc(capturedCanvas, corners, adjustRotation, filterMode)
+      setProcessedPreviewUrl(dataUrl)
+    } finally {
+      setIsProcessingWarp(false)
+    }
+  }
+
   // Confirm and upload page to desktop session
   const handleConfirmAndUploadPage = async () => {
-    if (!capturedCanvas || !corners) return
+    if (!capturedCanvas && !processedPreviewUrl) return
 
     setIsUploading(true)
     setUploadFeedback(null)
 
     try {
-      // 1. Perspective warp
-      let warped = applyPerspectiveWarp(capturedCanvas, corners)
-
-      // 2. Rotate if needed
-      if (adjustRotation !== 0) {
-        warped = rotateCanvas(warped, adjustRotation)
+      let dataUrl = processedPreviewUrl
+      if (!dataUrl && capturedCanvas && corners) {
+        let warped = applyPerspectiveWarp(capturedCanvas, corners)
+        if (adjustRotation !== 0) {
+          warped = rotateCanvas(warped, adjustRotation)
+        }
+        applyImageFilters(warped, filterMode)
+        dataUrl = warped.toDataURL("image/png")
       }
 
-      // 3. Document enhancement filter
-      applyImageFilters(warped, filterMode)
+      if (!dataUrl) throw new Error("No hay imagen procesada para enviar.")
 
-      // 4. Data URL
-      const dataUrl = warped.toDataURL("image/jpeg", 0.88)
-
-      // 5. Send to session API
+      // Send to session API
       const res = await fetch("/api/scan-session/upload", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -688,7 +762,141 @@ export default function MobileScannerPage({ params }: MobileScannerPageProps) {
           </div>
         )}
 
-        {/* STEP 2: CORNER ADJUSTMENT & PERSPECTIVE WARP */}
+        {/* ETAPA: VISTA PREVIA DEL ESCANEO LIMPIO (SIN MARCAS, SIN MESA) */}
+        {step === "preview_processed" && (
+          <div className="flex-1 flex flex-col items-center justify-between space-y-4 w-full">
+            <div className="w-full text-center space-y-0.5">
+              <h2 className="text-sm font-bold text-white">Resultado del escaneo</h2>
+              <p className="text-[11px] text-gray-400">
+                Hoja recortada y procesada. Verificá la legibilidad antes de enviarla.
+              </p>
+            </div>
+
+            {/* Contenedor de la hoja escaneada pura (sin bordes de mesa ni marcas de agua) */}
+            <div className="w-full flex-1 flex items-center justify-center p-3 rounded-3xl bg-gray-950/80 border border-gray-800/80 min-h-[46vh]">
+              {isProcessingWarp ? (
+                <div className="flex flex-col items-center justify-center gap-2 text-xs text-gray-400">
+                  <div className="h-8 w-8 rounded-full border-2 border-emerald-500 border-t-transparent animate-spin" />
+                  <span>Optimizando contraste y perspectiva...</span>
+                </div>
+              ) : processedPreviewUrl ? (
+                <div className="relative max-h-[50vh] max-w-full flex items-center justify-center">
+                  <img
+                    src={processedPreviewUrl}
+                    alt="Página escaneada procesada"
+                    className="max-h-[48vh] max-w-full object-contain rounded-sm shadow-2xl bg-white select-none pointer-events-none"
+                  />
+                </div>
+              ) : null}
+            </div>
+
+            {/* Herramientas de ajuste */}
+            <div className="w-full space-y-2.5">
+              <div className="flex items-center justify-between text-xs gap-1.5">
+                {/* Selector de Filtros */}
+                <div className="flex items-center gap-1 p-1 rounded-xl bg-gray-900 border border-gray-800 text-[11px]">
+                  <button
+                    type="button"
+                    onClick={() => handleChangeFilter("contrast")}
+                    disabled={isProcessingWarp}
+                    className={`px-2 py-1 rounded-lg font-medium transition-colors ${
+                      filterMode === "contrast"
+                        ? "bg-emerald-600 text-white"
+                        : "text-gray-400 hover:text-white"
+                    }`}
+                  >
+                    Contraste
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleChangeFilter("grayscale")}
+                    disabled={isProcessingWarp}
+                    className={`px-2 py-1 rounded-lg font-medium transition-colors ${
+                      filterMode === "grayscale"
+                        ? "bg-emerald-600 text-white"
+                        : "text-gray-400 hover:text-white"
+                    }`}
+                  >
+                    Grises
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleChangeFilter("color")}
+                    disabled={isProcessingWarp}
+                    className={`px-2 py-1 rounded-lg font-medium transition-colors ${
+                      filterMode === "color"
+                        ? "bg-emerald-600 text-white"
+                        : "text-gray-400 hover:text-white"
+                    }`}
+                  >
+                    Color
+                  </button>
+                </div>
+
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={handleRotatePage}
+                    disabled={isProcessingWarp}
+                    className="p-2 rounded-xl bg-gray-900 border border-gray-800 text-gray-200 transition-colors"
+                    title="Girar orientación 90°"
+                  >
+                    <RotateCw className="h-4 w-4" />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setStep("adjust")}
+                    disabled={isProcessingWarp}
+                    className="px-2.5 py-1.5 rounded-xl bg-gray-900 border border-gray-800 text-gray-200 text-xs font-medium inline-flex items-center gap-1 transition-colors"
+                    title="Ajustar manualmente las esquinas"
+                  >
+                    <Crop className="h-3.5 w-3.5 text-emerald-400" />
+                    <span>Esquinas</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Acciones principales */}
+              <div className="flex items-center gap-3 pt-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCapturedCanvas(null)
+                    setCorners(null)
+                    setProcessedPreviewUrl(null)
+                    setStep("capture")
+                    startCamera()
+                  }}
+                  className="flex-1 py-3 rounded-xl border border-gray-800 text-xs font-semibold text-gray-300 hover:bg-gray-900 transition-colors"
+                >
+                  Repetir toma
+                </button>
+
+                <button
+                  type="button"
+                  disabled={isUploading || isProcessingWarp}
+                  onClick={handleConfirmAndUploadPage}
+                  className="flex-1 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-md shadow-emerald-600/30 transition-all flex items-center justify-center gap-1.5 disabled:opacity-40"
+                >
+                  {isUploading ? (
+                    <>
+                      <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>Enviando...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Check className="h-4 w-4" />
+                      <span>Enviar a la PC</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ETAPA: AJUSTE MANUAL DE ESQUINAS */}
         {step === "adjust" && (
           <div className="flex-1 flex flex-col items-center justify-between space-y-4">
             <div className="w-full text-center space-y-0.5">
@@ -733,49 +941,25 @@ export default function MobileScannerPage({ params }: MobileScannerPageProps) {
                 >
                   <RotateCw className="h-3.5 w-3.5" /> Girar 90°
                 </button>
-
-                <button
-                  type="button"
-                  onClick={() =>
-                    setFilterMode(filterMode === "contrast" ? "grayscale" : filterMode === "grayscale" ? "color" : "contrast")
-                  }
-                  className="px-3 py-2 rounded-xl bg-gray-900 border border-gray-800 text-gray-200 text-xs font-medium"
-                >
-                  Filtro: {filterMode === "contrast" ? "Contraste" : filterMode === "grayscale" ? "Gris" : "Color"}
-                </button>
               </div>
 
               {/* Actions */}
               <div className="flex items-center gap-3 pt-1">
                 <button
                   type="button"
-                  onClick={() => {
-                    setCapturedCanvas(null)
-                    setCorners(null)
-                    setStep("capture")
-                  }}
+                  onClick={() => setStep("preview_processed")}
                   className="flex-1 py-3 rounded-xl border border-gray-800 text-xs font-semibold text-gray-300 hover:bg-gray-900 transition-colors"
                 >
-                  Repetir toma
+                  Volver a vista previa
                 </button>
 
                 <button
                   type="button"
-                  disabled={isUploading}
-                  onClick={handleConfirmAndUploadPage}
-                  className="flex-1 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-md shadow-emerald-600/30 transition-all flex items-center justify-center gap-1.5 disabled:opacity-40"
+                  onClick={handleApplyCrop}
+                  className="flex-1 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-md shadow-emerald-600/30 transition-all flex items-center justify-center gap-1.5"
                 >
-                  {isUploading ? (
-                    <>
-                      <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      <span>Enviando...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Check className="h-4 w-4" />
-                      <span>Enviar a la PC</span>
-                    </>
-                  )}
+                  <Check className="h-4 w-4" />
+                  <span>Aplicar recorte</span>
                 </button>
               </div>
             </div>

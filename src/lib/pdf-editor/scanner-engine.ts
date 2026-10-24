@@ -112,8 +112,8 @@ export function applyPerspectiveWarp(
   const destWidth = Math.max(100, Math.round(Math.max(widthTop, widthBottom)))
   const destHeight = Math.max(100, Math.round(Math.max(heightLeft, heightRight)))
 
-  // Cap maximum dimensions to prevent memory exhaustion on mobile
-  const maxDimension = 2048
+  // Cap maximum dimensions to prevent memory exhaustion while retaining crisp text
+  const maxDimension = 2500
   let finalW = destWidth
   let finalH = destHeight
   if (finalW > maxDimension || finalH > maxDimension) {
@@ -196,51 +196,137 @@ export function applyPerspectiveWarp(
 }
 
 /**
- * Applies document visual enhancement filters:
- * - Color: Preserves original hues
- * - Grayscale: Eliminates color cast, keeps smooth tones
- * - Contrast: Document enhancement with ink darkening & white background boosting
+ * Estimates 2D background illumination map using an 88th percentile block grid.
+ * Accurately models paper luminance even under strong diagonal shadows or uneven phone flash.
+ */
+function estimateBackgroundGrid(
+  data: Uint8ClampedArray,
+  w: number,
+  h: number,
+  cellSize: number = 32
+): { grid: Float32Array; gridW: number; gridH: number } {
+  const gridW = Math.max(2, Math.ceil(w / cellSize))
+  const gridH = Math.max(2, Math.ceil(h / cellSize))
+  const grid = new Float32Array(gridW * gridH)
+
+  for (let gy = 0; gy < gridH; gy++) {
+    const startY = gy * cellSize
+    const endY = Math.min(h, startY + cellSize)
+    for (let gx = 0; gx < gridW; gx++) {
+      const startX = gx * cellSize
+      const endX = Math.min(w, startX + cellSize)
+
+      const samples: number[] = []
+      for (let y = startY; y < endY; y += 2) {
+        const row = y * w
+        for (let x = startX; x < endX; x += 2) {
+          const idx = (row + x) * 4
+          const lum = 0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2]
+          samples.push(lum)
+        }
+      }
+
+      if (samples.length > 0) {
+        samples.sort((a, b) => a - b)
+        // 88th percentile samples the paper background while skipping dark ink
+        const p88Idx = Math.min(samples.length - 1, Math.floor(samples.length * 0.88))
+        grid[gy * gridW + gx] = Math.max(60, samples[p88Idx])
+      } else {
+        grid[gy * gridW + gx] = 220
+      }
+    }
+  }
+
+  return { grid, gridW, gridH }
+}
+
+/**
+ * Bilinear interpolation lookup in background grid.
+ */
+function sampleBackgroundLum(
+  grid: Float32Array,
+  gridW: number,
+  gridH: number,
+  w: number,
+  h: number,
+  x: number,
+  y: number
+): number {
+  const gx = (x / Math.max(1, w)) * (gridW - 1)
+  const gy = (y / Math.max(1, h)) * (gridH - 1)
+  const gxi = Math.floor(gx)
+  const gyi = Math.floor(gy)
+  const fx = gx - gxi
+  const fy = gy - gyi
+
+  const idx00 = gyi * gridW + gxi
+  const idx10 = gyi * gridW + Math.min(gridW - 1, gxi + 1)
+  const idx01 = Math.min(gridH - 1, gyi + 1) * gridW + gxi
+  const idx11 = Math.min(gridH - 1, gyi + 1) * gridW + Math.min(gridW - 1, gxi + 1)
+
+  const top = (1 - fx) * grid[idx00] + fx * grid[idx10]
+  const bot = (1 - fx) * grid[idx01] + fx * grid[idx11]
+  return Math.max(50, (1 - fy) * top + fy * bot)
+}
+
+/**
+ * Applies CamScanner-inspired document visual enhancement filters:
+ * - Color: Flat-field illumination normalization preserving stamps, signatures and hues
+ * - Grayscale: Eliminates color cast while evening out lighting gradients
+ * - Contrast / Clean B&W: Document enhancement with ink darkening & white background boosting
  */
 export function applyImageFilters(
   canvas: HTMLCanvasElement,
-  filter: "color" | "grayscale" | "contrast"
+  filter: "color" | "grayscale" | "contrast" | "clean_bw"
 ): void {
-  if (filter === "color") return
-
   const ctx = canvas.getContext("2d", { willReadFrequently: true })
   if (!ctx) return
 
-  const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+  const w = canvas.width
+  const h = canvas.height
+  const imgData = ctx.getImageData(0, 0, w, h)
   const data = imgData.data
-  const len = data.length
 
-  for (let i = 0; i < len; i += 4) {
-    const r = data[i]
-    const g = data[i + 1]
-    const b = data[i + 2]
-    const lum = 0.299 * r + 0.587 * g + 0.114 * b
+  const { grid, gridW, gridH } = estimateBackgroundGrid(data, w, h, 36)
 
-    if (filter === "grayscale") {
-      data[i] = lum
-      data[i + 1] = lum
-      data[i + 2] = lum
-    } else if (filter === "contrast") {
-      // Document enhancement: push whites up and dark text down
-      let enhanced: number
-      if (lum > 175) {
-        // Boost light background towards crisp white
-        enhanced = Math.min(255, lum * 1.15)
-      } else if (lum < 110) {
-        // Deepen text and lines
-        enhanced = Math.max(0, lum * 0.75)
+  for (let y = 0; y < h; y++) {
+    const rowOffset = y * w
+    for (let x = 0; x < w; x++) {
+      const i = (rowOffset + x) * 4
+      const r = data[i]
+      const g = data[i + 1]
+      const b = data[i + 2]
+      const lum = 0.299 * r + 0.587 * g + 0.114 * b
+
+      const bg = sampleBackgroundLum(grid, gridW, gridH, w, h, x, y)
+      const normFactor = 240 / Math.max(50, bg)
+
+      if (filter === "color") {
+        // Normalize channels against estimated paper background
+        data[i] = Math.min(255, Math.max(0, Math.round(r * normFactor)))
+        data[i + 1] = Math.min(255, Math.max(0, Math.round(g * normFactor)))
+        data[i + 2] = Math.min(255, Math.max(0, Math.round(b * normFactor)))
+      } else if (filter === "grayscale") {
+        const enhancedLum = Math.min(255, Math.max(0, Math.round(lum * normFactor)))
+        data[i] = enhancedLum
+        data[i + 1] = enhancedLum
+        data[i + 2] = enhancedLum
       } else {
-        // Midtones linear stretch
-        enhanced = ((lum - 110) / (175 - 110)) * 255
-      }
+        // "contrast" / "clean_bw"
+        const normLum = lum * normFactor
+        let enhanced: number
+        if (normLum > 180) {
+          enhanced = 255
+        } else if (normLum < 115) {
+          enhanced = Math.max(0, normLum * 0.72)
+        } else {
+          enhanced = ((normLum - 115) / (180 - 115)) * 255
+        }
 
-      data[i] = enhanced
-      data[i + 1] = enhanced
-      data[i + 2] = enhanced
+        data[i] = enhanced
+        data[i + 1] = enhanced
+        data[i + 2] = enhanced
+      }
     }
   }
 

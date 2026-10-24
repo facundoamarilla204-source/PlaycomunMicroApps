@@ -371,7 +371,7 @@ export function OrdenarPdf() {
       const blob = await exportCombinedPdf(pages, sourceFiles)
 
       const baseName = sourceFiles.length > 0 ? sourceFiles[0].name.replace(/\.pdf$/i, "") : "documento"
-      const fileName = `${baseName}_ordenado_playcomun.pdf`
+      const fileName = `${baseName}_ordenado.pdf`
 
       const url = URL.createObjectURL(blob)
       const a = document.createElement("a")
