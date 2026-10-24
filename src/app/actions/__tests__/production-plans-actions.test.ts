@@ -19,11 +19,14 @@ vi.mock('@/lib/pro', () => ({
   isProUser: (id: string) => mockIsProUser(id),
 }))
 
+const mockRpc = vi.fn().mockResolvedValue({ data: null, error: { message: 'RPC fallback' } })
+
 vi.mock('@/utils/supabase/server', () => ({
   createClient: vi.fn(async () => ({
     auth: {
       getUser: mockGetUser,
     },
+    rpc: mockRpc,
     from: vi.fn((table: string) => {
       if (table === 'production_plans') {
         return {
