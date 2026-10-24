@@ -166,7 +166,8 @@ export function preprocessCanvasForOcr(
     }
   }
 
-  // 3. Unsharp mask sharpening and adaptive contrast mapping
+  // 3. High-definition unsharp masking and adaptive document contrast
+  // Preserves diacritics (á, é, í, ó, ú), eñes (ñ, Ñ), punctuation (¿, ¡, :, ,, .) and numbers
   for (let y = 0; y < targetH; y++) {
     const rowOffset = y * targetW
     const prevRow = Math.max(0, y - 1) * targetW
@@ -177,22 +178,23 @@ export function preprocessCanvasForOcr(
       const nextX = Math.min(targetW - 1, x + 1)
 
       const center = normBuffer[rowOffset + x]
-      const neighbors =
-        normBuffer[prevRow + x] +
-        normBuffer[nextRow + x] +
-        normBuffer[rowOffset + prevX] +
-        normBuffer[rowOffset + nextX]
+      const avgNeighbor =
+        (normBuffer[prevRow + x] +
+          normBuffer[nextRow + x] +
+          normBuffer[rowOffset + prevX] +
+          normBuffer[rowOffset + nextX]) * 0.25
 
-      // Laplacian high-pass sharpening to crisp text edges
-      const sharpened = center * 1.8 - neighbors * 0.2
+      // Subtle unsharp contrast enhancement without wiping small diacritics
+      const sharpened = center + 0.65 * (center - avgNeighbor)
 
       let enhanced: number
-      if (sharpened > 175) {
-        enhanced = 255
-      } else if (sharpened < 110) {
-        enhanced = Math.max(0, Math.round(sharpened * 0.65))
+      if (sharpened > 220) {
+        enhanced = 255 // Clean paper white
+      } else if (sharpened < 130) {
+        enhanced = Math.max(0, Math.round(sharpened * 0.78)) // Crisp dark ink
       } else {
-        enhanced = Math.round(((sharpened - 110) / (175 - 110)) * 255)
+        // Linear smooth transition that preserves middle-tone accents and handwriting
+        enhanced = Math.round(((sharpened - 130) / (220 - 130)) * 255)
       }
 
       const pixelIdx = (rowOffset + x) * 4
@@ -425,7 +427,7 @@ export async function performOcrOnImage(
     // Configure segmentation and whitespace preservation
     try {
       await worker.setParameters({
-        tessedit_pageseg_mode: "1", // Auto page segmentation with OSD
+        tessedit_pageseg_mode: "3", // Fully automatic page segmentation without OSD (avoids external osd.traineddata timeout)
         preserve_interword_spaces: "1",
       })
     } catch {}

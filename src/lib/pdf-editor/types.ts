@@ -54,4 +54,5 @@ export interface ScannerExportOptions {
   pageSize: "a4" | "fit"
   orientation: "portrait" | "landscape" | "auto"
   quality: "high" | "medium" | "low"
+  fileName?: string
 }

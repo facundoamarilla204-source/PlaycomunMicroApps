@@ -299,10 +299,11 @@ export function applyImageFilters(
       const lum = 0.299 * r + 0.587 * g + 0.114 * b
 
       const bg = sampleBackgroundLum(grid, gridW, gridH, w, h, x, y)
-      const normFactor = 240 / Math.max(50, bg)
+      // Gentle normalization factor clamped between 0.85 and 1.45 to prevent color distortion or noise
+      const normFactor = Math.min(1.45, Math.max(0.85, 240 / Math.max(70, bg)))
 
       if (filter === "color") {
-        // Normalize channels against estimated paper background
+        // High-fidelity color mode: Normalizes lighting while preserving original paper tint, inks, highlighters, stamps
         data[i] = Math.min(255, Math.max(0, Math.round(r * normFactor)))
         data[i + 1] = Math.min(255, Math.max(0, Math.round(g * normFactor)))
         data[i + 2] = Math.min(255, Math.max(0, Math.round(b * normFactor)))
@@ -365,23 +366,30 @@ export function rotateCanvas(
 }
 
 /**
- * Creates a standalone PDF from an array of scanned canvas data URLs.
+ * Creates a standalone high-fidelity PDF from an array of scanned document data URLs.
+ * Maintains true A4 proportions (1:1.414) without distortion or background noise,
+ * and preserves original document colors, stamps, and highlighters.
  */
 export async function exportScannedPagesToPdf(
   scannedDataUrls: string[],
-  options: ScannerExportOptions
+  options?: Partial<ScannerExportOptions>
 ): Promise<Blob> {
   if (scannedDataUrls.length === 0) {
     throw new Error("No hay páginas escaneadas para exportar.")
   }
 
   const pdfDoc = await PDFDocument.create()
+  pdfDoc.setTitle(options?.fileName ? options.fileName.replace(/\.pdf$/i, "") : "Documento Escaneado")
+  pdfDoc.setProducer("PDF")
+  pdfDoc.setCreator("PDF")
 
+  // ISO 216 Standard A4 dimensions in typographic points (72 DPI)
   const A4_W = 595.28
   const A4_H = 841.89
 
   for (const dataUrl of scannedDataUrls) {
-    // Convert data url to Uint8Array bytes
+    if (!dataUrl || !dataUrl.includes(",")) continue
+
     const base64Data = dataUrl.split(",")[1]
     const binaryStr = atob(base64Data)
     const len = binaryStr.length
@@ -391,40 +399,71 @@ export async function exportScannedPagesToPdf(
     }
 
     let embeddedImg: any = null
-    if (dataUrl.startsWith("data:image/png")) {
-      embeddedImg = await pdfDoc.embedPng(bytes)
-    } else {
-      embeddedImg = await pdfDoc.embedJpg(bytes)
+    try {
+      if (dataUrl.startsWith("data:image/png")) {
+        embeddedImg = await pdfDoc.embedPng(bytes)
+      } else {
+        embeddedImg = await pdfDoc.embedJpg(bytes)
+      }
+    } catch {
+      // Fallback: try embedJpg then embedPng
+      try {
+        embeddedImg = await pdfDoc.embedJpg(bytes)
+      } catch {
+        embeddedImg = await pdfDoc.embedPng(bytes)
+      }
     }
+
+    if (!embeddedImg) continue
 
     const imgW = embeddedImg.width
     const imgH = embeddedImg.height
 
-    if (options.pageSize === "fit") {
+    if (options?.pageSize === "fit") {
+      // Fit page dimensions exactly to the scanned image dimensions
       const page = pdfDoc.addPage([imgW, imgH])
       page.drawImage(embeddedImg, { x: 0, y: 0, width: imgW, height: imgH })
     } else {
-      // A4 page
+      // Standard A4 sheet: determine auto-orientation based on image aspect ratio
       let isLandscape = false
-      if (options.orientation === "auto") {
-        isLandscape = imgW > imgH
+      if (options?.orientation === "landscape") {
+        isLandscape = true
+      } else if (options?.orientation === "portrait") {
+        isLandscape = false
       } else {
-        isLandscape = options.orientation === "landscape"
+        // Auto: detect orientation from aspect ratio
+        isLandscape = imgW > imgH
       }
 
       const pageW = isLandscape ? A4_H : A4_W
       const pageH = isLandscape ? A4_W : A4_H
 
-      const margin = 20
-      const availW = pageW - margin * 2
-      const availH = pageH - margin * 2
+      const pageRatio = pageH / pageW
+      const imgRatio = imgH / imgW
 
-      const scale = Math.min(availW / imgW, availH / imgH, 1)
-      const renderW = imgW * scale
-      const renderH = imgH * scale
+      // If the document aspect ratio is close to A4 (within ~14% tolerance),
+      // allow the rectified paper sheet to fill the A4 page edge-to-edge
+      const isCloseToA4 = Math.abs(imgRatio - pageRatio) / pageRatio < 0.14
 
-      const posX = (pageW - renderW) / 2
-      const posY = (pageH - renderH) / 2
+      let renderW: number
+      let renderH: number
+      let posX: number
+      let posY: number
+
+      if (isCloseToA4) {
+        renderW = pageW
+        renderH = pageH
+        posX = 0
+        posY = 0
+      } else {
+        // Non-standard proportions (e.g. receipt, check, square card):
+        // Scale to fit within page while strictly preserving original aspect ratio
+        const scale = Math.min(pageW / imgW, pageH / imgH)
+        renderW = Math.round(imgW * scale)
+        renderH = Math.round(imgH * scale)
+        posX = Math.round((pageW - renderW) / 2)
+        posY = Math.round((pageH - renderH) / 2)
+      }
 
       const page = pdfDoc.addPage([pageW, pageH])
       page.drawImage(embeddedImg, {

@@ -82,6 +82,11 @@ export function OrdenarPdf() {
 
   // Hidden file input for appending more PDFs
   const appendFileInputRef = useRef<HTMLInputElement>(null)
+  const photoUploadInputRef = useRef<HTMLInputElement>(null)
+
+  // Scanner modal startup config
+  const [scannerInitialStep, setScannerInitialStep] = useState<"capture" | "qr_connect" | "file_upload">("capture")
+  const [scannerInitialFiles, setScannerInitialFiles] = useState<File[]>([])
 
   // Clear notifications after timeout
   useEffect(() => {
@@ -137,12 +142,23 @@ export function OrdenarPdf() {
       setErrorMessage(null)
 
       const filesArray = Array.from(fileList)
+      const imageFiles = filesArray.filter(
+        (f) => f.type.startsWith("image/") || /\.(jpe?g|png|webp)$/i.test(f.name)
+      )
       const validPdfFiles = filesArray.filter(
         (f) => f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf")
       )
 
+      if (validPdfFiles.length === 0 && imageFiles.length > 0) {
+        setScannerInitialFiles(imageFiles)
+        setScannerInitialStep("file_upload")
+        setIsCameraModalOpen(true)
+        setIsLoadingFiles(false)
+        return
+      }
+
       if (validPdfFiles.length === 0) {
-        setErrorMessage("Por favor seleccioná archivos en formato PDF válidos.")
+        setErrorMessage("Por favor seleccioná archivos en formato PDF o imágenes de documentos.")
         setIsLoadingFiles(false)
         return
       }
@@ -280,13 +296,8 @@ export function OrdenarPdf() {
     )
   }
 
-  // Delete page with safety validation
+  // Delete page with safety validation (allows deleting down to 0)
   const handleDeletePage = (pageId: string) => {
-    if (pages.length <= 1) {
-      setErrorMessage("No podés eliminar todas las páginas del documento. Debe quedar al menos 1 página activa.")
-      return
-    }
-
     const pageIndex = pages.findIndex((p) => p.id === pageId)
     setConfirmDialog({
       isOpen: true,
@@ -294,37 +305,38 @@ export function OrdenarPdf() {
       description: `Se quitará la página ${pageIndex + 1} de la composición actual.\nEl documento original no será alterado.`,
       confirmText: "Quitar página",
       onConfirm: () => {
-        setPages((prev) => prev.filter((p) => p.id !== pageId))
+        const remaining = pages.filter((p) => p.id !== pageId)
+        setPages(remaining)
         const nextSelected = new Set(selectedIds)
         nextSelected.delete(pageId)
         setSelectedIds(nextSelected)
+        if (remaining.length === 0) {
+          setSourceFiles([])
+          setPreviewPage(null)
+        }
         setSuccessMessage("Página eliminada de la composición.")
       },
     })
   }
 
-  // Delete batch selected pages
+  // Delete batch selected pages (allows deleting all)
   const handleDeleteSelected = () => {
     const countToDelete = selectedIds.size
     if (countToDelete === 0) return
 
-    if (countToDelete >= pages.length) {
-      setErrorMessage(
-        "No podés eliminar todas las páginas seleccionadas. El documento resultante debe contener al menos 1 página."
-      )
-      return
-    }
-
-    const remainingCount = pages.length - countToDelete
-
     setConfirmDialog({
       isOpen: true,
       title: `¿Eliminar ${countToDelete} ${countToDelete === 1 ? "página seleccionada" : "páginas seleccionadas"}?`,
-      description: `Se quitarán ${countToDelete} páginas y se conservarán ${remainingCount} páginas en el documento final.\nTus archivos originales en disco permanecerán intactos.`,
+      description: "Se quitarán de la composición actual.\nTus archivos originales en disco permanecerán intactos.",
       confirmText: `Eliminar ${countToDelete} páginas`,
       onConfirm: () => {
-        setPages((prev) => prev.filter((p) => !selectedIds.has(p.id)))
+        const remaining = pages.filter((p) => !selectedIds.has(p.id))
+        setPages(remaining)
         setSelectedIds(new Set())
+        if (remaining.length === 0) {
+          setSourceFiles([])
+          setPreviewPage(null)
+        }
         setSuccessMessage(`Se eliminaron ${countToDelete} páginas.`)
       },
     })
@@ -567,11 +579,39 @@ export function OrdenarPdf() {
         </div>
       )}
 
+      {/* Input oculto para subir fotos directas */}
+      <input
+        ref={photoUploadInputRef}
+        type="file"
+        accept="image/*"
+        multiple
+        className="hidden"
+        onChange={(e) => {
+          if (e.target.files && e.target.files.length > 0) {
+            const arr = Array.from(e.target.files)
+            setScannerInitialFiles(arr)
+            setScannerInitialStep("file_upload")
+            setIsCameraModalOpen(true)
+            e.target.value = ""
+          }
+        }}
+      />
+
       {/* VISTA 1: INICIAL SIN DOCUMENTOS */}
       {pages.length === 0 ? (
         <InitialChoiceView
           onFilesSelected={handleLoadFiles}
-          onStartCamera={() => setIsCameraModalOpen(true)}
+          onStartCamera={() => {
+            setScannerInitialStep("capture")
+            setScannerInitialFiles([])
+            setIsCameraModalOpen(true)
+          }}
+          onStartUploadPhotos={() => photoUploadInputRef.current?.click()}
+          onStartQrScan={() => {
+            setScannerInitialStep("qr_connect")
+            setScannerInitialFiles([])
+            setIsCameraModalOpen(true)
+          }}
           isLoading={isLoadingFiles}
         />
       ) : (
@@ -792,8 +832,13 @@ export function OrdenarPdf() {
 
       <CameraScannerModal
         isOpen={isCameraModalOpen}
-        onClose={() => setIsCameraModalOpen(false)}
+        onClose={() => {
+          setIsCameraModalOpen(false)
+          setScannerInitialFiles([])
+        }}
         onImportToWorkbench={handleImportScannedPages}
+        initialStep={scannerInitialStep}
+        initialFiles={scannerInitialFiles}
       />
 
       <PagePreviewModal

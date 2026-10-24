@@ -61,7 +61,7 @@ export default function MobileScannerPage({ params }: MobileScannerPageProps) {
   const [corners, setCorners] = useState<DocumentCorners | null>(null)
   const [activeCorner, setActiveCorner] = useState<keyof DocumentCorners | null>(null)
   const [adjustRotation, setAdjustRotation] = useState<number>(0)
-  const [filterMode, setFilterMode] = useState<"color" | "contrast" | "grayscale">("contrast")
+  const [filterMode, setFilterMode] = useState<"color" | "contrast" | "grayscale">("color")
 
   // Clean processed document preview (no branding, no desk, pure paper)
   const [processedPreviewUrl, setProcessedPreviewUrl] = useState<string | null>(null)
@@ -265,12 +265,12 @@ export default function MobileScannerPage({ params }: MobileScannerPageProps) {
     const detected = detectDocumentCorners(canvas)
     setCorners(detected)
     setAdjustRotation(0)
-    setFilterMode("contrast")
+    setFilterMode("color")
 
     setIsProcessingWarp(true)
     setStep("preview_processed")
     try {
-      const { dataUrl } = await generateProcessedDoc(canvas, detected, 0, "contrast")
+      const { dataUrl } = await generateProcessedDoc(canvas, detected, 0, "color")
       setProcessedPreviewUrl(dataUrl)
     } finally {
       setIsProcessingWarp(false)
@@ -298,12 +298,12 @@ export default function MobileScannerPage({ params }: MobileScannerPageProps) {
       const detected = detectDocumentCorners(canvas)
       setCorners(detected)
       setAdjustRotation(0)
-      setFilterMode("contrast")
+      setFilterMode("color")
 
       setIsProcessingWarp(true)
       setStep("preview_processed")
       try {
-        const { dataUrl } = await generateProcessedDoc(canvas, detected, 0, "contrast")
+        const { dataUrl } = await generateProcessedDoc(canvas, detected, 0, "color")
         setProcessedPreviewUrl(dataUrl)
       } finally {
         setIsProcessingWarp(false)

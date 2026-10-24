@@ -49,7 +49,7 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 const SESSION_TTL_MS = 15 * 60 * 1000 // 15 minutes TTL
-const MAX_PAGES_PER_SESSION = 15
+const MAX_PAGES_PER_SESSION = 60 // Allow scanning multi-page documents (10, 20, 30+ pages)
 const MAX_IMAGE_BYTES = 4 * 1024 * 1024 // 4 MB per page image
 
 /**
